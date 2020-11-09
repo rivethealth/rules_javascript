@@ -2,6 +2,31 @@
 
 Rules for JavaScript, with an emphasis on idiomatic Bazel APIs.
 
+## Features
+
+- [ ] library
+    - [x] files
+    - [ ] directories
+    - [x] multiple versions
+- [ ] bundle
+    - [ ] rollup
+    - [ ] webpack
+- [ ] runtime
+    - [x] nodejs_binary
+    - [ ] docker
+- [ ] test
+    - [ ] jest
+- [ ] external dependencies
+    - [ ] npm
+    - [x] yarn
+    - [ ] node-gyp
+- [ ] lint
+    - [x] prettier (TODO: config file, plugins)
+    - [ ] eslint (TODO: config file, plugins)
+- [ ] dev
+    - [ ] Stardoc
+    - [ ] CI
+
 ## Install
 
 **WORKSPACE.bazel**
