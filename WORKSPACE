@@ -40,6 +40,7 @@ http_archive(
 )
 
 load("@com_github_bazelbuild_buildtools//buildifier:deps.bzl", "buildifier_dependencies")
+
 buildifier_dependencies()
 
 # Pkg
@@ -96,4 +97,5 @@ http_archive(
 # JavaScript
 
 load("//rules/bzl:workspace.bzl", javascript_repositories = "repositories")
+
 javascript_repositories()

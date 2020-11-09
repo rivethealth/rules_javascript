@@ -129,5 +129,5 @@ def repositories():
         packages = {
             "@yarnpkg/lockfile": "@better_rules_javascript_yarnpkg_lockfile//:js",
             "argparse": "@better_rules_javascript_argparse//:js",
-        }
+        },
     )

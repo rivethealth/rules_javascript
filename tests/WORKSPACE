@@ -17,7 +17,9 @@ local_repository(
 )
 
 load("@better_rules_javascript//rules/bzl:workspace.bzl", javascript_repositories = "respositories")
+
 javascript_respositories()
 
 load(":npm.bzl", "npm")
+
 npm("npm")

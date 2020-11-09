@@ -3,5 +3,5 @@ PrettierConfig = provider(
         "config": "Config file",
         "bin": "Prettier executable",
         "plugins": "Plugins",
-    }
+    },
 )

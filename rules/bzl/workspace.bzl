@@ -1,5 +1,5 @@
 load("//rules/nodejs/bzl:workspace.bzl", nodejs_repositories = "repositories")
-load("//rules/npm/bzl:workspace.bzl", npm_repositories = "repositories", "npm_package", "npm_roots")
+load("//rules/npm/bzl:workspace.bzl", "npm_package", "npm_roots", npm_repositories = "repositories")
 load(":npm_data.bzl", "PACKAGES", "ROOTS")
 
 def repositories():
