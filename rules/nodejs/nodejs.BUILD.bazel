@@ -1,0 +1,8 @@
+package(default_visibility = ["//visibility:public"])
+
+load("@better_rules_javascript//rules/nodejs/bzl:toolchains.bzl", "nodejs_toolchain")
+
+nodejs_toolchain(
+    name = "nodejs",
+    nodejs = "bin/node",
+)

@@ -1,0 +1,12 @@
+load("@rules_pkg//:pkg.bzl", "pkg_tar")
+
+pkg_tar(
+    name = "docs",
+    srcs = [
+        "//rules/javascript/bzl:rules_doc",
+        "//rules/module/bzl:doc",
+        "//rules/nodejs/bzl:doc",
+    ],
+    mode = "0644",
+    strip_prefix = ".",
+)

@@ -1,0 +1,25 @@
+load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
+load("@io_bazel_stardoc//stardoc:stardoc.bzl", "stardoc")
+
+package(default_visibility = ["//visibility:public"])
+
+bzl_library(
+    name = "bzl",
+    srcs = glob(["**/*.bzl"]),
+    deps = [
+        "//module/bzl",
+        "//util/bzl",
+    ],
+)
+
+filegroup(
+    name = "doc",
+    srcs = [":rules_doc"],
+)
+
+stardoc(
+    name = "rules_doc",
+    out = "rules.md",
+    input = "rules.bzl",
+    deps = [":bzl"],
+)

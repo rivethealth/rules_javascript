@@ -1,0 +1,17 @@
+load("//rules/javascript/bzl:rules.bzl", "js_library")
+load("//rules/nodejs/bzl:rules.bzl", "nodejs_binary")
+
+js_library(
+    name = "js",
+    srcs = glob(["src/**/*.js"]),
+    strip_prefix = "better_rules_javascript/rules/npm/gen/src",
+    deps = [
+        "@better_rules_javascript_npm_internal//@yarnpkg/lockfile:js",
+        "@better_rules_javascript_npm_internal//argparse:js",
+    ],
+)
+
+nodejs_binary(
+    name = "bin",
+    dep = ":js",
+)

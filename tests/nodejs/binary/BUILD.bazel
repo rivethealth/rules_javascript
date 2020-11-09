@@ -1,0 +1,13 @@
+load("@better_rules_javascript//rules/javascript/bzl:rules.bzl", "js_library")
+load("@better_rules_javascript//rules/nodejs/bzl:rules.bzl", "nodejs_binary")
+
+js_library(
+    name = "js",
+    srcs = glob(["**/*.js"]),
+)
+
+nodejs_binary(
+    name = "bin",
+    main = "@better_rules_javascript_test/nodejs/binary/example",
+    deps = [":js"],
+)

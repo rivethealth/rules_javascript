@@ -1,0 +1,99 @@
+workspace(name = "better_rules_javascript")
+
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+
+# Go
+GO_VERSION = "v0.24.5"
+
+http_archive(
+    name = "io_bazel_rules_go",
+    sha256 = "d1ffd055969c8f8d431e2d439813e42326961d0942bdf734d2c95dc30c369566",
+    url = "https://github.com/bazelbuild/rules_go/releases/download/%s/rules_go-%s.tar.gz" % (GO_VERSION, GO_VERSION),
+)
+
+load("@io_bazel_rules_go//go:deps.bzl", "go_register_toolchains", "go_rules_dependencies")
+
+go_rules_dependencies()
+
+go_register_toolchains()
+
+# Protobuf
+http_archive(
+    name = "com_google_protobuf",
+    sha256 = "9b4ee22c250fe31b16f1a24d61467e40780a3fbb9b91c3b65be2a376ed913a1a",
+    strip_prefix = "protobuf-3.13.0",
+    url = "https://github.com/protocolbuffers/protobuf/archive/v3.13.0.tar.gz",
+)
+
+load("@com_google_protobuf//:protobuf_deps.bzl", "protobuf_deps")
+
+protobuf_deps()
+
+# Buildtools
+BUILDTOOLS_VERSION = "3.5.0"
+
+http_archive(
+    name = "com_github_bazelbuild_buildtools",
+    sha256 = "f5b666935a827bc2b6e2ca86ea56c796d47f2821c2ff30452d270e51c2a49708",
+    strip_prefix = "buildtools-%s" % BUILDTOOLS_VERSION,
+    url = "https://github.com/bazelbuild/buildtools/archive/%s.zip" % BUILDTOOLS_VERSION,
+)
+
+load("@com_github_bazelbuild_buildtools//buildifier:deps.bzl", "buildifier_dependencies")
+buildifier_dependencies()
+
+# Pkg
+PKG_VERSION = "55a1a9b2eca5b78a44fb940f3143a1d88423c2e2"
+
+http_archive(
+    name = "rules_pkg",
+    sha256 = "88d65eedeb9a26708b859a0850bf11aa478cabe49733f5169cada1ed86fe7241",
+    strip_prefix = "rules_pkg-%s/pkg" % PKG_VERSION,
+    url = "https://github.com/bazelbuild/rules_pkg/archive/%s.zip" % PKG_VERSION,
+)
+
+load("@rules_pkg//:deps.bzl", "rules_pkg_dependencies")
+
+rules_pkg_dependencies()
+
+# Java
+
+JAVA_VERSION = "7cf3cefd652008d0a64a419c34c13bdca6c8f178"
+
+http_archive(
+    name = "rules_java",
+    sha256 = "bc81f1ba47ef5cc68ad32225c3d0e70b8c6f6077663835438da8d5733f917598",
+    strip_prefix = "rules_java-%s" % JAVA_VERSION,
+    urls = [
+        "https://github.com/bazelbuild/rules_java/archive/%s.zip" % JAVA_VERSION,
+    ],
+)
+
+# Skylib
+
+SKYLIB_VERSION = "16de038c484145363340eeaf0e97a0c9889a931b"
+
+http_archive(
+    name = "bazel_skylib",
+    sha256 = "96e0cd3f731f0caef9e9919aa119ecc6dace36b149c2f47e40aa50587790402b",
+    strip_prefix = "bazel-skylib-%s" % SKYLIB_VERSION,
+    urls = ["https://github.com/bazelbuild/bazel-skylib/archive/%s.tar.gz" % SKYLIB_VERSION],
+)
+
+# Stardoc
+
+STARDOC_VERSION = "247c2097e7346778ac8d03de5a4770d6b9890dc5"
+
+http_archive(
+    name = "io_bazel_stardoc",
+    sha256 = "52c1bfd6d7aab8705d1f77cfad8705d6085047adc45e01aada330403d23af2b5",
+    strip_prefix = "stardoc-%s" % STARDOC_VERSION,
+    urls = [
+        "https://github.com/bazelbuild/stardoc/archive/%s.zip" % STARDOC_VERSION,
+    ],
+)
+
+# JavaScript
+
+load("//rules/bzl:workspace.bzl", javascript_repositories = "repositories")
+javascript_repositories()
