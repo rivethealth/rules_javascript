@@ -131,3 +131,8 @@ def repositories():
             "argparse": "@better_rules_javascript_argparse//:js",
         },
     )
+
+def npm(name, packages, roots):
+    for package in packages:
+        npm_package(name, package)
+    npm_roots(name, roots)
