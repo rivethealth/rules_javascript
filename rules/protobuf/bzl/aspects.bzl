@@ -27,7 +27,7 @@ def _js_proto_impl(target, ctx):
     outputs = []
     for file in proto.direct_sources:
         path = file.path
-        if proto.proto_source_root:
+        if proto.proto_source_root and proto.proto_source_root != '.':
             path = path[len("%s/" % proto.proto_source_root):]
         args.add(path)
         name = path.replace(".proto", "_pb.js")

@@ -64,6 +64,7 @@ js_library = rule(
         "srcs": attr.label_list(
             allow_files = True,
             doc = "JavaScript files.",
+            mandatory = True,
         ),
     },
     implementation = _js_library_impl,

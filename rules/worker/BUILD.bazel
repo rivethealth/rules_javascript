@@ -1,0 +1,27 @@
+load("@rules_proto//proto:defs.bzl", "proto_library")
+load("@better_rules_javascript//rules/javascript/bzl:rules.bzl", "js_library")
+load("@better_rules_javascript//rules/nodejs/bzl:rules.bzl", "nodejs_binary")
+load("//tools/bzl:rules.bzl", "js_proto_library")
+
+proto_library(
+    name = "proto",
+    srcs = glob(["proto/**/*.proto"]),
+)
+
+js_proto_library(
+    name = "js_proto",
+    dep = ":proto"
+)
+
+js_library(
+    name = "js",
+    srcs = glob(["src/**/*.js"]),
+    strip_prefix = "better_rules_javascript/rules/worker/src",
+    deps = [":js_proto"],
+)
+
+nodejs_binary(
+    name = "bin",
+    dep = ":js",
+    main = "worker.js",
+)

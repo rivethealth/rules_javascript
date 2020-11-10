@@ -1,4 +1,7 @@
+load("@better_rules_javascript//rules/protobuf/bzl:rules.bzl", "js_protoc")
 load("@rules_pkg//:pkg.bzl", "pkg_tar")
+
+package(default_visibility = ["//visibility:public"])
 
 pkg_tar(
     name = "docs",
@@ -12,4 +15,9 @@ pkg_tar(
     ],
     mode = "0644",
     strip_prefix = ".",
+)
+
+js_protoc(
+    name = "js_protoc",
+    runtime = "@better_rules_javascript_npm//google-protobuf:js",
 )
