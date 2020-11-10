@@ -21,10 +21,10 @@ Rules for JavaScript, with an emphasis on idiomatic Bazel APIs.
     - [x] yarn
     - [ ] node-gyp
 - [ ] lint
-    - [x] prettier (TODO: config file, plugins)
+    - [x] prettier (TODO: plugins)
     - [ ] eslint (TODO: config file, plugins)
 - [ ] dev
-    - [ ] Stardoc
+    - [x] Stardoc
     - [ ] CI
 
 ## Install
@@ -141,14 +141,13 @@ Add prettier an external dependency.
 
 ```
 load("@better_rules_javascript//rules/nodejs/bzl:rules.bzl", "nodejs_binary")
-load("@better_rules_javascript//rules/prettier/bzl:rules.bzl", "prettier")
+load("@better_rules_javascript//rules/prettier/bzl:rules.bzl", "prettier", "prettier_binary")
 
 package(default_visibility = ["//visibility:public"])
 
-nodejs_binary(
+prettier_binary(
     name = "bin",
     dep = "@npm//prettier:js",
-    main = "bin-prettier.js",
 )
 
 prettier(
@@ -178,6 +177,10 @@ bazel query 'kind("js_library", //...)' --output package 2> /dev/null | while IF
     "$BAZEL_BIN/$package/_format/bin" write
 done
 ```
+
+## Stardoc
+
+[Stardoc documentation](doc/stardoc)
 
 ## Implementation
 

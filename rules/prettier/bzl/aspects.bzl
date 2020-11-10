@@ -14,9 +14,14 @@ def _format_impl(target, ctx):
             outputs.append(formatted)
             script += "format %s %s \n" % (file.path, formatted.path)
             ctx.actions.run_shell(
-                command = '"$1" "$2" > "$3"',
-                arguments = [prettier_config.bin.files_to_run.executable.path, file.path, formatted.path],
-                inputs = depset([file], transitive = [inputs]),
+                command = '"$1" --config "$2" "$3" > "$4"',
+                arguments = [
+                    prettier_config.bin.files_to_run.executable.path,
+                    prettier_config.config.path or '/dev/null',
+                    file.path,
+                    formatted.path
+                ],
+                inputs = depset([file, prettier_config.config], transitive = [inputs]),
                 outputs = [formatted],
                 tools = [prettier_config.bin.files_to_run],
             )

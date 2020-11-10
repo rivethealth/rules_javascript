@@ -20,6 +20,6 @@ NODEJS_PACKAGES_MANIFEST="$(rlocation %{packages_manifest})" \
   BAZEL_WORKSPACE=%{workspace} \
   NODEJS_MAIN_PACKAGE=%{main_package} \
   exec "$(rlocation %{node})" \
-  -r "./$(rlocation %{loader})" \
+  -r "$(realpath "$(rlocation %{loader})")" \
   %{main_module} \
   "$@"

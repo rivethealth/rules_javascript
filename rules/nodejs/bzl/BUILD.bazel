@@ -10,7 +10,7 @@ bzl_library(
         "//rules/javascript/bzl",
         "//rules/util/bzl",
         "@bazel_skylib//lib:shell",
-        "@bazel_tools//tools/build_defs/repo:lib"
+        "@bazel_tools//tools/build_defs/repo:lib",
     ],
 )
 
