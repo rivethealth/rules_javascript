@@ -254,7 +254,7 @@ js_proto_library(
 
 ## Stardoc
 
-[Stardoc documentation](doc/stardoc)
+Auto-generated [Stardoc documentation](docs/stardoc).
 
 ## Implementation
 
