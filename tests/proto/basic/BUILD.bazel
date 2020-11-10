@@ -1,0 +1,19 @@
+load("//:rules.bzl", "js_proto_library")
+load("@better_rules_javascript//rules/nodejs/bzl:rules.bzl", "nodejs_binary")
+load("@better_rules_javascript//rules/javascript/bzl:rules.bzl", "js_library")
+
+js_proto_library(
+    name = "proto_js",
+    dep = "@rules_proto_grpc//example/proto:person_proto",
+)
+
+js_library(
+    name = "js",
+    srcs = ["index.js"],
+    deps = [":proto_js"],
+)
+
+nodejs_binary(
+    name = "bin",
+    dep = ":js",
+)

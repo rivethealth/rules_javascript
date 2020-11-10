@@ -1,5 +1,15 @@
 load("//rules/javascript/bzl:providers.bzl", "JavaScriptInfo")
 
+def _rollup_impl(ctx):
+
+
+rollup = rule(
+    attrs = {
+        "dep": attr.label(providers = [JavaScriptInfo]),
+        "plugins": attr.label_list(providers = [JavaScriptInfo]),
+    }
+)
+
 def _rollup_bundle_impl(ctx):
     transitive_js = depset([], transitive = [dep[JavaScriptInfo].transitive_js for dep in ctx.attr.deps])
     ctx.actions.expand_template(
@@ -24,8 +34,9 @@ def _rollup_bundle_impl(ctx):
 
 rollup_bundle = rule(
     attrs = {
-        "deps": attr.label_list(providers = [JavaScriptInfo]),
+        "dep": attr.label(providers = [JavaScriptInfo]),
         "main": attr.string(mandatory = True),
+        "options": attr.string_list(),
         "_bash_runfiles": attr.label(
             allow_files = True,
             default = "@bazel_tools//tools/bash/runfiles",

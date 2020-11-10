@@ -1,0 +1,8 @@
+load("@better_rules_javascript//rules/protobuf/bzl:rules.bzl", "js_protoc")
+
+package(default_visibility = ["//visibility:public"])
+
+js_protoc(
+    name = "js_protoc",
+    runtime = "@npm//google-protobuf:js",
+)

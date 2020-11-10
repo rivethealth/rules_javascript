@@ -3,10 +3,11 @@ load("@rules_pkg//:pkg.bzl", "pkg_tar")
 pkg_tar(
     name = "docs",
     srcs = [
+        # Can't import @bazel_tools//tools/build_defs/repo:http.bzl
         "//rules/javascript/bzl:rules_doc",
         "//rules/npm/bzl:doc",
-        "//rules/prettier/bzl:doc",
-        # Can't import @bazel_tools//tools/build_defs/repo:http.bzl
+        #"//rules/prettier/bzl:doc",
+        "//rules/protobuf/bzl:doc",
         # "//rules/nodejs/bzl:doc",
     ],
     mode = "0644",

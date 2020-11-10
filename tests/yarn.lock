@@ -154,6 +154,11 @@ fresh@0.5.2:
   resolved "https://registry.yarnpkg.com/fresh/-/fresh-0.5.2.tgz#3d8cadd90d976569fa835ab1f8e4b23a105605a7"
   integrity sha1-PYyt2Q2XZWn6g1qx+OSyOhBWBac=
 
+google-protobuf@~3.13.0:
+  version "3.13.0"
+  resolved "https://registry.yarnpkg.com/google-protobuf/-/google-protobuf-3.13.0.tgz#909c5983d75dd6101ed57c79e0528d000cdc3251"
+  integrity sha512-ZIf3qfLFayVrPvAjeKKxO5FRF1/NwRxt6Dko+fWEMuHwHbZx8/fcaAao9b0wCM6kr8qeg2te8XTpyuvKuD9aKw==
+
 http-errors@1.7.2:
   version "1.7.2"
   resolved "https://registry.yarnpkg.com/http-errors/-/http-errors-1.7.2.tgz#4f5029cf13239f31036e5b2e55292bcfbcc85c8f"

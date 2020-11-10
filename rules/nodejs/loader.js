@@ -102,6 +102,9 @@ class Resolver {
 
     for (const dep of deps) {
       const package_ = this.#packageById.get(dep.id);
+      if (!package_) {
+        throw new Error(`Dependency ${dep.id} does not exist`);
+      }
 
       let requestPart;
       if (request === dep.name) {
