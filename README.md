@@ -2,6 +2,16 @@
 
 Rules for JavaScript, with an emphasis on idiomatic Bazel APIs.
 
+   * [rules_javascript](#rules_javascript)
+      * [Features](#features)
+      * [Install](#install)
+      * [Usage](#usage)
+         * [Basic](#basic)
+         * [External dependencies](#external-dependencies)
+         * [Format](#format)
+      * [Stardoc](#stardoc)
+      * [Implementation](#implementation)
+
 ## Features
 
 - [ ] library
@@ -100,20 +110,24 @@ nodejs_binary(
 )
 ```
 
-### Dependencies
+### External dependencies
 
-As with other rule sets like Java, collecting the external dependency graph is done by ecosystem tools, and that information is converted into Bazel repositories.
+#### Resolve external dependency graph
 
-Native dependencies (node-gyp) are not currently supported.
+```sh
+yarn install
+```
 
-Create package.json and run install to create yarn.lock. Then
+#### Convert data to Bazel representation
 
 ```sh
 bazel run @better_rules_javascript//rules/npm/gen:bin -- \
     yarn --package "$(pwd)/package.json" --lock "$(pwd)/yarn.lock" "$(pwd)/npm_data.bzl"
 ```
 
-In WORKSPACE,
+#### Create external repositories
+
+**WORKSPACE.bazel**
 
 ```bzl
 load("@better_rules_javascript//rules/npm/bzl:workspace.bzl", "npm")
@@ -121,23 +135,25 @@ load(":npm_data.bzl", NPM_PACKAGES = "PACKAGES", NPM_ROOTS = "ROOTS")
 npm("npm", NPM_PACKAGES, NPM_ROOTS)
 ```
 
-It can be used like
+NPM packages are accessible as
 
 ```bzl
 js_library(
     name = "example",
     srcs = ["example.js"],
-    deps = ["@npm/org_package:js"],
+    deps = ["@npm//org_package:js"],
 )
 ```
 
-IDE-user will have to run `yarn install` separately to install dependencies in the ususal way.
+Native dependencies (node-gyp) are not currently supported.
+
+For IDE use, run `yarn install` separately to install dependencies node_modules.
 
 ### Format
 
-Formatting via Prettier leverages the Bazel cache.
+Prettier is used for formatting.
 
-Add prettier an external dependency.
+Add prettier an [external dependency](#External dependencies).
 
 **tools/BUILD.bzl**
 
@@ -157,6 +173,7 @@ prettier(
     bin = ":bin",
 )
 ```
+</details>
 
 **tools/aspects.bzl**
 
@@ -168,7 +185,7 @@ format = format_aspect(
 )
 ```
 
-Then use the following script to format:
+Run
 
 ```sh
 bazel query 'kind("js_library", //...)' 2> /dev/null \
@@ -182,9 +199,9 @@ done
 
 ### Protobuf
 
-Add google-protobuf as an external dependency.
+#### Install
 
-**WORKSAPCE.bazel**
+**WORKSPACE.bazel**
 
 ```bzl
 PROTO_VERSION = "7e4afce6fe62dbff0a4a03450143146f9f2d7488"
@@ -210,6 +227,10 @@ rules_proto_grpc_toolchains()
 rules_proto_grpc_repos()
 ```
 
+Add google-protobuf as an [external dependency](#external_dependencies).
+
+#### Configure
+
 **BUILD.bazel**
 
 ```bzl
@@ -234,8 +255,7 @@ js_proto = js_proto_aspect("@better_rules_javascript_test//:js_protoc")
 js_proto_library = js_proto_library_rule(js_proto)
 ```
 
-Then use as
-
+#### Use
 
 ```bzl
 load("@rules_proto//proto:defs.bzl", "proto_library")
