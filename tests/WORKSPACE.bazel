@@ -13,12 +13,12 @@ http_archive(
 
 local_repository(
     name = "better_rules_javascript",
-    path = "../rules",
+    path = "..",
 )
 
-load("@better_rules_javascript//rules/bzl:workspace.bzl", javascript_repositories = "respositories")
+load("@better_rules_javascript//rules/bzl:workspace.bzl", javascript_repositories = "repositories")
 
-javascript_respositories()
+javascript_repositories()
 
 load(":npm.bzl", "npm")
 

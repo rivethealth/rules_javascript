@@ -1,11 +1,11 @@
-load("//rules/module/bzl:providers.bzl", "PackageInfo")
+load("//rules/javascript/bzl:providers.bzl", "JsPackage")
 load(":providers.bzl", "PrettierConfig")
 
 def _prettier_impl(ctx):
     prettier_config = PrettierConfig(
         config = ctx.file.config,
         bin = ctx.attr.bin,
-        plugins = [plugin[PackageInfo] for plugin in ctx.attr.plugins],
+        plugins = [plugin[JsPackage] for plugin in ctx.attr.plugins],
     )
 
     return prettier_config
@@ -25,7 +25,7 @@ prettier = rule(
         ),
         "plugins": attr.label_list(
             doc = "Plugins to load",
-            providers = [PackageInfo],
+            providers = [JsPackage],
         ),
     },
 )

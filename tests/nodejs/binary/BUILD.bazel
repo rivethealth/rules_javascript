@@ -8,6 +8,6 @@ js_library(
 
 nodejs_binary(
     name = "bin",
-    main = "@better_rules_javascript_test/nodejs/binary/example",
-    deps = [":js"],
+    dep = ":js",
+    main = "example",
 )

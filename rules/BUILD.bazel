@@ -4,8 +4,10 @@ pkg_tar(
     name = "docs",
     srcs = [
         "//rules/javascript/bzl:rules_doc",
-        "//rules/module/bzl:doc",
-        "//rules/nodejs/bzl:doc",
+        "//rules/npm/bzl:doc",
+        "//rules/prettier/bzl:doc",
+        # Can't import @bazel_tools//tools/build_defs/repo:http.bzl
+        # "//rules/nodejs/bzl:doc",
     ],
     mode = "0644",
     strip_prefix = ".",

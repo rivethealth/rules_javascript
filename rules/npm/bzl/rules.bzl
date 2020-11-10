@@ -17,8 +17,6 @@ js_import_external = rule(
             allow_single_file = ".json",
             doc = "package.json",
         ),
-        "src": attr.label(
-        ),
         "sha256": attr.string(
             doc = "SHA256 digest",
         ),

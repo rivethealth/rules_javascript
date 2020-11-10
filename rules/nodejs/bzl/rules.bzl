@@ -1,5 +1,5 @@
 load("@bazel_skylib//lib:shell.bzl", "shell")
-load("//rules/module/bzl:providers.bzl", "PackageInfo")
+load("//rules/javascript/bzl:providers.bzl", "JsPackage")
 load("//rules/util/bzl:path.bzl", "runfile_path")
 load("//rules/util/bzl:json.bzl", "json")
 
@@ -14,11 +14,11 @@ def _package_arg(package):
     return json.encode(arg)
 
 def _nodejs_binary_implementation(ctx):
-    package_info = ctx.attr.dep[PackageInfo]
+    js_package = ctx.attr.dep[JsPackage]
 
     bin, runfiles = create_nodejs_binary(
         ctx,
-        package_info,
+        js_package,
         ctx.attr.main,
         struct(
             loader = ctx.file._loader,
@@ -30,13 +30,13 @@ def _nodejs_binary_implementation(ctx):
     default_info = DefaultInfo(executable = bin, runfiles = ctx.runfiles(transitive_files = runfiles))
     return default_info
 
-def create_nodejs_binary(ctx, package_info, main, helpers):
+def create_nodejs_binary(ctx, js_package, main, helpers):
     nodejs_toolchain = ctx.toolchains["@better_rules_javascript//rules/nodejs:toolchain_type"]
 
     packages_manifest = ctx.actions.declare_file("%s/packages-manifest.txt" % ctx.label.name)
     package_args = ctx.actions.args()
     package_args.set_param_file_format("multiline")
-    package_args.add_all(package_info.transitive_packages, map_each = _package_arg)
+    package_args.add_all(js_package.transitive_packages, map_each = _package_arg)
     ctx.actions.write(packages_manifest, package_args)
 
     bin = ctx.actions.declare_file("%s/bin" % ctx.label.name)
@@ -46,7 +46,7 @@ def create_nodejs_binary(ctx, package_info, main, helpers):
         substitutions = {
             "%{loader}": shell.quote(runfile_path(ctx, helpers.loader)),
             "%{main_module}": shell.quote("<main>/%s" % main if main else "<main>"),
-            "%{main_package}": shell.quote(str(package_info.id)),
+            "%{main_package}": shell.quote(str(js_package.id)),
             "%{node}": shell.quote(runfile_path(ctx, nodejs_toolchain.nodejs.bin)),
             "%{packages_manifest}": shell.quote(runfile_path(ctx, packages_manifest)),
             "%{workspace}": shell.quote(ctx.workspace_name),
@@ -56,8 +56,8 @@ def create_nodejs_binary(ctx, package_info, main, helpers):
     runfiles = depset(
         helpers.bash_runfiles + [nodejs_toolchain.nodejs.bin, helpers.loader, packages_manifest],
         transitive = [
-            package_info.transitive_files,
-            package_info.transitive_source_maps,
+            js_package.transitive_files,
+            js_package.transitive_source_maps,
         ],
     )
 
@@ -65,7 +65,7 @@ def create_nodejs_binary(ctx, package_info, main, helpers):
 
 nodejs_binary = rule(
     attrs = {
-        "dep": attr.label(mandatory = True, providers = [PackageInfo]),
+        "dep": attr.label(mandatory = True, providers = [JsPackage]),
         "main": attr.string(
             default = "",
         ),

@@ -1,12 +1,11 @@
 <!-- Generated with Stardoc: http://skydoc.bazel.build -->
 
-<a id="#PackageInfo"></a>
+<a id="#JsPackage"></a>
 
-## PackageInfo
+## JsPackage
 
 <pre>
-PackageInfo(<a href="#PackageInfo-id">id</a>, <a href="#PackageInfo-name">name</a>, <a href="#PackageInfo-transitive_files">transitive_files</a>, <a href="#PackageInfo-transitive_manifests">transitive_manifests</a>, <a href="#PackageInfo-transitive_packages">transitive_packages</a>,
-            <a href="#PackageInfo-transitive_source_maps">transitive_source_maps</a>)
+JsPackage(<a href="#JsPackage-id">id</a>, <a href="#JsPackage-name">name</a>, <a href="#JsPackage-transitive_files">transitive_files</a>, <a href="#JsPackage-transitive_packages">transitive_packages</a>, <a href="#JsPackage-transitive_source_maps">transitive_source_maps</a>)
 </pre>
 
 JavaScript package
@@ -19,12 +18,30 @@ A package is a set of modules that share a module prefix and dependencies.
 
 | Name  | Description |
 | :------------- | :------------- |
-| <a id="PackageInfo-id"></a>id |  ID    |
-| <a id="PackageInfo-name"></a>name |  Default module prefix    |
-| <a id="PackageInfo-transitive_files"></a>transitive_files |  Depset of files    |
-| <a id="PackageInfo-transitive_manifests"></a>transitive_manifests |  Depset of package manifests    |
-| <a id="PackageInfo-transitive_packages"></a>transitive_packages |  Depset of packages    |
-| <a id="PackageInfo-transitive_source_maps"></a>transitive_source_maps |  Depset of source maps    |
+| <a id="JsPackage-id"></a>id |  ID    |
+| <a id="JsPackage-name"></a>name |  Default module prefix    |
+| <a id="JsPackage-transitive_files"></a>transitive_files |  Depset of files    |
+| <a id="JsPackage-transitive_packages"></a>transitive_packages |  Depset of packages    |
+| <a id="JsPackage-transitive_source_maps"></a>transitive_source_maps |  Depset of source maps    |
+
+
+<a id="#create_module"></a>
+
+## create_module
+
+<pre>
+create_module(<a href="#create_module-name">name</a>, <a href="#create_module-file">file</a>)
+</pre>
+
+
+
+**PARAMETERS**
+
+
+| Name  | Description | Default Value |
+| :------------- | :------------- | :------------- |
+| <a id="create_module-name"></a>name |  <p align="center"> - </p>   |  none |
+| <a id="create_module-file"></a>file |  <p align="center"> - </p>   |  none |
 
 
 <a id="#create_package"></a>
@@ -32,7 +49,7 @@ A package is a set of modules that share a module prefix and dependencies.
 ## create_package
 
 <pre>
-create_package(<a href="#create_package-id">id</a>, <a href="#create_package-name">name</a>, <a href="#create_package-manifest">manifest</a>, <a href="#create_package-deps">deps</a>)
+create_package(<a href="#create_package-id">id</a>, <a href="#create_package-name">name</a>, <a href="#create_package-main">main</a>, <a href="#create_package-modules">modules</a>, <a href="#create_package-deps">deps</a>)
 </pre>
 
     Create package.
@@ -49,7 +66,8 @@ create_package(<a href="#create_package-id">id</a>, <a href="#create_package-nam
 | :------------- | :------------- | :------------- |
 | <a id="create_package-id"></a>id |  <p align="center"> - </p>   |  none |
 | <a id="create_package-name"></a>name |  <p align="center"> - </p>   |  none |
-| <a id="create_package-manifest"></a>manifest |  <p align="center"> - </p>   |  none |
+| <a id="create_package-main"></a>main |  <p align="center"> - </p>   |  none |
+| <a id="create_package-modules"></a>modules |  <p align="center"> - </p>   |  none |
 | <a id="create_package-deps"></a>deps |  <p align="center"> - </p>   |  none |
 
 

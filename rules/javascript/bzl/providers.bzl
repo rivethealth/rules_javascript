@@ -1,4 +1,4 @@
-PackageInfo = provider(
+JsPackage = provider(
     doc = """JavaScript package
 
 A package is a set of modules that share a module prefix and dependencies.
@@ -44,18 +44,18 @@ def create_package_dep(name, id):
 def merge_packages(package, files, source_maps, packages):
     transitive_files = depset(
         files,
-        transitive = [package_info.transitive_files for package_info in packages],
+        transitive = [js_package.transitive_files for js_package in packages],
     )
     transitive_packages = depset(
         [package],
-        transitive = [package_info.transitive_packages for package_info in packages],
+        transitive = [js_package.transitive_packages for js_package in packages],
     )
     transitive_source_maps = depset(
         source_maps,
-        transitive = [package_info.transitive_source_maps for package_info in packages],
+        transitive = [js_package.transitive_source_maps for js_package in packages],
     )
 
-    return PackageInfo(
+    return JsPackage(
         id = package.id,
         name = package.name,
         transitive_files = transitive_files,

@@ -1,0 +1,14 @@
+load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
+load("//rules/bzl:stardoc.bzl", "stardocs")
+
+package(default_visibility = ["//visibility:public"])
+
+bzl_library(
+    name = "bzl",
+    srcs = glob(["**/*.bzl"]),
+    deps = [
+        "//rules/util/bzl",
+    ],
+)
+
+stardocs(":bzl")
