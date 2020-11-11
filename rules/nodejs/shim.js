@@ -3,68 +3,83 @@ const { Module } = require("module");
 const { Resolver } = require(process.env["NODEJS_RESOLVER"]);
 
 const BAZEL_WORKSPACE = process.env["BAZEL_WORKSPACE"];
+const MAIN_PACKAGE = process.env["NODEJS_MAIN_PACKAGE"];
+const PACKAGES_MANIFEST = process.env["NODEJS_PACKAGES_MANIFEST"];
 const RUNFILES_DIR = process.env["RUNFILES_DIR"];
 const RUNFILES_MANIFEST = process.env["RUNFILES_MANIFEST_FILE"];
-
-function shortPathToRunfile(path) {
-  return path.startsWith("../")
-    ? path.slice("../".length)
-    : `${BAZEL_WORKSPACE}/${path}`;
-}
+const TRACE = process.env["NODEJS_LOADER_TRACE"];
 
 class Runfiles {
-  constructor() {
-    if (!RUNFILES_MANIFEST) {
-      return;
+  #pathByName = new Map();
+
+  addRunfile(name, path) {
+    this.#pathByName.set(name, path);
+  }
+
+  getPath(name) {
+    if (name.startsWith("../")) {
+      name = `${name.slice("../".length)}`;
+    } else {
+      name = `${BAZEL_WORKSPACE}/${name}`;
     }
-    const runfiles = fs
-      .readFileSync(RUNFILES_MANIFEST, "utf8")
+
+    if (RUNFILES_MANIFEST) {
+      const path = this.#pathByName.get(name);
+      if (!path) {
+        throw new Error(`No runfile for ${path}`);
+      }
+      return path;
+    }
+    return `${RUNFILES_DIR}/${name}`;
+  }
+
+  static readManifest(runfiles, path) {
+    const items = fs
+      .readFileSync(path, "utf8")
       .split("\n")
       .filter(Boolean)
       .map((line) => {
         const [name, path] = line.split(" ");
         return { name, path };
       });
-    this.#pathByName = new Map();
-    for (const { name, path } of runfiles) {
-      this.#pathByName.set(name, path);
+    for (const { name, path } of items) {
+      runfiles.addRunfile(name, path);
     }
-  }
-
-  #pathByName;
-
-  getPath(name) {
-    if (!this.#pathByName) {
-      return `${RUNFILES_DIR}/${name}`;
-    }
-    const path = this.#pathByName.get(name);
-    if (!path) {
-      throw new Error(`There is no runfile ${name}`);
-    }
-    return path;
   }
 }
 
 const runfiles = new Runfiles();
+if (RUNFILES_MANIFEST) {
+  Runfiles.readManifest(runfiles, RUNFILES_MANIFEST);
+}
 
 global.getRunfile = (name) => runfiles.getPath(name);
-global.shortPathToRunfile = shortPathToRunfile;
 
-const resolver = new Resolver();
+const resolver = new Resolver(TRACE);
+Resolver.readManifest(resolver, PACKAGES_MANIFEST, getRunfile);
+global.readResolverManifest = (path) =>
+  Resolver.readManifest(resolver, path, (path) => path);
+global.resolveById = (id, request) => resolver.resolveById(id, request);
 
-const builtinModules = new Set(
-  Module.builtinModules || Object.keys(process.binding("natives"))
-);
+const builtinModules = new Set(Module.builtinModules);
 
 Module._resolveFilename = ((delegate) =>
   function (request, parent, isMain) {
     if (isMain) {
       request = request.slice(process.cwd().length + 1);
+      return resolver.resolveById(MAIN_PACKAGE, request);
     }
 
-    if (builtinModules.has(request)) {
-      return delegate.apply(this, arguments);
+    if (request.startsWith("/")) {
+      return request;
     }
 
-    return resolver.resolve(request, parent && parent.filename);
+    try {
+      return resolver.resolve(request, parent && parent.filename);
+    } catch (e) {
+      if (builtinModules.has(request)) {
+        return delegate.apply(this, arguments);
+      }
+      throw e;
+    }
   })(Module._resolveFilename);

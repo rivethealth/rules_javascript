@@ -21,6 +21,7 @@ Rules for JavaScript, with an emphasis on idiomatic Bazel APIs.
 - [ ] bundle
   - [ ] rollup
   - [ ] webpack
+  - [ ] unused deps
 - [ ] runtime
   - [x] nodejs_binary
   - [ ] docker
@@ -149,52 +150,45 @@ Native dependencies (node-gyp) are not currently supported.
 
 For IDE use, run `yarn install` separately to install dependencies node_modules.
 
-### Format
+### Prettier
 
-Prettier is used for formatting.
+#### Install
 
-Add prettier an [external dependency](#External dependencies).
+Add prettier as an [external dependency](#external_dependencies).
+
+#### Configure
 
 **tools/BUILD.bzl**
 
 ```bzl
-load("@better_rules_javascript//rules/nodejs/bzl:rules.bzl", "nodejs_binary")
-load("@better_rules_javascript//rules/prettier/bzl:rules.bzl", "prettier", "prettier_binary")
+load("@better_rules_javascript//rules/prettier/bzl:rules.bzl", "prettier")
 
 package(default_visibility = ["//visibility:public"])
 
-prettier_binary(
-    name = "bin",
-    dep = "@npm//prettier:js",
-)
-
 prettier(
     name = "prettier",
-    bin = ":bin",
+    config = "//:prettierrc.yml", # optional
+    prettier = "@better_rules_javascript_npm//prettier:js",
 )
 ```
-
-</details>
 
 **tools/aspects.bzl**
 
 ```bzl
 load("@better_rules_javascript//rules/prettier/bzl:aspects.bzl", "format_aspect")
 
-format = format_aspect(
-    "@npm//tools:prettier",
-)
+format = format_aspect("@example_repo//tools:prettier")
 ```
 
-Run
+#### Run
 
 ```sh
-bazel query 'kind("js_library", //...)' 2> /dev/null \
+bazel query 'kind("js_library", //...)' \
     | xargs -r bazel build --aspects //tools:aspects.bzl%format --output_groups=formatted
 
 BAZEL_BIN="$(bazel info bazel-bin)"
-bazel query 'kind("js_library", //...)' --output package 2> /dev/null | while IFS= read -r package; do
-    "$BAZEL_BIN/$package/_format/bin" write
+bazel query 'kind("js_library", //...)' --output package | while IFS= read -r package; do
+    "$BAZEL_BIN/$package/_format/bin" write # to check only, omit "write"
 done
 ```
 
@@ -277,14 +271,23 @@ js_proto_library(
 
 Auto-generated [Stardoc documentation](docs/stardoc).
 
-## Implementation
+## Module resolution
 
-JavaScript tooling has two major complexities:
+Perhaps the most difficult part of JavaScript tooling is resolving modules.
 
-1. File paths are significant.
-2. Multi-versioned dependencies are permissable.
+rules_javascript implements custom resolvers for good performance and Bazel integration.
 
-Good build performance and intergration with Bazel is accomplished by implementing custom resolvers.
+This design choice requries himplementing modules resolution for tools, but is an acceptable tradeoff for
+the flexibility it grants. Good Bazel tooling requires shims anyway to support features like workers.
 
-This design choice presents compatibility issues, but is an acceptable tradeoff for the flexibility it grants.
-Good Bazel tooling requires shims anyway to support features like workers.
+JavaScript is organized by "packages" which have a name (not necessarily unique), named modules, named dependencies,
+and (optionally) an entry point.
+Relative imports are constructed relative to package_name/module_name. By default, the package name is @bazel_workspace/bazel_package, and the module name is relative to the package.
+
+Packages are listed in packages-manifest.txt and then processed by
+[rules/javascript/resolver.js](rules/javascript/resolver.js).
+
+These units are different from NPM "packages." For example a.js could belong to one package and a.spec.js could belong
+to a second, but the second can import the first with `'./a'`. Files must belong to only one package.
+
+Dependencies are naturally strict: each package must explicity list its direct dependencies.

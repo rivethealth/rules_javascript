@@ -1,9 +1,9 @@
-load(":providers.bzl", "PrettierConfig")
+load(":providers.bzl", "PrettierInfo")
 
 def _format_impl(target, ctx):
-    prettier_config = ctx.attr._prettier[PrettierConfig]
+    prettier_info = ctx.attr._prettier[PrettierInfo]
 
-    inputs, input_manifests = ctx.resolve_tools(tools = [prettier_config.bin])
+    inputs2, input_manifests = ctx.resolve_tools(tools = [prettier_info.bin])
 
     script = ""
 
@@ -13,17 +13,31 @@ def _format_impl(target, ctx):
             formatted = ctx.actions.declare_file("_format/src/%s" % file.path)
             outputs.append(formatted)
             script += "format %s %s \n" % (file.path, formatted.path)
-            ctx.actions.run_shell(
-                command = '"$1" --config "$2" "$3" > "$4"',
-                arguments = [
-                    prettier_config.bin.files_to_run.executable.path,
-                    prettier_config.config.path or "/dev/null",
-                    file.path,
-                    formatted.path,
-                ],
-                inputs = depset([file, prettier_config.config], transitive = [inputs]),
-                outputs = [formatted],
-                tools = [prettier_config.bin.files_to_run],
+
+            args = ctx.actions.args()
+            inputs = []
+            outputs = []
+
+            args.add("--prettier-id", prettier_info.prettier.id)
+            args.add("--prettier-manifest", prettier_info.manifest.path)
+            inputs.append(prettier_info.manifest)
+
+            if prettier_info.config:
+                args.add("--config", prettier_info.config.path)
+                inputs.append(prettier_info.config)
+
+            args.add(file.path)
+            inputs.append(file)
+
+            args.add(formatted.path)
+            outputs.append(formatted)
+
+            ctx.actions.run(
+                executable = prettier_info.bin.files_to_run,
+                arguments = [args],
+                inputs = depset(inputs, transitive = [inputs2, prettier_info.prettier.transitive_files]),
+                outputs = outputs,
+                tools = [prettier_info.bin.files_to_run],
             )
 
     bin = ctx.actions.declare_file("_format/bin")
@@ -48,7 +62,7 @@ def format_aspect(prettier):
             ),
             "_prettier": attr.label(
                 default = prettier,
-                providers = [PrettierConfig],
+                providers = [PrettierInfo],
             ),
         },
     )

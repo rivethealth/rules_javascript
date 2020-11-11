@@ -1,92 +1,184 @@
 const fs = require("fs");
 const path = require("path");
 
-const PACKAGES_MANIFEST = process.env["NODEJS_PACKAGES_MANIFEST"];
-const MAIN_PACKAGE = process.env["NODEJS_MAIN_PACKAGE"];
-const TRACE = process.env["NODEJS_LOADER_TRACE"];
-
+/**
+ * Resolve modules
+ */
 class Resolver {
-  constructor() {
-    const packages = fs
-      .readFileSync(PACKAGES_MANIFEST, "utf8")
-      .split("\n")
-      .filter(Boolean)
-      .map((line) => {
-        const data = JSON.parse(line);
-        const runfileByName = new Map();
-        for (const { name, file } of data.modules) {
-          runfileByName.set(name, shortPathToRunfile(file));
-        }
-        return {
-          id: data.id,
-          name: data.name,
-          main: data.main,
-          runfileByName,
-          deps: data.deps,
-        };
-      });
-
-    this.#packageById = new Map(packages.map((p) => [p.id, p]));
+  constructor(trace) {
+    this.#trace = trace;
   }
 
+  #trace;
+  #globals = new Set();
   #pathToModule = new Map();
-  #packageById;
+  #packageById = new Map();
 
-  resolve(request, parent) {
-    let deps = [];
-    if (parent) {
-      const packageModule = this.#pathToModule.get(parent);
-      if (!packageModule) {
-        throw new Error(`File ${parent} is not a module`);
-      }
-      const { name, package: package_ } = packageModule;
+  /**
+   * Set package ID to be globally available.
+   * Module must already be added.
+   */
+  addGlobal(id) {
+    this.#globals.add(id);
+  }
 
-      if (request.startsWith("./") || request.startsWith("../")) {
-        request = path
-          .join("/", package_.name, path.dirname(name), request)
-          .slice(1);
-      }
+  /**
+   * Add package
+   */
+  addPackage(id, package_) {
+    package_.deps.splice(0, 0, { name: package_.name, id });
+    this.#packageById.set(id, package_);
+  }
 
-      deps.push({ name: package_.name, id: package_.id });
-      deps.push(...package_.deps);
-    } else {
-      deps.push({ name: "<main>", id: MAIN_PACKAGE });
+  /**
+   * Resolve path to module.
+   */
+  resolveById(id, request) {
+    const package_ = this.#packageById.get(id);
+    if (!package_) {
+      throw new Error(`Package ${package_} does not exist`);
     }
 
+    const deps = [{ id, name: package_.name }];
+
+    const result = this._resolveDeps(deps, request, []);
+    if (!result) {
+      throw new Error(`Could not resolve "${request}" in ${id}.`);
+    }
+    return result;
+  }
+
+  /**
+   * Resolve path to module.
+   */
+  resolve(request, parent) {
+    const packageModule = this.#pathToModule.get(parent);
+    if (!packageModule) {
+      throw new Error(`File ${parent} is not a module`);
+    }
+    const { name, package: package_ } = packageModule;
+
+    if (request.startsWith("./") || request.startsWith("../")) {
+      request = path
+        .join("/", package_.name, path.dirname(name), request)
+        .slice(1);
+    }
+
+    const attempts = [];
+    const result = this._resolveDeps(package_.deps, request, attempts);
+    if (!result) {
+      throw new Error(
+        `Could not resolve "${request}" from ${parent}. Matching packages: ${attempts.join(
+          " "
+        )}`
+      );
+    }
+    return result;
+  }
+
+  _resolveDeps(deps, request, attempts) {
     for (const dep of deps) {
       const package_ = this.#packageById.get(dep.id);
       if (!package_) {
         throw new Error(`Dependency ${dep.id} does not exist`);
       }
-
-      let requestPart;
-      if (request === dep.name) {
-        requestPart = package_.main;
-      } else if (request.startsWith(`${dep.name}/`)) {
-        requestPart = request.slice(`${dep.name}/`.length);
-      } else {
-        continue;
-      }
-
-      const names = [];
-      names.push(requestPart);
-      names.push(`${requestPart}.js`);
-      names.push(requestPart ? `${requestPart}/index.js` : "index.js");
-
-      for (const name of names) {
-        const moduleRunfile = package_.runfileByName.get(name);
-        if (moduleRunfile) {
-          const path = getRunfile(moduleRunfile);
-          this.#pathToModule.set(path, { name, package: package_ });
-          if (TRACE === "true") {
-            console.error(`Resolved "${request}" from ${parent} to be ${path}`);
-          }
-          return path;
-        }
+      const path = this._resolveDep(
+        request,
+        dep.id,
+        package_,
+        dep.name,
+        attempts
+      );
+      if (path) {
+        return path;
       }
     }
 
-    throw new Error(`Could not resolve "${request}" from ${parent}`);
+    for (const id of this.#globals) {
+      const package_ = this.#packageById.get(id);
+      if (!package_) {
+        throw new Error(`Dependency ${id} does not exist`);
+      }
+      const path = this._resolveDep(
+        request,
+        id,
+        package_,
+        package_.name,
+        attempts
+      );
+      if (path) {
+        return path;
+      }
+    }
+  }
+
+  _resolveDep(request, id, package_, name, attempts) {
+    let requestPart;
+    if (request === name) {
+      requestPart = package_.main;
+    } else if (request.startsWith(`${name}/`)) {
+      requestPart = request.slice(`${name}/`.length);
+    } else {
+      return;
+    }
+
+    attempts.push(id);
+
+    const names = [
+      requestPart,
+      `${requestPart}.js`,
+      requestPart ? `${requestPart}/index.js` : "index.js",
+    ];
+
+    for (const name of names) {
+      let path = package_.runfileByName.get(name);
+      if (!path) {
+        continue;
+      }
+
+      path = fs.realpathSync(path);
+      this.#pathToModule.set(path, { name, package: package_ });
+      if (this.#trace === "true") {
+        console.error(`Resolved "${request}" from ${parent} to be ${path}`);
+      }
+      return path;
+    }
+  }
+
+  /**
+   * Read and add items from manifest
+   */
+  static readManifest(resolver, path, runfile) {
+    const items = fs
+      .readFileSync(path, "utf8")
+      .split("\n")
+      .filter(Boolean)
+      .map((line) => JSON.parse(line));
+
+    for (const item of items) {
+      if (item.type !== "PACKAGE") {
+        continue;
+      }
+      const data = item.value;
+      const runfileByName = new Map(
+        data.modules.map(({ name, file }) => [name, runfile(file)])
+      );
+      const package_ = {
+        name: data.name,
+        main: data.main,
+        runfileByName,
+        deps: data.deps,
+      };
+      resolver.addPackage(data.id, package_);
+    }
+
+    for (const item of items) {
+      if (item.type !== "GLOBAL") {
+        continue;
+      }
+      const data = item.value;
+      resolver.addGlobal(data);
+    }
   }
 }
 

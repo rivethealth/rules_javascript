@@ -1,4 +1,4 @@
-load("@better_rules_javascript//rules/javascript/bzl:providers.bzl", "JsPackage", "create_module", "create_package", "create_package_dep", "merge_packages")
+load("@better_rules_javascript//rules/javascript/bzl:providers.bzl", "JsInfo", "create_module", "create_package", "create_package_dep", "merge_js")
 load("@rules_proto//proto:defs.bzl", "ProtoInfo")
 load(":providers.bzl", "JsProtobuf")
 
@@ -45,8 +45,8 @@ def _js_proto_impl(target, ctx):
         outputs = outputs,
     )
 
-    deps = [dep[JsPackage] for dep in ctx.rule.attr.deps]
-    package_deps = [create_package_dep(dep[JsPackage].name, dep[JsPackage].id) for dep in ctx.rule.attr.deps]
+    deps = [dep[JsInfo] for dep in ctx.rule.attr.deps]
+    package_deps = [create_package_dep(dep[JsInfo].name, dep[JsInfo].id) for dep in ctx.rule.attr.deps]
 
     runtime_package = ctx.attr._js_protoc[JsProtobuf].runtime
     deps.append(runtime_package)
@@ -54,20 +54,25 @@ def _js_proto_impl(target, ctx):
 
     package = create_package(
         ctx.label,
-        "proto",
+        ctx.attr._package_name,
         None,
         tuple(modules),
         tuple(package_deps),
     )
 
-    js_package = merge_packages(
-        package,
-        outputs,
-        [],
+    js_info = merge_js(
+        JsInfo(
+            id = package.id,
+            name = package.name,
+            globals = depset(),
+            transitive_files = depset(outputs),
+            transitive_packages = depset([package]),
+            transitive_source_maps = depset(),
+        ),
         deps,
     )
 
-    return [js_package]
+    return [js_info]
 
 def js_proto_aspect(js_protoc, package_name = "proto"):
     return aspect(

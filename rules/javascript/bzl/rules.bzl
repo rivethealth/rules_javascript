@@ -1,5 +1,5 @@
 load("//rules/util/bzl:path.bzl", "runfile_path")
-load(":providers.bzl", "JsPackage", "create_module", "create_package", "create_package_dep", "merge_packages")
+load(":providers.bzl", "JsInfo", "create_module", "create_package", "create_package_dep", "merge_js")
 
 def _js_library_impl(ctx):
     package_name = ctx.attr.package_name
@@ -21,7 +21,7 @@ def _js_library_impl(ctx):
         modules.append(create_module(name = path, file = src))
 
     deps = [
-        create_package_dep(name = dep[JsPackage].name, id = dep[JsPackage].id)
+        create_package_dep(name = dep[JsInfo].name, id = dep[JsInfo].id)
         for dep in ctx.attr.deps
     ]
 
@@ -33,14 +33,21 @@ def _js_library_impl(ctx):
         tuple(deps),
     )
 
-    js_package = merge_packages(
-        package,
-        [module.file for module in modules],
-        [],
-        [dep[JsPackage] for dep in ctx.attr.deps],
+    js_info = JsInfo(
+        id = package.id,
+        name = package.name,
+        globals = depset(),
+        transitive_files = depset([module.file for module in modules]),
+        transitive_packages = depset([package]),
+        transitive_source_maps = depset(),
     )
 
-    return [js_package]
+    js_info = merge_js(
+        js_info,
+        [dep[JsInfo] for dep in ctx.attr.deps],
+    )
+
+    return [js_info]
 
 js_library = rule(
     attrs = {
@@ -49,7 +56,7 @@ js_library = rule(
         ),
         "deps": attr.label_list(
             doc = "Dependencies",
-            providers = [JsPackage],
+            providers = [JsInfo],
         ),
         "prefix": attr.string(
             doc = "Add prefix",
@@ -71,15 +78,23 @@ js_library = rule(
 )
 
 def _js_import_impl(ctx):
-    js_package = ctx.attr.dep[JsPackage]
+    js_info = ctx.attr.dep[JsInfo]
 
-    return JsPackage(
-        id = js_package.id,
-        name = ctx.attr.package_name or js_package.package_name,
-        transitive_files = js_package.transitive_files,
-        transitive_packages = js_package.transitive_packages,
-        transitive_source_maps = js_package.transitive_source_maps,
+    js_info = JsInfo(
+        id = js_info.id,
+        name = ctx.attr.package_name or js_info.package_name,
+        globals = depset([dep[JsInfo].id for dep in ctx.attr.global_deps]),
+        transitive_files = js_info.transitive_files,
+        transitive_packages = js_info.transitive_packages,
+        transitive_source_maps = js_info.transitive_source_maps,
     )
+
+    js_info = merge_js(
+        js_info,
+        [dep[JsInfo] for dep in ctx.attr.global_deps],
+    )
+
+    return [js_info]
 
 js_import = rule(
     attrs = {
@@ -89,7 +104,11 @@ js_import = rule(
         "dep": attr.label(
             doc = "Package",
             mandatory = True,
-            providers = [JsPackage],
+            providers = [JsInfo],
+        ),
+        "global_deps": attr.label_list(
+            doc = "Global dependencies",
+            providers = [JsInfo],
         ),
     },
     implementation = _js_import_impl,
