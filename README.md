@@ -154,7 +154,7 @@ For IDE use, run `yarn install` separately to install dependencies node_modules.
 
 #### Install
 
-Add prettier as an [external dependency](#external_dependencies).
+Add prettier as an [external dependency](#external-dependencies).
 
 #### Configure
 
@@ -222,7 +222,7 @@ rules_proto_grpc_toolchains()
 rules_proto_grpc_repos()
 ```
 
-Add google-protobuf as an [external dependency](#external_dependencies).
+Add google-protobuf as an [external dependency](#external-dependencies).
 
 #### Configure
 
