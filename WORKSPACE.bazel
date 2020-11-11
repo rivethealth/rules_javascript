@@ -12,33 +12,42 @@ http_archive(
 )
 
 load("@io_bazel_rules_go//go:deps.bzl", "go_register_toolchains", "go_rules_dependencies")
+
 go_rules_dependencies()
+
 go_register_toolchains()
 
 # Protobuf
 
 PROTO_VERSION = "7e4afce6fe62dbff0a4a03450143146f9f2d7488"
+
 http_archive(
     name = "rules_proto",
     sha256 = "8e7d59a5b12b233be5652e3d29f42fba01c7cbab09f6b3a8d0a57ed6d1e9a0da",
     strip_prefix = "rules_proto-%s" % PROTO_VERSION,
     urls = ["https://github.com/bazelbuild/rules_proto/archive/%s.tar.gz" % PROTO_VERSION],
 )
+
 load("@rules_proto//proto:repositories.bzl", "rules_proto_dependencies", "rules_proto_toolchains")
+
 rules_proto_dependencies()
+
 rules_proto_toolchains()
 
 # Protobuf
 PROTO_GRPC_VERSION = "2.0.0"
+
 http_archive(
     name = "rules_proto_grpc",
-    urls = ["https://github.com/rules-proto-grpc/rules_proto_grpc/archive/%s.tar.gz" % PROTO_GRPC_VERSION],
     sha256 = "d771584bbff98698e7cb3cb31c132ee206a972569f4dc8b65acbdd934d156b33",
     strip_prefix = "rules_proto_grpc-%s" % PROTO_GRPC_VERSION,
+    urls = ["https://github.com/rules-proto-grpc/rules_proto_grpc/archive/%s.tar.gz" % PROTO_GRPC_VERSION],
 )
 
-load("@rules_proto_grpc//:repositories.bzl", "rules_proto_grpc_toolchains", "rules_proto_grpc_repos")
+load("@rules_proto_grpc//:repositories.bzl", "rules_proto_grpc_repos", "rules_proto_grpc_toolchains")
+
 rules_proto_grpc_toolchains()
+
 rules_proto_grpc_repos()
 
 # Protobuf
@@ -50,6 +59,7 @@ http_archive(
 )
 
 load("@com_google_protobuf//:protobuf_deps.bzl", "protobuf_deps")
+
 protobuf_deps()
 
 # Buildtools

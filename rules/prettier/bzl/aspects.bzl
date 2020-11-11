@@ -17,9 +17,9 @@ def _format_impl(target, ctx):
                 command = '"$1" --config "$2" "$3" > "$4"',
                 arguments = [
                     prettier_config.bin.files_to_run.executable.path,
-                    prettier_config.config.path or '/dev/null',
+                    prettier_config.config.path or "/dev/null",
                     file.path,
-                    formatted.path
+                    formatted.path,
                 ],
                 inputs = depset([file, prettier_config.config], transitive = [inputs]),
                 outputs = [formatted],

@@ -39,7 +39,8 @@ js_import_external = repository_rule(
         ),
         "include": attr.string_list(
             doc = "Include patterns",
-            default = ["**/*.js", "**/*.json"],
+            default = ["**/*"],
+            #default = ["**/*.js", "**/*.json"],
         ),
         "exclude": attr.string_list(
             doc = "Exclude patterns",

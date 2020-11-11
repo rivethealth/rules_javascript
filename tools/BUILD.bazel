@@ -10,5 +10,5 @@ prettier_binary(
 prettier(
     name = "prettier",
     bin = ":bin",
-    config = "//:prettierrc.yml"
+    config = "//:prettierrc.yml",
 )

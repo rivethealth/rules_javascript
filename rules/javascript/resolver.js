@@ -1,56 +1,9 @@
 const fs = require("fs");
-const { Module } = require("module");
 const path = require("path");
 
-const BAZEL_WORKSPACE = process.env["BAZEL_WORKSPACE"];
 const PACKAGES_MANIFEST = process.env["NODEJS_PACKAGES_MANIFEST"];
-const RUNFILES_DIR = process.env["RUNFILES_DIR"];
-const RUNFILES_MANIFEST = process.env["RUNFILES_MANIFEST_FILE"];
 const MAIN_PACKAGE = process.env["NODEJS_MAIN_PACKAGE"];
 const TRACE = process.env["NODEJS_LOADER_TRACE"];
-
-function shortPathToRunfile(path) {
-  return path.startsWith("../")
-    ? path.slice("../".length)
-    : `${BAZEL_WORKSPACE}/${path}`;
-}
-
-class Runfiles {
-  constructor() {
-    if (!RUNFILES_MANIFEST) {
-      return;
-    }
-    const runfiles = fs
-      .readFileSync(RUNFILES_MANIFEST, "utf8")
-      .split("\n")
-      .filter(Boolean)
-      .map((line) => {
-        const [name, path] = line.split(" ");
-        return { name, path };
-      });
-    this.#pathByName = new Map();
-    for (const { name, path } of runfiles) {
-      this.#pathByName.set(name, path);
-    }
-  }
-
-  #pathByName;
-
-  getPath(name) {
-    if (!this.#pathByName) {
-      return `${RUNFILES_DIR}/${name}`;
-    }
-    const path = this.#pathByName.get(name);
-    if (!path) {
-      throw new Error(`There is no runfile ${name}`);
-    }
-    return path;
-  }
-}
-
-const runfiles = new Runfiles();
-
-global.getRunfile = (name) => runfiles.getPath(name);
 
 class Resolver {
   constructor() {
@@ -137,21 +90,4 @@ class Resolver {
   }
 }
 
-const resolver = new Resolver();
-
-const builtinModules = new Set(
-  Module.builtinModules || Object.keys(process.binding("natives"))
-);
-
-Module._resolveFilename = ((delegate) =>
-  function (request, parent, isMain) {
-    if (isMain) {
-      request = request.slice(process.cwd().length + 1);
-    }
-
-    if (builtinModules.has(request)) {
-      return delegate.apply(this, arguments);
-    }
-
-    return resolver.resolve(request, parent && parent.filename);
-  })(Module._resolveFilename);
+exports.Resolver = Resolver;

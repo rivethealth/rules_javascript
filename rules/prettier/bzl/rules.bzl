@@ -10,15 +10,16 @@ def _prettier_binary_impl(ctx):
         js_package,
         "bin-prettier.js",
         struct(
-            loader = ctx.file._loader,
-            launcher = ctx.file._launcher,
             bash_runfiles = ctx.files._bash_runfiles,
+            launcher = ctx.file._launcher,
+            resolver = ctx.file._resolver,
+            shim = ctx.file._shim,
         ),
     )
 
     default_info = DefaultInfo(
         executable = bin,
-        runfiles = ctx.runfiles(transitive_files = runfiles)
+        runfiles = ctx.runfiles(transitive_files = runfiles),
     )
 
     return [default_info]
@@ -39,11 +40,16 @@ prettier_binary = rule(
             allow_single_file = True,
             default = "//rules/nodejs:node_launcher.sh.tpl",
         ),
-        "_loader": attr.label(
+        "_resolver": attr.label(
             allow_single_file = True,
-            default = "//rules/nodejs:loader.js",
+            default = "//rules/javascript:resolver.js",
+        ),
+        "_shim": attr.label(
+            allow_single_file = True,
+            default = "//rules/nodejs:shim.js",
         ),
     },
+    executable = True,
     toolchains = ["@better_rules_javascript//rules/nodejs:toolchain_type"],
 )
 

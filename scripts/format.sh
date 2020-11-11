@@ -22,3 +22,5 @@ BAZEL_BIN="$(bazel info bazel-bin)"
 bazel query 'kind("js_library", //...)' --output package | while IFS= read -r package; do
     "$BAZEL_BIN/$package/_format/bin" "$ARG"
 done
+
+bazel run //tools:bin -- --write $(pwd)/README.md $(pwd)/rules/javascript/resolver.js $(pwd)/rules/nodejs/shim.js

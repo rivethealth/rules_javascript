@@ -2,42 +2,42 @@
 
 Rules for JavaScript, with an emphasis on idiomatic Bazel APIs.
 
-   * [rules_javascript](#rules_javascript)
-      * [Features](#features)
-      * [Install](#install)
-      * [Usage](#usage)
-         * [Basic](#basic)
-         * [External dependencies](#external-dependencies)
-         * [Format](#format)
-      * [Stardoc](#stardoc)
-      * [Implementation](#implementation)
+- [rules_javascript](#rules_javascript)
+  - [Features](#features)
+  - [Install](#install)
+  - [Usage](#usage)
+    - [Basic](#basic)
+    - [External dependencies](#external-dependencies)
+    - [Format](#format)
+  - [Stardoc](#stardoc)
+  - [Implementation](#implementation)
 
 ## Features
 
 - [ ] library
-    - [x] files
-    - [ ] directories
-    - [x] multiple versions
+  - [x] files
+  - [ ] directories
+  - [x] multiple versions
 - [ ] bundle
-    - [ ] rollup
-    - [ ] webpack
+  - [ ] rollup
+  - [ ] webpack
 - [ ] runtime
-    - [x] nodejs_binary
-    - [ ] docker
+  - [x] nodejs_binary
+  - [ ] docker
 - [ ] test
-    - [ ] jest
+  - [ ] jest
 - [x] serialization
-    - [x] protobuf
+  - [x] protobuf
 - [ ] external dependencies
-    - [ ] npm
-    - [x] yarn
-    - [ ] node-gyp
+  - [ ] npm
+  - [x] yarn
+  - [ ] node-gyp
 - [ ] lint
-    - [x] prettier (TODO: plugins)
-    - [ ] eslint (TODO: config file, plugins)
+  - [x] prettier (TODO: plugins)
+  - [ ] eslint (TODO: config file, plugins)
 - [ ] dev
-    - [x] Stardoc
-    - [ ] CI
+  - [x] Stardoc
+  - [ ] CI
 
 ## Install
 
@@ -173,6 +173,7 @@ prettier(
     bin = ":bin",
 )
 ```
+
 </details>
 
 **tools/aspects.bzl**

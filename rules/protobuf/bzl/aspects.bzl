@@ -27,7 +27,7 @@ def _js_proto_impl(target, ctx):
     outputs = []
     for file in proto.direct_sources:
         path = file.path
-        if proto.proto_source_root and proto.proto_source_root != '.':
+        if proto.proto_source_root and proto.proto_source_root != ".":
             path = path[len("%s/" % proto.proto_source_root):]
         args.add(path)
         name = path.replace(".proto", "_pb.js")
@@ -40,7 +40,7 @@ def _js_proto_impl(target, ctx):
         arguments = [args],
         inputs = depset(
             [protoc.protoc_executable],
-            transitive = [proto.transitive_sources, proto.transitive_descriptor_sets]
+            transitive = [proto.transitive_sources, proto.transitive_descriptor_sets],
         ),
         outputs = outputs,
     )
@@ -54,10 +54,10 @@ def _js_proto_impl(target, ctx):
 
     package = create_package(
         ctx.label,
-        'proto',
+        "proto",
         None,
         tuple(modules),
-        tuple(package_deps)
+        tuple(package_deps),
     )
 
     js_package = merge_packages(
@@ -80,7 +80,7 @@ def js_proto_aspect(js_protoc, package_name = "proto"):
             ),
             "_package_name": attr.string(
                 default = package_name,
-            )
+            ),
         },
         toolchains = ["@rules_proto_grpc//protobuf:toolchain_type"],
     )

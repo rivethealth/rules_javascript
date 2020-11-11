@@ -1,8 +1,9 @@
-load("//rules/javascript/bzl:providers.bzl",
+load(
+    "//rules/javascript/bzl:providers.bzl",
     _JsPackage = "JsPackage",
-    _create_package_dep = "create_package_dep",
-    _create_package = "create_package",
     _create_module = "create_module",
+    _create_package = "create_package",
+    _create_package_dep = "create_package_dep",
     _merge_packages = "merge_packages",
 )
 load(":aspects.bzl", _js_proto_aspect = "js_proto_aspect")
@@ -11,7 +12,7 @@ load(":providers.bzl", _JsProtobuf = "JsProtobuf")
 
 def _js_protoc_impl(ctx):
     js_protobuf = _JsProtobuf(
-        runtime = ctx.attr.runtime[_JsPackage]
+        runtime = ctx.attr.runtime[_JsPackage],
     )
 
     return [js_protobuf]
@@ -21,9 +22,9 @@ js_protoc = rule(
     attrs = {
         "runtime": attr.label(
             doc = "Runtime dependencies",
-            providers = [_JsPackage]
-        )
-    }
+            providers = [_JsPackage],
+        ),
+    },
 )
 
 def _js_proto_library(ctx):
@@ -38,5 +39,5 @@ def js_proto_library_rule(js_proto):
             "dep": attr.label(
                 aspects = [js_proto],
             ),
-        }
+        },
     )

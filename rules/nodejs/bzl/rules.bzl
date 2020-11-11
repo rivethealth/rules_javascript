@@ -21,9 +21,10 @@ def _nodejs_binary_implementation(ctx):
         js_package,
         ctx.attr.main,
         struct(
-            loader = ctx.file._loader,
-            launcher = ctx.file._launcher,
             bash_runfiles = ctx.files._bash_runfiles,
+            launcher = ctx.file._launcher,
+            resolver = ctx.file._resolver,
+            shim = ctx.file._shim,
         ),
     )
 
@@ -44,17 +45,18 @@ def create_nodejs_binary(ctx, js_package, main, helpers):
         template = helpers.launcher,
         output = bin,
         substitutions = {
-            "%{loader}": shell.quote(runfile_path(ctx, helpers.loader)),
             "%{main_module}": shell.quote("<main>/%s" % main if main else "<main>"),
             "%{main_package}": shell.quote(str(js_package.id)),
             "%{node}": shell.quote(runfile_path(ctx, nodejs_toolchain.nodejs.bin)),
             "%{packages_manifest}": shell.quote(runfile_path(ctx, packages_manifest)),
+            "%{resolver}": shell.quote(runfile_path(ctx, helpers.resolver)),
+            "%{shim}": shell.quote(runfile_path(ctx, helpers.shim)),
             "%{workspace}": shell.quote(ctx.workspace_name),
         },
         is_executable = True,
     )
     runfiles = depset(
-        helpers.bash_runfiles + [nodejs_toolchain.nodejs.bin, helpers.loader, packages_manifest],
+        helpers.bash_runfiles + [nodejs_toolchain.nodejs.bin, helpers.shim, helpers.resolver, packages_manifest],
         transitive = [
             js_package.transitive_files,
             js_package.transitive_source_maps,
@@ -77,9 +79,13 @@ nodejs_binary = rule(
             allow_single_file = True,
             default = "//rules/nodejs:node_launcher.sh.tpl",
         ),
-        "_loader": attr.label(
+        "_resolver": attr.label(
             allow_single_file = True,
-            default = "//rules/nodejs:loader.js",
+            default = "//rules/javascript:resolver.js",
+        ),
+        "_shim": attr.label(
+            allow_single_file = True,
+            default = "//rules/nodejs:shim.js",
         ),
     },
     executable = True,

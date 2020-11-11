@@ -1,13 +1,10 @@
 load("//rules/javascript/bzl:providers.bzl", "JavaScriptInfo")
 
-def _rollup_impl(ctx):
-
-
 rollup = rule(
     attrs = {
         "dep": attr.label(providers = [JavaScriptInfo]),
         "plugins": attr.label_list(providers = [JavaScriptInfo]),
-    }
+    },
 )
 
 def _rollup_bundle_impl(ctx):

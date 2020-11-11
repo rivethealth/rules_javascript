@@ -19,7 +19,8 @@ source "${RUNFILES_DIR:-/dev/null}/$f" 2>/dev/null || \
 NODEJS_PACKAGES_MANIFEST="$(rlocation %{packages_manifest})" \
   BAZEL_WORKSPACE=%{workspace} \
   NODEJS_MAIN_PACKAGE=%{main_package} \
+  NODEJS_RESOLVER="$(realpath "$(rlocation %{resolver})")" \
   exec "$(rlocation %{node})" \
-  -r "$(realpath "$(rlocation %{loader})")" \
+  -r "$(realpath "$(rlocation %{shim})")" \
   %{main_module} \
   "$@"

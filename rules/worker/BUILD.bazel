@@ -10,7 +10,7 @@ proto_library(
 
 js_proto_library(
     name = "js_proto",
-    dep = ":proto"
+    dep = ":proto",
 )
 
 js_library(
