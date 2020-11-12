@@ -13,8 +13,3 @@ js_library(
         "@better_rules_javascript_npm//argparse:js",
     ],
 )
-
-nodejs_binary(
-    name = "bin",
-    dep = ":js",
-)

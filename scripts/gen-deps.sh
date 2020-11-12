@@ -1,6 +1,7 @@
 #!/bin/sh -e
+ROOT="$(realpath "$(dirname "$0")")/.."
 
-cd "$(dirname "$0")/.."
+cd "$ROOT"
 yarn install
 bazel run @better_rules_javascript//rules/npm/gen:bin -- \
     yarn \
@@ -8,7 +9,7 @@ bazel run @better_rules_javascript//rules/npm/gen:bin -- \
     --lock "$(pwd)/yarn.lock" \
     "$(pwd)/rules/bzl/npm_data.bzl"
 
-cd "$(dirname "$0")/../tests"
+cd "$ROOT/tests"
 yarn install
 bazel run @better_rules_javascript//rules/npm/gen:bin -- \
     yarn \

@@ -1,8 +1,7 @@
 PrettierInfo = provider(
     fields = {
         "config": "Config file",
-        "bin": "Prettier executable",
-        "prettier": "Prettier library",
+        "dep": "JS",
         "manifest": "Prettier manifest",
         "plugins": "Plugins",
     },

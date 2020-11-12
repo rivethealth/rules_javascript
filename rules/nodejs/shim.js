@@ -5,6 +5,7 @@ const { Resolver } = require(process.env["NODEJS_RESOLVER"]);
 const BAZEL_WORKSPACE = process.env["BAZEL_WORKSPACE"];
 const MAIN_PACKAGE = process.env["NODEJS_MAIN_PACKAGE"];
 const PACKAGES_MANIFEST = process.env["NODEJS_PACKAGES_MANIFEST"];
+const NODEJS_PACKAGES_RUNFILES = process.env["NODEJS_PACKAGES_RUNFILES"];
 const RUNFILES_DIR = process.env["RUNFILES_DIR"];
 const RUNFILES_MANIFEST = process.env["RUNFILES_MANIFEST_FILE"];
 const TRACE = process.env["NODEJS_LOADER_TRACE"];
@@ -56,7 +57,7 @@ if (RUNFILES_MANIFEST) {
 global.getRunfile = (name) => runfiles.getPath(name);
 
 const resolver = new Resolver(TRACE);
-Resolver.readManifest(resolver, PACKAGES_MANIFEST, getRunfile);
+Resolver.readManifest(resolver, PACKAGES_MANIFEST, NODEJS_PACKAGES_RUNFILES == "true" ? getRunfile : (path => path));
 global.readResolverManifest = (path) =>
   Resolver.readManifest(resolver, path, (path) => path);
 global.resolveById = (id, request) => resolver.resolveById(id, request);

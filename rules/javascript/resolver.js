@@ -36,7 +36,7 @@ class Resolver {
   resolveById(id, request) {
     const package_ = this.#packageById.get(id);
     if (!package_) {
-      throw new Error(`Package ${package_} does not exist`);
+      throw new Error(`Package ${id} does not exist`);
     }
 
     const deps = [{ id, name: package_.name }];

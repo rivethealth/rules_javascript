@@ -16,12 +16,13 @@ source "${RUNFILES_DIR:-/dev/null}/$f" 2>/dev/null || \
   { echo>&2 "ERROR: cannot find $f"; exit 1; }; f=; set -e
 # --- end runfiles.bash initialization v2 ---
 
-NODEJS_PACKAGES_MANIFEST="$(rlocation %{packages_manifest})" \
-  NODEJS_PACKAGES_RUNFILES=true \
-  BAZEL_WORKSPACE=%{workspace} \
-  NODEJS_MAIN_PACKAGE=%{main_package} \
+export NODEJS_PACKAGES_MANIFEST="$1"
+shift
+export NODEJS_MAIN_PACKAGE="$1"
+shift
+
+BAZEL_WORKSPACE=%{workspace} \
   NODEJS_RESOLVER="$(realpath "$(rlocation %{resolver})")" \
   exec "$(rlocation %{node})" \
   -r "$(realpath "$(rlocation %{shim})")" \
-  %{main_module} \
   "$@"

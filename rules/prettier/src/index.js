@@ -1,17 +1,13 @@
 const { ArgumentParser } = require("argparse");
 const fs = require("fs");
+const prettier = require("prettier");
 
 const parser = new ArgumentParser();
 parser.add_argument("--config");
-parser.add_argument("--prettier-id", { required: true });
-parser.add_argument("--prettier-manifest", { required: true });
 parser.add_argument("input");
 parser.add_argument("output");
 
 const args = parser.parse_args();
-
-readResolverManifest(args.prettier_manifest);
-const prettier = require(resolveById(args.prettier_id, "prettier"));
 
 const options =
   args.config &&

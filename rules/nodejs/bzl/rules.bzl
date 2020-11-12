@@ -117,3 +117,48 @@ nodejs_binary = rule(
     implementation = _nodejs_binary_implementation,
     toolchains = ["@better_rules_javascript//rules/nodejs:toolchain_type"],
 )
+
+def _nodejs_runner_implementation(ctx):
+    nodejs_toolchain = ctx.toolchains["@better_rules_javascript//rules/nodejs:toolchain_type"]
+
+    bin = ctx.actions.declare_file("%s/bin" % ctx.label.name)
+
+    ctx.actions.expand_template(
+        template = ctx.file._runner,
+        output = bin,
+        substitutions = {
+            "%{node}": shell.quote(runfile_path(ctx, nodejs_toolchain.nodejs.bin)),
+            "%{resolver}": shell.quote(runfile_path(ctx, ctx.file._resolver)),
+            "%{shim}": shell.quote(runfile_path(ctx, ctx.file._shim)),
+            "%{workspace}": shell.quote(ctx.workspace_name),
+        },
+        is_executable = True,
+    )
+    runfiles = depset(ctx.files._bash_runfiles + [nodejs_toolchain.nodejs.bin, ctx.file._shim, ctx.file._resolver])
+
+    default_info = DefaultInfo(executable = bin, runfiles = ctx.runfiles(transitive_files = runfiles))
+    return default_info
+
+nodejs_runner = rule(
+    attrs = {
+        "_bash_runfiles": attr.label(
+            allow_files = True,
+            default = "@bazel_tools//tools/bash/runfiles",
+        ),
+        "_runner": attr.label(
+            allow_single_file = True,
+            default = "//rules/nodejs:runner.sh.tpl",
+        ),
+        "_resolver": attr.label(
+            allow_single_file = True,
+            default = "//rules/javascript:resolver.js",
+        ),
+        "_shim": attr.label(
+            allow_single_file = True,
+            default = "//rules/nodejs:shim.js",
+        ),
+    },
+    executable = True,
+    implementation = _nodejs_runner_implementation,
+    toolchains = ["@better_rules_javascript//rules/nodejs:toolchain_type"],
+)

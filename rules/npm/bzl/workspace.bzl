@@ -1,12 +1,40 @@
 load("//rules/util/bzl:json.bzl", "json")
 
 def _js_import_external_impl(ctx):
+    # TODO(paul): Fix hack
+    
+    if ctx.name.startswith("npm_types_node13.13"):
+        strip_prefix = "node v13.13"
+    elif ctx.name.startswith("npm_types_long"):
+        strip_prefix = "long"
+    else:
+        strip_prefix = "package"
+
     ctx.download_and_extract(
         ctx.attr.urls,
         "npm",
         integrity = ctx.attr.integrity,
-        stripPrefix = "package",
+        stripPrefix = strip_prefix,
     )
+
+    deps = list(ctx.attr.deps)
+
+    if ctx.name.startswith("npm_protobufjs"):
+        ctx.execute(["sh", "-c", "echo 'exports.setup = () => {}' >> npm/cli/util.js"])
+        ctx.execute(["sh", "-c", "echo 'require(\"./targets/json-module\")' >> npm/cli/util.js"])
+        ctx.execute(["sh", "-c", "echo 'require(\"./targets/json\")' >> npm/cli/util.js"])
+        ctx.execute(["sh", "-c", "echo 'require(\"./targets/proto\")' >> npm/cli/util.js"])
+        ctx.execute(["sh", "-c", "echo 'require(\"./targets/proto2\")' >> npm/cli/util.js"])
+        ctx.execute(["sh", "-c", "echo 'require(\"./targets/proto3\")' >> npm/cli/util.js"])
+        ctx.execute(["sh", "-c", "echo 'require(\"./targets/static-module\")' >> npm/cli/util.js"])
+        ctx.execute(["sh", "-c", "echo 'require(\"./targets/static\")' >> npm/cli/util.js"])
+        deps.append("@npm_chalk4.1.0//:js")
+        deps.append("@npm_escodegen2.0.0//:js")
+        deps.append("@npm_espree7.3.0//:js")
+        deps.append("@npm_glob7.1.6//:js")
+        deps.append("@npm_minimist1.2.5//:js")
+        deps.append("@npm_uglify_js2.4.24//:js")
+        deps.append("@npm_estraverse5.2.0//:js")
 
     main_result = ctx.execute(["jq", "-r", ".main", "npm/package.json"])
     if main_result.return_code:
@@ -23,8 +51,26 @@ def _js_import_external_impl(ctx):
         fail("Reading package.json failed")
     package_name = name_result.stdout.rstrip()
 
+    binaries = ''
+
+#     bin_result = ctx.execute(["jq", "-cr", ".bin | select(. != null) | to_entries[] | [.key,.value] | @tsv", "npm/package.json"])
+#     if bin_result.return_code:
+#         fail("Reading package.json failed")
+#     for line in bin_result.stdout.split('\n'):
+#         if not line:
+#             continue
+#         name, path = line.split('\t')
+#         binaries += """
+# nodejs_binary(
+#     name = {name},
+#     dep = ":js",
+#     main = {path}
+# )
+#         """.format(name = json.encode(name), path = json.encode(path))
+
     ctx.template("BUILD.bazel", ctx.attr._template, {
-        "%{deps}": json.encode([dep for dep in ctx.attr.deps]),
+        "%{binaries}": binaries,
+        "%{deps}": json.encode(deps),
         "%{main}": json.encode(main),
         "%{package_name}": json.encode(package_name),
         "%{include}": json.encode(["npm/%s" % pattern for pattern in ctx.attr.include]),

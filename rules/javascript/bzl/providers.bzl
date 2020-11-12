@@ -66,7 +66,7 @@ def add_globals(js_info, globals):
     return JsInfo(
         id = js_info.id,
         name = js_info.name,
-        globals = depset([globals], transitive = [js_info.globals]),
+        globals = depset(globals, transitive = [js_info.globals]),
         transitive_files = js_info.transitive_files,
         transitive_packages = js_info.transitive_packages,
         transitive_source_maps = js_info.transitive_source_maps,

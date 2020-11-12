@@ -3,7 +3,7 @@ load(":providers.bzl", "PrettierInfo")
 def _format_impl(target, ctx):
     prettier_info = ctx.attr._prettier[PrettierInfo]
 
-    inputs2, input_manifests = ctx.resolve_tools(tools = [prettier_info.bin])
+    # inputs2, input_manifests = ctx.resolve_tools(tools = [prettier_info.bin])
 
     script = ""
 
@@ -18,9 +18,11 @@ def _format_impl(target, ctx):
             inputs = []
             outputs = []
 
-            args.add("--prettier-id", prettier_info.prettier.id)
-            args.add("--prettier-manifest", prettier_info.manifest.path)
+            args.add(prettier_info.manifest.path)
+            args.add(prettier_info.dep.id)
             inputs.append(prettier_info.manifest)
+
+            args.add(prettier_info.dep.name)
 
             if prettier_info.config:
                 args.add("--config", prettier_info.config.path)
@@ -33,16 +35,15 @@ def _format_impl(target, ctx):
             outputs.append(formatted)
 
             ctx.actions.run(
-                executable = prettier_info.bin.files_to_run,
+                executable = ctx.attr._runner.files_to_run,
                 arguments = [args],
-                inputs = depset(inputs, transitive = [inputs2, prettier_info.prettier.transitive_files]),
+                inputs = depset(inputs, transitive = [prettier_info.dep.transitive_files]),
                 outputs = outputs,
-                tools = [prettier_info.bin.files_to_run],
             )
 
     bin = ctx.actions.declare_file("_format/bin")
     ctx.actions.expand_template(
-        template = ctx.file._runner,
+        template = ctx.file._write,
         output = bin,
         substitutions = {"%{files}": script},
     )
@@ -57,6 +58,12 @@ def format_aspect(prettier):
         implementation = _format_impl,
         attrs = {
             "_runner": attr.label(
+                doc = "Node.js runner",
+                executable = True,
+                cfg = "host",
+                default = "//rules/nodejs:bin",
+            ),
+            "_write": attr.label(
                 default = "@better_rules_javascript//rules/prettier:runner.sh.tpl",
                 allow_single_file = True,
             ),

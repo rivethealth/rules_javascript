@@ -1,8 +1,22 @@
+load("@better_rules_javascript//rules/nodejs/bzl:rules.bzl", "nodejs_binary")
 load("@better_rules_javascript//rules/protobuf/bzl:rules.bzl", "js_protoc")
+load("@better_rules_javascript//rules/protobufjs/bzl:rules.bzl",  js_protojs = "js_proto")
 
 package(default_visibility = ["//visibility:public"])
 
 js_protoc(
     name = "js_protoc",
     runtime = "@npm//google-protobuf:js",
+)
+
+nodejs_binary(
+    name = "pbjs",
+    dep = "@npm//protobufjs:js",
+    main = "bin/pbjs"
+)
+
+js_protojs(
+    name = "js_protojs",
+    bin = ":pbjs",
+    runtime = "@npm//protobufjs:js",
 )

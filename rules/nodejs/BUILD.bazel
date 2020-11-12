@@ -1,3 +1,5 @@
+load("//rules/nodejs/bzl:rules.bzl", "nodejs_runner")
+
 package(default_visibility = ["//visibility:public"])
 
 exports_files([
@@ -5,6 +7,10 @@ exports_files([
     "nodejs.BUILD.bazel",
     "node_launcher.sh.tpl",
 ])
+
+nodejs_runner(
+    name = "bin"
+)
 
 toolchain_type(name = "toolchain_type")
 
