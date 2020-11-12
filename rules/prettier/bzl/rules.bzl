@@ -1,20 +1,19 @@
 load("//rules/nodejs/bzl:rules.bzl", "write_packages_manifest")
-load("//rules/javascript/bzl:providers.bzl", "JsInfo", "add_globals")
+load("//rules/javascript/bzl:providers.bzl", "JsInfo")
 load("//rules/nodejs/bzl:rules.bzl", "create_nodejs_binary")
 load(":providers.bzl", "PrettierInfo")
 
 def _prettier_impl(ctx):
     prettier = ctx.attr.prettier[JsInfo]
-    js_info = add_globals(prettier, prettier.id)
     packages_manifest = ctx.actions.declare_file("%s/packages-manifest.txt" % ctx.label.name)
-    write_packages_manifest(ctx, packages_manifest, js_info)
+    write_packages_manifest(ctx, packages_manifest, prettier)
 
     prettier_info = PrettierInfo(
         bin = ctx.attr._bin,
         config = ctx.file.config,
         manifest = packages_manifest,
         plugins = [plugin[JsInfo] for plugin in ctx.attr.plugins],
-        prettier = js_info,
+        prettier = prettier,
     )
 
     return [prettier_info]

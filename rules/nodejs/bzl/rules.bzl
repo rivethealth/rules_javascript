@@ -62,6 +62,7 @@ def create_nodejs_binary(ctx, js_info, main, helpers):
     nodejs_toolchain = ctx.toolchains["@better_rules_javascript//rules/nodejs:toolchain_type"]
 
     packages_manifest = ctx.actions.declare_file("%s/packages-manifest.txt" % ctx.label.name)
+
     write_packages_run_manifest(ctx, packages_manifest, js_info)
 
     bin = ctx.actions.declare_file("%s/bin" % ctx.label.name)

@@ -11,7 +11,6 @@ parser.add_argument("output");
 const args = parser.parse_args();
 
 readResolverManifest(args.prettier_manifest);
-
 const prettier = require(resolveById(args.prettier_id, "prettier"));
 
 const options =

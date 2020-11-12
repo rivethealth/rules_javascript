@@ -26,7 +26,7 @@ class Runfiles {
     if (RUNFILES_MANIFEST) {
       const path = this.#pathByName.get(name);
       if (!path) {
-        throw new Error(`No runfile for ${path}`);
+        throw new Error(`No runfile for ${name}`);
       }
       return path;
     }

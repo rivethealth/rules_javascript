@@ -168,7 +168,7 @@ package(default_visibility = ["//visibility:public"])
 prettier(
     name = "prettier",
     config = "//:prettierrc.yml", # optional
-    prettier = "@better_rules_javascript_npm//prettier:js",
+    prettier = "@npm//prettier:js",
 )
 ```
 
