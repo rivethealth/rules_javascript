@@ -3,20 +3,18 @@ load(":providers.bzl", "PrettierInfo")
 def _format_impl(target, ctx):
     prettier_info = ctx.attr._prettier[PrettierInfo]
 
-    # inputs2, input_manifests = ctx.resolve_tools(tools = [prettier_info.bin])
-
     script = ""
 
     outputs = []
+
     for src in ctx.rule.attr.srcs:
         for file in src.files.to_list():
+            inputs = []
+            args = ctx.actions.args()
+
             formatted = ctx.actions.declare_file("_format/src/%s" % file.path)
             outputs.append(formatted)
             script += "format %s %s \n" % (file.path, formatted.path)
-
-            args = ctx.actions.args()
-            inputs = []
-            outputs = []
 
             args.add(prettier_info.manifest.path)
             args.add(prettier_info.dep.id)
@@ -38,7 +36,7 @@ def _format_impl(target, ctx):
                 executable = ctx.attr._runner.files_to_run,
                 arguments = [args],
                 inputs = depset(inputs, transitive = [prettier_info.dep.transitive_files]),
-                outputs = outputs,
+                outputs = [formatted],
             )
 
     bin = ctx.actions.declare_file("_format/bin")
