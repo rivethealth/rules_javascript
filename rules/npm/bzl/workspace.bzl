@@ -1,21 +1,17 @@
 load("//rules/util/bzl:json.bzl", "json")
 
 def _js_import_external_impl(ctx):
-    # TODO(paul): Fix hack
-    
-    if ctx.name.startswith("npm_types_node13.13"):
-        strip_prefix = "node v13.13"
-    elif ctx.name.startswith("npm_types_long"):
-        strip_prefix = "long"
-    else:
-        strip_prefix = "package"
-
     ctx.download_and_extract(
         ctx.attr.urls,
         "npm",
         integrity = ctx.attr.integrity,
-        stripPrefix = strip_prefix,
     )
+
+    # packages can have different prefixes
+    ls_result = ctx.execute(["ls", "npm"])
+    if ls_result.return_code:
+        fail("Could not determine package prefix")
+    prefix = "npm/%s" % ls_result.stdout.rstrip()
 
     deps = list(ctx.attr.deps)
 
@@ -36,7 +32,7 @@ def _js_import_external_impl(ctx):
         deps.append("@npm_uglify_js2.4.24//:js")
         deps.append("@npm_estraverse5.2.0//:js")
 
-    main_result = ctx.execute(["jq", "-r", ".main", "npm/package.json"])
+    main_result = ctx.execute(["jq", "-r", ".main", "%s/package.json" % prefix])
     if main_result.return_code:
         fail("Reading package.json failed")
     if main_result.stdout.rstrip() == "null":
@@ -46,33 +42,34 @@ def _js_import_external_impl(ctx):
         if main.startswith("./"):
             main = main[len("./"):]
 
-    name_result = ctx.execute(["jq", "-r", ".name", "npm/package.json"])
+    name_result = ctx.execute(["jq", "-r", ".name", "%s/package.json" % prefix])
     if name_result.return_code:
         fail("Reading package.json failed")
     package_name = name_result.stdout.rstrip()
 
-    binaries = ''
+    binaries = ""
 
-#     bin_result = ctx.execute(["jq", "-cr", ".bin | select(. != null) | to_entries[] | [.key,.value] | @tsv", "npm/package.json"])
-#     if bin_result.return_code:
-#         fail("Reading package.json failed")
-#     for line in bin_result.stdout.split('\n'):
-#         if not line:
-#             continue
-#         name, path = line.split('\t')
-#         binaries += """
-# nodejs_binary(
-#     name = {name},
-#     dep = ":js",
-#     main = {path}
-# )
-#         """.format(name = json.encode(name), path = json.encode(path))
+    #     bin_result = ctx.execute(["jq", "-cr", ".bin | select(. != null) | to_entries[] | [.key,.value] | @tsv", "npm/package.json"])
+    #     if bin_result.return_code:
+    #         fail("Reading package.json failed")
+    #     for line in bin_result.stdout.split('\n'):
+    #         if not line:
+    #             continue
+    #         name, path = line.split('\t')
+    #         binaries += """
+    # nodejs_binary(
+    #     name = {name},
+    #     dep = ":js",
+    #     main = {path}
+    # )
+    #         """.format(name = json.encode(name), path = json.encode(path))
 
     ctx.template("BUILD.bazel", ctx.attr._template, {
         "%{binaries}": binaries,
         "%{deps}": json.encode(deps),
         "%{main}": json.encode(main),
         "%{package_name}": json.encode(package_name),
+        "%{prefix}": json.encode(prefix),
         "%{include}": json.encode(["npm/%s" % pattern for pattern in ctx.attr.include]),
         "%{exclude}": json.encode(["npm/%s" % pattern for pattern in ctx.attr.exclude]),
     })

@@ -1,6 +1,6 @@
 load("@better_rules_javascript//rules/nodejs/bzl:rules.bzl", "nodejs_binary")
 load("@better_rules_javascript//rules/protobuf/bzl:rules.bzl", "js_protoc")
-load("@better_rules_javascript//rules/protobufjs/bzl:rules.bzl",  js_protojs = "js_proto")
+load("@better_rules_javascript//rules/protobufjs/bzl:rules.bzl", js_protojs = "js_proto")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -12,7 +12,7 @@ js_protoc(
 nodejs_binary(
     name = "pbjs",
     dep = "@npm//protobufjs:js",
-    main = "bin/pbjs"
+    main = "bin/pbjs",
 )
 
 js_protojs(

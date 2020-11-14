@@ -9,7 +9,7 @@ js_library(
     deps = %{deps},
     package_name = %{package_name},
     srcs = glob(%{include}, %{exclude}),
-    strip_prefix = "%s/npm" % repository_name()[1:],
+    strip_prefix = "%s/%s" % (repository_name()[1:], %{prefix}),
 )
 
 %{binaries}

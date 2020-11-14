@@ -36,7 +36,7 @@ def _js_proto_library_impl(ctx):
     package_name = ctx.attr.package_name
     if not package_name:
         package_name = "@%s/%s" % (ctx.label.workspace_name or ctx.workspace_name, ctx.label.package) if ctx.label.package else ctx.label.workspace_name
-    
+
     js_proto = ctx.attr.js_proto[_JsProtobuf]
 
     args = ctx.actions.args()
@@ -96,5 +96,5 @@ js_proto_library = rule(
             mandatory = True,
             providers = [_ProtoInfo],
         ),
-    }
+    },
 )
