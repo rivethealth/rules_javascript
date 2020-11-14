@@ -1,4 +1,5 @@
 load("@com_github_bazelbuild_buildtools//buildifier:def.bzl", "buildifier")
+load("//rules/prettier/bzl:rules.bzl", "prettier_format")
 
 exports_files(["prettierrc.yml"])
 
@@ -9,4 +10,14 @@ buildifier(
 buildifier(
     name = "buildifier_check",
     mode = "check",
+)
+
+prettier_format(
+    name = "prettier",
+    srcs = [
+        "README.md",
+        "package.json",
+        "prettierrc.yml",
+        "//rules/nodejs:shim.js",
+    ],
 )

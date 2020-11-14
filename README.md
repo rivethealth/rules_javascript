@@ -30,9 +30,9 @@ Rules for JavaScript, with an emphasis on idiomatic Bazel APIs.
 - [x] serialization
   - [x] protobuf
 - [ ] external dependencies
-  - [ ] npm
-  - [x] yarn
-  - [ ] node-gyp
+- [ ] npm
+- [x] yarn
+- [ ] node-gyp
 - [ ] lint
   - [x] prettier (TODO: plugins)
   - [ ] eslint (TODO: config file, plugins)
@@ -275,19 +275,25 @@ Auto-generated [Stardoc documentation](docs/stardoc).
 
 Perhaps the most difficult part of JavaScript tooling is resolving modules.
 
-rules_javascript implements custom resolvers for good performance and Bazel integration.
+rules_javascript implements custom resolvers for good performance and Bazel
+integration.
 
-This design choice requries himplementing modules resolution for tools, but is an acceptable tradeoff for
-the flexibility it grants. Good Bazel tooling requires shims anyway to support features like workers.
+This design choice requries himplementing modules resolution for tools, but is
+an acceptable tradeoff for the flexibility it grants. Good Bazel tooling
+requires shims anyway to support features like workers.
 
-JavaScript is organized by "packages" which have a name (not necessarily unique), named modules, named dependencies,
-and (optionally) an entry point.
-Relative imports are constructed relative to package_name/module_name. By default, the package name is @bazel_workspace/bazel_package, and the module name is relative to the package.
+JavaScript is organized by "packages" which have a name (not necessarily
+unique), named modules, named dependencies, and (optionally) an entry point.
+Relative imports are constructed relative to package_name/module_name. By
+default, the package name is @bazel_workspace/bazel_package, and the module name
+is relative to the package.
 
 Packages are listed in packages-manifest.txt and then processed by
 [rules/javascript/resolver.js](rules/javascript/resolver.js).
 
-These units are different from NPM "packages." For example a.js could belong to one package and a.spec.js could belong
-to a second, but the second can import the first with `'./a'`. Files must belong to only one package.
+These units are different from NPM "packages." For example a.js could belong to
+one package and a.spec.js could belong to a second, but the second can import
+the first with `'./a'`. Files must belong to only one package.
 
-Dependencies are naturally strict: each package must explicity list its direct dependencies.
+Dependencies are naturally strict: each package must explicity list its direct
+dependencies.

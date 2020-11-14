@@ -69,8 +69,8 @@ class Resolver {
     if (!result) {
       throw new Error(
         `Could not resolve "${request}" from ${parent}. Matching packages: ${attempts.join(
-          " "
-        )}`
+          " ",
+        )}`,
       );
     }
     return result;
@@ -87,7 +87,7 @@ class Resolver {
         dep.id,
         package_,
         dep.name,
-        attempts
+        attempts,
       );
       if (path) {
         return path;
@@ -104,7 +104,7 @@ class Resolver {
         id,
         package_,
         package_.name,
-        attempts
+        attempts,
       );
       if (path) {
         return path;
@@ -161,7 +161,7 @@ class Resolver {
       }
       const data = item.value;
       const runfileByName = new Map(
-        data.modules.map(({ name, file }) => [name, runfile(file)])
+        data.modules.map(({ name, file }) => [name, runfile(file)]),
       );
       const package_ = {
         name: data.name,

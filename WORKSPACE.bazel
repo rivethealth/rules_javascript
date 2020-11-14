@@ -132,3 +132,10 @@ http_archive(
 load("//rules/bzl:workspace.bzl", javascript_repositories = "repositories")
 
 javascript_repositories()
+
+# Bind
+
+bind(
+    name = "prettier",
+    actual = "//tools:prettier",
+)

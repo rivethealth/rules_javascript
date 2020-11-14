@@ -60,7 +60,7 @@ const resolver = new Resolver(TRACE);
 Resolver.readManifest(
   resolver,
   PACKAGES_MANIFEST,
-  NODEJS_PACKAGES_RUNFILES == "true" ? getRunfile : (path) => path
+  NODEJS_PACKAGES_RUNFILES == "true" ? getRunfile : (path) => path,
 );
 global.readResolverManifest = (path) =>
   Resolver.readManifest(resolver, path, (path) => path);
