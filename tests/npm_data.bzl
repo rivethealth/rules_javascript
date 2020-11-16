@@ -69,6 +69,72 @@ PACKAGES = [
         "deps": [],
     },
     {
+        "name": "@rollup/plugin-commonjs@16.0.0",
+        "url": "https://registry.yarnpkg.com/@rollup/plugin-commonjs/-/plugin-commonjs-16.0.0.tgz#169004d56cd0f0a1d0f35915d31a036b0efe281f",
+        "integrity": "sha512-LuNyypCP3msCGVQJ7ki8PqYdpjfEkE/xtFa5DqlF+7IBD0JsfMZ87C58heSwIMint58sAUZbt3ITqOmdQv/dXw==",
+        "deps": [
+            {
+                "dep": "@rollup/pluginutils@3.1.0",
+                "name": "@rollup/pluginutils",
+            },
+            {
+                "dep": "commondir@1.0.1",
+                "name": "commondir",
+            },
+            {
+                "dep": "estree-walker@2.0.1",
+                "name": "estree-walker",
+            },
+            {
+                "dep": "glob@7.1.6",
+                "name": "glob",
+            },
+            {
+                "dep": "is-reference@1.2.1",
+                "name": "is-reference",
+            },
+            {
+                "dep": "magic-string@0.25.7",
+                "name": "magic-string",
+            },
+            {
+                "dep": "resolve@1.19.0",
+                "name": "resolve",
+            },
+        ],
+    },
+    {
+        "name": "@rollup/pluginutils@3.1.0",
+        "url": "https://registry.yarnpkg.com/@rollup/pluginutils/-/pluginutils-3.1.0.tgz#706b4524ee6dc8b103b3c995533e5ad680c02b9b",
+        "integrity": "sha512-GksZ6pr6TpIjHm8h9lSQ8pi8BE9VeubNT0OMJ3B5uZJ8pz73NPiqOtCog/x2/QzM1ENChPKxMDhiQuRHsqc+lg==",
+        "deps": [
+            {
+                "dep": "@types/estree@0.0.39",
+                "name": "@types/estree",
+            },
+            {
+                "dep": "estree-walker@1.0.1",
+                "name": "estree-walker",
+            },
+            {
+                "dep": "picomatch@2.2.2",
+                "name": "picomatch",
+            },
+        ],
+    },
+    {
+        "name": "@types/estree@0.0.45",
+        "url": "https://registry.yarnpkg.com/@types/estree/-/estree-0.0.45.tgz#e9387572998e5ecdac221950dab3e8c3b16af884",
+        "integrity": "sha512-jnqIUKDUqJbDIUxm0Uj7bnlMnRm1T/eZ9N+AVMqhPgzrba2GhGG5o/jCTwmdPK709nEZsGoMzXEDUjcXHa3W0g==",
+        "deps": [],
+    },
+    {
+        "name": "@types/estree@0.0.39",
+        "url": "https://registry.yarnpkg.com/@types/estree/-/estree-0.0.39.tgz#e177e699ee1b8c22d23174caaa7422644389509f",
+        "integrity": "sha512-EYNwp3bU+98cpU4lAWYYL7Zz+2gryWH1qbdDTidVd6hkiR6weksdbMadyXKXNPEkQFhXM+hVO9ZygomHXp+AIw==",
+        "deps": [],
+    },
+    {
         "name": "@types/long@4.0.1",
         "url": "https://registry.yarnpkg.com/@types/long/-/long-4.0.1.tgz#459c65fa1867dafe6a8f322c4c51695663cc55e9",
         "integrity": "sha512-5tXH6Bx/kNGd3MgffdmP4dy2Z+G4eaXw0SE81Tq3BNadtnMR5/ySMzX4SLEzHJzSmPNn4HIdpQsBvXMUykr58w==",
@@ -231,6 +297,12 @@ PACKAGES = [
         "deps": [],
     },
     {
+        "name": "commondir@1.0.1",
+        "url": "https://registry.yarnpkg.com/commondir/-/commondir-1.0.1.tgz#ddd800da0c66127393cca5950ea968a3aaf1253b",
+        "integrity": "sha1-3dgA2gxmEnOTzKWVDqloo6rxJTs=",
+        "deps": [],
+    },
+    {
         "name": "concat-map@0.0.1",
         "url": "https://registry.yarnpkg.com/concat-map/-/concat-map-0.0.1.tgz#d8a96bd77fd68df7793a73036a3ba0d5405d477b",
         "integrity": "sha1-2Klr13/Wjfd5OnMDajug1UBdR3s=",
@@ -370,6 +442,18 @@ PACKAGES = [
         "name": "estraverse@5.2.0",
         "url": "https://registry.yarnpkg.com/estraverse/-/estraverse-5.2.0.tgz#307df42547e6cc7324d3cf03c155d5cdb8c53880",
         "integrity": "sha512-BxbNGGNm0RyRYvUdHpIwv9IWzeM9XClbOxwoATuFdOE7ZE6wHL+HQ5T8hoPM+zHvmKzzsEqhgy0GrQ5X13afiQ==",
+        "deps": [],
+    },
+    {
+        "name": "estree-walker@1.0.1",
+        "url": "https://registry.yarnpkg.com/estree-walker/-/estree-walker-1.0.1.tgz#31bc5d612c96b704106b477e6dd5d8aa138cb700",
+        "integrity": "sha512-1fMXF3YP4pZZVozF8j/ZLfvnR8NSIljt56UhbZ5PeeDmmGHpgpdwQt7ITlGvYaQukCvuBRMLEiKiYC+oeIg4cg==",
+        "deps": [],
+    },
+    {
+        "name": "estree-walker@2.0.1",
+        "url": "https://registry.yarnpkg.com/estree-walker/-/estree-walker-2.0.1.tgz#f8e030fb21cefa183b44b7ad516b747434e7a3e0",
+        "integrity": "sha512-tF0hv+Yi2Ot1cwj9eYHtxC0jB9bmjacjQs6ZBTj82H8JwUywFuc+7E83NWfNMwHXZc11mjfFcVXPe9gEP4B8dg==",
         "deps": [],
     },
     {
@@ -571,6 +655,18 @@ PACKAGES = [
         "deps": [],
     },
     {
+        "name": "fsevents@2.1.3",
+        "url": "https://registry.yarnpkg.com/fsevents/-/fsevents-2.1.3.tgz#fb738703ae8d2f9fe900c33836ddebee8b97f23e",
+        "integrity": "sha512-Auw9a4AxqWpa9GUfj370BMPzzyncfBABW8Mab7BGWBYDj4Isgq+cDKtx0i6u9jcX9pQDnswsaaOTgTmA5pEjuQ==",
+        "deps": [],
+    },
+    {
+        "name": "function-bind@1.1.1",
+        "url": "https://registry.yarnpkg.com/function-bind/-/function-bind-1.1.1.tgz#a56899d3ea3c9bab874bb9773b7c5ede92f4895d",
+        "integrity": "sha512-yIovAzMX49sF8Yl58fSCWJ5svSLuaibPxXQJFLmBObTuCr0Mf1KiPopGM9NiFjiYBCbfaa2Fh6breQ6ANVTI0A==",
+        "deps": [],
+    },
+    {
         "name": "glob@7.1.6",
         "url": "https://registry.yarnpkg.com/glob/-/glob-7.1.6.tgz#141f33b81a7c2492e125594307480c46679278a6",
         "integrity": "sha512-LwaxwyZ72Lk7vZINtNNrywX0ZuLyStrdDtabefZKAY5ZGJhVtgdznluResxNmPitE0SAO+O26sWTHeKSI2wMBA==",
@@ -612,6 +708,17 @@ PACKAGES = [
         "url": "https://registry.yarnpkg.com/has-flag/-/has-flag-4.0.0.tgz#944771fd9c81c81265c4d6941860da06bb59479b",
         "integrity": "sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==",
         "deps": [],
+    },
+    {
+        "name": "has@1.0.3",
+        "url": "https://registry.yarnpkg.com/has/-/has-1.0.3.tgz#722d7cbfc1f6aa8241f16dd814e011e1f41e8796",
+        "integrity": "sha512-f2dvO0VU6Oej7RkWJGrehjbzMAjFp5/VKPp5tTpWIV4JHHZK1/BxbFRtf/siA2SWTe09caDmVtYYzWEIbBS4zw==",
+        "deps": [
+            {
+                "dep": "function-bind@1.1.1",
+                "name": "function-bind",
+            },
+        ],
     },
     {
         "name": "http-errors@1.7.2",
@@ -712,6 +819,28 @@ PACKAGES = [
         "deps": [],
     },
     {
+        "name": "is-core-module@2.1.0",
+        "url": "https://registry.yarnpkg.com/is-core-module/-/is-core-module-2.1.0.tgz#a4cc031d9b1aca63eecbd18a650e13cb4eeab946",
+        "integrity": "sha512-YcV7BgVMRFRua2FqQzKtTDMz8iCuLEyGKjr70q8Zm1yy2qKcurbFEd79PAdHV77oL3NrAaOVQIbMmiHQCHB7ZA==",
+        "deps": [
+            {
+                "dep": "has@1.0.3",
+                "name": "has",
+            },
+        ],
+    },
+    {
+        "name": "is-reference@1.2.1",
+        "url": "https://registry.yarnpkg.com/is-reference/-/is-reference-1.2.1.tgz#8b2dac0b371f4bc994fdeaba9eb542d03002d0b7",
+        "integrity": "sha512-U82MsXXiFIrjCK4otLT+o2NA2Cd2g5MLoOVXUZjIOhLurrRxpEXzI8O0KZHr3IjLvlAH1kTPYSuqer5T9ZVBKQ==",
+        "deps": [
+            {
+                "dep": "@types/estree@0.0.45",
+                "name": "@types/estree",
+            },
+        ],
+    },
+    {
         "name": "levn@0.3.0",
         "url": "https://registry.yarnpkg.com/levn/-/levn-0.3.0.tgz#3b09924edf9f083c0490fdd4c0bc4421e04764ee",
         "integrity": "sha1-OwmSTt+fCDwEkP3UwLxEIeBHZO4=",
@@ -731,6 +860,17 @@ PACKAGES = [
         "url": "https://registry.yarnpkg.com/long/-/long-4.0.0.tgz#9a7b71cfb7d361a194ea555241c92f7468d5bf28",
         "integrity": "sha512-XsP+KhQif4bjX1kbuSiySJFNAehNxgLb6hPRGJ9QsUr8ajHkuXGdrHmFUTUUXhDwVX2R5bY4JNZEwbUiMhV+MA==",
         "deps": [],
+    },
+    {
+        "name": "magic-string@0.25.7",
+        "url": "https://registry.yarnpkg.com/magic-string/-/magic-string-0.25.7.tgz#3f497d6fd34c669c6798dcb821f2ef31f5445051",
+        "integrity": "sha512-4CrMT5DOHTDk4HYDlzmwu4FVCcIYI8gauveasrdCu2IKIFOJ3f0v/8MDGJCDL9oD2ppz/Av1b0Nj345H9M+XIA==",
+        "deps": [
+            {
+                "dep": "sourcemap-codec@1.4.8",
+                "name": "sourcemap-codec",
+            },
+        ],
     },
     {
         "name": "media-typer@0.3.0",
@@ -874,9 +1014,21 @@ PACKAGES = [
         "deps": [],
     },
     {
+        "name": "path-parse@1.0.6",
+        "url": "https://registry.yarnpkg.com/path-parse/-/path-parse-1.0.6.tgz#d62dbb5679405d72c4737ec58600e9ddcf06d24c",
+        "integrity": "sha512-GSmOT2EbHrINBf9SR7CDELwlJ8AENk3Qn7OikK4nFYAu3Ote2+JYNVvkpAEQm3/TLNEJFD/xZJjzyxg3KBWOzw==",
+        "deps": [],
+    },
+    {
         "name": "path-to-regexp@0.1.7",
         "url": "https://registry.yarnpkg.com/path-to-regexp/-/path-to-regexp-0.1.7.tgz#df604178005f522f15eb4490e7247a1bfaa67f8c",
         "integrity": "sha1-32BBeABfUi8V60SQ5yR6G/qmf4w=",
+        "deps": [],
+    },
+    {
+        "name": "picomatch@2.2.2",
+        "url": "https://registry.yarnpkg.com/picomatch/-/picomatch-2.2.2.tgz#21f333e9b6b8eaff02468f5146ea406d345f4dad",
+        "integrity": "sha512-q0M/9eZHzmr0AulXyPwNfZjtwZ/RBZlbN3K3CErVrk50T2ASYI7Bye0EvekFY3IP1Nt2DHu0re+V2ZHIpMkuWg==",
         "deps": [],
     },
     {
@@ -995,6 +1147,27 @@ PACKAGES = [
         ],
     },
     {
+        "name": "resolve@1.19.0",
+        "url": "https://registry.yarnpkg.com/resolve/-/resolve-1.19.0.tgz#1af5bf630409734a067cae29318aac7fa29a267c",
+        "integrity": "sha512-rArEXAgsBG4UgRGcynxWIWKFvh/XZCcS8UJdHhwy91zwAvCZIbcs+vAbflgBnNjYMs/i/i+/Ux6IZhML1yPvxg==",
+        "deps": [
+            {
+                "dep": "is-core-module@2.1.0",
+                "name": "is-core-module",
+            },
+            {
+                "dep": "path-parse@1.0.6",
+                "name": "path-parse",
+            },
+        ],
+    },
+    {
+        "name": "rollup@2.33.2",
+        "url": "https://registry.yarnpkg.com/rollup/-/rollup-2.33.2.tgz#c4c76cd405a7605e6ebe90976398c46d4c2ea166",
+        "integrity": "sha512-QPQ6/fWCrzHtSXkI269rhKaC7qXGghYBwXU04b1JsDZ6ibZa3DJ9D1SFAYRMgx1inDg0DaTbb3N4Z1NK/r3fhw==",
+        "deps": [],
+    },
+    {
         "name": "safe-buffer@5.1.2",
         "url": "https://registry.yarnpkg.com/safe-buffer/-/safe-buffer-5.1.2.tgz#991ec69d296e0313747d59bdfd2b745c35f8828d",
         "integrity": "sha512-Gd2UZBJDkXlY7GbJxfsE8/nvKkUEU1G38c1siN6QP6a9PT9MmHB8GnpscSmMJSoF8LOIrt8ud/wPtojys4G6+g==",
@@ -1101,6 +1274,12 @@ PACKAGES = [
         "deps": [],
     },
     {
+        "name": "sourcemap-codec@1.4.8",
+        "url": "https://registry.yarnpkg.com/sourcemap-codec/-/sourcemap-codec-1.4.8.tgz#ea804bd94857402e6992d05a38ef1ae35a9ab4c4",
+        "integrity": "sha512-9NykojV5Uih4lgo5So5dtw+f0JgJX30KCNI8gwhz2J9A15wD0Ml6tjHKwf6fTSa6fAdVBdZeNOs9eJ71qCk8vA==",
+        "deps": [],
+    },
+    {
         "name": "statuses@1.5.0",
         "url": "https://registry.yarnpkg.com/statuses/-/statuses-1.5.0.tgz#161c7dac177659fd9811f43771fa99381478628c",
         "integrity": "sha1-Fhx9rBd2Wf2YEfQ3cfqZOBR4Yow=",
@@ -1189,16 +1368,12 @@ PACKAGES = [
 
 ROOTS = [
     {
+        "name": "@rollup/plugin-commonjs",
+        "dep": "@rollup/plugin-commonjs@16.0.0",
+    },
+    {
         "name": "chalk",
         "dep": "chalk@4.1.0",
-    },
-    {
-        "name": "glob",
-        "dep": "glob@7.1.6",
-    },
-    {
-        "name": "google-protobuf",
-        "dep": "google-protobuf@3.13.0",
     },
     {
         "name": "escodegen",
@@ -1209,12 +1384,20 @@ ROOTS = [
         "dep": "espree@7.3.0",
     },
     {
+        "name": "estraverse",
+        "dep": "estraverse@5.2.0",
+    },
+    {
         "name": "express",
         "dep": "express@4.17.1",
     },
     {
-        "name": "estraverse",
-        "dep": "estraverse@5.2.0",
+        "name": "glob",
+        "dep": "glob@7.1.6",
+    },
+    {
+        "name": "google-protobuf",
+        "dep": "google-protobuf@3.13.0",
     },
     {
         "name": "minimist",
@@ -1223,6 +1406,10 @@ ROOTS = [
     {
         "name": "protobufjs",
         "dep": "protobufjs@6.10.1",
+    },
+    {
+        "name": "rollup",
+        "dep": "rollup@2.33.2",
     },
     {
         "name": "uglify-js",

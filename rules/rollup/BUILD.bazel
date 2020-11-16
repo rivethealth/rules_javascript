@@ -1,0 +1,10 @@
+load("//rules/javascript/bzl:rules.bzl", "js_library")
+
+package(default_visibility = ["//visibility:public"])
+
+js_library(
+    name = "resolve",
+    srcs = glob(["resolve/**/*.js"]),
+    main = "resolve/index.js",
+    deps = ["//rules/javascript:resolver"],
+)

@@ -12,6 +12,7 @@ pkg_tar(
         #"//rules/prettier/bzl:doc",
         "//rules/protobuf/bzl:doc",
         # "//rules/nodejs/bzl:doc",
+        # "//rules/rollup/bzl:doc",
     ],
     mode = "0644",
     strip_prefix = ".",

@@ -8,6 +8,7 @@ bzl_library(
     srcs = glob(["**/*.bzl"]),
     deps = [
         "//rules/javascript/bzl",
+        "//rules/nodejs/bzl",
     ],
 )
 

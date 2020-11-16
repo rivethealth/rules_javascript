@@ -19,7 +19,7 @@ Rules for JavaScript, with an emphasis on idiomatic Bazel APIs.
   - [ ] directories
   - [x] multiple versions
 - [ ] bundle
-  - [ ] rollup
+  - [x] rollup
   - [ ] webpack
   - [ ] unused deps
 - [ ] runtime
@@ -150,11 +150,66 @@ Native dependencies (node-gyp) are not currently supported.
 
 For IDE use, run `yarn install` separately to install dependencies node_modules.
 
+### Rollup
+
+#### Install
+
+Add rollup as an [external dependency](#external_dependencies).
+
+#### Configure
+
+**BUILD.bzl**
+
+```bzl
+load("@better_rules_javascript//rules/rollup/bzl:rules.bzl", "rollup")
+
+rollup(
+    name = "rollup",
+    dep = "@npm//rollup:js",
+    plugins = [],
+)
+```
+
+#### Use
+
+**example/a.js**
+
+```
+export const a = 'apple';
+```
+
+**example/b.js**
+
+```
+import { a } from './a';
+
+console.log(a);
+```
+
+**example/BUILD.bzl**
+
+```bzl
+load("@better_rules_javascript//rules/javascript/bzl:rules.bzl", "js_library")
+load("@better_rules_javascript//rules/rollup/bzl:rules.bzl", "rollup_bundle")
+
+js_library(
+    name = "js",
+    srcs = ["a.js", "b.js"],
+)
+
+rollup_bundle(
+    name = "bundle",
+    dep = ":b",
+    main = "b.js",
+    rollup = "//:rollup",
+)
+```
+
 ### Prettier
 
 #### Install
 
-Add prettier as an [external dependency](#external-dependencies).
+Add prettier as an [external dependency](#external_dependencies).
 
 #### Configure
 
