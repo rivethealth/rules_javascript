@@ -8,9 +8,11 @@ Rules for JavaScript, with an emphasis on idiomatic Bazel APIs.
   - [Usage](#usage)
     - [Basic](#basic)
     - [External dependencies](#external-dependencies)
-    - [Format](#format)
+    - [Rollup](#rollup)
+    - [Prettier](#prettier)
+    - [Protobuf](#protobuf)
   - [Stardoc](#stardoc)
-  - [Implementation](#implementation)
+  - [Module resolution](#module-resolution)
 
 ## Features
 
