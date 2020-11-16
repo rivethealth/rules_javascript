@@ -1,23 +1,24 @@
 JsInfo = provider(
     doc = "JavaScript",
     fields = {
-        "id": "ID",
+        "ids": "Package IDs",
         "name": "Default module prefix",
-        "globals": "IDs of global packages",
+        "global_package_ids": "Global package ids",
         "transitive_files": "Depset of files",
         "transitive_packages": "Depset of packages",
         "transitive_source_maps": "Depset of source maps",
     },
 )
 
-def create_package(id, name, main, modules, deps):
+def create_package(id, name, main = None, modules = (), deps = ()):
     """
     Create package.
 
-    :param Label id: ID
+    :param str id: ID
     :param str name: Name
-    :param File manifest: Manifest of modules
-    :param list deps: List of package deps
+    :param str main: Main module
+    :param list: Modules
+    :param list deps: Dependencies
     """
     return struct(
         id = id,
@@ -28,46 +29,89 @@ def create_package(id, name, main, modules, deps):
     )
 
 def create_module(name, file):
+    """
+    Create module
+
+    :param str name: Name
+    :param str file: File
+    """
     return struct(name = name, file = file)
 
 def create_package_dep(name, id):
     """
     Create package dependency definition
 
-    :param str name: Module prefix, or empty if no prefix
-    :param Label id: ID
+    :param str name: Module prefix
+    :param str id: ID
     """
     return struct(name = name, id = id)
 
-def merge_js(js_info, other):
-    globals = depset(
-        transitive = [js_info.globals] + [js_info.globals for js_info in other],
+def create_js(package, global_package_ids = [], files = [], source_maps = [], deps = []):
+    """
+    Create JsInfo
+
+    :param struct package: Package
+    :param list global_package_ids: Global package ids
+    :param list files: Files
+    :param list source_maps: Source maps
+    :param list deps: Dependent JsInfo
+    """
+    global_package_ids = depset(
+        global_package_ids,
+        transitive = [js_info.global_package_ids for js_info in deps],
     )
     transitive_files = depset(
-        transitive = [js_info.transitive_files] + [js_info.transitive_files for js_info in other],
+        files,
+        transitive = [js_info.transitive_files for js_info in deps],
     )
     transitive_packages = depset(
-        transitive = [js_info.transitive_packages] + [js_info.transitive_packages for js_info in other],
+        [package],
+        transitive = [js_info.transitive_packages for js_info in deps],
     )
     transitive_source_maps = depset(
-        transitive = [js_info.transitive_source_maps] + [js_info.transitive_source_maps for js_info in other],
+        source_maps,
+        transitive = [js_info.transitive_source_maps for js_info in deps],
     )
 
     return JsInfo(
-        id = js_info.id,
-        name = js_info.name,
-        globals = globals,
+        ids = [package.id],
+        name = package.name,
+        global_package_ids = global_package_ids,
         transitive_files = transitive_files,
         transitive_packages = transitive_packages,
         transitive_source_maps = transitive_source_maps,
     )
 
-def add_globals(js_info, globals):
+def merge_js(name, deps = [], global_deps = []):
+    """
+    Combine JsInfo
+
+    :param str name: Package name
+    :param list deps: Collected JsInfos
+    """
+    ids = {id: None for js_info in deps for id in js_info.ids}.keys()
+    global_package_ids = depset(
+        [id for dep in global_deps for id in dep.ids],
+        transitive = [js_info.global_package_ids for js_info in deps + global_deps],
+    )
+    transitive_files = depset(
+        [],
+        transitive = [js_info.transitive_files for js_info in deps + global_deps],
+    )
+    transitive_packages = depset(
+        [],
+        transitive = [js_info.transitive_packages for js_info in deps + global_deps],
+    )
+    transitive_source_maps = depset(
+        [],
+        transitive = [js_info.transitive_source_maps for js_info in deps + global_deps],
+    )
+
     return JsInfo(
-        id = js_info.id,
-        name = js_info.name,
-        globals = depset(globals, transitive = [js_info.globals]),
-        transitive_files = js_info.transitive_files,
-        transitive_packages = js_info.transitive_packages,
-        transitive_source_maps = js_info.transitive_source_maps,
+        ids = ids,
+        name = name,
+        global_package_ids = global_package_ids,
+        transitive_files = transitive_files,
+        transitive_packages = transitive_packages,
+        transitive_source_maps = transitive_source_maps,
     )

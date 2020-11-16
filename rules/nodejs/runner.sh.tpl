@@ -18,8 +18,6 @@ source "${RUNFILES_DIR:-/dev/null}/$f" 2>/dev/null || \
 
 export NODEJS_PACKAGES_MANIFEST="$1"
 shift
-export NODEJS_MAIN_PACKAGE="$1"
-shift
 
 BAZEL_WORKSPACE=%{workspace} \
   NODEJS_RESOLVER="$(realpath "$(rlocation %{resolver})")" \

@@ -1,8 +1,7 @@
-const { Person } = require('proto/example/proto/person_pb')
+const proto = require('./pb');
 
-const person = new Person();
-person.setName('First Middle Last')
-const serialized = person.serializeBinary();
-const deserialized = Person.deserializeBinary(serialized);
+const person = proto.example.proto.Person.create({ name: "First Middle Last" });
+const serialized = proto.example.proto.Person.encode(person).finish();
+const deserialized = proto.example.proto.Person.decode(serialized);
 
-console.log(deserialized.getName());
+console.log(deserialized.name);

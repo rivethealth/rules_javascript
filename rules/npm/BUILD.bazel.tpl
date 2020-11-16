@@ -7,7 +7,7 @@ js_library(
     main = %{main},
     name = "js",
     deps = %{deps},
-    package_name = %{package_name},
+    js_name = %{package_name},
     srcs = glob(%{include}, %{exclude}),
     strip_prefix = "%s/%s" % (repository_name()[1:], %{prefix}),
 )

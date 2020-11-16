@@ -278,9 +278,9 @@ Perhaps the most difficult part of JavaScript tooling is resolving modules.
 rules_javascript implements custom resolvers for good performance and Bazel
 integration.
 
-This design choice requries himplementing modules resolution for tools, but is
-an acceptable tradeoff for the flexibility it grants. Good Bazel tooling
-requires shims anyway to support features like workers.
+This design choice requries implementing modules resolution for tools, but is an
+acceptable tradeoff for the flexibility it grants. Good Bazel tooling requires
+shims anyway to support features like workers.
 
 JavaScript is organized by "packages" which have a name (not necessarily
 unique), named modules, named dependencies, and (optionally) an entry point.

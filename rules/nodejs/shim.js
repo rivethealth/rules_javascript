@@ -1,9 +1,9 @@
 const fs = require("fs");
+const path = require("path");
 const { Module } = require("module");
 const { Resolver } = require(process.env["NODEJS_RESOLVER"]);
 
 const BAZEL_WORKSPACE = process.env["BAZEL_WORKSPACE"];
-const MAIN_PACKAGE = process.env["NODEJS_MAIN_PACKAGE"];
 const PACKAGES_MANIFEST = process.env["NODEJS_PACKAGES_MANIFEST"];
 const NODEJS_PACKAGES_RUNFILES = process.env["NODEJS_PACKAGES_RUNFILES"];
 const RUNFILES_DIR = process.env["RUNFILES_DIR"];
@@ -72,11 +72,11 @@ Module._resolveFilename = ((delegate) =>
   function (request, parent, isMain) {
     if (isMain) {
       request = request.slice(process.cwd().length + 1);
-      return resolver.resolveById(MAIN_PACKAGE, request);
+      return resolver.resolveById("", request);
     }
 
     if (request.startsWith("/")) {
-      return request;
+      request = `./${path.relative(path.dirname(parent.filename), request)}`;
     }
 
     try {

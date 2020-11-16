@@ -3,15 +3,14 @@ load("//rules/util/bzl:json.bzl", "json")
 def _js_import_external_impl(ctx):
     ctx.download_and_extract(
         ctx.attr.urls,
-        "npm",
+        "tmp",
         integrity = ctx.attr.integrity,
     )
 
     # packages can have different prefixes
-    ls_result = ctx.execute(["ls", "npm"])
-    if ls_result.return_code:
-        fail("Could not determine package prefix")
-    prefix = "npm/%s" % ls_result.stdout.rstrip()
+    mv_result = ctx.execute(["sh", "-c", "mv tmp/* npm"])
+    if mv_result.return_code:
+        fail("Could not extract package")
 
     deps = list(ctx.attr.deps)
 
@@ -29,10 +28,10 @@ def _js_import_external_impl(ctx):
         deps.append("@npm_espree7.3.0//:js")
         deps.append("@npm_glob7.1.6//:js")
         deps.append("@npm_minimist1.2.5//:js")
-        deps.append("@npm_uglify_js2.4.24//:js")
+        deps.append("@npm_uglify_js3.11.6//:js")
         deps.append("@npm_estraverse5.2.0//:js")
 
-    main_result = ctx.execute(["jq", "-r", ".main", "%s/package.json" % prefix])
+    main_result = ctx.execute(["jq", "-r", ".main", "npm/package.json"])
     if main_result.return_code:
         fail("Reading package.json failed")
     if main_result.stdout.rstrip() == "null":
@@ -42,7 +41,7 @@ def _js_import_external_impl(ctx):
         if main.startswith("./"):
             main = main[len("./"):]
 
-    name_result = ctx.execute(["jq", "-r", ".name", "%s/package.json" % prefix])
+    name_result = ctx.execute(["jq", "-r", ".name", "npm/package.json"])
     if name_result.return_code:
         fail("Reading package.json failed")
     package_name = name_result.stdout.rstrip()
@@ -69,7 +68,7 @@ def _js_import_external_impl(ctx):
         "%{deps}": json.encode(deps),
         "%{main}": json.encode(main),
         "%{package_name}": json.encode(package_name),
-        "%{prefix}": json.encode(prefix),
+        "%{prefix}": json.encode("npm"),
         "%{include}": json.encode(["npm/%s" % pattern for pattern in ctx.attr.include]),
         "%{exclude}": json.encode(["npm/%s" % pattern for pattern in ctx.attr.exclude]),
     })
@@ -112,10 +111,10 @@ package(default_visibility = ["//visibility:public"])
 
 js_import(
     name = "js",
-    package_name = "%s",
-    dep = "%s",
+    js_name = %s,
+    deps = [%s],
 )
-        """ % (package_name, label)
+        """ % (json.encode(package_name), json.encode(label))
 
         ctx.file("%s/BUILD.bazel" % package_name, build)
 

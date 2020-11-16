@@ -1,13 +1,19 @@
 load("//rules/nodejs/bzl:rules.bzl", "write_packages_manifest")
-load("//rules/javascript/bzl:providers.bzl", "JsInfo", "add_globals", "merge_js")
-load("//rules/nodejs/bzl:rules.bzl", "create_nodejs_binary")
+load("//rules/javascript/bzl:providers.bzl", "JsInfo", "create_js", "create_package", "create_package_dep")
 load(":providers.bzl", "PrettierInfo")
 
 def _prettier_impl(ctx):
     prettier = ctx.attr.prettier[JsInfo]
     dep = ctx.attr._dep[JsInfo]
-    dep = merge_js(dep, [prettier])
-    dep = add_globals(dep, [prettier.id])
+    dep = create_js(
+        create_package(
+            "",
+            dep.name,
+            deps = tuple([create_package_dep(dep.name, id) for id in dep.ids]),
+        ),
+        global_package_ids = prettier.ids,
+        deps = [dep, prettier],
+    )
 
     packages_manifest = ctx.actions.declare_file("%s/packages-manifest.txt" % ctx.label.name)
     write_packages_manifest(ctx, packages_manifest, dep)
@@ -60,7 +66,6 @@ def _prettier_format_impl(ctx):
         script += "format %s %s \n" % (file.path, formatted.path)
 
         args.add(prettier_info.manifest.path)
-        args.add(prettier_info.dep.id)
         inputs.append(prettier_info.manifest)
 
         args.add(prettier_info.dep.name)

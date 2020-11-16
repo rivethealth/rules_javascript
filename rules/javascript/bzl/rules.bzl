@@ -1,13 +1,23 @@
 load("//rules/util/bzl:path.bzl", "runfile_path")
-load(":providers.bzl", "JsInfo", "create_module", "create_package", "create_package_dep", "merge_js")
+load(":providers.bzl", "JsInfo", "create_js", "create_module", "create_package", "create_package_dep", "merge_js")
+
+def default_package_name(ctx):
+    workspace = "@%s" % (ctx.label.workspace_name or ctx.workspace_name)
+    parts = [workspace]
+    if ctx.label.package:
+        parts.append(ctx.label.package)
+    return "/".join(parts)
+
+def default_strip_prefix(ctx):
+    workspace = ctx.label.workspace_name or ctx.workspace_name
+    parts = [workspace]
+    if ctx.label.package:
+        parts.append(ctx.label.package)
+    return "/".join(parts)
 
 def _js_library_impl(ctx):
-    package_name = ctx.attr.package_name
-    if not package_name:
-        package_name = "@%s/%s" % (ctx.label.workspace_name or ctx.workspace_name, ctx.label.package) if ctx.label.package else ctx.label.workspace_name
-    strip_prefix = ctx.attr.strip_prefix
-    if not strip_prefix:
-        strip_prefix = "%s/%s" % (ctx.label.workspace_name or ctx.workspace_name, ctx.label.package) if ctx.label.package else ctx.label.workspace_name
+    package_name = ctx.attr.js_name or default_package_name(ctx)
+    strip_prefix = ctx.attr.strip_prefix or default_strip_prefix(ctx)
 
     modules = []
     for src in ctx.files.srcs:
@@ -21,30 +31,24 @@ def _js_library_impl(ctx):
         modules.append(create_module(name = path, file = src))
 
     deps = [
-        create_package_dep(name = dep[JsInfo].name, id = dep[JsInfo].id)
+        create_package_dep(name = dep[JsInfo].name, id = id)
         for dep in ctx.attr.deps
+        for id in dep[JsInfo].ids
     ]
 
     package = create_package(
-        ctx.label,
-        package_name,
-        ctx.attr.main,
-        tuple(modules),
-        tuple(deps),
+        id = str(ctx.label),
+        name = package_name,
+        main = ctx.attr.main,
+        modules = tuple(modules),
+        deps = tuple(deps),
     )
 
-    js_info = JsInfo(
-        id = package.id,
-        name = package.name,
-        globals = depset(),
-        transitive_files = depset([module.file for module in modules]),
-        transitive_packages = depset([package]),
-        transitive_source_maps = depset(),
-    )
-
-    js_info = merge_js(
-        js_info,
-        [dep[JsInfo] for dep in ctx.attr.deps],
+    js_info = create_js(
+        package = package,
+        global_package_ids = [dep[JsInfo].id for dep in ctx.attr.global_deps for id in deps.ids],
+        files = [module.file for module in modules],
+        deps = [dep[JsInfo] for dep in ctx.attr.deps] + [dep[JsInfo] for dep in ctx.attr.global_deps],
     )
 
     return [js_info]
@@ -52,45 +56,41 @@ def _js_library_impl(ctx):
 js_library = rule(
     attrs = {
         "main": attr.string(
-            doc = "Main module, if not index.js",
+            doc = "Main module, if not index.js.",
         ),
         "deps": attr.label_list(
-            doc = "Dependencies",
+            doc = "Dependencies.",
             providers = [JsInfo],
         ),
+        "global_deps": attr.label_list(
+            doc = "Global depenedencies",
+            providers = [JsInfo],
+        ),
+        "js_name": attr.string(
+            doc = "Package name. Defaults to @repository_name/js_name.",
+        ),
         "prefix": attr.string(
-            doc = "Add prefix",
+            doc = "Prefix to add. Defaults to empty.",
         ),
-        "strip_prefix": attr.string(
-            doc = "Remove prefix. Defaults to repository_name()/package_name().",
-        ),
-        "package_name": attr.string(
-            doc = "Package name. Defaults to repository_name()/package_name().",
-        ),
-        # TODO: should permit JSON?
         "srcs": attr.label_list(
             allow_files = True,
             doc = "JavaScript files.",
             mandatory = True,
         ),
+        "strip_prefix": attr.string(
+            doc = "Remove prefix. Defaults to repository_name/js_name.",
+        ),
     },
+    doc = "JavaScript library",
     implementation = _js_library_impl,
 )
 
 def _js_import_impl(ctx):
-    js_info = ctx.attr.dep[JsInfo]
-
-    js_info = JsInfo(
-        id = js_info.id,
-        name = ctx.attr.package_name or js_info.package_name,
-        globals = depset([dep[JsInfo].id for dep in ctx.attr.global_deps]),
-        transitive_files = js_info.transitive_files,
-        transitive_packages = js_info.transitive_packages,
-        transitive_source_maps = js_info.transitive_source_maps,
-    )
+    package_name = ctx.attr.js_name or default_package_name(ctx)
 
     js_info = merge_js(
-        js_info,
+        package_name,
+        [dep[JsInfo] for dep in ctx.attr.deps],
         [dep[JsInfo] for dep in ctx.attr.global_deps],
     )
 
@@ -98,18 +98,17 @@ def _js_import_impl(ctx):
 
 js_import = rule(
     attrs = {
-        "package_name": attr.string(
-            doc = "Package name",
-        ),
-        "dep": attr.label(
-            doc = "Package",
-            mandatory = True,
+        "deps": attr.label_list(
+            doc = "Dependencies.",
             providers = [JsInfo],
         ),
         "global_deps": attr.label_list(
             doc = "Global dependencies",
-            providers = [JsInfo],
+        ),
+        "js_name": attr.string(
+            doc = "Package name.",
         ),
     },
+    doc = "Collect imports.",
     implementation = _js_import_impl,
 )

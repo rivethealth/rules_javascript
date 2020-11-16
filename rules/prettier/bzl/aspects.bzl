@@ -17,7 +17,6 @@ def _format_impl(target, ctx):
             script += "format %s %s \n" % (file.path, formatted.path)
 
             args.add(prettier_info.manifest.path)
-            args.add(prettier_info.dep.id)
             inputs.append(prettier_info.manifest)
 
             args.add(prettier_info.dep.name)

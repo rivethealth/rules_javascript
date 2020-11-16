@@ -1,11 +1,11 @@
 load("@bazel_skylib//lib:shell.bzl", "shell")
-load("//rules/javascript/bzl:providers.bzl", "JsInfo")
+load("//rules/javascript/bzl:providers.bzl", "JsInfo", "create_js", "create_package", "create_package_dep", "merge_js")
 load("//rules/util/bzl:path.bzl", "runfile_path")
 load("//rules/util/bzl:json.bzl", "json")
 
 def _package_arg(package):
     arg = struct(
-        id = str(package.id),
+        id = package.id,
         name = package.name,
         main = package.main,
         modules = tuple([struct(name = module.name, file = module.file.path) for module in package.modules]),
@@ -15,7 +15,7 @@ def _package_arg(package):
 
 def _package_run_arg(package):
     arg = struct(
-        id = str(package.id),
+        id = package.id,
         name = package.name,
         main = package.main,
         modules = tuple([struct(name = module.name, file = module.file.short_path) for module in package.modules]),
@@ -24,7 +24,7 @@ def _package_run_arg(package):
     return json.encode(struct(type = "PACKAGE", value = arg))
 
 def _global_arg(id):
-    return json.encode(struct(type = "GLOBAL", value = str(id)))
+    return json.encode(struct(type = "GLOBAL", value = id))
 
 def _nodejs_binary_implementation(ctx):
     js_info = ctx.attr.dep[JsInfo]
@@ -48,21 +48,24 @@ def write_packages_manifest(ctx, file, js_info):
     package_args = ctx.actions.args()
     package_args.set_param_file_format("multiline")
     package_args.add_all(js_info.transitive_packages, map_each = _package_arg)
-    package_args.add_all(js_info.globals, map_each = _global_arg)
+    package_args.add_all(js_info.global_package_ids, map_each = _global_arg)
     ctx.actions.write(file, package_args)
 
 def write_packages_run_manifest(ctx, file, js_info):
     package_args = ctx.actions.args()
     package_args.set_param_file_format("multiline")
     package_args.add_all(js_info.transitive_packages, map_each = _package_run_arg)
-    package_args.add_all(js_info.globals, map_each = _global_arg)
+    package_args.add_all(js_info.global_package_ids, map_each = _global_arg)
     ctx.actions.write(file, package_args)
 
 def create_nodejs_binary(ctx, js_info, main, helpers):
     nodejs_toolchain = ctx.toolchains["@better_rules_javascript//rules/nodejs:toolchain_type"]
 
-    packages_manifest = ctx.actions.declare_file("%s/packages-manifest.txt" % ctx.label.name)
+    package_deps = [create_package_dep(js_info.name, id) for id in js_info.ids]
+    package = create_package("", js_info.name, deps = tuple(package_deps))
+    js_info = create_js(package, deps = [js_info])
 
+    packages_manifest = ctx.actions.declare_file("%s/packages-manifest.txt" % ctx.label.name)
     write_packages_run_manifest(ctx, packages_manifest, js_info)
 
     bin = ctx.actions.declare_file("%s/bin" % ctx.label.name)
@@ -71,7 +74,6 @@ def create_nodejs_binary(ctx, js_info, main, helpers):
         output = bin,
         substitutions = {
             "%{main_module}": shell.quote("%s/%s" % (js_info.name, main) if main else js_info.name),
-            "%{main_package}": shell.quote(str(js_info.id)),
             "%{node}": shell.quote(runfile_path(ctx, nodejs_toolchain.nodejs.bin)),
             "%{packages_manifest}": shell.quote(runfile_path(ctx, packages_manifest)),
             "%{resolver}": shell.quote(runfile_path(ctx, helpers.resolver)),

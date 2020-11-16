@@ -1,4 +1,4 @@
-load("@better_rules_javascript//rules/javascript/bzl:providers.bzl", "JsInfo", "create_module", "create_package", "create_package_dep", "merge_js")
+load("@better_rules_javascript//rules/javascript/bzl:providers.bzl", "JsInfo", "create_js", "create_module", "create_package", "create_package_dep")
 load("@rules_proto//proto:defs.bzl", "ProtoInfo")
 load(":providers.bzl", "JsProtobuf")
 
@@ -46,35 +46,33 @@ def _js_proto_impl(target, ctx):
     )
 
     deps = [dep[JsInfo] for dep in ctx.rule.attr.deps]
-    package_deps = [create_package_dep(dep[JsInfo].name, dep[JsInfo].id) for dep in ctx.rule.attr.deps]
+    package_deps = [create_package_dep(dep[JsInfo].name, id) for dep in ctx.rule.attr.deps for id in dep[JsInfo].ids]
 
     runtime_package = ctx.attr._js_protoc[JsProtobuf].runtime
     deps.append(runtime_package)
-    package_deps.append(create_package_dep(runtime_package.name, runtime_package.id))
+    for id in runtime_package.ids:
+        package_deps.append(create_package_dep(runtime_package.name, id))
 
     package = create_package(
-        ctx.label,
-        ctx.attr._package_name,
-        None,
-        tuple(modules),
-        tuple(package_deps),
+        id = str(ctx.label),
+        name = ctx.attr._js_name,
+        modules = tuple(modules),
+        deps = tuple(package_deps),
     )
 
-    js_info = merge_js(
-        JsInfo(
-            id = package.id,
-            name = package.name,
-            globals = depset(),
-            transitive_files = depset(outputs),
-            transitive_packages = depset([package]),
-            transitive_source_maps = depset(),
-        ),
-        deps,
+    js_info = create_js(
+        package = package,
+        files = outputs,
+        deps = deps,
     )
 
     return [js_info]
 
-def js_proto_aspect(js_protoc, package_name = "proto"):
+def js_proto_aspect(js_protoc, js_name = "proto"):
+    """
+    :param str|Label js_protoc: JsProtobuf label
+    :param str js_name: Package name
+    """
     return aspect(
         implementation = _js_proto_impl,
         attr_aspects = ["deps"],
@@ -83,8 +81,8 @@ def js_proto_aspect(js_protoc, package_name = "proto"):
                 providers = [JsProtobuf],
                 default = js_protoc,
             ),
-            "_package_name": attr.string(
-                default = package_name,
+            "_js_name": attr.string(
+                default = js_name,
             ),
         },
         toolchains = ["@rules_proto_grpc//protobuf:toolchain_type"],
