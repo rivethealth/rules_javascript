@@ -70,6 +70,8 @@ def _js_proto_impl(target, ctx):
 
 def js_proto_aspect(js_protoc, js_name = "proto"):
     """
+    Create js_proto aspect
+
     :param str|Label js_protoc: JsProtobuf label
     :param str js_name: Package name
     """

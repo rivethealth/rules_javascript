@@ -63,8 +63,8 @@ for (const [name, version] of Object.entries({
 }
 
 let bzl = "";
-bzl += `PACKAGES = ${JSON.stringify(packages, undefined, 2)}\n\n`;
-bzl += `ROOTS = ${JSON.stringify(roots, undefined, 2)}\n\n`;
+bzl += `PACKAGES = ${JSON.stringify(packages, undefined, 4)}\n\n`;
+bzl += `ROOTS = ${JSON.stringify(roots, undefined, 4)}\n\n`;
 
 if (args.output === "-") {
   console.log(bzl);
