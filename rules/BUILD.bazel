@@ -28,6 +28,10 @@ js_protoc(
 rollup(
     name = "rollup",
     dep = "@better_rules_javascript_npm//rollup:js",
+    format = "cjs",
+    plugins = [
+        "@better_rules_javascript_npm//@rollup/plugin-commonjs:js",
+    ],
 )
 
 ts_compiler(

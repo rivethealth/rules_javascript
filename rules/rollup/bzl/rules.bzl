@@ -21,6 +21,7 @@ def _rollup_impl(ctx):
 
     rollup_info = RollupInfo(
         dep = js_info,
+        format = ctx.attr.format,
         manifest = manifest,
         plugins = plugins,
     )
@@ -33,6 +34,7 @@ rollup = rule(
             mandatory = True,
             providers = [JsInfo],
         ),
+        "format": attr.string(default = "es"),
         "plugins": attr.label_list(providers = [JsInfo]),
         "_resolve_plugin": attr.label(
             default = "//rules/rollup:resolve",
@@ -64,10 +66,11 @@ def _rollup_bundle_impl(ctx):
     args.add("rollup/dist/bin/rollup")
     args.add("-i", main)
     args.add("-o", output.path)
+    args.add("-f", rollup.format)
     args.add("--silent")
 
     for name, arg in rollup.plugins.items():
-        if name == "@better_rules_javascript/rules/rollup":
+        if name == "@better_rules_javascript/rules/rollup/resolve":
             arg = struct(manifest = manifest.path).to_json()
         if arg != None:
             args.add("-p", "%s=%s" % (name, arg))

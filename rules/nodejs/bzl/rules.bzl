@@ -36,7 +36,6 @@ def _nodejs_binary_implementation(ctx):
         struct(
             bash_runfiles = ctx.files._bash_runfiles,
             launcher = ctx.file._launcher,
-            resolver = ctx.file._resolver,
             shim = ctx.file._shim,
         ),
     )
@@ -76,14 +75,13 @@ def create_nodejs_binary(ctx, js_info, main, helpers):
             "%{main_module}": shell.quote("%s/%s" % (js_info.name, main) if main else js_info.name),
             "%{node}": shell.quote(runfile_path(ctx, nodejs_toolchain.nodejs.bin)),
             "%{packages_manifest}": shell.quote(runfile_path(ctx, packages_manifest)),
-            "%{resolver}": shell.quote(runfile_path(ctx, helpers.resolver)),
             "%{shim}": shell.quote(runfile_path(ctx, helpers.shim)),
             "%{workspace}": shell.quote(ctx.workspace_name),
         },
         is_executable = True,
     )
     runfiles = depset(
-        helpers.bash_runfiles + [nodejs_toolchain.nodejs.bin, helpers.shim, helpers.resolver, packages_manifest],
+        helpers.bash_runfiles + [nodejs_toolchain.nodejs.bin, helpers.shim, packages_manifest],
         transitive = [
             js_info.transitive_files,
             js_info.transitive_source_maps,
@@ -106,10 +104,6 @@ nodejs_binary = rule(
             allow_single_file = True,
             default = "//rules/nodejs:node_launcher.sh.tpl",
         ),
-        "_resolver": attr.label(
-            allow_single_file = True,
-            default = "//rules/javascript:resolver.js",
-        ),
         "_shim": attr.label(
             allow_single_file = True,
             default = "//rules/nodejs:shim.js",
@@ -130,13 +124,12 @@ def _nodejs_runner_implementation(ctx):
         output = bin,
         substitutions = {
             "%{node}": shell.quote(runfile_path(ctx, nodejs_toolchain.nodejs.bin)),
-            "%{resolver}": shell.quote(runfile_path(ctx, ctx.file._resolver)),
             "%{shim}": shell.quote(runfile_path(ctx, ctx.file._shim)),
             "%{workspace}": shell.quote(ctx.workspace_name),
         },
         is_executable = True,
     )
-    runfiles = depset(ctx.files._bash_runfiles + [nodejs_toolchain.nodejs.bin, ctx.file._shim, ctx.file._resolver])
+    runfiles = depset(ctx.files._bash_runfiles + [nodejs_toolchain.nodejs.bin, ctx.file._shim])
 
     default_info = DefaultInfo(executable = bin, runfiles = ctx.runfiles(transitive_files = runfiles))
     return default_info
@@ -150,10 +143,6 @@ nodejs_runner = rule(
         "_runner": attr.label(
             allow_single_file = True,
             default = "//rules/nodejs:runner.sh.tpl",
-        ),
-        "_resolver": attr.label(
-            allow_single_file = True,
-            default = "//rules/javascript:resolver.js",
         ),
         "_shim": attr.label(
             allow_single_file = True,

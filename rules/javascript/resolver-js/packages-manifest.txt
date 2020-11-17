@@ -1,0 +1,3 @@
+{"type":"PACKAGE","value":{"deps":[],"id":"@better_rules_javascript_npm_types_node12.19.4//:js","main":"","modules":[],"name":"@types/node"}}
+{"type":"PACKAGE","value":{"deps":[{"id":"@better_rules_javascript_npm_types_node12.19.4//:js","name":"@types/node"}],"id":"@better_rules_javascript_npm//@types/node:js","main":"","modules":[],"name":"node"}}
+{"type":"PACKAGE","value":{"deps":[{"id":"@better_rules_javascript_npm//@types/node:js","name":"node"}],"id":"//rules/javascript/resolver:ts","main":null,"modules":[{"file":"rules/javascript/resolver/index.ts","name":"index.ts"}],"name":"@better_rules_javascript/rules/javascript/resolver"}}

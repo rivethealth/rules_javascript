@@ -4,7 +4,11 @@ package(default_visibility = ["//visibility:public"])
 
 js_library(
     name = "resolve",
-    srcs = glob(["resolve/**/*.js"]),
-    main = "resolve/index.js",
-    deps = ["//rules/javascript:resolver"],
+    srcs = glob(["resolve-js/**/*.js"]),
+    js_name = "@better_rules_javascript/rules/rollup/resolve",
+    strip_prefix = "better_rules_javascript/rules/rollup/resolve-js",
+    deps = [
+        "//rules/javascript:resolver",
+        "@better_rules_javascript_npm//tslib:js",
+    ],
 )

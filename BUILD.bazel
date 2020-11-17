@@ -18,6 +18,5 @@ prettier_format(
         "README.md",
         "package.json",
         "prettierrc.yml",
-        "//rules/nodejs:shim.js",
     ],
 )

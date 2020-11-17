@@ -20,7 +20,6 @@ export NODEJS_PACKAGES_MANIFEST="$1"
 shift
 
 BAZEL_WORKSPACE=%{workspace} \
-  NODEJS_RESOLVER="$(realpath "$(rlocation %{resolver})")" \
   exec "$(rlocation %{node})" \
   -r "$(realpath "$(rlocation %{shim})")" \
   "$@"

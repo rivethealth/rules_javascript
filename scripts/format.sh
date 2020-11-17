@@ -20,6 +20,6 @@ else
 fi
 
 BAZEL_BIN="$(bazel info bazel-bin)"
-bazel query 'kind("js_library", //...) + kind("prettier_format", //...)' --output package | while IFS= read -r package; do
+bazel query 'kind("js_library", //...) + kind("prettier_format", //...) - //rules/javascript:resolver - //rules/rollup:resolve' --output package | while IFS= read -r package; do
     "$BAZEL_BIN/$package/_format/bin" "$ARG"
 done

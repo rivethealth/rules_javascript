@@ -6,5 +6,10 @@ exports_files(["resolver.js"])
 
 js_library(
     name = "resolver",
-    srcs = ["resolver.js"],
+    srcs = glob(["resolver-js/**/*.js"]),
+    js_name = "@better_rules_javascript/rules/javascript/resolver",
+    strip_prefix = "better_rules_javascript/rules/javascript/resolver-js",
+    deps = [
+        "@better_rules_javascript_npm//tslib:js",
+    ],
 )

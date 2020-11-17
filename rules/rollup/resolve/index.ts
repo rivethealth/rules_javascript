@@ -1,8 +1,8 @@
-const {
+import {
   Resolver,
-} = require("@better_rules_javascript/rules/javascript/resolver");
+} from "@better_rules_javascript/rules/javascript/resolver";
 
-exports.default = function (options) {
+export default function (options) {
   const resolver = new Resolver(false, (request) => [
     request,
     `${request}.js`,
@@ -13,10 +13,14 @@ exports.default = function (options) {
   return {
     name: "rules-javascript-resolve",
     resolveId(source, importer) {
-      if (importer == null) {
-        return resolver.resolveById("", source);
-      }
-      return resolver.resolve(source, importer);
+      try {
+        if (importer == null) {
+            return resolver.resolveById("", source);
+        }
+        return resolver.resolve(source, importer);
+    } catch (e) {
+    }
+    return null;
     },
   };
 };
