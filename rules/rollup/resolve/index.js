@@ -3,7 +3,11 @@ const {
 } = require("@better_rules_javascript/rules/javascript/resolver");
 
 exports.default = function (options) {
-  const resolver = new Resolver();
+  const resolver = new Resolver(false, (request) => [
+    request,
+    `${request}.js`,
+    request ? `${request}/index.js` : "index.js",
+  ]);
   Resolver.readManifest(resolver, options.manifest, (path) => path);
 
   return {

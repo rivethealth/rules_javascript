@@ -1,10 +1,10 @@
-const fs = require("fs");
-const path = require("path");
+import * as fs from "fs";
+import * as path from "path";
 
 /**
  * Resolve modules
  */
-class Resolver {
+export class Resolver {
   constructor(trace, variations) {
     this.#trace = trace;
     this.#variations = variations;
@@ -175,5 +175,3 @@ class Resolver {
     }
   }
 }
-
-exports.Resolver = Resolver;

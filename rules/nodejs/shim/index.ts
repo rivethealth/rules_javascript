@@ -1,7 +1,7 @@
-const fs = require("fs");
-const path = require("path");
-const { Module } = require("module");
-const { Resolver } = require(process.env["NODEJS_RESOLVER"]);
+import * as fs from "fs";
+import * as path from "path";
+const Module = require("module");
+import { Resolver } from "@better_rules_javascript/rules/javascript/resolver";
 
 const BAZEL_WORKSPACE = process.env["BAZEL_WORKSPACE"];
 const PACKAGES_MANIFEST = process.env["NODEJS_PACKAGES_MANIFEST"];
@@ -54,9 +54,10 @@ if (RUNFILES_MANIFEST) {
   Runfiles.readManifest(runfiles, RUNFILES_MANIFEST);
 }
 
-global.getRunfile = (name) => runfiles.getPath(name);
+const getRunfile = name => runfiles.getPath(name);
+(<any>global).getRunfile = getRunfile;
 
-const resolver = new Resolver(TRACE, (request) => [
+const resolver = new Resolver(TRACE, request => [
   request,
   `${request}.js`,
   request ? `${request}/index.js` : "index.js",
@@ -66,13 +67,13 @@ Resolver.readManifest(
   PACKAGES_MANIFEST,
   NODEJS_PACKAGES_RUNFILES == "true" ? getRunfile : (path) => path,
 );
-global.readResolverManifest = (path) =>
+(<any>global).readResolverManifest = (path) =>
   Resolver.readManifest(resolver, path, (path) => path);
-global.resolveById = (id, request) => resolver.resolveById(id, request);
+(<any>global).resolveById = (id, request) => resolver.resolveById(id, request);
 
 const builtinModules = new Set(Module.builtinModules);
 
-Module._resolveFilename = ((delegate) =>
+(<any>Module)._resolveFilename = ((delegate) =>
   function (request, parent, isMain) {
     if (isMain) {
       request = request.slice(process.cwd().length + 1);
@@ -91,4 +92,4 @@ Module._resolveFilename = ((delegate) =>
       }
       throw e;
     }
-  })(Module._resolveFilename);
+  })((<any>Module)._resolveFilename);

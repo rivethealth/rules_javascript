@@ -1,4 +1,6 @@
-load("@better_rules_javascript//rules/protobuf/bzl:rules.bzl", "js_protoc")
+load("//rules/protobuf/bzl:rules.bzl", "js_protoc")
+load("@better_rules_javascript//rules/rollup/bzl:rules.bzl", "rollup")
+load("@better_rules_typescript//rules/typescript/bzl:rules.bzl", "ts_compiler")
 load("@rules_pkg//:pkg.bzl", "pkg_tar")
 
 package(default_visibility = ["//visibility:public"])
@@ -21,4 +23,16 @@ pkg_tar(
 js_protoc(
     name = "js_protoc",
     runtime = "@better_rules_javascript_npm//google-protobuf:js",
+)
+
+rollup(
+    name = "rollup",
+    dep = "@better_rules_javascript_npm//rollup:js",
+)
+
+ts_compiler(
+    name = "ts",
+    lib = ["es2015"],
+    runtime = "@better_rules_javascript_npm//tslib:js",
+    typescript = "@better_rules_javascript_npm//typescript:js",
 )

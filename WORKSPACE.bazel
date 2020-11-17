@@ -127,6 +127,17 @@ http_archive(
     ],
 )
 
+# TypeScript
+
+local_repository(
+    name = "better_rules_typescript",
+    path = "../rules_typescript",
+)
+
+load("@better_rules_typescript//rules/bzl:workspace.bzl", typescript_repositories = "repositories")
+
+typescript_repositories()
+
 # JavaScript
 
 load("//rules/bzl:workspace.bzl", javascript_repositories = "repositories")

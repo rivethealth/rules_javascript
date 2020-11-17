@@ -45,48 +45,80 @@ def _js_import_external_impl(ctx):
     if name_result.return_code:
         fail("Reading package.json failed")
     package_name = name_result.stdout.rstrip()
+    if package_name == "@types/node":
+        build = """
+load("@better_rules_javascript//rules/javascript/bzl:rules.bzl", "js_library")
+load("@better_rules_typescript//rules/typescript/bzl:rules.bzl", "ts_import")
 
-    binaries = ""
+package(default_visibility = ["//visibility:public"])
 
-    #     bin_result = ctx.execute(["jq", "-cr", ".bin | select(. != null) | to_entries[] | [.key,.value] | @tsv", "npm/package.json"])
-    #     if bin_result.return_code:
-    #         fail("Reading package.json failed")
-    #     for line in bin_result.stdout.split('\n'):
-    #         if not line:
-    #             continue
-    #         name, path = line.split('\t')
-    #         binaries += """
-    # nodejs_binary(
-    #     name = {name},
-    #     dep = ":js",
-    #     main = {path}
-    # )
-    #         """.format(name = json.encode(name), path = json.encode(path))
+js_library(
+    main = {main},
+    name = "lib",
+    deps = {js_deps},
+    js_name = {js_name},
+    srcs = glob(["npm/**/*"]),
+    strip_prefix = "%s/npm" % repository_name()[1:],
+)
 
-    ctx.template("BUILD.bazel", ctx.attr._template, {
-        "%{binaries}": binaries,
-        "%{deps}": json.encode(deps),
-        "%{main}": json.encode(main),
-        "%{package_name}": json.encode(package_name),
-        "%{prefix}": json.encode("npm"),
-        "%{include}": json.encode(["npm/%s" % pattern for pattern in ctx.attr.include]),
-        "%{exclude}": json.encode(["npm/%s" % pattern for pattern in ctx.attr.exclude]),
-    })
+ts_import(
+    main = {main},
+    name = "js",
+    deps = {ts_deps},
+    js_name = {js_name},
+    ambiant = glob(["npm/**/*.d.ts"], ["npm/ts3.3/**", "npm/ts3.6/**"]) + ["npm/ts3.3/base.d.ts", "npm/ts3.6/base.d.ts"],
+    strip_prefix = "%s/npm" % repository_name()[1:],
+)
+        """.format(
+            main = json.encode(main),
+            js_deps = json.encode(deps),
+            ts_deps = json.encode([":lib"] + deps),
+            js_name = json.encode(package_name),
+        )
+    else:
+        if package_name.startswith("@types/"):
+            ts_package_name = package_name[len("@types/"):]
+        else:
+            ts_package_name = package_name
+
+        build = """
+load("@better_rules_javascript//rules/javascript/bzl:rules.bzl", "js_library")
+load("@better_rules_typescript//rules/typescript/bzl:rules.bzl", "ts_import")
+
+package(default_visibility = ["//visibility:public"])
+
+js_library(
+    main = {main},
+    name = "lib",
+    deps = {js_deps},
+    js_name = {js_name},
+    srcs = glob(["npm/**/*"]),
+    strip_prefix = "%s/npm" % repository_name()[1:],
+)
+
+ts_import(
+    main = {main},
+    name = "js",
+    deps = {ts_deps},
+    js_name = {ts_name},
+    declarations = glob(["npm/**/*.d.ts"]),
+    strip_prefix = "%s/npm" % repository_name()[1:],
+)
+        """.format(
+            main = json.encode(main),
+            js_deps = json.encode(deps),
+            ts_deps = json.encode([":lib"] + deps),
+            js_name = json.encode(package_name),
+            ts_name = json.encode(ts_package_name),
+        )
+
+    ctx.file("BUILD.bazel", build)
 
 js_import_external = repository_rule(
     implementation = _js_import_external_impl,
     attrs = {
         "deps": attr.string_list(
             doc = "Dependencies",
-        ),
-        "include": attr.string_list(
-            doc = "Include patterns",
-            default = ["**/*"],
-            #default = ["**/*.js", "**/*.json"],
-        ),
-        "exclude": attr.string_list(
-            doc = "Exclude patterns",
-            default = [],
         ),
         "urls": attr.string_list(
             doc = "URLs",
@@ -95,26 +127,26 @@ js_import_external = repository_rule(
         "integrity": attr.string(
             doc = "Integrity",
         ),
-        "_template": attr.label(
-            allow_single_file = True,
-            default = "@better_rules_javascript//rules/npm:BUILD.bazel.tpl",
-        ),
     },
 )
 
 def _js_import_npm_impl(ctx):
     for package_name, label in ctx.attr.packages.items():
+        if package_name.startswith("@types/"):
+            js_name = package_name[len("@types/"):]
+        else:
+            js_name = package_name
         build = """
-load("@better_rules_javascript//rules/javascript/bzl:rules.bzl", "js_import")
+load("@better_rules_typescript//rules/typescript/bzl:rules.bzl", "ts_import")
 
 package(default_visibility = ["//visibility:public"])
 
-js_import(
+ts_import(
     name = "js",
     js_name = %s,
     deps = [%s],
 )
-        """ % (json.encode(package_name), json.encode(label))
+        """ % (json.encode(js_name), json.encode(label))
 
         ctx.file("%s/BUILD.bazel" % package_name, build)
 
