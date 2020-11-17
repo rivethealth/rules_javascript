@@ -354,3 +354,11 @@ the first with `'./a'`. Files must belong to only one package.
 
 Dependencies are naturally strict: each package must explicity list its direct
 dependencies.
+
+## Developing
+
+Some JS build products need to be boostrapped.
+
+To refresh these, run scripts/gen-js.sh, which re-builds and copies them to
+source tree. If that breaks, you'll have to rollback to the last good state of
+the generated files.
