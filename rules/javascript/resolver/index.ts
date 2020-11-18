@@ -30,6 +30,10 @@ export class Resolver {
   addPackage(id, package_) {
     package_.deps.splice(0, 0, { name: package_.name, id });
     this.#packageById.set(id, package_);
+
+    for (const [name, file] of package_.runfileByName.entries()) {
+      this.#pathToModule.set(file, { name, package: package_ });
+    }
   }
 
   /**
@@ -130,8 +134,6 @@ export class Resolver {
         continue;
       }
 
-      path = fs.realpathSync(path);
-      this.#pathToModule.set(path, { name, package: package_ });
       if (this.#trace === "true") {
         console.error(`Resolved "${request}" from ${parent} to be ${path}`);
       }

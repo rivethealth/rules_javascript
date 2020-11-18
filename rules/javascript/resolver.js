@@ -154,6 +154,10 @@ class Resolver {
         continue;
       }
       const data = item.value;
+      for (const { name, file } of data.modules) {
+        file = runfile(file);
+        this.#pathToModule.set(path, { name, package: package_ });
+      }
       const runfileByName = new Map(
         data.modules.map(({ name, file }) => [name, runfile(file)]),
       );

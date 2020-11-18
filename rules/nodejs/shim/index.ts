@@ -73,10 +73,12 @@ Resolver.readManifest(
 
 const builtinModules = new Set(Module.builtinModules);
 
+const cwd = process.cwd();
+
 (<any>Module)._resolveFilename = ((delegate) =>
   function (request, parent, isMain) {
     if (isMain) {
-      request = request.slice(process.cwd().length + 1);
+      request = request.slice(cwd.length + 1);
       return resolver.resolveById("", request);
     }
 
@@ -84,8 +86,19 @@ const builtinModules = new Set(Module.builtinModules);
       request = `./${path.relative(path.dirname(parent.filename), request)}`;
     }
 
+    let parentPath;
+    if (parent) {
+      parentPath = parent.filename;
+      if (parentPath.startsWith(cwd + '/')) {
+        parentPath = parentPath.slice(cwd.length + 1);
+      }
+    } else {
+      parentPath = null;
+    }
+
     try {
-      return resolver.resolve(request, parent && parent.filename);
+      const result = resolver.resolve(request, parentPath);
+      return `${cwd}/${result}`
     } catch (e) {
       if (builtinModules.has(request)) {
         return delegate.apply(this, arguments);

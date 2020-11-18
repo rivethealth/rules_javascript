@@ -36,7 +36,7 @@ rollup(
 
 ts_compiler(
     name = "ts",
-    lib = ["es2015"],
+    lib = ["es2019"],
     runtime = "@better_rules_javascript_npm//tslib:js",
     typescript = "@better_rules_javascript_npm//typescript:js",
 )

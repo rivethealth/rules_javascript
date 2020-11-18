@@ -31,6 +31,9 @@ class Resolver {
     addPackage(id, package_) {
         package_.deps.splice(0, 0, { name: package_.name, id });
         tslib_1.__classPrivateFieldGet(this, _packageById).set(id, package_);
+        for (const [name, file] of package_.runfileByName.entries()) {
+            tslib_1.__classPrivateFieldGet(this, _pathToModule).set(file, { name, package: package_ });
+        }
     }
     /**
      * Resolve path to module.
@@ -106,8 +109,6 @@ class Resolver {
             if (!path) {
                 continue;
             }
-            path = fs.realpathSync(path);
-            tslib_1.__classPrivateFieldGet(this, _pathToModule).set(path, { name, package: package_ });
             if (tslib_1.__classPrivateFieldGet(this, _trace) === "true") {
                 console.error(`Resolved "${request}" from ${parent} to be ${path}`);
             }

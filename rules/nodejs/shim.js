@@ -325,7 +325,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Resolver = void 0;
 
 
-const path = path__default['default'];
+
 /**
  * Resolve modules
  */
@@ -352,6 +352,9 @@ class Resolver {
     addPackage(id, package_) {
         package_.deps.splice(0, 0, { name: package_.name, id });
         tslib.__classPrivateFieldGet(this, _packageById).set(id, package_);
+        for (const [name, file] of package_.runfileByName.entries()) {
+            tslib.__classPrivateFieldGet(this, _pathToModule).set(file, { name, package: package_ });
+        }
     }
     /**
      * Resolve path to module.
@@ -377,8 +380,8 @@ class Resolver {
         }
         const { name, package: package_ } = packageModule;
         if (request.startsWith("./") || request.startsWith("../")) {
-            request = path
-                .join("/", package_.name, path.dirname(name), request)
+            request = path__default['default']
+                .join("/", package_.name, path__default['default'].dirname(name), request)
                 .slice(1);
         }
         const attempts = [];
@@ -427,8 +430,6 @@ class Resolver {
             if (!path) {
                 continue;
             }
-            path = fs__default['default'].realpathSync(path);
-            tslib.__classPrivateFieldGet(this, _pathToModule).set(path, { name, package: package_ });
             if (tslib.__classPrivateFieldGet(this, _trace) === "true") {
                 console.error(`Resolved "${request}" from ${parent} to be ${path}`);
             }
@@ -539,16 +540,28 @@ ts.Resolver.readManifest(resolver, PACKAGES_MANIFEST, NODEJS_PACKAGES_RUNFILES =
 commonjsGlobal.readResolverManifest = (path) => ts.Resolver.readManifest(resolver, path, (path) => path);
 commonjsGlobal.resolveById = (id, request) => resolver.resolveById(id, request);
 const builtinModules = new Set(Module__default['default'].builtinModules);
+const cwd = process.cwd();
 Module__default['default']._resolveFilename = ((delegate) => function (request, parent, isMain) {
     if (isMain) {
-        request = request.slice(process.cwd().length + 1);
+        request = request.slice(cwd.length + 1);
         return resolver.resolveById("", request);
     }
     if (request.startsWith("/")) {
         request = `./${path__default['default'].relative(path__default['default'].dirname(parent.filename), request)}`;
     }
+    let parentPath;
+    if (parent) {
+        parentPath = parent.filename;
+        if (parentPath.startsWith(cwd + '/')) {
+            parentPath = parentPath.slice(cwd.length + 1);
+        }
+    }
+    else {
+        parentPath = null;
+    }
     try {
-        return resolver.resolve(request, parent && parent.filename);
+        const result = resolver.resolve(request, parentPath);
+        return `${cwd}/${result}`;
     }
     catch (e) {
         if (builtinModules.has(request)) {
