@@ -28,15 +28,19 @@ Rules for JavaScript, with an emphasis on idiomatic Bazel APIs.
   - [x] nodejs_binary
   - [ ] docker
 - [ ] test
+  - [ ] mocha
+  - [ ] jasmine
   - [ ] jest
+  - [ ] sharding
+  - [ ] JUnit output
 - [x] serialization
   - [x] protobuf
 - [ ] external dependencies
-- [ ] npm
-- [x] yarn
-- [ ] node-gyp
+  - [ ] npm
+  - [x] yarn
+  - [ ] node-gyp
 - [ ] lint
-  - [x] prettier (TODO: plugins)
+  - [x] prettier
   - [ ] eslint (TODO: config file, plugins)
 - [ ] dev
   - [x] Stardoc
@@ -328,7 +332,9 @@ js_proto_library(
 
 Auto-generated [Stardoc documentation](docs/stardoc).
 
-## Module resolution
+## Design
+
+### Module resolution
 
 Perhaps the most difficult part of JavaScript tooling is resolving modules.
 
@@ -354,6 +360,10 @@ the first with `'./a'`. Files must belong to only one package.
 
 Dependencies are naturally strict: each package must explicity list its direct
 dependencies.
+
+### Differences with rules_javascript
+
+See [docs/rules_javascript.md](docs/rules_javascript.md).
 
 ## Developing
 
