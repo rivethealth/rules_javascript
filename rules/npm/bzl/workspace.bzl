@@ -41,6 +41,16 @@ def _js_import_external_impl(ctx):
         if main.startswith("./"):
             main = main[len("./"):]
 
+    type_main_result = ctx.execute(["jq", "-r", "if .types != null then .types else .typings end", "npm/package.json"])
+    if type_main_result.return_code:
+        fail("Reading package.json failed")
+    if type_main_result.stdout.rstrip() == "null":
+        type_main = ""
+    else:
+        type_main = type_main_result.stdout.rstrip()
+        if type_main.startswith("./"):
+            type_main = type_main[len("./"):]
+
     name_result = ctx.execute(["jq", "-r", ".name", "npm/package.json"])
     if name_result.return_code:
         fail("Reading package.json failed")
@@ -53,7 +63,7 @@ load("@better_rules_typescript//rules/typescript/bzl:rules.bzl", "ts_import")
 package(default_visibility = ["//visibility:public"])
 
 js_library(
-    main = {main},
+    main = {js_main},
     name = "lib",
     deps = {js_deps},
     js_name = {js_name},
@@ -62,15 +72,17 @@ js_library(
 )
 
 ts_import(
-    main = {main},
+    main = {ts_main},
     name = "js",
     deps = {ts_deps},
     js_name = {js_name},
-    ambiant = glob(["npm/**/*.d.ts"], ["npm/ts3.3/**", "npm/ts3.6/**"]) + ["npm/ts3.3/base.d.ts", "npm/ts3.6/base.d.ts"],
+    ambiant = ["npm/index.d.ts"],
+    declarations = glob(["npm/**/*.d.ts"]),
     strip_prefix = "%s/npm" % repository_name()[1:],
 )
         """.format(
-            main = json.encode(main),
+            js_main = json.encode(main),
+            ts_main = json.encode(type_main),
             js_deps = json.encode(deps),
             ts_deps = json.encode([":lib"] + deps),
             js_name = json.encode(package_name),
@@ -88,7 +100,7 @@ load("@better_rules_typescript//rules/typescript/bzl:rules.bzl", "ts_import")
 package(default_visibility = ["//visibility:public"])
 
 js_library(
-    main = {main},
+    main = {js_main},
     name = "lib",
     deps = {js_deps},
     js_name = {js_name},
@@ -97,7 +109,7 @@ js_library(
 )
 
 ts_import(
-    main = {main},
+    main = {ts_main},
     name = "js",
     deps = {ts_deps},
     js_name = {ts_name},
@@ -105,7 +117,8 @@ ts_import(
     strip_prefix = "%s/npm" % repository_name()[1:],
 )
         """.format(
-            main = json.encode(main),
+            js_main = json.encode(main),
+            ts_main = json.encode(type_main),
             js_deps = json.encode(deps),
             ts_deps = json.encode([":lib"] + deps),
             js_name = json.encode(package_name),
