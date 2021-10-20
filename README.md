@@ -33,17 +33,17 @@ Bazel rules for JavaScript, prioritzing, performance, and flexibility.
   - [ ] jest
   - [ ] sharding
   - [ ] JUnit output
-- [x] serialization
-  - [x] protobuf
+- [ ] serialization
+  - [ ] protobuf
 - [ ] external dependencies
   - [ ] npm
   - [x] yarn
   - [ ] node-gyp
 - [ ] lint
-  - [x] prettier
+  - [ ] prettier
   - [ ] eslint (TODO: config file, plugins)
 - [ ] dev
-  - [x] Stardoc
+  - [ ] Stardoc
   - [ ] CI
 
 ## Install
@@ -80,6 +80,12 @@ javascript_respositories()
 
 ### Basic
 
+**package.json**
+
+```json
+{}
+```
+
 **a.js**
 
 ```js
@@ -96,16 +102,24 @@ console.log(a.example);
 **BUILD.bazel**
 
 ```bzl
+load("@better_rules_javascript//rules/commonjs:rules.bzl", "cjs_root")
 load("@better_rules_javascript//rules/javascript:rules.bzl", "js_library")
 load("@better_rules_javascript//rules/nodejs:rules.bzl", "nodejs_binary")
 
+cjs_root(
+  name = "root",
+  descriptor = "package.json"
+)
+
 js_library(
     name = "a",
+    root = ":root",
     srcs = ["a.js"],
 )
 
 js_library(
     name = "b",
+    root = ":root",
     srcs = ["b.js"],
     deps = [":a"],
 )
@@ -120,6 +134,16 @@ nodejs_binary(
 ### External dependencies
 
 #### Resolve external dependency graph
+
+**package.json**
+
+```json
+{
+  "dependencies": {
+    "@org/package": "1.0.0"
+  }
+}
+```
 
 ```sh
 yarn install
@@ -142,13 +166,14 @@ load(":npm_data.bzl", NPM_PACKAGES = "PACKAGES", NPM_ROOTS = "ROOTS")
 npm("npm", NPM_PACKAGES, NPM_ROOTS)
 ```
 
-NPM packages are accessible as
+NPM packages are available as `@npm//<package_name>:lib`, e.g.
+
+**BUILD.bazel**
 
 ```bzl
 js_library(
     name = "example",
-    srcs = ["example.js"],
-    deps = ["@npm//org_package:js"],
+    deps = ["@npm//org_package:lib"],
 )
 ```
 
@@ -167,16 +192,21 @@ Add rollup as an [external dependency](#external_dependencies).
 **BUILD.bzl**
 
 ```bzl
-load("@better_rules_javascript//rules/rollup:rules.bzl", "rollup")
+load("@better_rules_javascript//rules/rollup:rules.bzl", "configure_rollup")
 
-rollup(
+configure_rollup(
     name = "rollup",
-    dep = "@npm//rollup:js",
-    plugins = [],
+    dep = "@npm//rollup:lib",
 )
 ```
 
 #### Use
+
+**example/package.json**
+
+```json
+{}
+```
 
 **example/a.js**
 
@@ -192,21 +222,43 @@ import { a } from './a';
 console.log(a);
 ```
 
+**example/rollup.config.js**
+
+```
+export default {
+  input: `${process.env.ROLLUP_INPUT_ROOT}/index.js`,
+  output: { file: process.env.ROLLUP_OUTPUT, format: 'cjs' },
+};
+```
+
 **example/BUILD.bzl**
 
 ```bzl
 load("@better_rules_javascript//rules/javascript:rules.bzl", "js_library")
 load("@better_rules_javascript//rules/rollup:rules.bzl", "rollup_bundle")
 
+cjs_root(
+  name = "root",
+  descriptor = "package.json"
+)
+
 js_library(
     name = "js",
+    root = ":root",
     srcs = ["a.js", "b.js"],
+)
+
+js_library(
+    name = "rollup_config",
+    root = ":root",
+    srcs = ["rollup.js.config"]
 )
 
 rollup_bundle(
     name = "bundle",
     dep = ":b",
-    main = "b.js",
+    config_dep = ":rollup_config",
+    config_path = "rollup.js.config",
     rollup = "//:rollup",
 )
 ```
@@ -229,7 +281,7 @@ package(default_visibility = ["//visibility:public"])
 prettier(
     name = "prettier",
     config = "//:prettierrc.yml", # optional
-    prettier = "@npm//prettier:js",
+    prettier = "@npm//prettier:lib",
 )
 ```
 
@@ -296,7 +348,7 @@ package(default_visibility = ["//visibility:public"])
 
 js_protoc(
     name = "js_protoc",
-    runtime = "@npm//google-protobuf:js",
+    runtime = "@npm//google-protobuf:lib",
 )
 ```
 
@@ -306,7 +358,7 @@ js_protoc(
 load("@better_rules_javascript//rules/protobuf:aspects.bzl", "js_proto_aspect")
 load("@better_rules_javascript//rules/protobuf:rules.bzl", "js_proto_library_rule")
 
-js_proto = js_proto_aspect("@better_rules_javascript_test//:js_protoc")
+js_proto = js_proto_aspect("@better_rules_javascript_test//:lib_protoc")
 
 js_proto_library = js_proto_library_rule(js_proto)
 ```
@@ -353,13 +405,13 @@ js_library(
   name = "js_test",
   root = ":cjs",
   src = glob(["**/*.spec.js"]),
-  deps = [":js"],
+  deps = [":lib"],
 )
 
 npm_publish(
   name = "npm",
   root = ":cjs",
-  files = [":js"],
+  files = [":lib"],
 )
 ```
 
