@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+        "declaration": true,
+        "module": "es2020",
+        "moduleResolution": "node",
+        "outDir": "../runfile-js",
+        "rootDir": ".",
+        "target": "es2020"
+    }
+}

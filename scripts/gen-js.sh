@@ -2,17 +2,14 @@
 set -ex
 cd "$(dirname "$0")/.."
 
-bazel build --output_groups js rules/javascript/resolver:ts
-rm -fr rules/javascript/resolver-js
-cp -r "$(bazel info bazel-bin)/rules/javascript/resolver/ts" rules/javascript/resolver-js
-chmod -R +w rules/javascript/resolver-js
-
 bazel build rules/nodejs/shim:bundle
 rm -fr rules/nodejs/shim.js
-cp "$(bazel info bazel-bin)/rules/nodejs/shim/bundle/bundle.js" rules/nodejs/shim.js
-chmod +w rules/nodejs/shim.js
+chmod +w rules/nodejs/shim/dist/bundle.js
+cp "$(bazel info bazel-bin)/rules/nodejs/shim/bundle/bundle.js" rules/nodejs/shim/dist/bundle.js
+chmod +w rules/nodejs/shim/dist/bundle.js
 
-bazel build --output_groups js rules/rollup/resolve:ts
+bazel build --output_groups js rules/nodejs/fs-gen:bundle
 rm -fr rules/rollup/resolve-js
-cp -r "$(bazel info bazel-bin)/rules/rollup/resolve/ts" rules/rollup/resolve-js
-chmod -R +w rules/rollup/resolve-js
+chmod +w rules/nodejs/fs-gen/dist/bundle.js
+cp -r "$(bazel info bazel-bin)/rules/nodejs/fs-gen/bundle/bundle.js" rules/nodejs/fs-gen/dist/bundle.js
+chmod +w rules/nodejs/fs-gen/dist/bundle.js

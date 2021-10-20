@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 
-# If manifest is used, resolve items in manifest.
-#
-# If symlinks are being used, preserve the symlinks.
+# For additional options to the Node.js runtime, use the
+# NODE_OPTIONS environment variable.
 
 # See https://github.com/bazelbuild/bazel/blob/master/tools/bash/runfiles/runfiles.bash
 # --- begin runfiles.bash initialization v2 ---
@@ -16,10 +15,10 @@ source "${RUNFILES_DIR:-/dev/null}/$f" 2>/dev/null || \
   { echo>&2 "ERROR: cannot find $f"; exit 1; }; f=; set -e
 # --- end runfiles.bash initialization v2 ---
 
-export NODEJS_PACKAGES_MANIFEST="$1"
-shift
-
 BAZEL_WORKSPACE=%{workspace} \
   exec "$(rlocation %{node})" \
   -r "$(realpath "$(rlocation %{shim})")" \
+  -r "$(realpath "$(rlocation %{fs_manifest})")" \
+  ${NODE_OPTIONS_APPEND:-} \
+  %{main_module} \
   "$@"

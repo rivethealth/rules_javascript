@@ -1,5 +1,5 @@
-load("//rules/nodejs/bzl:rules.bzl", "nodejs_binary")
-load("//rules/prettier/bzl:rules.bzl", "prettier")
+load("//rules/nodejs:rules.bzl", "nodejs_binary")
+load("//rules/prettier:rules.bzl", "prettier")
 
 package(default_visibility = ["//visibility:public"])
 

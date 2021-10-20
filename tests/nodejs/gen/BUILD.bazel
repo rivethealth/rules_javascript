@@ -1,5 +1,5 @@
-load("@better_rules_javascript//rules/javascript/bzl:rules.bzl", "js_library")
-load("@better_rules_javascript//rules/nodejs/bzl:rules.bzl", "nodejs_binary")
+load("@better_rules_javascript//rules/javascript:rules.bzl", "js_library")
+load("@better_rules_javascript//rules/nodejs:rules.bzl", "nodejs_binary")
 
 genrule(
     name = "generated",

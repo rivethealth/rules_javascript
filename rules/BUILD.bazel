@@ -1,42 +1,20 @@
-load("//rules/protobuf/bzl:rules.bzl", "js_protoc")
-load("@better_rules_javascript//rules/rollup/bzl:rules.bzl", "rollup")
-load("@better_rules_typescript//rules/typescript/bzl:rules.bzl", "ts_compiler")
-load("@rules_pkg//:pkg.bzl", "pkg_tar")
+load("@better_rules_typescript//rules/typescript:rules.bzl", "configure_simple_ts_compiler")
+load("//rules/rollup:rules.bzl", "configure_rollup")
+# load("//rules/protobuf:rules.bzl", "js_protoc")
 
 package(default_visibility = ["//visibility:public"])
 
-pkg_tar(
-    name = "docs",
-    srcs = [
-        # Can't import @bazel_tools//tools/build_defs/repo:http.bzl
-        "//rules/javascript/bzl:rules_doc",
-        "//rules/npm/bzl:doc",
-        #"//rules/prettier/bzl:doc",
-        "//rules/protobuf/bzl:doc",
-        # "//rules/nodejs/bzl:doc",
-        # "//rules/rollup/bzl:doc",
-    ],
-    mode = "0644",
-    strip_prefix = ".",
-)
-
-js_protoc(
-    name = "js_protoc",
-    runtime = "@better_rules_javascript_npm//google-protobuf:js",
-)
-
-rollup(
+configure_rollup(
     name = "rollup",
-    dep = "@better_rules_javascript_npm//rollup:js",
-    format = "cjs",
-    plugins = [
-        "@better_rules_javascript_npm//@rollup/plugin-commonjs:js",
-    ],
+    dep = "@better_rules_javascript_npm//rollup:lib"
 )
 
-ts_compiler(
-    name = "ts",
-    lib = ["es2019"],
-    runtime = "@better_rules_javascript_npm//tslib:js",
-    typescript = "@better_rules_javascript_npm//typescript:js",
+configure_simple_ts_compiler(
+    name = "tsc",
+    ts = "@better_rules_javascript_npm//typescript:lib",
 )
+
+# js_protoc(
+#     name = "js_protoc",
+#     runtime = "@better_rules_javascript_npm//google-protobuf:js",
+# )

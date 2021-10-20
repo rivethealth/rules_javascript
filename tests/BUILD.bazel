@@ -1,7 +1,7 @@
-load("@better_rules_javascript//rules/nodejs/bzl:rules.bzl", "nodejs_binary")
-load("@better_rules_javascript//rules/protobuf/bzl:rules.bzl", "js_protoc")
-load("@better_rules_javascript//rules/protobufjs/bzl:rules.bzl", js_protojs = "js_proto")
-load("@better_rules_javascript//rules/rollup/bzl:rules.bzl", "rollup")
+load("@better_rules_javascript//rules/nodejs:rules.bzl", "nodejs_binary")
+load("@better_rules_javascript//rules/protobuf:rules.bzl", "js_protoc")
+load("@better_rules_javascript//rules/protobufjs:rules.bzl", js_protojs = "js_proto")
+load("@better_rules_javascript//rules/rollup:rules.bzl", "rollup")
 
 package(default_visibility = ["//visibility:public"])
 

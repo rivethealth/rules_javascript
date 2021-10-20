@@ -1,13 +1,27 @@
-load("@better_rules_javascript//rules/javascript/bzl:rules.bzl", "js_library")
-load("@better_rules_javascript//rules/nodejs/bzl:rules.bzl", "nodejs_binary")
+load("@better_rules_javascript//rules/commonjs:rules.bzl", "cjs_root")
+load("@better_rules_javascript//rules/javascript:rules.bzl", "js_library")
+load("@better_rules_javascript//rules/nodejs:rules.bzl", "nodejs_binary")
+
+cjs_root(
+    descriptor = "package.json",
+    name = "root",
+    package_name = "@better-rules-javascript-test/nodejs-binary"
+)
 
 js_library(
-    name = "js",
-    srcs = glob(["**/*.js"]),
+    name = "lib",
+    root = ":root",
+    srcs = ["lib.js"],
+)
+
+js_library(
+    deps = [":lib"],
+    name = "main",
+    root = ":root",
+    srcs = ["main.js"],
 )
 
 nodejs_binary(
     name = "bin",
-    dep = ":js",
-    main = "example",
+    dep = ":main",
 )

@@ -1,13 +1,22 @@
 {
   "dependencies": {
     "@rollup/plugin-commonjs": "~16.0.0",
-    "@types/node": "^12.0.0",
+    "@rollup/plugin-node-resolve": "13.0.4",
+    "@yarnpkg/lockfile": "~1.1.0",
     "argparse": "~2.0.1",
+    "enhanced-resolve": "~5.8.0",
     "google-protobuf": "~3.13.0",
     "prettier": "~2.1.0",
-    "rollup": "~2.33.0",
+    "rollup": "~2.58.0",
+    "rollup-plugin-hypothetical": "~2.1.0",
+    "rollup-plugin-ignore": "~1.0.0",
     "tslib": "~2.0.0",
     "typescript": "~4.0.0"
+  },
+  "devDependencies": {
+    "@types/argparse": "~2.0.0",
+    "@types/node": "^12.0.0",
+    "@types/yarnpkg__lockfile": "~1.1.0"
   },
   "private": true
 }

@@ -1,5 +1,5 @@
 load("@com_github_bazelbuild_buildtools//buildifier:def.bzl", "buildifier")
-load("//rules/prettier/bzl:rules.bzl", "prettier_format")
+load("//rules/prettier:rules.bzl", "prettier_format")
 
 exports_files(["prettierrc.yml"])
 

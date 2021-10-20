@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+        "baseUrl": ".",
+        "declaration": true,
+        "module": "es2015",
+        "moduleResolution": "node",
+        "paths": {
+            "@better_rules_javascript/commonjs-fs": ["../../commonjs/fs-js"],
+            "@better_rules_javascript/commonjs-fs/*": ["../../commonjs/fs-js/*"],
+        },
+        "outDir": "../fs-gen-js",
+        "rootDir": ".",
+        "target": "ES2020"
+    }
+}

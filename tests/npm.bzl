@@ -1,4 +1,4 @@
-load("@better_rules_javascript//rules/npm/bzl:workspace.bzl", "npm_package", "npm_roots")
+load("@better_rules_javascript//rules/npm:workspace.bzl", "npm_package", "npm_roots")
 load(":npm_data.bzl", "PACKAGES", "ROOTS")
 
 def npm(name):

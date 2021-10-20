@@ -1,0 +1,11 @@
+{
+    "compilerOptions": {
+        "declaration": true,
+        "baseUrl": ".",
+        "module": "es2015",
+        "moduleResolution": "node",
+        "outDir": "../fs-js",
+        "rootDir": ".",
+        "target": "ES2020"
+    }
+}

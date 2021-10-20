@@ -1,9 +1,21 @@
-load("//rules/javascript/bzl:rules.bzl", "js_library")
-load("//rules/nodejs/bzl:rules.bzl", "nodejs_binary")
+load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
+load("//rules/javascript:rules.bzl", "js_library")
+load("//rules/nodejs:rules.bzl", "nodejs_binary")
 
 package(default_visibility = ["//visibility:public"])
 
 exports_files(["runner.sh.tpl"])
+
+exports_files(["**/*.bzl"])
+
+bzl_library(
+    name = "bzl",
+    srcs = glob(["**/*.bzl"]),
+    deps = [
+        "//rules/javascript/bzl",
+        "//rules/nodejs/bzl",
+    ],
+)
 
 js_library(
     name = "js",

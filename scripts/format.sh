@@ -10,7 +10,7 @@ fi
 bazel run $TARGET
 
 bazel query 'kind("js_library", //...)' \
-    | xargs -r bazel build --aspects //tools/bzl:aspects.bzl%format --output_groups=formatted
+    | xargs -r bazel build --aspects //tools:aspects.bzl%format --output_groups=formatted
 bazel query 'kind("prettier_format", //...)' | xargs -r bazel build
 
 if [ "$1" = check ]; then

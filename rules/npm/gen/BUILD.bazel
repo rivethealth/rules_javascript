@@ -1,17 +1,32 @@
-load("//rules/javascript/bzl:rules.bzl", "js_library")
-load("//rules/nodejs/bzl:rules.bzl", "nodejs_binary")
+load("@better_rules_typescript//rules/typescript:rules.bzl", "simple_ts_library")
+load("//rules/commonjs:rules.bzl", "cjs_root")
+load("//rules/nodejs:rules.bzl", "nodejs_binary")
 
-js_library(
-    name = "js",
-    srcs = glob(["src/**/*.js"]),
+cjs_root(
+    descriptor = "package.json",
+    name = "root",
+    package_name = "@better_rules_javascript/npm-gen"
+)
+
+simple_ts_library(
+    compiler = "//rules:tsc",
+    compiler_options = ["--lib", "dom,es2019"],
+    name = "ts",
+    root = ":root",
+    srcs = glob(["src/**/*.ts"]),
     strip_prefix = "better_rules_javascript/rules/npm/gen/src",
     deps = [
-        "@better_rules_javascript_npm_internal//@yarnpkg/lockfile:js",
-        "@better_rules_javascript_npm_internal//argparse:js",
+        "@better_rules_javascript_npm//argparse:lib",
+        "@better_rules_javascript_npm//types_argparse:lib",
+        "@better_rules_javascript_npm//yarnpkg_lockfile:lib",
+        "@better_rules_javascript_npm//types_yarnpkg__lockfile:lib",
     ],
+    types = [
+        "@better_rules_javascript_npm//types_node:lib"
+    ]
 )
 
 nodejs_binary(
     name = "bin",
-    dep = ":js",
+    dep = ":ts",
 )

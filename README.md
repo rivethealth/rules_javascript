@@ -1,6 +1,6 @@
 # rules_javascript
 
-Rules for JavaScript, with an emphasis on idiomatic Bazel APIs.
+Bazel rules for JavaScript, prioritzing, performance, and flexibility.
 
 - [rules_javascript](#rules_javascript)
   - [Features](#features)
@@ -72,7 +72,7 @@ http_archive(
     urls = ["https://github.com/rivethealth/rules_javascript/archive/%s.tar.gz" % JAVACRIPT_VERSION],
 )
 
-load("@better_rules_javascript//rules/bzl:workspace.bzl", javascript_repositories = "respositories")
+load("@better_rules_javascript//rules:workspace.bzl", javascript_repositories = "respositories")
 javascript_respositories()
 ```
 
@@ -96,8 +96,8 @@ console.log(a.example);
 **BUILD.bazel**
 
 ```bzl
-load("@better_rules_javascript//rules/javascript/bzl:rules.bzl", "js_library")
-load("@better_rules_javascript//rules/nodejs/bzl:rules.bzl", "nodejs_binary")
+load("@better_rules_javascript//rules/javascript:rules.bzl", "js_library")
+load("@better_rules_javascript//rules/nodejs:rules.bzl", "nodejs_binary")
 
 js_library(
     name = "a",
@@ -137,7 +137,7 @@ bazel run @better_rules_javascript//rules/npm/gen:bin -- \
 **WORKSPACE.bazel**
 
 ```bzl
-load("@better_rules_javascript//rules/npm/bzl:workspace.bzl", "npm")
+load("@better_rules_javascript//rules/npm:workspace.bzl", "npm")
 load(":npm_data.bzl", NPM_PACKAGES = "PACKAGES", NPM_ROOTS = "ROOTS")
 npm("npm", NPM_PACKAGES, NPM_ROOTS)
 ```
@@ -167,7 +167,7 @@ Add rollup as an [external dependency](#external_dependencies).
 **BUILD.bzl**
 
 ```bzl
-load("@better_rules_javascript//rules/rollup/bzl:rules.bzl", "rollup")
+load("@better_rules_javascript//rules/rollup:rules.bzl", "rollup")
 
 rollup(
     name = "rollup",
@@ -195,8 +195,8 @@ console.log(a);
 **example/BUILD.bzl**
 
 ```bzl
-load("@better_rules_javascript//rules/javascript/bzl:rules.bzl", "js_library")
-load("@better_rules_javascript//rules/rollup/bzl:rules.bzl", "rollup_bundle")
+load("@better_rules_javascript//rules/javascript:rules.bzl", "js_library")
+load("@better_rules_javascript//rules/rollup:rules.bzl", "rollup_bundle")
 
 js_library(
     name = "js",
@@ -222,7 +222,7 @@ Add prettier as an [external dependency](#external_dependencies).
 **tools/BUILD.bzl**
 
 ```bzl
-load("@better_rules_javascript//rules/prettier/bzl:rules.bzl", "prettier")
+load("@better_rules_javascript//rules/prettier:rules.bzl", "prettier")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -236,7 +236,7 @@ prettier(
 **tools/aspects.bzl**
 
 ```bzl
-load("@better_rules_javascript//rules/prettier/bzl:aspects.bzl", "format_aspect")
+load("@better_rules_javascript//rules/prettier:aspects.bzl", "format_aspect")
 
 format = format_aspect("@example_repo//tools:prettier")
 ```
@@ -290,7 +290,7 @@ Add google-protobuf as an [external dependency](#external-dependencies).
 **BUILD.bazel**
 
 ```bzl
-load("@better_rules_javascript//rules/protobuf/bzl:rules.bzl", "js_protoc")
+load("@better_rules_javascript//rules/protobuf:rules.bzl", "js_protoc")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -303,8 +303,8 @@ js_protoc(
 **rules.bzl**
 
 ```bzl
-load("@better_rules_javascript//rules/protobuf/bzl:aspects.bzl", "js_proto_aspect")
-load("@better_rules_javascript//rules/protobuf/bzl:rules.bzl", "js_proto_library_rule")
+load("@better_rules_javascript//rules/protobuf:aspects.bzl", "js_proto_aspect")
+load("@better_rules_javascript//rules/protobuf:rules.bzl", "js_proto_library_rule")
 
 js_proto = js_proto_aspect("@better_rules_javascript_test//:js_protoc")
 
@@ -332,36 +332,38 @@ js_proto_library(
 
 Auto-generated [Stardoc documentation](docs/stardoc).
 
-## Design
+## Design`
 
-### Module resolution
+**TODO**
 
-Perhaps the most difficult part of JavaScript tooling is resolving modules.
+```bzl
+cjs_root(
+  name = "cjs",
+  manifest = "package.json" # optional,
+  package_name = "foo"
+)
 
-rules_javascript implements custom resolvers for good performance and Bazel
-integration.
+js_library(
+  name = "js",
+  package = ":cjs",
+  src = glob(["**/*.js"], ["**/*.spec.js"])
+)
 
-This design choice requries implementing modules resolution for tools, but is an
-acceptable tradeoff for the flexibility it grants. Good Bazel tooling requires
-shims anyway to support features like workers.
+js_library(
+  name = "js_test",
+  root = ":cjs",
+  src = glob(["**/*.spec.js"]),
+  deps = [":js"],
+)
 
-JavaScript is organized by "packages" which have a name (not necessarily
-unique), named modules, named dependencies, and (optionally) an entry point.
-Relative imports are constructed relative to package_name/module_name. By
-default, the package name is @bazel_workspace/bazel_package, and the module name
-is relative to the package.
+npm_publish(
+  name = "npm",
+  root = ":cjs",
+  files = [":js"],
+)
+```
 
-Packages are listed in packages-manifest.txt and then processed by
-[rules/javascript/resolver.js](rules/javascript/resolver.js).
-
-These units are different from NPM "packages." For example a.js could belong to
-one package and a.spec.js could belong to a second, but the second can import
-the first with `'./a'`. Files must belong to only one package.
-
-Dependencies are naturally strict: each package must explicity list its direct
-dependencies.
-
-### Differences with rules_javascript
+### Differences with rules_javascrizpt
 
 See [docs/rules_javascript.md](docs/rules_javascript.md).
 
