@@ -1,4 +1,4 @@
-load("@better_rules_typescript//rules/typescript:rules.bzl", "simple_ts_library")
+load("@better_rules_typescript//rules/typescript:rules.bzl", "ts_library")
 load("//rules/commonjs:rules.bzl", "cjs_root")
 
 package(default_visibility = ["//visibility:public"])
@@ -9,7 +9,7 @@ cjs_root(
     package_name = "@better_rules_javascript/commonjs-fs",
 )
 
-simple_ts_library(
+ts_library(
     name = "ts",
     compiler = "//rules:tsc",
     compiler_options = ["--lib", "dom,es2016", "--target", "es2019"],

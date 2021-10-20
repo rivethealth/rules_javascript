@@ -1,4 +1,4 @@
-load("@better_rules_typescript//rules/typescript:rules.bzl", "simple_ts_library")
+load("@better_rules_typescript//rules/typescript:rules.bzl", "ts_library")
 load("//rules/commonjs:rules.bzl", "cjs_root")
 load("//rules/javascript:rules.bzl", "js_library")
 load("//rules/nodejs:rules.bzl", "nodejs_simple_binary")
@@ -23,7 +23,7 @@ js_library(
     srcs = ["rollup.config.js"],
 )
 
-simple_ts_library(
+ts_library(
     name = "ts",
     compiler = "//rules:tsc",
     compiler_options = ["--lib", "dom,es2016"],

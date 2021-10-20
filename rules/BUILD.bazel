@@ -1,4 +1,4 @@
-load("@better_rules_typescript//rules/typescript:rules.bzl", "configure_simple_ts_compiler")
+load("@better_rules_typescript//rules/typescript:rules.bzl", "configure_ts_compiler")
 load("//rules/rollup:rules.bzl", "configure_rollup")
 # load("//rules/protobuf:rules.bzl", "js_protoc")
 
@@ -9,9 +9,10 @@ configure_rollup(
     dep = "@better_rules_javascript_npm//rollup:lib"
 )
 
-configure_simple_ts_compiler(
+configure_ts_compiler(
     name = "tsc",
     ts = "@better_rules_javascript_npm//typescript:lib",
+    tslib = "@better_rules_javascript_npm//tslib:lib",
 )
 
 # js_protoc(

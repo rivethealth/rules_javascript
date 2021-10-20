@@ -1,62 +1,34 @@
 'use strict';
 
+var tslib_1 = require('tslib');
 var fs = require('fs');
 var path = require('path');
-var url = require('url');
-var require$$0 = require('stream');
+var url_1 = require('url');
+var stream_1 = require('stream');
 var constants = require('constants');
 var util = require('util');
-var require$$0$1 = require('assert');
-var require$$0$2 = require('process');
-var module$1 = require('module');
+var require$$0 = require('assert');
+var require$$0$1 = require('process');
+var require$$0$2 = require('module');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
-function _interopNamespace(e) {
-	if (e && e.__esModule) return e;
-	var n = Object.create(null);
-	if (e) {
-		Object.keys(e).forEach(function (k) {
-			if (k !== 'default') {
-				var d = Object.getOwnPropertyDescriptor(e, k);
-				Object.defineProperty(n, k, d.get ? d : {
-					enumerable: true,
-					get: function () { return e[k]; }
-				});
-			}
-		});
-	}
-	n["default"] = e;
-	return Object.freeze(n);
-}
-
-function _mergeNamespaces(n, m) {
-	m.forEach(function (e) {
-		Object.keys(e).forEach(function (k) {
-			if (k !== 'default' && !(k in n)) {
-				var d = Object.getOwnPropertyDescriptor(e, k);
-				Object.defineProperty(n, k, d.get ? d : {
-					enumerable: true,
-					get: function () { return e[k]; }
-				});
-			}
-		});
-	});
-	return Object.freeze(n);
-}
-
+var tslib_1__default = /*#__PURE__*/_interopDefaultLegacy(tslib_1);
 var fs__default = /*#__PURE__*/_interopDefaultLegacy(fs);
-var fs__namespace = /*#__PURE__*/_interopNamespace(fs);
-var path__namespace = /*#__PURE__*/_interopNamespace(path);
 var path__default = /*#__PURE__*/_interopDefaultLegacy(path);
-var require$$0__default = /*#__PURE__*/_interopDefaultLegacy(require$$0);
+var url_1__default = /*#__PURE__*/_interopDefaultLegacy(url_1);
+var stream_1__default = /*#__PURE__*/_interopDefaultLegacy(stream_1);
 var constants__default = /*#__PURE__*/_interopDefaultLegacy(constants);
 var util__default = /*#__PURE__*/_interopDefaultLegacy(util);
+var require$$0__default = /*#__PURE__*/_interopDefaultLegacy(require$$0);
 var require$$0__default$1 = /*#__PURE__*/_interopDefaultLegacy(require$$0$1);
 var require$$0__default$2 = /*#__PURE__*/_interopDefaultLegacy(require$$0$2);
-var module__default = /*#__PURE__*/_interopDefaultLegacy(module$1);
 
 var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
+
+function getDefaultExportFromCjs (x) {
+	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
+}
 
 function createCommonjsModule(fn, basedir, module) {
 	return module = {
@@ -88,11 +60,12 @@ function commonjsRequire () {
 }
 
 createCommonjsModule(function (module, exports) {
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 
-var BAZEL_WORKSPACE = process.env["BAZEL_WORKSPACE"];
-var RUNFILES_DIR = process.env["RUNFILES_DIR"];
-var RUNFILES_MANIFEST = process.env["RUNFILES_MANIFEST_FILE"];
+const fs = tslib_1__default["default"].__importStar(fs__default["default"]);
+const BAZEL_WORKSPACE = process.env["BAZEL_WORKSPACE"];
+const RUNFILES_DIR = process.env["RUNFILES_DIR"];
+const RUNFILES_MANIFEST = process.env["RUNFILES_MANIFEST_FILE"];
 function log(str) {
     if (process.env.BAZEL_TRACE_RUNFILES === 'true') {
         console.debug(str);
@@ -101,73 +74,73 @@ function log(str) {
 /**
  * Bazel has symlinks
  */
-var SymlinkRunfiles = /** @class */ (function () {
-    function SymlinkRunfiles(runfilesDir, workspace) {
+class SymlinkRunfiles {
+    constructor(runfilesDir, workspace) {
         this.runfilesDir = runfilesDir;
         this.workspace = workspace;
     }
-    SymlinkRunfiles.prototype.getPath = function (name) {
+    getPath(name) {
         if (name.startsWith("../")) {
-            name = "" + name.slice("../".length);
+            name = `${name.slice("../".length)}`;
         }
         else {
-            name = this.workspace + "/" + name;
+            name = `${this.workspace}/${name}`;
         }
-        return this.runfilesDir + "/" + name;
-    };
-    return SymlinkRunfiles;
-}());
+        return `${this.runfilesDir}/${name}`;
+    }
+}
 /**
  * Uses a manifest
  */
-var ManifestRunfiles = /** @class */ (function () {
-    function ManifestRunfiles(workspace) {
+class ManifestRunfiles {
+    constructor(workspace) {
         this.workspace = workspace;
         this.pathByName = new Map();
     }
-    ManifestRunfiles.prototype.addRunfile = function (name, path) {
+    addRunfile(name, path) {
         this.pathByName.set(name, path);
-    };
-    ManifestRunfiles.prototype.getPath = function (name) {
+    }
+    getPath(name) {
         if (name.startsWith("../")) {
-            name = "" + name.slice("../".length);
+            name = `${name.slice("../".length)}`;
         }
         else {
-            name = this.workspace + "/" + name;
+            name = `${this.workspace}/${name}`;
         }
         return this.pathByName.get(name);
-    };
-    ManifestRunfiles.readManifest = function (runfiles, path) {
-        var items = fs__default["default"]
+    }
+    static readManifest(runfiles, path) {
+        const items = fs
             .readFileSync(path, "utf8")
             .split("\n")
             .filter(Boolean)
-            .map(function (line) {
-            var _a = line.split(" "), name = _a[0], path = _a[1];
-            return { name: name, path: path };
+            .map((line) => {
+            const [name, path] = line.split(" ");
+            return { name, path };
         });
-        for (var _i = 0, items_1 = items; _i < items_1.length; _i++) {
-            var _a = items_1[_i], name_1 = _a.name, path_1 = _a.path;
-            runfiles.addRunfile(name_1, path_1);
+        for (const { name, path } of items) {
+            runfiles.addRunfile(name, path);
         }
-    };
-    return ManifestRunfiles;
-}());
-log("Workspace: " + BAZEL_WORKSPACE);
-var runfiles;
+    }
+}
+log(`Workspace: ${BAZEL_WORKSPACE}`);
+let runfiles;
 if (RUNFILES_MANIFEST) {
-    log("Runfiles manifest: " + RUNFILES_MANIFEST);
+    log(`Runfiles manifest: ${RUNFILES_MANIFEST}`);
     runfiles = new ManifestRunfiles(BAZEL_WORKSPACE);
     ManifestRunfiles.readManifest(runfiles, RUNFILES_MANIFEST);
 }
 else {
-    log("Runfiles directory: " + RUNFILES_DIR);
+    log(`Runfiles directory: ${RUNFILES_DIR}`);
     runfiles = new SymlinkRunfiles(RUNFILES_DIR, BAZEL_WORKSPACE);
 }
-commonjsGlobal.runfilePath = function (name) { return runfiles.getPath(name); };
+commonjsGlobal.runfilePath = (name) => runfiles.getPath(name);
+
 });
 
-var JsonFormat;
+var json = createCommonjsModule(function (module, exports) {
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.JsonFormat = void 0;
 (function (JsonFormat) {
     function array(elementFormat) {
         return new ArrayJsonFormat(elementFormat);
@@ -196,7 +169,7 @@ var JsonFormat;
         return new StringJsonFormat();
     }
     JsonFormat.string = string;
-})(JsonFormat || (JsonFormat = {}));
+})(exports.JsonFormat || (exports.JsonFormat = {}));
 class ArrayJsonFormat {
     constructor(elementFormat) {
         this.elementFormat = elementFormat;
@@ -248,22 +221,30 @@ class StringJsonFormat {
     }
 }
 
+});
+
+var __rules_commonjs_fs_root = createCommonjsModule(function (module, exports) {
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Vfs = exports.FsResult = exports.VfsMount = exports.VfsPath = exports.VfsEntry = void 0;
+
+const path = tslib_1__default["default"].__importStar(path__default["default"]);
+
 var VfsEntry;
 (function (VfsEntry) {
     VfsEntry.DIRECTORY = Symbol("DIRECTORY");
     VfsEntry.LINK = Symbol("LINK");
     VfsEntry.PATH = Symbol("PATH");
-    function json() {
+    function json$1() {
         let children;
         const result = {
-            fromJson(json) {
-                switch (json.type) {
+            fromJson(json$1) {
+                switch (json$1.type) {
                     case 'LINK':
-                        return { type: VfsEntry.LINK, path: VfsPath.parse(json.path) };
+                        return { type: VfsEntry.LINK, path: VfsPath.parse(json$1.path) };
                     case 'DIRECTORY':
-                        return { type: VfsEntry.DIRECTORY, children: children.fromJson(json.children) };
+                        return { type: VfsEntry.DIRECTORY, children: children.fromJson(json$1.children) };
                     case 'PATH':
-                        return { type: VfsEntry.PATH, path: JsonFormat.string().fromJson(json.path) };
+                        return { type: VfsEntry.PATH, path: json.JsonFormat.string().fromJson(json$1.path) };
                 }
             },
             toJson(entry) {
@@ -277,11 +258,11 @@ var VfsEntry;
                 }
             }
         };
-        children = JsonFormat.map(JsonFormat.string(), JsonFormat.defer(() => result));
+        children = json.JsonFormat.map(json.JsonFormat.string(), json.JsonFormat.defer(() => result));
         return result;
     }
-    VfsEntry.json = json;
-})(VfsEntry || (VfsEntry = {}));
+    VfsEntry.json = json$1;
+})(VfsEntry = exports.VfsEntry || (exports.VfsEntry = {}));
 var VfsPath;
 (function (VfsPath) {
     /**
@@ -301,7 +282,7 @@ var VfsPath;
         return path.join("/");
     }
     VfsPath.text = text;
-})(VfsPath || (VfsPath = {}));
+})(VfsPath = exports.VfsPath || (exports.VfsPath = {}));
 /**
  * Mounted part of link file system
  */
@@ -383,6 +364,7 @@ class VfsMount {
         })(this.root);
     }
 }
+exports.VfsMount = VfsMount;
 var FsResult;
 (function (FsResult) {
     FsResult.LINK = Symbol('LINK');
@@ -390,7 +372,7 @@ var FsResult;
     FsResult.DIRECTORY = Symbol('DIRECTORY');
     FsResult.NOT_FOUND = Symbol('NOT_FOUND');
     FsResult.NotFound = { type: FsResult.NOT_FOUND };
-})(FsResult || (FsResult = {}));
+})(FsResult = exports.FsResult || (exports.FsResult = {}));
 /**
  * Link file system.
  * First path component is the mount point.
@@ -400,7 +382,7 @@ class Vfs {
         this._mountPoints = [];
     }
     _resolvePath(path_) {
-        path_ = path__namespace.resolve(path_);
+        path_ = path.resolve(path_);
         const mount = this._mountPoints.find(({ path }) => path === path_ || path_.startsWith(`${path}/`));
         if (!mount) {
             return;
@@ -419,7 +401,7 @@ class Vfs {
      * Add mount
      */
     mount(path_, mount) {
-        path_ = path__namespace.resolve(path_);
+        path_ = path.resolve(path_);
         this._mountPoints.push({ path: path_, mount });
     }
     /**
@@ -484,6 +466,17 @@ class Vfs {
         }
     }
 }
+exports.Vfs = Vfs;
+
+});
+
+var fs_1 = createCommonjsModule(function (module, exports) {
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.patchFs = void 0;
+
+
+const fs = tslib_1__default["default"].__importStar(fs__default["default"]);
+
 
 /**
  * @filedescription Node.js fs implementation of LinkFs
@@ -524,7 +517,7 @@ class NotFoundError extends Error {
         this.errno = -2;
     }
 }
-class NoopReadStream extends require$$0.Readable {
+class NoopReadStream extends stream_1__default["default"].Readable {
     constructor(path) {
         super();
         this.path = path;
@@ -565,7 +558,7 @@ class LinkBigintStat {
         return false;
     }
     isDirectory() {
-        return this.entry.type === FsResult.DIRECTORY;
+        return this.entry.type === __rules_commonjs_fs_root.FsResult.DIRECTORY;
     }
     isBlockDevice() {
         return false;
@@ -574,7 +567,7 @@ class LinkBigintStat {
         return false;
     }
     isSymbolicLink() {
-        return this.entry.type === FsResult.LINK;
+        return this.entry.type === __rules_commonjs_fs_root.FsResult.LINK;
     }
     isFIFO() {
         return false;
@@ -609,7 +602,7 @@ class LinkStat {
         return false;
     }
     isDirectory() {
-        return this.entry.type === FsResult.DIRECTORY;
+        return this.entry.type === __rules_commonjs_fs_root.FsResult.DIRECTORY;
     }
     isBlockDevice() {
         return false;
@@ -618,7 +611,7 @@ class LinkStat {
         return false;
     }
     isSymbolicLink() {
-        return this.entry.type === FsResult.LINK;
+        return this.entry.type === __rules_commonjs_fs_root.FsResult.LINK;
     }
     isFIFO() {
         return false;
@@ -679,11 +672,11 @@ function stringPath(value) {
     if (value instanceof Buffer) {
         value = value.toString();
     }
-    if (value instanceof url.URL) {
+    if (value instanceof url_1__default["default"].URL) {
         if (value.protocol !== "file") {
             throw new Error(`Invalid protocol: ${value.protocol}`);
         }
-        value = url.fileURLToPath(value);
+        value = url_1__default["default"].fileURLToPath(value);
     }
     return value;
 }
@@ -692,25 +685,25 @@ function access(linkFs, delegate) {
         const fsPath = stringPath(path);
         if (typeof mode === "function") {
             callback = mode;
-            mode = fs__namespace.constants.F_OK;
+            mode = fs.constants.F_OK;
         }
         const resolved = linkFs.resolve(fsPath);
         if (resolved === undefined) {
             return delegate.apply(this, arguments);
         }
         switch (resolved.type) {
-            case FsResult.DIRECTORY:
-                if (mode & fs__namespace.constants.W_OK) {
+            case __rules_commonjs_fs_root.FsResult.DIRECTORY:
+                if (mode & fs.constants.W_OK) {
                     callback(new AccessError(stringPath(path), "access"));
                 }
                 else {
                     callback(null);
                 }
                 break;
-            case FsResult.NOT_FOUND:
+            case __rules_commonjs_fs_root.FsResult.NOT_FOUND:
                 callback(new NotFoundError(stringPath(path), "access"));
                 break;
-            case FsResult.PATH:
+            case __rules_commonjs_fs_root.FsResult.PATH:
                 const args = [...arguments];
                 args[0] = resolved.path;
                 return delegate.apply(this, args);
@@ -721,20 +714,20 @@ function access(linkFs, delegate) {
 function accessSync(linkFs, delegate) {
     return function (path, mode) {
         const fsPath = stringPath(path);
-        mode = mode || fs__namespace.constants.F_OK;
+        mode = mode || fs.constants.F_OK;
         const resolved = linkFs.resolve(fsPath);
         if (resolved === undefined) {
             return delegate.apply(this, arguments);
         }
         switch (resolved.type) {
-            case FsResult.DIRECTORY:
-                if (mode & fs__namespace.constants.W_OK) {
+            case __rules_commonjs_fs_root.FsResult.DIRECTORY:
+                if (mode & fs.constants.W_OK) {
                     throw new AccessError(stringPath(path), "access");
                 }
                 break;
-            case FsResult.NOT_FOUND:
+            case __rules_commonjs_fs_root.FsResult.NOT_FOUND:
                 throw new NotFoundError(stringPath(path), "access");
-            case FsResult.PATH:
+            case __rules_commonjs_fs_root.FsResult.PATH:
                 const args = [...arguments];
                 args[0] = resolved.path;
                 return delegate.apply(this, args);
@@ -755,7 +748,7 @@ function appendFile(linkFs, delegate) {
             callback = options;
         }
         switch (resolved.type) {
-            case FsResult.NOT_FOUND:
+            case __rules_commonjs_fs_root.FsResult.NOT_FOUND:
                 callback(null);
                 break;
             default:
@@ -775,7 +768,7 @@ function appendFileSync(linkFs, delegate) {
             return delegate.apply(this, arguments);
         }
         switch (resolved.type) {
-            case FsResult.NOT_FOUND:
+            case __rules_commonjs_fs_root.FsResult.NOT_FOUND:
                 throw new NotFoundError(stringPath(file), "appendfile");
             default:
                 throw new AccessError(stringPath(file), "appendfile");
@@ -854,13 +847,13 @@ function copyFile(linkFs, delegate) {
             return;
         }
         switch (resolvedSrc.type) {
-            case FsResult.DIRECTORY:
+            case __rules_commonjs_fs_root.FsResult.DIRECTORY:
                 callback(new IsDirError(stringPath(src), "copyfile"));
                 break;
-            case FsResult.NOT_FOUND:
+            case __rules_commonjs_fs_root.FsResult.NOT_FOUND:
                 callback(new NotFoundError(stringPath(src), "copyfile"));
                 break;
-            case FsResult.PATH:
+            case __rules_commonjs_fs_root.FsResult.PATH:
                 const args = [...arguments];
                 args[0] = resolvedSrc.path;
                 return delegate.apply(this, args);
@@ -879,10 +872,10 @@ function createReadStream(linkFs, delegate) {
             return errorReadStream(stringPath(path), new NotFoundError(stringPath(path), "read"));
         }
         switch (resolved.type) {
-            case FsResult.DIRECTORY: {
+            case __rules_commonjs_fs_root.FsResult.DIRECTORY: {
                 return errorReadStream(stringPath(path), new IsDirError(stringPath(path), "read"));
             }
-            case FsResult.PATH: {
+            case __rules_commonjs_fs_root.FsResult.PATH: {
                 const args = [...arguments];
                 args[0] = resolved.path;
                 return delegate.apply(this, args);
@@ -913,11 +906,11 @@ function copyFileSync(linkFs, delegate) {
             throw new AccessError(stringPath(dest), "copyfile");
         }
         switch (resolvedSrc.type) {
-            case FsResult.DIRECTORY:
+            case __rules_commonjs_fs_root.FsResult.DIRECTORY:
                 throw new IsDirError(stringPath(src), "copyfile");
-            case FsResult.NOT_FOUND:
+            case __rules_commonjs_fs_root.FsResult.NOT_FOUND:
                 throw new NotFoundError(stringPath(src), "copyfile");
-            case FsResult.PATH:
+            case __rules_commonjs_fs_root.FsResult.PATH:
                 const args = [...arguments];
                 args[0] = resolvedSrc.path;
                 return delegate.apply(this, args);
@@ -938,10 +931,10 @@ function exists(linkFs, delegate) {
             callback(false);
         }
         switch (resolved.type) {
-            case FsResult.DIRECTORY:
+            case __rules_commonjs_fs_root.FsResult.DIRECTORY:
                 callback(true);
                 break;
-            case FsResult.PATH:
+            case __rules_commonjs_fs_root.FsResult.PATH:
                 const args = [...arguments];
                 args[0] = resolved.path;
                 return delegate.apply(this, args);
@@ -951,12 +944,12 @@ function exists(linkFs, delegate) {
 }
 function dirEntry(name, entry) {
     switch (entry.type) {
-        case FsResult.DIRECTORY:
-            return new fs__namespace.Dir(name, fsConstants.UV_DIRENT_DIR);
-        case FsResult.LINK:
-            return new fs__namespace.Dir(name, fsConstants.UV_DIRENT_LINK);
-        case FsResult.DIRECTORY:
-            return new fs__namespace.Dir(name, fsConstants.UV_DIRENT_FILE);
+        case __rules_commonjs_fs_root.FsResult.DIRECTORY:
+            return new fs.Dir(name, fsConstants.UV_DIRENT_DIR);
+        case __rules_commonjs_fs_root.FsResult.LINK:
+            return new fs.Dir(name, fsConstants.UV_DIRENT_LINK);
+        case __rules_commonjs_fs_root.FsResult.DIRECTORY:
+            return new fs.Dir(name, fsConstants.UV_DIRENT_FILE);
     }
 }
 function existsSync(linkFs, delegate) {
@@ -967,11 +960,11 @@ function existsSync(linkFs, delegate) {
             return delegate.apply(this, arguments);
         }
         switch (resolved.type) {
-            case FsResult.DIRECTORY:
+            case __rules_commonjs_fs_root.FsResult.DIRECTORY:
                 return true;
-            case FsResult.NOT_FOUND:
+            case __rules_commonjs_fs_root.FsResult.NOT_FOUND:
                 return false;
-            case FsResult.PATH:
+            case __rules_commonjs_fs_root.FsResult.PATH:
                 const args = [...arguments];
                 args[0] = resolved.path;
                 return delegate.apply(this, args);
@@ -1037,14 +1030,14 @@ function open(linkFs, delegate) {
             callback = mode;
         }
         switch (resolved.type) {
-            case FsResult.DIRECTORY: {
+            case __rules_commonjs_fs_root.FsResult.DIRECTORY: {
                 const args = [...arguments];
                 args[0] = '/';
                 return delegate.apply(this, args);
             }
-            case FsResult.NOT_FOUND:
+            case __rules_commonjs_fs_root.FsResult.NOT_FOUND:
                 throw new NotFoundError(stringPath(path), "open");
-            case FsResult.PATH: {
+            case __rules_commonjs_fs_root.FsResult.PATH: {
                 const args = [...arguments];
                 args[0] = resolved.path;
                 return delegate.apply(this, args);
@@ -1061,14 +1054,14 @@ function openSync(linkFs, delegate) {
             return delegate.apply(this, arguments);
         }
         switch (resolved.type) {
-            case FsResult.DIRECTORY: {
+            case __rules_commonjs_fs_root.FsResult.DIRECTORY: {
                 const args = [...arguments];
                 args[0] = '/';
                 return delegate.apply(this, args);
             }
-            case FsResult.NOT_FOUND:
+            case __rules_commonjs_fs_root.FsResult.NOT_FOUND:
                 throw new NotFoundError(stringPath(path), "open");
-            case FsResult.PATH: {
+            case __rules_commonjs_fs_root.FsResult.PATH: {
                 const args = [...arguments];
                 args[0] = resolved.path;
                 return delegate.apply(this, args);
@@ -1087,10 +1080,10 @@ function opendir(linkFs, delegate) {
             callback = options;
         }
         switch (resolved.type) {
-            case FsResult.DIRECTORY:
+            case __rules_commonjs_fs_root.FsResult.DIRECTORY:
                 callback(null, new LinkDir(resolved));
                 return;
-            case FsResult.PATH:
+            case __rules_commonjs_fs_root.FsResult.PATH:
                 callback(new InvalidError(path, "opendir"), null);
                 return;
         }
@@ -1105,9 +1098,9 @@ function opendirSync(linkFs, delegate) {
             return delegate.apply(this, arguments);
         }
         switch (resolved.type) {
-            case FsResult.DIRECTORY:
+            case __rules_commonjs_fs_root.FsResult.DIRECTORY:
                 return new LinkDir(resolved);
-            case FsResult.PATH:
+            case __rules_commonjs_fs_root.FsResult.PATH:
                 throw new InvalidError(path, "opendir");
         }
     };
@@ -1123,13 +1116,13 @@ function readdir(linkFs, delegate) {
             callback = options;
         }
         switch (resolved.type) {
-            case FsResult.DIRECTORY:
+            case __rules_commonjs_fs_root.FsResult.DIRECTORY:
                 callback(undefined, [...resolved.children]);
                 break;
-            case FsResult.NOT_FOUND:
+            case __rules_commonjs_fs_root.FsResult.NOT_FOUND:
                 callback(new NotFoundError(stringPath(path), "readdir"), undefined);
                 break;
-            case FsResult.PATH:
+            case __rules_commonjs_fs_root.FsResult.PATH:
                 callback(new InvalidError(stringPath(path), "readdir"), undefined);
                 break;
         }
@@ -1144,11 +1137,11 @@ function readdirSync(linkFs, delegate) {
             return delegate.apply(this, arguments);
         }
         switch (resolved.type) {
-            case FsResult.DIRECTORY:
+            case __rules_commonjs_fs_root.FsResult.DIRECTORY:
                 return [...resolved.children];
-            case FsResult.NOT_FOUND:
+            case __rules_commonjs_fs_root.FsResult.NOT_FOUND:
                 throw new NotFoundError(stringPath(path), "readdir");
-            case FsResult.PATH:
+            case __rules_commonjs_fs_root.FsResult.PATH:
                 throw new InvalidError(stringPath(path), "readdir");
         }
     };
@@ -1167,13 +1160,13 @@ function readFile(linkFs, delegate) {
             callback = options;
         }
         switch (resolved.type) {
-            case FsResult.DIRECTORY:
+            case __rules_commonjs_fs_root.FsResult.DIRECTORY:
                 callback(new InvalidError(stringPath(path), "readfile"), undefined);
                 break;
-            case FsResult.NOT_FOUND:
+            case __rules_commonjs_fs_root.FsResult.NOT_FOUND:
                 callback(new NotFoundError(stringPath(path), "readfile"), undefined);
                 break;
-            case FsResult.PATH:
+            case __rules_commonjs_fs_root.FsResult.PATH:
                 const args = [...arguments];
                 args[0] = resolved.path;
                 delegate.apply(this, args);
@@ -1193,11 +1186,11 @@ function readFileSync(linkFs, delegate) {
             return delegate.apply(this, arguments);
         }
         switch (resolved.type) {
-            case FsResult.DIRECTORY:
+            case __rules_commonjs_fs_root.FsResult.DIRECTORY:
                 throw new InvalidError(stringPath(path), "readfile");
-            case FsResult.NOT_FOUND:
+            case __rules_commonjs_fs_root.FsResult.NOT_FOUND:
                 throw new NotFoundError(stringPath(path), "readfile");
-            case FsResult.PATH:
+            case __rules_commonjs_fs_root.FsResult.PATH:
                 const args = [...arguments];
                 args[0] = resolved.path;
                 return delegate.apply(this, args);
@@ -1215,14 +1208,14 @@ function readlink(linkFs, delegate) {
             callback = options;
         }
         switch (entry.type) {
-            case FsResult.DIRECTORY:
-            case FsResult.PATH:
+            case __rules_commonjs_fs_root.FsResult.DIRECTORY:
+            case __rules_commonjs_fs_root.FsResult.PATH:
                 callback(new InvalidError(stringPath(path), "readlink"), undefined);
                 return;
-            case FsResult.NOT_FOUND:
+            case __rules_commonjs_fs_root.FsResult.NOT_FOUND:
                 callback(new NotFoundError(stringPath(path), "readlink"), undefined);
                 break;
-            case FsResult.LINK:
+            case __rules_commonjs_fs_root.FsResult.LINK:
                 callback(null, entry.path);
                 return;
         }
@@ -1237,12 +1230,12 @@ function readlinkSync(linkFs, delegate) {
             return delegate.apply(this, arguments);
         }
         switch (resolved.type) {
-            case FsResult.DIRECTORY:
-            case FsResult.PATH:
+            case __rules_commonjs_fs_root.FsResult.DIRECTORY:
+            case __rules_commonjs_fs_root.FsResult.PATH:
                 throw new InvalidError(stringPath(path), "readlink");
-            case FsResult.NOT_FOUND:
+            case __rules_commonjs_fs_root.FsResult.NOT_FOUND:
                 throw new NotFoundError(stringPath(path), "readlink");
-            case FsResult.LINK:
+            case __rules_commonjs_fs_root.FsResult.LINK:
                 return resolved.path;
         }
     };
@@ -1258,10 +1251,10 @@ function realpath(linkFs, delegate) {
             return delegate.apply(this, arguments);
         }
         switch (resolved.type) {
-            case FsResult.NOT_FOUND:
+            case __rules_commonjs_fs_root.FsResult.NOT_FOUND:
                 callback(new NotFoundError(stringPath(path), "lstat"), undefined);
                 break;
-            case FsResult.PATH:
+            case __rules_commonjs_fs_root.FsResult.PATH:
                 callback(null, resolved.path);
                 break;
         }
@@ -1277,9 +1270,9 @@ function realpathSync(linkFs, delegate) {
             return delegate.apply(this, arguments);
         }
         switch (resolved.type) {
-            case FsResult.NOT_FOUND:
+            case __rules_commonjs_fs_root.FsResult.NOT_FOUND:
                 throw new NotFoundError(stringPath(path), "realpath");
-            case FsResult.PATH:
+            case __rules_commonjs_fs_root.FsResult.PATH:
                 return resolved.path;
         }
     }
@@ -1322,7 +1315,7 @@ function rmdir(linkFs, delegate) {
             callback = options;
         }
         switch (resolved.type) {
-            case FsResult.NOT_FOUND:
+            case __rules_commonjs_fs_root.FsResult.NOT_FOUND:
                 callback(new NotFoundError(stringPath(path), "rmdir"));
                 break;
             default:
@@ -1339,7 +1332,7 @@ function rmdirSync(linkFs, delegate) {
             return delegate.apply(this, arguments);
         }
         switch (resolved.type) {
-            case FsResult.NOT_FOUND:
+            case __rules_commonjs_fs_root.FsResult.NOT_FOUND:
                 throw (new NotFoundError(stringPath(path), "rmdir"));
             default:
                 throw (new AccessError(stringPath(path), "rmdir"));
@@ -1359,13 +1352,13 @@ function stat(linkFs, delegate) {
         }
         const bigint = options && options.bigint;
         switch (resolved.type) {
-            case FsResult.DIRECTORY:
+            case __rules_commonjs_fs_root.FsResult.DIRECTORY:
                 callback(null, (bigint ? new LinkBigintStat(resolved) : new LinkStat(resolved)));
                 break;
-            case FsResult.NOT_FOUND:
+            case __rules_commonjs_fs_root.FsResult.NOT_FOUND:
                 callback(new NotFoundError(stringPath(path), "stat"), null);
                 break;
-            case FsResult.PATH:
+            case __rules_commonjs_fs_root.FsResult.PATH:
                 const args = [...arguments];
                 args[0] = resolved.path;
                 return delegate.apply(this, args);
@@ -1382,11 +1375,11 @@ function statSync(linkFs, delegate) {
         }
         const bigint = options && options.bigint;
         switch (resolved.type) {
-            case FsResult.DIRECTORY:
+            case __rules_commonjs_fs_root.FsResult.DIRECTORY:
                 return bigint ? new LinkBigintStat(resolved) : new LinkStat(resolved);
-            case FsResult.NOT_FOUND:
+            case __rules_commonjs_fs_root.FsResult.NOT_FOUND:
                 throw new NotFoundError(stringPath(path), "stat");
-            case FsResult.PATH:
+            case __rules_commonjs_fs_root.FsResult.PATH:
                 const args = [...arguments];
                 args[0] = resolved.path;
                 return delegate.apply(this, args);
@@ -1581,7 +1574,13 @@ function patchFs(linkFs, delegate) {
     delegate.writeFile = writeFile(linkFs, delegate.writeFile);
     delegate.writeFileSync = writeFileSync(linkFs, delegate.writeFileSync);
 }
+exports.patchFs = patchFs;
 
+});
+
+var traceFs_1 = createCommonjsModule(function (module, exports) {
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.traceFs = void 0;
 function toString(arg) {
     if (arg instanceof Error) {
         return arg.message;
@@ -1673,37 +1672,45 @@ function traceFs(delegate) {
     delegate.writeFile = trace('writeFile', delegate.writeFile);
     delegate.writeFileSync = trace('writeFileSync', delegate.writeFileSync);
 }
+exports.traceFs = traceFs;
+
+});
+
+createCommonjsModule(function (module, exports) {
+Object.defineProperty(exports, "__esModule", { value: true });
+
+
 
 if (process.env.NODE_TRACE_FS === 'true') {
     console.log('Shimming Node.js FS');
 }
-const linkFs = new Vfs();
-patchFs(linkFs, require('fs'));
+const linkFs = new __rules_commonjs_fs_root.Vfs();
+fs_1.patchFs(linkFs, fs__default["default"]);
 if (process.env.NODE_TRACE_FS === 'true') {
-    traceFs(require('fs'));
+    traceFs_1.traceFs(fs__default["default"]);
 }
-global.linkFsMount = (name, config, isRunfiles) => {
+commonjsGlobal.linkFsMount = (name, config, isRunfiles) => {
     if (process.env.NODE_TRACE_FS === 'true') {
         console.log(`Mounting FS ${name}`);
     }
-    const entry = VfsEntry.json().fromJson(config);
+    const entry = __rules_commonjs_fs_root.VfsEntry.json().fromJson(config);
     if (isRunfiles) {
         (function f(entry) {
             switch (entry.type) {
-                case VfsEntry.DIRECTORY:
+                case __rules_commonjs_fs_root.VfsEntry.DIRECTORY:
                     for (const child of entry.children.values()) {
                         f(child);
                     }
                     break;
-                case VfsEntry.LINK:
+                case __rules_commonjs_fs_root.VfsEntry.LINK:
                     break;
-                case VfsEntry.PATH:
-                    entry.path = global.runfilePath(entry.path) || entry.path;
+                case __rules_commonjs_fs_root.VfsEntry.PATH:
+                    entry.path = commonjsGlobal.runfilePath(entry.path) || entry.path;
                     break;
             }
         })(entry);
     }
-    const mount = new VfsMount(entry);
+    const mount = new __rules_commonjs_fs_root.VfsMount(entry);
     if (process.env.NODE_TRACE_FS === 'true') {
         for (const line of mount.tree()) {
             console.error(`  ${line}`);
@@ -1711,6 +1718,8 @@ global.linkFsMount = (name, config, isRunfiles) => {
     }
     linkFs.mount(name, mount);
 };
+
+});
 
 var origCwd = process.cwd;
 var cwd = null;
@@ -2057,7 +2066,7 @@ function patch (fs) {
   }
 }
 
-var Stream = require$$0__default["default"].Stream;
+var Stream = stream_1__default["default"].Stream;
 
 var legacyStreams = legacy;
 
@@ -2278,7 +2287,7 @@ if (!fs__default["default"][gracefulQueue]) {
   if (/\bgfs4\b/i.test(process.env.NODE_DEBUG || '')) {
     process.on('exit', function() {
       debug(fs__default["default"][gracefulQueue]);
-      require$$0__default$1["default"].equal(fs__default["default"][gracefulQueue].length, 0);
+      require$$0__default["default"].equal(fs__default["default"][gracefulQueue].length, 0);
     });
   }
 }
@@ -2623,7 +2632,7 @@ function retry () {
 }
 });
 
-const nextTick = require$$0__default$2["default"].nextTick;
+const nextTick = require$$0__default$1["default"].nextTick;
 
 /** @typedef {import("./Resolver").FileSystem} FileSystem */
 /** @typedef {import("./Resolver").SyncFileSystem} SyncFileSystem */
@@ -7789,7 +7798,7 @@ var pnpapi = /*#__PURE__*/Object.freeze({
 
 var require$$2 = /*@__PURE__*/getAugmentedNamespace(pnpapi);
 
-const versions = require$$0__default$2["default"].versions;
+const versions = require$$0__default$1["default"].versions;
 
 const { getType, PathType } = path_1;
 
@@ -8648,15 +8657,15 @@ var lib = mergeExports(resolve, {
 	}
 });
 
-var enhancedResolve = /*#__PURE__*/Object.freeze(/*#__PURE__*/_mergeNamespaces({
-	__proto__: null,
-	'default': lib
-}, [lib]));
+var module$1 = createCommonjsModule(function (module, exports) {
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.patchModule = exports.load = void 0;
 
+const module_1 = tslib_1__default["default"].__importDefault(require$$0__default$2["default"]);
 function load(resolve, delegate) {
     const resolver = resolve.create.sync({ conditionNames: ["require", "node"] });
     return function (request, parent) {
-        if (module__default["default"].builtinModules.includes(request) || parent && parent.path === "internal") {
+        if (module_1.default.builtinModules.includes(request) || parent && parent.path === "internal") {
             return delegate.apply(this, arguments);
         }
         else {
@@ -8664,8 +8673,31 @@ function load(resolve, delegate) {
         }
     };
 }
+exports.load = load;
 function patchModule(resolve, delegate) {
     delegate.Module._resolveFilename = load(resolve, delegate.Module._resolveFilename);
 }
+exports.patchModule = patchModule;
 
-patchModule(enhancedResolve, require('module'));
+});
+
+createCommonjsModule(function (module, exports) {
+Object.defineProperty(exports, "__esModule", { value: true });
+
+const enhancedResolve = tslib_1__default["default"].__importStar(lib);
+
+module$1.patchModule(enhancedResolve, require$$0__default$2["default"]);
+
+});
+
+var __rules_nodejs_shim_root = createCommonjsModule(function (module, exports) {
+Object.defineProperty(exports, "__esModule", { value: true });
+
+
+
+
+});
+
+var index = /*@__PURE__*/getDefaultExportFromCjs(__rules_nodejs_shim_root);
+
+module.exports = index;
