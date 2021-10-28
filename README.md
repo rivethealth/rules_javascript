@@ -108,7 +108,8 @@ load("@better_rules_javascript//rules/nodejs:rules.bzl", "nodejs_binary")
 
 cjs_root(
   name = "root",
-  descriptor = "package.json"
+  descriptor = "package.json",
+  package_name = "example",
 )
 
 js_library(
@@ -251,14 +252,14 @@ js_library(
 js_library(
     name = "rollup_config",
     root = ":root",
-    srcs = ["rollup.js.config"]
+    srcs = ["rollup.config.js"]
 )
 
 rollup_bundle(
     name = "bundle",
     dep = ":b",
     config_dep = ":rollup_config",
-    config_path = "rollup.js.config",
+    config_path = "rollup.config.js",
     rollup = "//:rollup",
 )
 ```
@@ -346,10 +347,23 @@ load("@better_rules_javascript//rules/protobuf:rules.bzl", "js_protoc")
 
 package(default_visibility = ["//visibility:public"])
 
+cjs_root(
+    descriptor = "proto.package.json",
+    name = "proto_root",
+    package_name = "@better_rules_javascript_test/proto"
+)
+
 js_protoc(
     name = "js_protoc",
-    runtime = "@npm//google-protobuf:lib",
+    root = ":proto_root",
+    runtime = "@npm//google_protobuf:lib",
 )
+```
+
+**package.json**
+
+```json
+{}
 ```
 
 **rules.bzl**
@@ -380,40 +394,54 @@ js_proto_library(
 )
 ```
 
+### Protobuf.js
+
+#### Install
+
+Add protobufjs as an [external dependency](#external-dependencies).
+
+#### Configure
+
+**BUILD.bazel**
+
+```bzl
+load("@better_rules_javascript//rules/protobufjs:rules.bzl", configure_js_proto)
+
+configure_js_proto(
+    name = "js_proto",
+    dep = "@npm//protobufjs:lib",
+)
+```
+
+#### Use
+
+```bzl
+load("@better_rules_javascript//rules/commonjs:rules.bzl", "cjs_root")
+load("@better_rules_javascript//rules/protobufjs:rules.bzl", "js_proto_library")
+load("@rules_proto//proto:defs.bzl", "proto_library")
+
+cjs_root(
+    descriptor = "package.json",
+    name = "root",
+)
+
+proto_library(
+    name = "proto",
+    srcs = glob(["**/*.proto"]),
+)
+
+js_proto_library(
+    module_name = "pb.js",
+    name = "proto_js",
+    root = ":root",
+    js_proto = "//:js_protojs",
+    deps = [":proto"],
+)
+```
+
 ## Stardoc
 
 Auto-generated [Stardoc documentation](docs/stardoc).
-
-## Design`
-
-**TODO**
-
-```bzl
-cjs_root(
-  name = "cjs",
-  manifest = "package.json" # optional,
-  package_name = "foo"
-)
-
-js_library(
-  name = "js",
-  package = ":cjs",
-  src = glob(["**/*.js"], ["**/*.spec.js"])
-)
-
-js_library(
-  name = "js_test",
-  root = ":cjs",
-  src = glob(["**/*.spec.js"]),
-  deps = [":lib"],
-)
-
-npm_publish(
-  name = "npm",
-  root = ":cjs",
-  files = [":lib"],
-)
-```
 
 ### Differences with rules_javascrizpt
 

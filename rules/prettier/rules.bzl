@@ -1,23 +1,34 @@
-load("//rules/nodejs:rules.bzl", "write_packages_manifest")
+load("//rules/nodejs:rules.bzl", "nodejs_binary")
 load("//rules/javascript:providers.bzl", "JsInfo", "create_js", "create_package", "create_package_dep")
+load("//rules/typescript:rules.bzl", "ts_library")
 load(":providers.bzl", "PrettierInfo")
 
-def _prettier_impl(ctx):
-    prettier = ctx.attr.prettier[JsInfo]
-    dep = ctx.attr._dep[JsInfo]
-    dep = create_js(
-        create_package(
-            "",
-            dep.name,
-            deps = tuple([create_package_dep(dep.name, id) for id in dep.ids]),
-        ),
-        global_package_ids = prettier.ids,
-        deps = [dep, prettier],
+def configure_prettier(name, config, dep, visibility = None):
+    ts_library(
+        name = "%s_lib" % name,
+        srcs = ["@better_rules_javascript//rules/prettier/format:src"],
+        compiler = "@better_rules_javascript//rules:tsc",
+        deps = [
+            dep,
+            "@better_rules_javascript_npm//argparse:lib",
+            "@better_rules_javascript_npm//types_argparse:lib"
+        ],
+        root = "@better_rules_javascript//rules/prettier/format:root",
     )
 
-    packages_manifest = ctx.actions.declare_file("%s/packages-manifest.txt" % ctx.label.name)
-    write_packages_manifest(ctx, packages_manifest, dep)
+    nodejs_binary(
+        name = "%s_bin" % name,
+        dep = "%s_lib" % lib,
+    )
 
+    prettier(
+        name = name,
+        bin = "%s_bin" % name,
+        config = config,
+        visibility = visibility,
+    )
+
+def _prettier_impl(ctx):
     prettier_info = PrettierInfo(
         config = ctx.file.config,
         dep = dep,
@@ -34,90 +45,15 @@ prettier = rule(
             doc = "Configuration file",
             allow_single_file = True,
         ),
-        "prettier": attr.label(
-            doc = "Prettier library",
+        "bin": attr.label(
+            doc = "Prettier",
             mandatory = True,
-        ),
-        "plugins": attr.label_list(
-            doc = "Plugins to load",
-            providers = [JsInfo],
-        ),
-        "_dep": attr.label(
-            doc = "Main JS",
-            default = "//rules/prettier:js",
-            providers = [JsInfo],
-        ),
-    },
-)
-
-def _prettier_format_impl(ctx):
-    prettier_info = ctx.attr.prettier[PrettierInfo]
-
-    script = ""
-
-    outputs = []
-
-    for file in ctx.files.srcs:
-        inputs = []
-        args = ctx.actions.args()
-
-        formatted = ctx.actions.declare_file("_format/src/%s" % file.path)
-        outputs.append(formatted)
-        script += "format %s %s \n" % (file.path, formatted.path)
-
-        args.add(prettier_info.manifest.path)
-        inputs.append(prettier_info.manifest)
-
-        args.add(prettier_info.dep.name)
-
-        if prettier_info.config:
-            args.add("--config", prettier_info.config.path)
-            inputs.append(prettier_info.config)
-
-        args.add(file.path)
-        inputs.append(file)
-
-        args.add(formatted.path)
-        outputs.append(formatted)
-
-        ctx.actions.run(
-            executable = ctx.attr._runner.files_to_run,
-            arguments = [args],
-            inputs = depset(inputs, transitive = [prettier_info.dep.transitive_files]),
-            outputs = [formatted],
-        )
-
-    bin = ctx.actions.declare_file("_format/bin")
-    ctx.actions.expand_template(
-        template = ctx.file._write,
-        output = bin,
-        substitutions = {"%{files}": script},
-    )
-
-    default_info = DefaultInfo(files = depset(outputs + [bin]))
-
-    return [default_info]
-
-prettier_format = rule(
-    implementation = _prettier_format_impl,
-    attrs = {
-        "srcs": attr.label_list(
-            allow_files = True,
-            mandatory = True,
-        ),
-        "prettier": attr.label(
-            default = "//external:prettier",
-            providers = [PrettierInfo],
-        ),
-        "_runner": attr.label(
-            doc = "Node.js runner",
             executable = True,
-            cfg = "host",
-            default = "//rules/nodejs:bin",
+            cfg = "exec",
         ),
-        "_write": attr.label(
-            default = "@better_rules_javascript//rules/prettier:runner.sh.tpl",
-            allow_single_file = True,
-        ),
+        # "plugins": attr.label_list(
+        #     doc = "Plugins to load",
+        #     providers = [JsInfo],
+        # ),
     },
 )

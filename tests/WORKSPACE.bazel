@@ -58,6 +58,19 @@ load("@better_rules_javascript//rules:workspace.bzl", javascript_repositories = 
 
 javascript_repositories()
 
+# TypeScript
+
+local_repository(
+    name = "better_rules_typescript",
+    path = "../../rules_typescript",
+)
+
+load("@better_rules_typescript//rules:workspace.bzl", typescript_repositories = "repositories")
+
+typescript_repositories()
+
+## NPM
+
 load(":npm.bzl", "npm")
 
 npm("npm")

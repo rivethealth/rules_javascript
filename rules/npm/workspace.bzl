@@ -29,6 +29,7 @@ def _js_import_external_impl(ctx):
         ctx.execute(["sh", "-c", "echo 'require(\"./targets/proto3\")' >> npm/cli/util.js"])
         ctx.execute(["sh", "-c", "echo 'require(\"./targets/static-module\")' >> npm/cli/util.js"])
         ctx.execute(["sh", "-c", "echo 'require(\"./targets/static\")' >> npm/cli/util.js"])
+        deps = list(deps)
         deps.append("@npm_chalk4.1.0//:lib")
         deps.append("@npm_escodegen2.0.0//:lib")
         deps.append("@npm_espree7.3.0//:lib")
@@ -69,6 +70,7 @@ cjs_root(
     """.strip().format(
         js_name = json.encode(package_name),
     )
+
     build += "\n"
 
     if typescript:

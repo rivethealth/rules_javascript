@@ -1,13 +1,7 @@
 load("@rules_proto//proto:defs.bzl", "ProtoInfo")
-load(
-    "//rules/javascript:providers.bzl",
-    "JsInfo",
-    "create_js",
-    "create_module",
-    "create_package",
-    "create_package_dep",
-)
-load("//rules/javascript:rules.bzl", "default_package_name")
+load("//rules/commonjs:providers.bzl", "CjsInfo", "create_entry", "create_extra_link", "create_entry_set")
+load("//rules/javascript:providers.bzl", "JsInfo")
+load("//rules/nodejs:rules.bzl", "nodejs_binary")
 load(":providers.bzl", "JsProtobuf")
 
 def _path(file):
@@ -16,28 +10,43 @@ def _path(file):
 def _js_proto_impl(ctx):
     js_protobuf = JsProtobuf(
         runtime = ctx.attr.runtime[JsInfo],
-        bin = ctx.attr.bin,
+        bin = ctx.attr.bin[DefaultInfo].files_to_run,
     )
 
     return [js_protobuf]
 
 js_proto = rule(
-    implementation = _js_proto_impl,
     attrs = {
         "bin": attr.label(
+            cfg = "exec",
             executable = True,
-            cfg = "host",
             mandatory = True,
         ),
         "runtime": attr.label(
-            doc = "Runtime dependencies",
+            mandatory = True,
             providers = [JsInfo],
-        ),
+        )
     },
+    implementation = _js_proto_impl,
 )
 
+def configure_js_proto(name, dep, visibility = None):
+    nodejs_binary(
+        name = "%s_bin" % name,
+        dep = dep,
+        main = "bin/pbjs",
+        visibility = ["//visibility:private"],
+    )
+
+    js_proto(
+        name = name,
+        bin = "%s_bin" % name,
+        runtime = dep,
+        visibility = visibility,
+    )
+
 def _js_proto_library_impl(ctx):
-    package_name = ctx.attr.js_name or default_package_name(ctx)
+    cjs_info = ctx.attr.root[CjsInfo]
 
     js_proto = ctx.attr.js_proto[JsProtobuf]
 
@@ -55,7 +64,8 @@ def _js_proto_library_impl(ctx):
     args.add_all(dep[ProtoInfo].transitive_sources, map_each = _path)
 
     ctx.actions.run(
-        executable = js_proto.bin.files_to_run,
+        executable = js_proto.bin.executable,
+        tools = [js_proto.bin],
         arguments = [args],
         inputs = depset(transitive = [dep[ProtoInfo].transitive_sources for dep in ctx.attr.deps]),
         outputs = [output],
@@ -63,28 +73,53 @@ def _js_proto_library_impl(ctx):
 
     runtime_package = js_proto.runtime
 
-    package = create_package(
-        id = str(ctx.label),
-        name = package_name,
-        modules = (create_module("pb.js", output),),
-        deps = tuple([create_package_dep(runtime_package.name, id) for id in runtime_package.ids]),
+    entries = [create_entry(root = cjs_info.id, name = ctx.attr.module_name, file = output, label = ctx.label)]
+
+    js_deps = [js_proto.runtime]
+
+    transitive_descriptors = depset(
+        [cjs_info.descriptor],
+        transitive = [js_info.transitive_descriptors for js_info in js_deps]
+    )
+    transitive_extra_links = depset(
+        [
+            create_extra_link(root = cjs_info.id, dep = js_proto.runtime.root, label = ctx.attr.js_proto.label)
+        ],
+        transitive = [js_info.transitive_extra_links for js_info in js_deps]
+    )
+    transitive_roots = depset(
+        [cjs_info.root],
+        transitive = [js_info.transitive_roots for js_info in js_deps]
+    )
+    js_entry_set = create_entry_set(
+        entries = entries,
+        entry_sets = [js_info.js_entry_set for js_info in js_deps]
+    )
+    src_entry_set = create_entry_set(
+        # TODO: entries,
+        entry_sets = [js_info.src_entry_set for js_info in js_deps]
+    )
+
+    js_info = JsInfo(
+        js_entry_set = js_entry_set,
+        root = cjs_info.id,
+        src_entry_set = src_entry_set,
+        transitive_descriptors = transitive_descriptors,
+        transitive_extra_links = transitive_extra_links,
+        transitive_roots = transitive_roots,
     )
 
     default_info = DefaultInfo(files = depset([output]))
-
-    js_info = create_js(
-        package = package,
-        files = [output],
-        deps = [runtime_package],
-    )
 
     return [default_info, js_info]
 
 js_proto_library = rule(
     implementation = _js_proto_library_impl,
     attrs = {
-        "js_name": attr.string(
-            doc = "Package name",
+        "root": attr.label(
+            doc = "CommonJS root",
+            mandatory = True,
+            providers = [CjsInfo],
         ),
         "js_proto": attr.label(
             doc = "Config",
@@ -96,5 +131,8 @@ js_proto_library = rule(
             mandatory = True,
             providers = [ProtoInfo],
         ),
+        "module_name": attr.string(
+            mandatory = True,
+        )
     },
 )

@@ -17,11 +17,11 @@ bzl_library(
     ],
 )
 
-js_library(
-    name = "js",
-    srcs = glob(["**/*.js"]),
-    strip_prefix = "better_rules_javascript/rules/prettier/src",
-    deps = [
-        "@better_rules_javascript_npm//argparse:js",
-    ],
-)
+# js_library(
+#     name = "js",
+#     srcs = glob(["**/*.js"]),
+#     strip_prefix = "better_rules_javascript/rules/prettier/src",
+#     deps = [
+#         "@better_rules_javascript_npm//argparse:js",
+#     ],
+# )

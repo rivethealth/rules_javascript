@@ -1,17 +1,12 @@
-load(
-    "//rules/javascript:providers.bzl",
-    _JsInfo = "JsInfo",
-    _create_module = "create_module",
-    _create_package = "create_package",
-    _create_package_dep = "create_package_dep",
-    _merge_js = "merge_js",
-)
+load("//rules/commonjs:providers.bzl", "CjsInfo")
+load("//rules/javascript:providers.bzl", _JsInfo = "JsInfo")
 load(":aspects.bzl", _js_proto_aspect = "js_proto_aspect")
 load("//rules/util:path.bzl", "runfile_path")
 load(":providers.bzl", _JsProtobuf = "JsProtobuf")
 
 def _js_protoc_impl(ctx):
     js_protobuf = _JsProtobuf(
+        root = ctx.attr.root[CjsInfo],
         runtime = ctx.attr.runtime[_JsInfo],
     )
 
@@ -20,6 +15,10 @@ def _js_protoc_impl(ctx):
 js_protoc = rule(
     implementation = _js_protoc_impl,
     attrs = {
+        "root": attr.label(
+            doc = "CommonJS root",
+            providers = [CjsInfo],
+        ),
         "runtime": attr.label(
             doc = "Runtime dependencies",
             providers = [_JsInfo],

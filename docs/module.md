@@ -65,3 +65,12 @@ This is platform specific and difficult.
 Shim the `fs` module (or `process.binding('fs')`). However, a lot of Node.js internals are written in such a way they cannot be monkey-patched.
 
 Adding the `path` module improves the situation, however, it is a fragile approach.
+
+## Solution
+
+rules_javascript creates virtual file system by shimming the Node.js `fs` module. This works very well for most
+too.
+
+However, since Node.js uses internal file access methods for `require`/`require.resolve`, rules_javascript
+overrides `Module._load` with enhanced-resolve, which is an external implementation of the Node.js
+module resolution algorithm, and uses the (shimmed) `fs` module.

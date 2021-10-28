@@ -54,12 +54,6 @@ def format_aspect(prettier):
     return aspect(
         implementation = _format_impl,
         attrs = {
-            "_runner": attr.label(
-                doc = "Node.js runner",
-                executable = True,
-                cfg = "host",
-                default = "//rules/nodejs:bin",
-            ),
             "_write": attr.label(
                 default = "@better_rules_javascript//rules/prettier:runner.sh.tpl",
                 allow_single_file = True,
