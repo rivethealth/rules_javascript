@@ -21,6 +21,8 @@ def _js_import_external_impl(ctx):
     deps = ctx.attr.deps
 
     if ctx.name.startswith("npm_protobufjs"):
+        # protobufjs attempts to run npm install dependencies(!!)
+        # this may be fixed when protobufjs-cli is released
         ctx.execute(["sh", "-c", "echo 'exports.setup = () => {}' >> npm/cli/util.js"])
         ctx.execute(["sh", "-c", "echo 'require(\"./targets/json-module\")' >> npm/cli/util.js"])
         ctx.execute(["sh", "-c", "echo 'require(\"./targets/json\")' >> npm/cli/util.js"])
