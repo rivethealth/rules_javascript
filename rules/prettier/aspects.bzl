@@ -7,19 +7,16 @@ def _format_impl(target, ctx):
 
     outputs = []
 
+    output_prefix = "%s/_prettier_format" % ctx.label.name
+
     for src in ctx.rule.attr.srcs:
         for file in src.files.to_list():
             inputs = []
             args = ctx.actions.args()
 
-            formatted = ctx.actions.declare_file("_format/src/%s" % file.path)
+            formatted = ctx.actions.declare_file("%s/src/%s" % (output_prefix, file.path))
             outputs.append(formatted)
             script += "format %s %s \n" % (file.path, formatted.path)
-
-            args.add(prettier_info.manifest.path)
-            inputs.append(prettier_info.manifest)
-
-            args.add(prettier_info.dep.name)
 
             if prettier_info.config:
                 args.add("--config", prettier_info.config.path)
@@ -32,15 +29,16 @@ def _format_impl(target, ctx):
             outputs.append(formatted)
 
             ctx.actions.run(
-                executable = ctx.attr._runner.files_to_run,
                 arguments = [args],
-                inputs = depset(inputs, transitive = [prettier_info.dep.transitive_files]),
+                executable = prettier_info.bin.executable,
+                inputs = inputs,
                 outputs = [formatted],
+                tools = [prettier_info.bin],
             )
 
-    bin = ctx.actions.declare_file("_format/bin")
+    bin = ctx.actions.declare_file("%s/bin" % output_prefix)
     ctx.actions.expand_template(
-        template = ctx.file._write,
+        template = ctx.file._runner,
         output = bin,
         substitutions = {"%{files}": script},
     )
@@ -54,7 +52,7 @@ def format_aspect(prettier):
     return aspect(
         implementation = _format_impl,
         attrs = {
-            "_write": attr.label(
+            "_runner": attr.label(
                 default = "@better_rules_javascript//rules/prettier:runner.sh.tpl",
                 allow_single_file = True,
             ),

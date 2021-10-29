@@ -6,9 +6,9 @@ load("@better_rules_javascript//rules/protobufjs:rules.bzl", configure_js_protoj
 package(default_visibility = ["//visibility:public"])
 
 cjs_root(
-    descriptor = "proto.package.json",
     name = "proto_root",
-    package_name = "@better_rules_javascript_test/proto"
+    package_name = "@better_rules_javascript_test/proto",
+    descriptor = "proto.package.json",
 )
 
 js_protoc(

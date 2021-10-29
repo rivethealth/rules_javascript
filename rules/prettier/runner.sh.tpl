@@ -1,15 +1,19 @@
 #!/bin/bash -e
 arg="$1"
 
+exit=0
+
 function format {
     if [ "$arg" = write ]; then
         if ! diff -q "$1" "$2"; then
             echo "$1"
             cp "$2" "$1"
         fi
-    else
-        diff "$1" "$2" || true
+    elif ! diff --color=always -u0 "$1" "$2"; then
+        exit=1
     fi
 }
 
 %{files}
+
+exit "$exit"

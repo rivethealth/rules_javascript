@@ -1,5 +1,5 @@
 load("@rules_proto//proto:defs.bzl", "ProtoInfo")
-load("//rules/commonjs:providers.bzl", "CjsInfo", "create_entry", "create_extra_link", "create_entry_set")
+load("//rules/commonjs:providers.bzl", "CjsInfo", "create_entry", "create_entry_set", "create_extra_link")
 load("//rules/javascript:providers.bzl", "JsInfo")
 load("//rules/nodejs:rules.bzl", "nodejs_binary")
 load(":providers.bzl", "JsProtobuf")
@@ -25,7 +25,7 @@ js_proto = rule(
         "runtime": attr.label(
             mandatory = True,
             providers = [JsInfo],
-        )
+        ),
     },
     implementation = _js_proto_impl,
 )
@@ -79,25 +79,25 @@ def _js_proto_library_impl(ctx):
 
     transitive_descriptors = depset(
         [cjs_info.descriptor],
-        transitive = [js_info.transitive_descriptors for js_info in js_deps]
+        transitive = [js_info.transitive_descriptors for js_info in js_deps],
     )
     transitive_extra_links = depset(
         [
-            create_extra_link(root = cjs_info.id, dep = js_proto.runtime.root, label = ctx.attr.js_proto.label)
+            create_extra_link(root = cjs_info.id, dep = js_proto.runtime.root, label = ctx.attr.js_proto.label),
         ],
-        transitive = [js_info.transitive_extra_links for js_info in js_deps]
+        transitive = [js_info.transitive_extra_links for js_info in js_deps],
     )
     transitive_roots = depset(
         [cjs_info.root],
-        transitive = [js_info.transitive_roots for js_info in js_deps]
+        transitive = [js_info.transitive_roots for js_info in js_deps],
     )
     js_entry_set = create_entry_set(
         entries = entries,
-        entry_sets = [js_info.js_entry_set for js_info in js_deps]
+        entry_sets = [js_info.js_entry_set for js_info in js_deps],
     )
     src_entry_set = create_entry_set(
         # TODO: entries,
-        entry_sets = [js_info.src_entry_set for js_info in js_deps]
+        entry_sets = [js_info.src_entry_set for js_info in js_deps],
     )
 
     js_info = JsInfo(
@@ -133,6 +133,6 @@ js_proto_library = rule(
         ),
         "module_name": attr.string(
             mandatory = True,
-        )
+        ),
     },
 )

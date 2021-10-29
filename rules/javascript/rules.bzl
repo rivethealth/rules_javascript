@@ -11,10 +11,10 @@ js_import = rule(
         "dep": attr.label(
             mandatory = True,
             providers = [JsInfo],
-        )
+        ),
     },
     doc = "JavaScript import",
-    implementation = _js_import_impl
+    implementation = _js_import_impl,
 )
 
 def _js_library_impl(ctx):
@@ -36,25 +36,25 @@ def _js_library_impl(ctx):
 
     transitive_descriptors = depset(
         [cjs_info.descriptor],
-        transitive = [js_info.transitive_descriptors for js_info in js_deps]
+        transitive = [js_info.transitive_descriptors for js_info in js_deps],
     )
     transitive_extra_links = depset(
         [
             create_extra_link(root = cjs_info.id, dep = dep[JsInfo].root, label = dep.label)
             for dep in ctx.attr.deps
         ],
-        transitive = [js_info.transitive_extra_links for js_info in js_deps]
+        transitive = [js_info.transitive_extra_links for js_info in js_deps],
     )
     transitive_roots = depset(
         [cjs_info.root],
-        transitive = [js_info.transitive_roots for js_info in js_deps]
+        transitive = [js_info.transitive_roots for js_info in js_deps],
     )
     js_entry_set = create_entry_set(
         entries = entries,
-        entry_sets = [js_info.js_entry_set for js_info in js_deps]
+        entry_sets = [js_info.js_entry_set for js_info in js_deps],
     )
     src_entry_set = create_entry_set(
-        entry_sets = [js_info.src_entry_set for js_info in js_deps]
+        entry_sets = [js_info.src_entry_set for js_info in js_deps],
     )
 
     js_info = JsInfo(

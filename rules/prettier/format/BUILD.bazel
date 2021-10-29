@@ -10,5 +10,5 @@ cjs_root(
 
 filegroup(
     name = "src",
-    srcs = glob(["src/**/*.ts"])
+    srcs = glob(["src/**/*.ts"]),
 )

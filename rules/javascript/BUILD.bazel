@@ -13,24 +13,3 @@ bzl_library(
         "//rules/util:bzl",
     ],
 )
-
-js_library(
-    name = "resolver_js",
-    srcs = glob(["resolver-js/**/*.js"]),
-    js_name = "@better_rules_javascript/rules/javascript/resolver",
-    strip_prefix = "better_rules_javascript/rules/javascript/resolver-js",
-    deps = [
-        "@better_rules_javascript_npm//tslib:js",
-    ],
-)
-
-ts_import(
-    name = "resolver",
-    declarations = glob(["resolver-js/**/*.d.ts"]),
-    js_name = "@better_rules_javascript/rules/javascript/resolver",
-    strip_prefix = "better_rules_javascript/rules/javascript/resolver-js",
-    deps = [
-        ":resolver_js",
-        "@better_rules_javascript_npm//tslib:js",
-    ],
-)

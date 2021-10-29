@@ -5,4 +5,4 @@ format = format_aspect(
     "@better_rules_javascript//tools:prettier",
 )
 
-js_proto = js_proto_aspect("@better_rules_javascript//rules:js_protoc", "better_rules_javascript_proto")
+js_proto = js_proto_aspect("@better_rules_javascript//rules:js_protoc")

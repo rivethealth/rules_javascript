@@ -1,4 +1,4 @@
-load("//rules/commonjs:providers.bzl", "create_entry", "create_extra_link", "create_entry_set")
+load("//rules/commonjs:providers.bzl", "create_entry", "create_entry_set", "create_extra_link")
 load("//rules/javascript:providers.bzl", "JsInfo")
 load("@rules_proto//proto:defs.bzl", "ProtoInfo")
 load(":providers.bzl", "JsProtobuf")
@@ -51,28 +51,28 @@ def _js_proto_impl(target, ctx):
 
     transitive_descriptors = depset(
         [cjs_info.descriptor],
-        transitive = [js_info.transitive_descriptors for js_info in js_deps]
+        transitive = [js_info.transitive_descriptors for js_info in js_deps],
     )
     transitive_extra_links = depset(
         [
             create_extra_link(root = cjs_info.id, dep = dep[JsInfo].root, label = dep.label)
             for dep in ctx.rule.attr.deps
         ] + [
-            create_extra_link(root = cjs_info.id, dep = js_proto.runtime.root, label = ctx.attr._js_protoc.label)
+            create_extra_link(root = cjs_info.id, dep = js_proto.runtime.root, label = ctx.attr._js_protoc.label),
         ],
-        transitive = [js_info.transitive_extra_links for js_info in js_deps]
+        transitive = [js_info.transitive_extra_links for js_info in js_deps],
     )
     transitive_roots = depset(
         [cjs_info.root],
-        transitive = [js_info.transitive_roots for js_info in js_deps]
+        transitive = [js_info.transitive_roots for js_info in js_deps],
     )
     js_entry_set = create_entry_set(
         entries = entries,
-        entry_sets = [js_info.js_entry_set for js_info in js_deps]
+        entry_sets = [js_info.js_entry_set for js_info in js_deps],
     )
     src_entry_set = create_entry_set(
         # TODO: entries,
-        entry_sets = [js_info.src_entry_set for js_info in js_deps]
+        entry_sets = [js_info.src_entry_set for js_info in js_deps],
     )
 
     js_info = JsInfo(
@@ -86,7 +86,7 @@ def _js_proto_impl(target, ctx):
 
     return [js_info]
 
-def js_proto_aspect(js_protoc, js_name = "proto"):
+def js_proto_aspect(js_protoc):
     """
     Create js_proto aspect
 
@@ -100,9 +100,6 @@ def js_proto_aspect(js_protoc, js_name = "proto"):
             "_js_protoc": attr.label(
                 providers = [JsProtobuf],
                 default = js_protoc,
-            ),
-            "_js_name": attr.string(
-                default = js_name,
             ),
         },
         toolchains = ["@rules_proto_grpc//protobuf:toolchain_type"],

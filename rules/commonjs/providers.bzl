@@ -6,7 +6,7 @@ CjsInfo = provider(
         "prefix": "Default prexfix for entries",
         "id": "ID",
         "root": "Root struct",
-    }
+    },
 )
 
 def create_entry_set(entries = [], entry_sets = []):
@@ -39,7 +39,6 @@ def create_entry(root, name, file, label):
     :param File file: File
     """
     return struct(file = file, name = name, root = root, label = label)
-
 
 def create_link(dep, name, label):
     """
@@ -100,8 +99,8 @@ def link_json(link):
     return struct(
         dep = link.dep,
         name = link.name,
-        label = str(link.label)
+        label = str(link.label),
     )
 
 def cjs_path(id):
-    return ''.join([c if c.isalnum() else "_" for c in id.elems()])
+    return "".join([c if c.isalnum() else "_" for c in id.elems()])

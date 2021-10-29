@@ -1,4 +1,4 @@
-load(":providers.bzl", "CjsInfo", "create_root", "create_link")
+load(":providers.bzl", "CjsInfo", "create_link", "create_root")
 
 def default_package_name(ctx):
     workspace = "@%s" % (ctx.label.workspace_name or ctx.workspace_name)
@@ -19,14 +19,13 @@ def _cjs_root_impl(ctx):
 
     links = tuple([
         create_link(dep = dep[CjsInfo].root.id, name = dep[CjsInfo].root.name, label = dep.label)
-        for dep
-        in ctx.attr.deps
+        for dep in ctx.attr.deps
     ])
     root = create_root(
         id = str(ctx.label),
         name = name,
         descriptor = ctx.file.descriptor,
-        links = links
+        links = links,
     )
     cjs = CjsInfo(
         descriptor = ctx.file.descriptor,
@@ -46,7 +45,7 @@ cjs_root = rule(
             mandatory = True,
         ),
         "deps": attr.label_list(
-            doc = "Dependencies"
+            doc = "Dependencies",
         ),
         "descriptor": attr.label(
             allow_single_file = [".json"],
@@ -81,5 +80,5 @@ cjs_import = rule(
             doc = "Import alias",
             mandatory = True,
         ),
-    }
+    },
 )

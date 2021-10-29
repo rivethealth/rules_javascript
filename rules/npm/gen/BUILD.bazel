@@ -3,27 +3,30 @@ load("//rules/commonjs:rules.bzl", "cjs_root")
 load("//rules/nodejs:rules.bzl", "nodejs_binary")
 
 cjs_root(
-    descriptor = "package.json",
     name = "root",
-    package_name = "@better_rules_javascript/npm-gen"
+    package_name = "@better_rules_javascript/npm-gen",
+    descriptor = "package.json",
 )
 
 ts_library(
-    compiler = "//rules:tsc",
-    compiler_options = ["--lib", "dom,es2019"],
     name = "ts",
-    root = ":root",
     srcs = glob(["src/**/*.ts"]),
+    compiler = "//rules:tsc",
+    compiler_options = [
+        "--lib",
+        "dom,es2019",
+    ],
+    root = ":root",
     strip_prefix = "better_rules_javascript/rules/npm/gen/src",
+    types = [
+        "@better_rules_javascript_npm//types_node:lib",
+    ],
     deps = [
         "@better_rules_javascript_npm//argparse:lib",
         "@better_rules_javascript_npm//types_argparse:lib",
-        "@better_rules_javascript_npm//yarnpkg_lockfile:lib",
         "@better_rules_javascript_npm//types_yarnpkg__lockfile:lib",
+        "@better_rules_javascript_npm//yarnpkg_lockfile:lib",
     ],
-    types = [
-        "@better_rules_javascript_npm//types_node:lib"
-    ]
 )
 
 nodejs_binary(

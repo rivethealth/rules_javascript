@@ -1,4 +1,4 @@
-import * as path from 'path';
+import * as path from "path";
 import { JsonFormat } from "./json";
 
 /**
@@ -34,26 +34,38 @@ export namespace VfsEntry {
     const result: JsonFormat<VfsEntry> = {
       fromJson(json: any) {
         switch (json.type) {
-          case 'LINK':
+          case "LINK":
             return { type: LINK, path: VfsPath.parse(json.path) };
-          case 'DIRECTORY':
-            return { type: DIRECTORY, children: children.fromJson(json.children) };
-          case 'PATH':
-            return { type: PATH, path: JsonFormat.string().fromJson(json.path) }
+          case "DIRECTORY":
+            return {
+              type: DIRECTORY,
+              children: children.fromJson(json.children),
+            };
+          case "PATH":
+            return {
+              type: PATH,
+              path: JsonFormat.string().fromJson(json.path),
+            };
         }
       },
       toJson(entry: VfsEntry) {
         switch (entry.type) {
           case VfsEntry.LINK:
-            return { type: 'LINK', path: VfsPath.text(entry.path) };
+            return { type: "LINK", path: VfsPath.text(entry.path) };
           case VfsEntry.PATH:
-            return { type: 'PATH', path: entry.path };
+            return { type: "PATH", path: entry.path };
           case VfsEntry.DIRECTORY:
-            return { type: 'DIRECTORY', children: children.toJson(entry.children) };
+            return {
+              type: "DIRECTORY",
+              children: children.toJson(entry.children),
+            };
         }
-      }
-    }
-    children = JsonFormat.map(JsonFormat.string(), JsonFormat.defer(() => result));
+      },
+    };
+    children = JsonFormat.map(
+      JsonFormat.string(),
+      JsonFormat.defer(() => result),
+    );
     return result;
   }
 }
@@ -88,14 +100,11 @@ type Path_ = VfsPath;
  * Mounted part of link file system
  */
 export class VfsMount {
-  constructor(private readonly root: VfsEntry) {
-  }
+  constructor(private readonly root: VfsEntry) {}
 
-  lookup(
-    path: VfsPath
-  ): VfsEntry | undefined {
+  lookup(path: VfsPath): VfsEntry | undefined {
     let entry: VfsEntry = this.root;
-    for (let i = 0; i<  path.length; ) {
+    for (let i = 0; i < path.length; ) {
       switch (entry.type) {
         case VfsEntry.DIRECTORY: {
           const newEntry = entry.children.get(path[i]);
@@ -113,9 +122,9 @@ export class VfsMount {
           break;
         case VfsEntry.PATH:
           return {
-              type: VfsEntry.PATH,
-              path: [entry.path,... path.slice(i)].join('/'),
-            };
+            type: VfsEntry.PATH,
+            path: [entry.path, ...path.slice(i)].join("/"),
+          };
       }
     }
     return entry;
@@ -142,17 +151,17 @@ export class VfsMount {
           i = 0;
           break;
         case VfsEntry.PATH:
-          return [entry.path, ...path.slice(i)].join('/');
+          return [entry.path, ...path.slice(i)].join("/");
       }
     }
-    return realpath.join('/');
+    return realpath.join("/");
   }
 
   *tree(): IterableIterator<string> {
-    yield *(function *f(entry: VfsEntry): IterableIterator<string> {
+    yield* (function* f(entry: VfsEntry): IterableIterator<string> {
       switch (entry.type) {
         case VfsEntry.LINK:
-          yield `-> ${entry.path.join('/')}`;
+          yield `-> ${entry.path.join("/")}`;
           break;
         case VfsEntry.PATH:
           yield entry.path;
@@ -170,17 +179,26 @@ export class VfsMount {
   }
 }
 
-export type EntryResult = FsResult.Link | FsResult.Path | FsResult.Directory | FsResult.NotFound | undefined;
+export type EntryResult =
+  | FsResult.Link
+  | FsResult.Path
+  | FsResult.Directory
+  | FsResult.NotFound
+  | undefined;
 
 export type PathResult = FsResult.Path | FsResult.NotFound | undefined;
 
-export type ResolveResult = FsResult.Path | FsResult.Directory | FsResult.NotFound | undefined;
+export type ResolveResult =
+  | FsResult.Path
+  | FsResult.Directory
+  | FsResult.NotFound
+  | undefined;
 
 export namespace FsResult {
-  export const LINK = Symbol('LINK');
-  export const PATH = Symbol('PATH');
-  export const DIRECTORY = Symbol('DIRECTORY');
-  export const NOT_FOUND = Symbol('NOT_FOUND');
+  export const LINK = Symbol("LINK");
+  export const PATH = Symbol("PATH");
+  export const DIRECTORY = Symbol("DIRECTORY");
+  export const NOT_FOUND = Symbol("NOT_FOUND");
 
   export interface Link {
     type: typeof LINK;
@@ -215,21 +233,28 @@ interface VfsMountPoint {
 export class Vfs {
   private readonly _mountPoints: VfsMountPoint[] = [];
 
-  private _resolvePath(path_: string): { mountPoint: VfsMountPoint, path: VfsPath } | undefined {
-    path_= path.resolve(path_);
-    const mount = this._mountPoints.find(({ path }) => path === path_ || path_.startsWith(`${path}/`));
+  private _resolvePath(
+    path_: string,
+  ): { mountPoint: VfsMountPoint; path: VfsPath } | undefined {
+    path_ = path.resolve(path_);
+    const mount = this._mountPoints.find(
+      ({ path }) => path === path_ || path_.startsWith(`${path}/`),
+    );
     if (!mount) {
       return;
     }
 
-    return { mountPoint: mount, path: VfsPath.parse(path_.slice(mount.path.length + 1)) };
+    return {
+      mountPoint: mount,
+      path: VfsPath.parse(path_.slice(mount.path.length + 1)),
+    };
   }
 
   private _prepend(mountPoint: VfsMountPoint, path: string) {
     if (!path) {
       return mountPoint.path;
     } else {
-      return `${mountPoint.path}/${path}`
+      return `${mountPoint.path}/${path}`;
     }
   }
 
@@ -238,7 +263,7 @@ export class Vfs {
    */
   mount(path_: string, mount: VfsMount) {
     path_ = path.resolve(path_);
-    this._mountPoints.push({path: path_, mount });
+    this._mountPoints.push({ path: path_, mount });
   }
 
   /**
@@ -259,9 +284,12 @@ export class Vfs {
 
     switch (resolved.type) {
       case VfsEntry.LINK:
-        return { type: FsResult.LINK, path: this._prepend(mountPoint, VfsPath.text(resolved.path)) };
+        return {
+          type: FsResult.LINK,
+          path: this._prepend(mountPoint, VfsPath.text(resolved.path)),
+        };
       case VfsEntry.PATH:
-        return { type: FsResult.PATH, path: resolved.path  };
+        return { type: FsResult.PATH, path: resolved.path };
       case VfsEntry.DIRECTORY:
         return { type: FsResult.DIRECTORY, children: resolved.children.keys() };
     }

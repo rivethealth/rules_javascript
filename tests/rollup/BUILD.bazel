@@ -2,5 +2,5 @@ load("@better_rules_javascript//rules/rollup:rules.bzl", "create_rollup")
 
 create_rollup(
     "rollup",
-    "@npm//rollup:lib"
+    "@npm//rollup:lib",
 )

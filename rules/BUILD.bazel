@@ -1,12 +1,19 @@
 load("@better_rules_typescript//rules/typescript:rules.bzl", "configure_ts_compiler")
+load("//rules/commonjs:rules.bzl", "cjs_root")
 load("//rules/rollup:rules.bzl", "configure_rollup")
-# load("//rules/protobuf:rules.bzl", "js_protoc")
+load("//rules/protobuf:rules.bzl", "js_protoc")
 
 package(default_visibility = ["//visibility:public"])
 
+cjs_root(
+    name = "proto_root",
+    package_name = "@better_rules_javascript/proto",
+    descriptor = "package.json",
+)
+
 configure_rollup(
     name = "rollup",
-    dep = "@better_rules_javascript_npm//rollup:lib"
+    dep = "@better_rules_javascript_npm//rollup:lib",
 )
 
 configure_ts_compiler(
@@ -15,7 +22,8 @@ configure_ts_compiler(
     tslib = "@better_rules_javascript_npm//tslib:lib",
 )
 
-# js_protoc(
-#     name = "js_protoc",
-#     runtime = "@better_rules_javascript_npm//google-protobuf:js",
-# )
+js_protoc(
+    name = "js_protoc",
+    root = ":proto_root",
+    runtime = "@better_rules_javascript_npm//google_protobuf:lib",
+)

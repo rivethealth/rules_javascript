@@ -4,23 +4,23 @@ load("@better_rules_javascript//rules/nodejs:rules.bzl", "nodejs_binary")
 load("@better_rules_javascript//rules/protobufjs:rules.bzl", "js_proto_library")
 
 cjs_root(
-    descriptor = "package.json",
     name = "root",
     package_name = "@better_rules_javascript_test/protobufjs-basic",
+    descriptor = "package.json",
 )
 
 js_proto_library(
-    module_name = "pb.js",
     name = "proto_js",
-    root = ":root",
     js_proto = "//:js_protojs",
+    module_name = "pb.js",
+    root = ":root",
     deps = ["@rules_proto_grpc//example/proto:person_proto"],
 )
 
 js_library(
     name = "js",
-    root = ":root",
     srcs = ["index.js"],
+    root = ":root",
     deps = [":proto_js"],
 )
 

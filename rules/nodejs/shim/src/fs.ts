@@ -1,7 +1,11 @@
 import { URL, fileURLToPath } from "url";
 import * as fs from "fs";
 import { Readable } from "stream";
-import { FsResult, Vfs, EntryResult } from "@better_rules_javascript/commonjs-fs";
+import {
+  FsResult,
+  Vfs,
+  EntryResult,
+} from "@better_rules_javascript/commonjs-fs";
 
 /**
  * @filedescription Node.js fs implementation of LinkFs
@@ -199,10 +203,10 @@ class LinkDir {
 
   read(): Promise<fs.Dirent | null>;
   read(
-    cb: (err: NodeJS.ErrnoException | null, dirEnt: fs.Dirent | null) => void
+    cb: (err: NodeJS.ErrnoException | null, dirEnt: fs.Dirent | null) => void,
   ): void;
   read(
-    cb?: (err: NodeJS.ErrnoException | null, dirEnt: fs.Dirent | null) => void
+    cb?: (err: NodeJS.ErrnoException | null, dirEnt: fs.Dirent | null) => void,
   ): Promise<fs.Dirent | null> | null {
     const result = this.readSync();
     if (cb) {
@@ -248,12 +252,12 @@ function access(linkFs: Vfs, delegate: typeof fs.access): typeof fs.access {
   function access(
     path: fs.PathLike,
     mode: number | undefined,
-    callback: fs.NoParamCallback
+    callback: fs.NoParamCallback,
   ): void;
   function access(
     path: fs.PathLike,
     mode: fs.NoParamCallback | number | undefined,
-    callback?: fs.NoParamCallback
+    callback?: fs.NoParamCallback,
   ) {
     const fsPath = stringPath(path);
     if (typeof mode === "function") {
@@ -265,7 +269,7 @@ function access(linkFs: Vfs, delegate: typeof fs.access): typeof fs.access {
     if (resolved === undefined) {
       return delegate.apply(this, arguments);
     }
-  
+
     switch (resolved.type) {
       case FsResult.DIRECTORY:
         if (mode & fs.constants.W_OK) {
@@ -288,7 +292,7 @@ function access(linkFs: Vfs, delegate: typeof fs.access): typeof fs.access {
 
 function accessSync(
   linkFs: Vfs,
-  delegate: typeof fs.accessSync
+  delegate: typeof fs.accessSync,
 ): typeof fs.accessSync {
   return function (path, mode) {
     const fsPath = stringPath(path);
@@ -317,24 +321,24 @@ function accessSync(
 
 function appendFile(
   linkFs: Vfs,
-  delegate: typeof fs.appendFile
+  delegate: typeof fs.appendFile,
 ): typeof fs.appendFile {
   function appendFile(
     file: fs.PathLike | number,
     data: any,
-    callback: fs.NoParamCallback
+    callback: fs.NoParamCallback,
   ): void;
   function appendFile(
     file: fs.PathLike | number,
     data: any,
     options: fs.WriteFileOptions,
-    callback: fs.NoParamCallback
+    callback: fs.NoParamCallback,
   ): void;
   function appendFile(
     file: fs.PathLike | number,
     data: any,
     options: fs.WriteFileOptions | fs.NoParamCallback,
-    callback?: fs.NoParamCallback
+    callback?: fs.NoParamCallback,
   ): ReturnType<typeof fs.appendFile> {
     if (typeof file === "number") {
       return delegate.apply(this, arguments);
@@ -362,7 +366,7 @@ function appendFile(
 
 function appendFileSync(
   linkFs: Vfs,
-  delegate: typeof fs.appendFileSync
+  delegate: typeof fs.appendFileSync,
 ): typeof fs.appendFileSync {
   return function (file) {
     if (typeof file === "number") {
@@ -388,7 +392,7 @@ function chmod(linkFs: Vfs, delegate: typeof fs.chmod): typeof fs.chmod {
   function chmod(
     path: fs.PathLike,
     mode: string | number,
-    callback: fs.NoParamCallback
+    callback: fs.NoParamCallback,
   ): void {
     const fsPath = stringPath(path);
 
@@ -407,7 +411,7 @@ function chmod(linkFs: Vfs, delegate: typeof fs.chmod): typeof fs.chmod {
 
 function chmodSync(
   linkFs: Vfs,
-  delegate: typeof fs.chmodSync
+  delegate: typeof fs.chmodSync,
 ): typeof fs.chmodSync {
   return function (path) {
     const fsPath = stringPath(path);
@@ -428,7 +432,7 @@ function chown(linkFs: Vfs, delegate: typeof fs.chown): typeof fs.chown {
     path: fs.PathLike,
     uid: number,
     gid: number,
-    callback: fs.NoParamCallback
+    callback: fs.NoParamCallback,
   ): void {
     const fsPath = stringPath(path);
 
@@ -447,7 +451,7 @@ function chown(linkFs: Vfs, delegate: typeof fs.chown): typeof fs.chown {
 
 function chownSync(
   linkFs: Vfs,
-  delegate: typeof fs.chownSync
+  delegate: typeof fs.chownSync,
 ): typeof fs.chownSync {
   return function (path) {
     const fsPath = stringPath(path);
@@ -461,24 +465,24 @@ function chownSync(
 
 function copyFile(
   linkFs: Vfs,
-  delegate: typeof fs.copyFile
+  delegate: typeof fs.copyFile,
 ): typeof fs.copyFile {
   function copyFile(
     src: fs.PathLike,
     dest: fs.PathLike,
-    callback: fs.NoParamCallback
+    callback: fs.NoParamCallback,
   ): void;
   function copyFile(
     src: fs.PathLike,
     dest: fs.PathLike,
     flags: number,
-    callback: fs.NoParamCallback
+    callback: fs.NoParamCallback,
   ): void;
   function copyFile(
     src: fs.PathLike,
     dest: fs.PathLike,
     flags: number | fs.NoParamCallback,
-    callback?: fs.NoParamCallback
+    callback?: fs.NoParamCallback,
   ) {
     const destPath = stringPath(dest);
     const srcPath = stringPath(src);
@@ -516,7 +520,7 @@ function copyFile(
 
 function createReadStream(
   linkFs: Vfs,
-  delegate: typeof fs.createReadStream
+  delegate: typeof fs.createReadStream,
 ): typeof fs.createReadStream {
   return function (path: fs.PathLike) {
     const filePath = stringPath(path);
@@ -526,11 +530,17 @@ function createReadStream(
       return delegate.apply(this, arguments);
     }
     if (resolved == null) {
-      return errorReadStream(stringPath(path), new NotFoundError(stringPath(path), "read"));
+      return errorReadStream(
+        stringPath(path),
+        new NotFoundError(stringPath(path), "read"),
+      );
     }
     switch (resolved.type) {
       case FsResult.DIRECTORY: {
-        return errorReadStream(stringPath(path), new IsDirError(stringPath(path), "read"));
+        return errorReadStream(
+          stringPath(path),
+          new IsDirError(stringPath(path), "read"),
+        );
       }
       case FsResult.PATH: {
         const args = [...arguments];
@@ -543,7 +553,7 @@ function createReadStream(
 
 function createWriteStream(
   linkFs: Vfs,
-  delegate: typeof fs.createWriteStream
+  delegate: typeof fs.createWriteStream,
 ): typeof fs.createWriteStream {
   return function (path: fs.PathLike) {
     const filePath = stringPath(path);
@@ -553,13 +563,16 @@ function createWriteStream(
       return delegate.apply(this, arguments);
     }
 
-    return errorReadStream(stringPath(path), new AccessError(stringPath(path), "read"));
+    return errorReadStream(
+      stringPath(path),
+      new AccessError(stringPath(path), "read"),
+    );
   };
 }
 
 function copyFileSync(
   linkFs: Vfs,
-  delegate: typeof fs.copyFileSync
+  delegate: typeof fs.copyFileSync,
 ): typeof fs.copyFileSync {
   return function (src: fs.PathLike, dest: fs.PathLike, flags?: number): void {
     const srcPath = stringPath(src);
@@ -592,7 +605,7 @@ function copyFileSync(
 function exists(linkFs: Vfs, delegate: typeof fs.exists): typeof fs.exists {
   function exists(
     path: fs.PathLike,
-    callback: (exists: boolean) => void
+    callback: (exists: boolean) => void,
   ): void {
     const filePath = stringPath(path);
 
@@ -633,7 +646,7 @@ function dirEntry(name: string, entry: EntryResult) {
 
 function existsSync(
   linkFs: Vfs,
-  delegate: typeof fs.existsSync
+  delegate: typeof fs.existsSync,
 ): typeof fs.existsSync {
   return function (path) {
     const filePath = stringPath(path);
@@ -656,46 +669,90 @@ function existsSync(
 }
 
 function mkdir(linkFs: Vfs, delegate: typeof fs.mkdir): typeof fs.mkdir {
-    function mkdir(path: fs.PathLike, options: number | string | fs.MakeDirectoryOptions | undefined | null, callback: fs.NoParamCallback): void;
-    function mkdir(path: fs.PathLike, callback: fs.NoParamCallback): void;
-    function mkdir(path: fs.PathLike, options: number | string | fs.MakeDirectoryOptions | undefined | null | fs.NoParamCallback, callback?: fs.NoParamCallback) {
-      const filePath = stringPath(path);
-
-      const resolved = linkFs.resolve(filePath);
-      if (resolved === undefined) {
-        return delegate.apply(this, arguments);
-      }
-
-      if (typeof options === "function") {
-        callback = options;
-      }
-
-      callback(new AccessError(stringPath(path), "mkdir"));
-    }
-
-    return addPromisify(mkdir);
-}
-
-function mkdirSync(linkFs: Vfs, delegate: typeof fs.mkdirSync): typeof fs.mkdirSync {
-  return function(path) {
+  function mkdir(
+    path: fs.PathLike,
+    options: number | string | fs.MakeDirectoryOptions | undefined | null,
+    callback: fs.NoParamCallback,
+  ): void;
+  function mkdir(path: fs.PathLike, callback: fs.NoParamCallback): void;
+  function mkdir(
+    path: fs.PathLike,
+    options:
+      | number
+      | string
+      | fs.MakeDirectoryOptions
+      | undefined
+      | null
+      | fs.NoParamCallback,
+    callback?: fs.NoParamCallback,
+  ) {
     const filePath = stringPath(path);
 
     const resolved = linkFs.resolve(filePath);
     if (resolved === undefined) {
-      return delegate.apply(this,arguments);
+      return delegate.apply(this, arguments);
+    }
+
+    if (typeof options === "function") {
+      callback = options;
+    }
+
+    callback(new AccessError(stringPath(path), "mkdir"));
+  }
+
+  return addPromisify(mkdir);
+}
+
+function mkdirSync(
+  linkFs: Vfs,
+  delegate: typeof fs.mkdirSync,
+): typeof fs.mkdirSync {
+  return function (path) {
+    const filePath = stringPath(path);
+
+    const resolved = linkFs.resolve(filePath);
+    if (resolved === undefined) {
+      return delegate.apply(this, arguments);
     }
 
     throw new AccessError(stringPath(path), "mkdir");
   };
 }
 
-
 function mkdtemp(linkFs: Vfs, delegate: typeof fs.mkdtemp): typeof fs.mkdtemp {
-  function mkdtemp(prefix: string, options: { encoding?: BufferEncoding | null } | BufferEncoding | undefined | null, callback: (err: NodeJS.ErrnoException | null, folder: string) => void): void;
-  function mkdtemp(prefix: string, options: "buffer" | { encoding: "buffer" }, callback: (err: NodeJS.ErrnoException | null, folder: Buffer) => void): void;
-  function mkdtemp(prefix: string, options: { encoding?: string | null } | string | undefined | null, callback: (err: NodeJS.ErrnoException | null, folder: string | Buffer) => void): void;
-  function mkdtemp(prefix: string, callback: (err: NodeJS.ErrnoException | null, folder: string) => void): void;
-  function mkdtemp(path: fs.PathLike, options: any, callback?: ((err: NodeJS.ErrnoException | null, folder: string) => void) | ((err: NodeJS.ErrnoException | null, folder: Buffer) => void)) {
+  function mkdtemp(
+    prefix: string,
+    options:
+      | { encoding?: BufferEncoding | null }
+      | BufferEncoding
+      | undefined
+      | null,
+    callback: (err: NodeJS.ErrnoException | null, folder: string) => void,
+  ): void;
+  function mkdtemp(
+    prefix: string,
+    options: "buffer" | { encoding: "buffer" },
+    callback: (err: NodeJS.ErrnoException | null, folder: Buffer) => void,
+  ): void;
+  function mkdtemp(
+    prefix: string,
+    options: { encoding?: string | null } | string | undefined | null,
+    callback: (
+      err: NodeJS.ErrnoException | null,
+      folder: string | Buffer,
+    ) => void,
+  ): void;
+  function mkdtemp(
+    prefix: string,
+    callback: (err: NodeJS.ErrnoException | null, folder: string) => void,
+  ): void;
+  function mkdtemp(
+    path: fs.PathLike,
+    options: any,
+    callback?:
+      | ((err: NodeJS.ErrnoException | null, folder: string) => void)
+      | ((err: NodeJS.ErrnoException | null, folder: Buffer) => void),
+  ) {
     const filePath = stringPath(path);
 
     const resolved = linkFs.resolve(filePath);
@@ -713,31 +770,33 @@ function mkdtemp(linkFs: Vfs, delegate: typeof fs.mkdtemp): typeof fs.mkdtemp {
   return addPromisify(mkdtemp);
 }
 
-function mkdtempSync(linkFs: Vfs, delegate: typeof fs.mkdtempSync): typeof fs.mkdtempSync {
+function mkdtempSync(
+  linkFs: Vfs,
+  delegate: typeof fs.mkdtempSync,
+): typeof fs.mkdtempSync {
   return function (path) {
     const filePath = stringPath(path);
 
     const resolved = linkFs.resolve(filePath);
     if (resolved === undefined) {
-      return delegate.apply(this,arguments);
+      return delegate.apply(this, arguments);
     }
 
     throw new AccessError(stringPath(path), "mkdtemp");
   };
 }
 
-
 function open(linkFs: Vfs, delegate: typeof fs.open): typeof fs.open {
   function open(
     path: fs.PathLike,
     flags: string | number,
     mode: string | number | undefined | null,
-    callback: (err: NodeJS.ErrnoException | null, fd: number) => void
+    callback: (err: NodeJS.ErrnoException | null, fd: number) => void,
   ): void;
   function open(
     path: fs.PathLike,
     flags: string | number,
-    callback: (err: NodeJS.ErrnoException | null, fd: number) => void
+    callback: (err: NodeJS.ErrnoException | null, fd: number) => void,
   ): void;
   function open(
     path: string,
@@ -748,7 +807,7 @@ function open(linkFs: Vfs, delegate: typeof fs.open): typeof fs.open {
       | undefined
       | null
       | ((err: NodeJS.ErrnoException | null, fd: number) => void),
-    callback?: (err: NodeJS.ErrnoException | null, fd: number) => void
+    callback?: (err: NodeJS.ErrnoException | null, fd: number) => void,
   ) {
     const filePath = stringPath(path);
 
@@ -761,9 +820,9 @@ function open(linkFs: Vfs, delegate: typeof fs.open): typeof fs.open {
       callback = mode;
     }
     switch (resolved.type) {
-      case FsResult.DIRECTORY:{
+      case FsResult.DIRECTORY: {
         const args = [...arguments];
-        args[0] = '/';
+        args[0] = "/";
         return delegate.apply(this, args);
       }
       case FsResult.NOT_FOUND:
@@ -780,7 +839,7 @@ function open(linkFs: Vfs, delegate: typeof fs.open): typeof fs.open {
 
 function openSync(
   linkFs: Vfs,
-  delegate: typeof fs.openSync
+  delegate: typeof fs.openSync,
 ): typeof fs.openSync {
   return function (path) {
     const filePath = stringPath(path);
@@ -793,7 +852,7 @@ function openSync(
     switch (resolved.type) {
       case FsResult.DIRECTORY: {
         const args = [...arguments];
-        args[0] = '/';
+        args[0] = "/";
         return delegate.apply(this, args);
       }
       case FsResult.NOT_FOUND:
@@ -807,25 +866,22 @@ function openSync(
   };
 }
 
-function opendir(
-  linkFs: Vfs,
-  delegate: typeof fs.opendir
-): typeof fs.opendir {
+function opendir(linkFs: Vfs, delegate: typeof fs.opendir): typeof fs.opendir {
   function opendir(
     path: string,
-    cb: (err: NodeJS.ErrnoException | null, dir: fs.Dir) => void
+    cb: (err: NodeJS.ErrnoException | null, dir: fs.Dir) => void,
   ): void;
   function opendir(
     path: string,
     options: fs.OpenDirOptions,
-    cb: (err: NodeJS.ErrnoException | null, dir: fs.Dir) => void
+    cb: (err: NodeJS.ErrnoException | null, dir: fs.Dir) => void,
   ): void;
   function opendir(
     path: string,
     options:
       | fs.OpenDirOptions
       | ((err: NodeJS.ErrnoException | null, dir: fs.Dir) => void),
-    callback?: (err: NodeJS.ErrnoException | null, dir: fs.Dir) => void
+    callback?: (err: NodeJS.ErrnoException | null, dir: fs.Dir) => void,
   ) {
     const filePath = stringPath(path);
 
@@ -851,7 +907,7 @@ function opendir(
 
 function opendirSync(
   linkFs: Vfs,
-  delegate: typeof fs.opendirSync
+  delegate: typeof fs.opendirSync,
 ): typeof fs.opendirSync {
   return function (path) {
     const filePath = stringPath(path);
@@ -870,56 +926,90 @@ function opendirSync(
   };
 }
 
-function readdir(
-  linkFs: Vfs,
-  delegate: typeof fs.readdir
-): typeof fs.readdir {
+function readdir(linkFs: Vfs, delegate: typeof fs.readdir): typeof fs.readdir {
   function readdir(
     path: fs.PathLike,
-    options: { encoding: BufferEncoding | null; withFileTypes?: false } | BufferEncoding | undefined | null,
+    options:
+      | { encoding: BufferEncoding | null; withFileTypes?: false }
+      | BufferEncoding
+      | undefined
+      | null,
     callback: (err: NodeJS.ErrnoException | null, files: string[]) => void,
-): void;
-function readdir(path: fs.PathLike, options: { encoding: "buffer"; withFileTypes?: false } | "buffer", callback: (err: NodeJS.ErrnoException | null, files: Buffer[]) => void): void;
-function readdir(
+  ): void;
+  function readdir(
     path: fs.PathLike,
-    options: { encoding?: string | null; withFileTypes?: false } | string | undefined | null,
-    callback: (err: NodeJS.ErrnoException | null, files: string[] | Buffer[]) => void,
-): void;
-function readdir(path: fs.PathLike, callback: (err: NodeJS.ErrnoException | null, files: string[]) => void): void;
-function readdir(path: fs.PathLike, options: { encoding?: string | null; withFileTypes: true }, callback: (err: NodeJS.ErrnoException | null, files: fs.Dirent[]) => void): void;
-    function readdir(path: fs.PathLike, options: { encoding?: string | null; withFileTypes?: boolean } | string | undefined | null | ((err: NodeJS.ErrnoException | null, files: string[]) => void), callback?: (err: NodeJS.ErrnoException | null, files: fs.Dirent[] & Buffer[] & string[]) => void) {
-      const filePath = stringPath(path);
+    options: { encoding: "buffer"; withFileTypes?: false } | "buffer",
+    callback: (err: NodeJS.ErrnoException | null, files: Buffer[]) => void,
+  ): void;
+  function readdir(
+    path: fs.PathLike,
+    options:
+      | { encoding?: string | null; withFileTypes?: false }
+      | string
+      | undefined
+      | null,
+    callback: (
+      err: NodeJS.ErrnoException | null,
+      files: string[] | Buffer[],
+    ) => void,
+  ): void;
+  function readdir(
+    path: fs.PathLike,
+    callback: (err: NodeJS.ErrnoException | null, files: string[]) => void,
+  ): void;
+  function readdir(
+    path: fs.PathLike,
+    options: { encoding?: string | null; withFileTypes: true },
+    callback: (err: NodeJS.ErrnoException | null, files: fs.Dirent[]) => void,
+  ): void;
+  function readdir(
+    path: fs.PathLike,
+    options:
+      | { encoding?: string | null; withFileTypes?: boolean }
+      | string
+      | undefined
+      | null
+      | ((err: NodeJS.ErrnoException | null, files: string[]) => void),
+    callback?: (
+      err: NodeJS.ErrnoException | null,
+      files: fs.Dirent[] & Buffer[] & string[],
+    ) => void,
+  ) {
+    const filePath = stringPath(path);
 
-      const resolved = linkFs.resolve(filePath);
-      if (resolved === undefined) {
-        return delegate.apply(this, arguments);
-      }
-
-      if (typeof options === "function") {
-        callback = options;
-      }
-
-      switch (resolved.type) {
-        case FsResult.DIRECTORY:
-          callback(undefined, <any[]>[...resolved.children])
-          break;
-        case FsResult.NOT_FOUND:
-          callback(new NotFoundError(stringPath(path), "readdir"), undefined);
-          break;
-        case FsResult.PATH:
-          callback(new InvalidError(stringPath(path), "readdir"), undefined!);
-          break;
-      }
+    const resolved = linkFs.resolve(filePath);
+    if (resolved === undefined) {
+      return delegate.apply(this, arguments);
     }
+
+    if (typeof options === "function") {
+      callback = options;
+    }
+
+    switch (resolved.type) {
+      case FsResult.DIRECTORY:
+        callback(undefined, <any[]>[...resolved.children]);
+        break;
+      case FsResult.NOT_FOUND:
+        callback(new NotFoundError(stringPath(path), "readdir"), undefined);
+        break;
+      case FsResult.PATH:
+        callback(new InvalidError(stringPath(path), "readdir"), undefined!);
+        break;
+    }
+  }
 
   return addPromisify(readdir);
 }
 
 function readdirSync(
   linkFs: Vfs,
-  delegate: typeof fs.readdirSync
+  delegate: typeof fs.readdirSync,
 ): typeof fs.readdirSync {
-  return function(path: fs.PathLike, options: string | { encoding?: string | null; withFileTypes?: boolean }) {
+  return function (
+    path: fs.PathLike,
+    options: string | { encoding?: string | null; withFileTypes?: boolean },
+  ) {
     const filePath = stringPath(path);
 
     const resolved = linkFs.resolve(filePath);
@@ -929,93 +1019,126 @@ function readdirSync(
 
     switch (resolved.type) {
       case FsResult.DIRECTORY:
-          return [...resolved.children];
+        return [...resolved.children];
       case FsResult.NOT_FOUND:
-        throw new NotFoundError(stringPath(path), "readdir"); 
+        throw new NotFoundError(stringPath(path), "readdir");
       case FsResult.PATH:
         throw new InvalidError(stringPath(path), "readdir");
     }
-  }
+  };
 }
 
 function readFile(
   linkFs: Vfs,
-  delegate: typeof fs.readFile
+  delegate: typeof fs.readFile,
 ): typeof fs.readFile {
-    function readFile(path: fs.PathLike | number, options: { encoding?: null; flag?: string; } | undefined | null, callback: (err: NodeJS.ErrnoException | null, data: Buffer) => void): void;
-    function readFile(path: fs.PathLike | number, options: { encoding: string; flag?: string; } | string, callback: (err: NodeJS.ErrnoException | null, data: string) => void): void;
-    function readFile(
-        path: fs.PathLike | number,
-        options: { encoding?: string | null; flag?: string; } | string | undefined | null,
-        callback: (err: NodeJS.ErrnoException | null, data: string | Buffer) => void,
-    ): void
-    function readFile(path: fs.PathLike | number, callback: (err: NodeJS.ErrnoException | null, data: Buffer) => void): void;
-    function readFile(path: fs.PathLike | number, options: { encoding?: string | null; flag?: string; } | string | undefined | null | ((err: NodeJS.ErrnoException | null, data: Buffer) => void), callback?: (err: NodeJS.ErrnoException | null, data: string & Buffer) => void) {
-      if (typeof path === 'number') {
-        return delegate.apply(this, arguments);
-      }
-
-      const filePath = stringPath(path);
-
-      const resolved = linkFs.resolve(filePath);
-      if (resolved === undefined) {
-        return delegate.apply(this, arguments);
-      }
-
-      if (typeof options === "function") {
-        callback = options;
-      }
-
-      switch (resolved.type) {
-        case FsResult.DIRECTORY:
-          callback(new InvalidError(stringPath(path), "readfile"), undefined!);
-          break;
-        case FsResult.NOT_FOUND:
-          callback(new NotFoundError(stringPath(path), "readfile"), undefined);
-          break;
-        case FsResult.PATH:
-          const args = [...arguments];
-          args[0] = resolved.path;
-          delegate.apply(this, args);
-          break;
-      }
+  function readFile(
+    path: fs.PathLike | number,
+    options: { encoding?: null; flag?: string } | undefined | null,
+    callback: (err: NodeJS.ErrnoException | null, data: Buffer) => void,
+  ): void;
+  function readFile(
+    path: fs.PathLike | number,
+    options: { encoding: string; flag?: string } | string,
+    callback: (err: NodeJS.ErrnoException | null, data: string) => void,
+  ): void;
+  function readFile(
+    path: fs.PathLike | number,
+    options:
+      | { encoding?: string | null; flag?: string }
+      | string
+      | undefined
+      | null,
+    callback: (
+      err: NodeJS.ErrnoException | null,
+      data: string | Buffer,
+    ) => void,
+  ): void;
+  function readFile(
+    path: fs.PathLike | number,
+    callback: (err: NodeJS.ErrnoException | null, data: Buffer) => void,
+  ): void;
+  function readFile(
+    path: fs.PathLike | number,
+    options:
+      | { encoding?: string | null; flag?: string }
+      | string
+      | undefined
+      | null
+      | ((err: NodeJS.ErrnoException | null, data: Buffer) => void),
+    callback?: (
+      err: NodeJS.ErrnoException | null,
+      data: string & Buffer,
+    ) => void,
+  ) {
+    if (typeof path === "number") {
+      return delegate.apply(this, arguments);
     }
+
+    const filePath = stringPath(path);
+
+    const resolved = linkFs.resolve(filePath);
+    if (resolved === undefined) {
+      return delegate.apply(this, arguments);
+    }
+
+    if (typeof options === "function") {
+      callback = options;
+    }
+
+    switch (resolved.type) {
+      case FsResult.DIRECTORY:
+        callback(new InvalidError(stringPath(path), "readfile"), undefined!);
+        break;
+      case FsResult.NOT_FOUND:
+        callback(new NotFoundError(stringPath(path), "readfile"), undefined);
+        break;
+      case FsResult.PATH:
+        const args = [...arguments];
+        args[0] = resolved.path;
+        delegate.apply(this, args);
+        break;
+    }
+  }
 
   return addPromisify(readFile);
 }
 
 function readFileSync(
   linkFs: Vfs,
-  delegate: typeof fs.readFileSync
+  delegate: typeof fs.readFileSync,
 ): typeof fs.readFileSync {
-  return function(path: fs.PathLike | number, options?: { encoding?: string | null; flag?: string; } | string | null): string & Buffer {
-      if (typeof path === 'number') {
-        return delegate.apply(this, arguments);
-      }
-
-      const filePath = stringPath(path);
-
-      const resolved = linkFs.resolve(filePath);
-      if (resolved === undefined) {
-        return delegate.apply(this, arguments);
-      }
-
-      switch (resolved.type) {
-        case FsResult.DIRECTORY:
-          throw new InvalidError(stringPath(path), "readfile");
-        case FsResult.NOT_FOUND:
-          throw new NotFoundError(stringPath(path), "readfile");
-        case FsResult.PATH:
-          const args = [...arguments];
-          args[0] = resolved.path;
-          return delegate.apply(this, args);
-      }
+  return function (
+    path: fs.PathLike | number,
+    options?: { encoding?: string | null; flag?: string } | string | null,
+  ): string & Buffer {
+    if (typeof path === "number") {
+      return delegate.apply(this, arguments);
     }
+
+    const filePath = stringPath(path);
+
+    const resolved = linkFs.resolve(filePath);
+    if (resolved === undefined) {
+      return delegate.apply(this, arguments);
+    }
+
+    switch (resolved.type) {
+      case FsResult.DIRECTORY:
+        throw new InvalidError(stringPath(path), "readfile");
+      case FsResult.NOT_FOUND:
+        throw new NotFoundError(stringPath(path), "readfile");
+      case FsResult.PATH:
+        const args = [...arguments];
+        args[0] = resolved.path;
+        return delegate.apply(this, args);
+    }
+  };
 }
 
 function readlink(
   linkFs: Vfs,
-  delegate: typeof fs.readlink
+  delegate: typeof fs.readlink,
 ): typeof fs.readlink {
   function readlink(
     path: fs.PathLike,
@@ -1024,24 +1147,24 @@ function readlink(
       | BufferEncoding
       | undefined
       | null,
-    callback: (err: NodeJS.ErrnoException | null, linkString: string) => void
+    callback: (err: NodeJS.ErrnoException | null, linkString: string) => void,
   ): void;
   function readlink(
     path: fs.PathLike,
     options: { encoding: "buffer" } | "buffer",
-    callback: (err: NodeJS.ErrnoException | null, linkString: Buffer) => void
+    callback: (err: NodeJS.ErrnoException | null, linkString: Buffer) => void,
   ): void;
   function readlink(
     path: fs.PathLike,
     options: { encoding?: string | null } | string | undefined | null,
     callback: (
       err: NodeJS.ErrnoException | null,
-      linkString: string | Buffer
-    ) => void
+      linkString: string | Buffer,
+    ) => void,
   ): void;
   function readlink(
     path: fs.PathLike,
-    callback: (err: NodeJS.ErrnoException | null, linkString: string) => void
+    callback: (err: NodeJS.ErrnoException | null, linkString: string) => void,
   ): void;
   function readlink(
     path: fs.PathLike,
@@ -1055,8 +1178,8 @@ function readlink(
       | ((err: NodeJS.ErrnoException | null, linkString: Buffer) => void)
       | ((
           err: NodeJS.ErrnoException | null,
-          linkString: string | Buffer
-        ) => void)
+          linkString: string | Buffer,
+        ) => void),
   ) {
     const filePath = stringPath(path);
 
@@ -1087,9 +1210,9 @@ function readlink(
 
 function readlinkSync(
   linkFs: Vfs,
-  delegate: typeof fs.readlinkSync
+  delegate: typeof fs.readlinkSync,
 ): typeof fs.readlinkSync {
-  return function(path: fs.PathLike, options) {
+  return function (path: fs.PathLike, options) {
     const filePath = stringPath(path);
 
     const resolved = linkFs.entry(filePath);
@@ -1111,7 +1234,7 @@ function readlinkSync(
 
 function realpath(
   linkFs: Vfs,
-  delegate: typeof fs.realpath
+  delegate: typeof fs.realpath,
 ): typeof fs.realpath {
   function realpath(
     path: fs.PathLike,
@@ -1120,24 +1243,24 @@ function realpath(
       | BufferEncoding
       | undefined
       | null,
-    callback: (err: NodeJS.ErrnoException | null, resolvedPath: string) => void
+    callback: (err: NodeJS.ErrnoException | null, resolvedPath: string) => void,
   ): void;
   function realpath(
     path: fs.PathLike,
     options: { encoding: "buffer" } | "buffer",
-    callback: (err: NodeJS.ErrnoException | null, resolvedPath: Buffer) => void
+    callback: (err: NodeJS.ErrnoException | null, resolvedPath: Buffer) => void,
   ): void;
   function realpath(
     path: fs.PathLike,
     options: { encoding?: string | null } | string | undefined | null,
     callback: (
       err: NodeJS.ErrnoException | null,
-      resolvedPath: string | Buffer
-    ) => void
+      resolvedPath: string | Buffer,
+    ) => void,
   ): void;
   function realpath(
     path: fs.PathLike,
-    callback: (err: NodeJS.ErrnoException | null, resolvedPath: string) => void
+    callback: (err: NodeJS.ErrnoException | null, resolvedPath: string) => void,
   ): void;
   function realpath(
     path: fs.PathLike,
@@ -1150,9 +1273,9 @@ function realpath(
     callback?:
       | ((
           err: NodeJS.ErrnoException | null,
-          resolvedPath: string | Buffer
+          resolvedPath: string | Buffer,
         ) => void)
-      | ((err: NodeJS.ErrnoException | null, resolvedPath: string) => void)
+      | ((err: NodeJS.ErrnoException | null, resolvedPath: string) => void),
   ): void {
     const filePath = stringPath(path);
 
@@ -1179,19 +1302,19 @@ function realpath(
 
 function realpathSync(
   linkFs: Vfs,
-  delegate: typeof fs.realpathSync
+  delegate: typeof fs.realpathSync,
 ): typeof fs.realpathSync {
   function realpathSync(
     path: fs.PathLike,
-    options?: { encoding?: BufferEncoding | null } | BufferEncoding | null
+    options?: { encoding?: BufferEncoding | null } | BufferEncoding | null,
   ): string;
   function realpathSync(
     path: fs.PathLike,
-    options: { encoding: "buffer" } | "buffer"
+    options: { encoding: "buffer" } | "buffer",
   ): Buffer;
   function realpathSync(
     path: fs.PathLike,
-    options?: { encoding?: string | null } | string | null
+    options?: { encoding?: string | null } | string | null,
   ): string | Buffer;
   function realpathSync(path: fs.PathLike): string | Buffer {
     const filePath = stringPath(path);
@@ -1212,11 +1335,12 @@ function realpathSync(
   return realpathSync;
 }
 
-function rename(
-  linkFs: Vfs,
-  delegate: typeof fs.rename
-): typeof fs.rename {
-  function rename(oldPath: fs.PathLike, newPath: fs.PathLike, callback: fs.NoParamCallback): void {
+function rename(linkFs: Vfs, delegate: typeof fs.rename): typeof fs.rename {
+  function rename(
+    oldPath: fs.PathLike,
+    newPath: fs.PathLike,
+    callback: fs.NoParamCallback,
+  ): void {
     const oldFilePath = stringPath(oldPath);
     const newFilePath = stringPath(newPath);
 
@@ -1234,7 +1358,7 @@ function rename(
 
 function renameSync(
   linkFs: Vfs,
-  delegate: typeof fs.renameSync
+  delegate: typeof fs.renameSync,
 ): typeof fs.renameSync {
   return function (oldPath: fs.PathLike, newPath: fs.PathLike): void {
     const oldFilePath = stringPath(oldPath);
@@ -1248,17 +1372,21 @@ function renameSync(
     }
 
     throw new AccessError(stringPath(oldPath), "rename");
-  }
+  };
 }
 
-
-function rmdir(
-  linkFs: Vfs,
-  delegate: typeof fs.rmdir
-): typeof fs.rmdir {
+function rmdir(linkFs: Vfs, delegate: typeof fs.rmdir): typeof fs.rmdir {
   function rmdir(path: fs.PathLike, callback: fs.NoParamCallback): void;
-  function rmdir(path: fs.PathLike, options: fs.RmDirOptions, callback: fs.NoParamCallback): void;
-  function rmdir(path: fs.PathLike, options: fs.RmDirOptions | fs.NoParamCallback, callback?: fs.NoParamCallback): void {
+  function rmdir(
+    path: fs.PathLike,
+    options: fs.RmDirOptions,
+    callback: fs.NoParamCallback,
+  ): void;
+  function rmdir(
+    path: fs.PathLike,
+    options: fs.RmDirOptions | fs.NoParamCallback,
+    callback?: fs.NoParamCallback,
+  ): void {
     const filePath = stringPath(path);
 
     const resolved = linkFs.resolve(filePath);
@@ -1284,7 +1412,7 @@ function rmdir(
 
 function rmdirSync(
   linkFs: Vfs,
-  delegate: typeof fs.rmdirSync
+  delegate: typeof fs.rmdirSync,
 ): typeof fs.rmdirSync {
   return function (path): void {
     const filePath = stringPath(path);
@@ -1296,30 +1424,33 @@ function rmdirSync(
 
     switch (resolved.type) {
       case FsResult.NOT_FOUND:
-        throw (new NotFoundError(stringPath(path), "rmdir"));
+        throw new NotFoundError(stringPath(path), "rmdir");
       default:
-        throw (new AccessError(stringPath(path), "rmdir"));
+        throw new AccessError(stringPath(path), "rmdir");
     }
-  }
+  };
 }
 
 function stat(linkFs: Vfs, delegate: typeof fs.stat) {
   function stat(
     path: fs.PathLike,
     options: fs.BigIntOptions,
-    callback: (err: NodeJS.ErrnoException | null, stats: fs.BigIntStats) => void
+    callback: (
+      err: NodeJS.ErrnoException | null,
+      stats: fs.BigIntStats,
+    ) => void,
   ): void;
   function stat(
     path: fs.PathLike,
     options: fs.StatOptions,
     callback: (
       err: NodeJS.ErrnoException | null,
-      stats: fs.Stats | fs.BigIntStats
-    ) => void
+      stats: fs.Stats | fs.BigIntStats,
+    ) => void,
   ): void;
   function stat(
     path: fs.PathLike,
-    callback: (err: NodeJS.ErrnoException | null, stats: fs.Stats) => void
+    callback: (err: NodeJS.ErrnoException | null, stats: fs.Stats) => void,
   ): void;
   function stat(
     path: fs.PathLike,
@@ -1330,7 +1461,7 @@ function stat(linkFs: Vfs, delegate: typeof fs.stat) {
       | ((err: NodeJS.ErrnoException | null, stats: fs.BigIntStats) => void),
     callback?:
       | ((err: NodeJS.ErrnoException | null, stats: fs.Stats) => void)
-      | ((err: NodeJS.ErrnoException | null, stats: fs.BigIntStats) => void)
+      | ((err: NodeJS.ErrnoException | null, stats: fs.BigIntStats) => void),
   ) {
     const filePath = stringPath(path);
 
@@ -1349,7 +1480,7 @@ function stat(linkFs: Vfs, delegate: typeof fs.stat) {
       case FsResult.DIRECTORY:
         callback(
           null,
-          <any>(bigint ? new LinkBigintStat(resolved) : new LinkStat(resolved))
+          <any>(bigint ? new LinkBigintStat(resolved) : new LinkStat(resolved)),
         );
         break;
       case FsResult.NOT_FOUND:
@@ -1366,20 +1497,20 @@ function stat(linkFs: Vfs, delegate: typeof fs.stat) {
 
 function statSync(
   linkFs: Vfs,
-  delegate: typeof fs.statSync
+  delegate: typeof fs.statSync,
 ): typeof fs.statSync {
   function statSync(
     path: fs.PathLike,
-    options: fs.BigIntOptions
+    options: fs.BigIntOptions,
   ): fs.BigIntStats;
   function statSync(
     path: fs.PathLike,
-    options: fs.StatOptions
+    options: fs.StatOptions,
   ): fs.Stats | fs.BigIntStats;
   function statSync(path: fs.PathLike): fs.Stats;
   function statSync(
     path: fs.PathLike,
-    options?: fs.BigIntOptions | fs.StatOptions
+    options?: fs.BigIntOptions | fs.StatOptions,
   ): fs.Stats | fs.BigIntStats {
     const filePath = stringPath(path);
 
@@ -1405,61 +1536,86 @@ function statSync(
 }
 
 function symlink(linkFs: Vfs, delegate: typeof fs.symlink): typeof fs.symlink {
-    function symlink(target: fs.PathLike, path: fs.PathLike, type: fs.symlink.Type | undefined | null, callback: fs.NoParamCallback): void;
-    function symlink(target: fs.PathLike, path: fs.PathLike, callback: fs.NoParamCallback): void;
-    function symlink(target: fs.PathLike, path: fs.PathLike, type: fs.symlink.Type | undefined | null | fs.NoParamCallback, callback? : fs.NoParamCallback) {
-      const tarstringPath = stringPath(target);
-      const filePath = stringPath(path);
+  function symlink(
+    target: fs.PathLike,
+    path: fs.PathLike,
+    type: fs.symlink.Type | undefined | null,
+    callback: fs.NoParamCallback,
+  ): void;
+  function symlink(
+    target: fs.PathLike,
+    path: fs.PathLike,
+    callback: fs.NoParamCallback,
+  ): void;
+  function symlink(
+    target: fs.PathLike,
+    path: fs.PathLike,
+    type: fs.symlink.Type | undefined | null | fs.NoParamCallback,
+    callback?: fs.NoParamCallback,
+  ) {
+    const tarstringPath = stringPath(target);
+    const filePath = stringPath(path);
 
-      const targetResolved = linkFs.resolve(tarstringPath);
-      const pathResolved = linkFs.resolve(filePath);
+    const targetResolved = linkFs.resolve(tarstringPath);
+    const pathResolved = linkFs.resolve(filePath);
 
-      if (targetResolved === undefined && pathResolved === undefined) {
-        return delegate.apply(this, arguments);
-      }
-
-      if (typeof type === "function") {
-        callback = type;
-      }
-
-      if (pathResolved !== undefined) {
-        return callback(new AccessError(stringPath(path), "symlink"));
-      }
-
-      return callback(new AccessError(stringPath(target), "symlink"))
+    if (targetResolved === undefined && pathResolved === undefined) {
+      return delegate.apply(this, arguments);
     }
 
-    return addPromisify(symlink);
-}
+    if (typeof type === "function") {
+      callback = type;
+    }
 
+    if (pathResolved !== undefined) {
+      return callback(new AccessError(stringPath(path), "symlink"));
+    }
 
-
-function symlinkSync(linkFs: Vfs, delegate: typeof fs.symlinkSync): typeof fs.symlinkSync {
-  return function(target, path)  {
-    const tarstringPath = stringPath(target);
-      const filePath = stringPath(path);
-
-      const targetResolved = linkFs.resolve(tarstringPath);
-      const pathResolved = linkFs.resolve(filePath);
-
-      if (targetResolved === undefined && pathResolved === undefined) {
-        return delegate.apply(this, arguments);
-      }
-
-      if (pathResolved !== undefined) {
-        throw new AccessError(stringPath(path), "symlink");
-      }
-
-      throw new AccessError(stringPath(target), "symlink");
+    return callback(new AccessError(stringPath(target), "symlink"));
   }
+
+  return addPromisify(symlink);
 }
 
+function symlinkSync(
+  linkFs: Vfs,
+  delegate: typeof fs.symlinkSync,
+): typeof fs.symlinkSync {
+  return function (target, path) {
+    const tarstringPath = stringPath(target);
+    const filePath = stringPath(path);
 
-function truncate(linkFs: Vfs, delegate: typeof fs.truncate): typeof fs.truncate {
-    function truncate(path: fs.PathLike, len: number | undefined | null, callback: fs.NoParamCallback): void;
-    function truncate(path: fs.PathLike, callback: fs.NoParamCallback): void;
+    const targetResolved = linkFs.resolve(tarstringPath);
+    const pathResolved = linkFs.resolve(filePath);
 
-  function truncate(path: fs.PathLike, len: number | undefined | null | fs.NoParamCallback, callback?: fs.NoParamCallback): void {
+    if (targetResolved === undefined && pathResolved === undefined) {
+      return delegate.apply(this, arguments);
+    }
+
+    if (pathResolved !== undefined) {
+      throw new AccessError(stringPath(path), "symlink");
+    }
+
+    throw new AccessError(stringPath(target), "symlink");
+  };
+}
+
+function truncate(
+  linkFs: Vfs,
+  delegate: typeof fs.truncate,
+): typeof fs.truncate {
+  function truncate(
+    path: fs.PathLike,
+    len: number | undefined | null,
+    callback: fs.NoParamCallback,
+  ): void;
+  function truncate(path: fs.PathLike, callback: fs.NoParamCallback): void;
+
+  function truncate(
+    path: fs.PathLike,
+    len: number | undefined | null | fs.NoParamCallback,
+    callback?: fs.NoParamCallback,
+  ): void {
     const filePath = stringPath(path);
 
     const resolved = linkFs.resolve(filePath);
@@ -1474,7 +1630,7 @@ function truncate(linkFs: Vfs, delegate: typeof fs.truncate): typeof fs.truncate
 
 function truncateSync(
   linkFs: Vfs,
-  delegate: typeof fs.truncateSync
+  delegate: typeof fs.truncateSync,
 ): typeof fs.truncateSync {
   return function (path) {
     const filePath = stringPath(path);
@@ -1504,7 +1660,7 @@ function unlink(linkFs: Vfs, delegate: typeof fs.unlink): typeof fs.unlink {
 
 function unlinkSync(
   linkFs: Vfs,
-  delegate: typeof fs.unlinkSync
+  delegate: typeof fs.unlinkSync,
 ): typeof fs.unlinkSync {
   return function (path) {
     const filePath = stringPath(path);
@@ -1523,7 +1679,7 @@ function utimes(linkFs: Vfs, delegate: typeof fs.utimes): typeof fs.utimes {
     path: fs.PathLike,
     atime: string | number | Date,
     mtime: string | number | Date,
-    callback: fs.NoParamCallback
+    callback: fs.NoParamCallback,
   ): void {
     const filePath = stringPath(path);
 
@@ -1539,7 +1695,7 @@ function utimes(linkFs: Vfs, delegate: typeof fs.utimes): typeof fs.utimes {
 
 function utimesSync(
   linkFs: Vfs,
-  delegate: typeof fs.utimesSync
+  delegate: typeof fs.utimesSync,
 ): typeof fs.utimesSync {
   return function (path) {
     const filePath = stringPath(path);
@@ -1553,34 +1709,54 @@ function utimesSync(
   };
 }
 
-function writeFile(linkFs: Vfs, delegate: typeof fs.writeFile): typeof fs.writeFile {
-    function writeFile(path: fs.PathLike | number, data: any, options: fs.WriteFileOptions, callback: fs.NoParamCallback): void;
-    function writeFile(path: fs.PathLike | number, data: any, callback: fs.NoParamCallback): void;
-    function writeFile(path: fs.PathLike | number, data: any, options: fs.WriteFileOptions | fs.NoParamCallback, callback?: fs.NoParamCallback): void {
-      if (typeof path === 'number') {
-        return delegate.apply(this, arguments) ;
-      }
-      
-      const filePath = stringPath(path);
-
-      const resolved = linkFs.resolve(filePath);
-      if (resolved === undefined) {
-        return delegate.apply(this, arguments);
-      }
-
-      if (typeof options === "function") {
-        callback = options;
-      }
-  
-      callback(new AccessError(stringPath(path), "writeFile"));
+function writeFile(
+  linkFs: Vfs,
+  delegate: typeof fs.writeFile,
+): typeof fs.writeFile {
+  function writeFile(
+    path: fs.PathLike | number,
+    data: any,
+    options: fs.WriteFileOptions,
+    callback: fs.NoParamCallback,
+  ): void;
+  function writeFile(
+    path: fs.PathLike | number,
+    data: any,
+    callback: fs.NoParamCallback,
+  ): void;
+  function writeFile(
+    path: fs.PathLike | number,
+    data: any,
+    options: fs.WriteFileOptions | fs.NoParamCallback,
+    callback?: fs.NoParamCallback,
+  ): void {
+    if (typeof path === "number") {
+      return delegate.apply(this, arguments);
     }
 
-    return addPromisify(writeFile);
+    const filePath = stringPath(path);
+
+    const resolved = linkFs.resolve(filePath);
+    if (resolved === undefined) {
+      return delegate.apply(this, arguments);
+    }
+
+    if (typeof options === "function") {
+      callback = options;
+    }
+
+    callback(new AccessError(stringPath(path), "writeFile"));
+  }
+
+  return addPromisify(writeFile);
 }
 
-function writeFileSync(linkFs: Vfs, delegate: typeof fs.writeFileSync): typeof fs.writeFileSync {
-  return function(path) {
-    if (typeof path === 'number') {
+function writeFileSync(
+  linkFs: Vfs,
+  delegate: typeof fs.writeFileSync,
+): typeof fs.writeFileSync {
+  return function (path) {
+    if (typeof path === "number") {
       return delegate.apply(this, arguments);
     }
 
@@ -1592,7 +1768,7 @@ function writeFileSync(linkFs: Vfs, delegate: typeof fs.writeFileSync): typeof f
     }
 
     throw new AccessError(stringPath(path), "writeFile");
-  }
+  };
 }
 
 export function patchFs(linkFs: Vfs, delegate: typeof fs) {
@@ -1608,11 +1784,11 @@ export function patchFs(linkFs: Vfs, delegate: typeof fs) {
   delegate.copyFileSync = copyFileSync(linkFs, delegate.copyFileSync);
   delegate.createReadStream = createReadStream(
     linkFs,
-    delegate.createReadStream
+    delegate.createReadStream,
   );
   delegate.createWriteStream = createWriteStream(
     linkFs,
-    delegate.createWriteStream
+    delegate.createWriteStream,
   );
   delegate.exists = exists(linkFs, delegate.exists);
   delegate.existsSync = existsSync(linkFs, delegate.existsSync);

@@ -1,5 +1,5 @@
 load("@bazel_skylib//lib:shell.bzl", "shell")
-load("//rules/commonjs:providers.bzl", "cjs_path", "entry_json", "entry_runfile_json", "extra_link_json", "root_runfile_json", "root_json")
+load("//rules/commonjs:providers.bzl", "cjs_path", "entry_json", "entry_runfile_json", "extra_link_json", "root_json", "root_runfile_json")
 load("//rules/javascript:providers.bzl", "JsInfo")
 load("//rules/util:path.bzl", "runfile_path")
 load("//rules/util:json.bzl", "json")

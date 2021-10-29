@@ -1,6 +1,6 @@
 load("//rules/commonjs:providers.bzl", "cjs_path")
 load("//rules/javascript:providers.bzl", "JsInfo")
-load("//rules/nodejs:rules.bzl", "nodejs_binary", "js_info_gen_fs")
+load("//rules/nodejs:rules.bzl", "js_info_gen_fs", "nodejs_binary")
 load(":providers.bzl", "RollupInfo")
 
 _VFS_ROOT = "bazel-rollup"
@@ -34,7 +34,7 @@ def configure_rollup(name, dep):
 
     rollup(
         name = name,
-        bin = "%s_bin" % name
+        bin = "%s_bin" % name,
     )
 
 def _rollup_bundle_impl(ctx):
@@ -75,7 +75,7 @@ def _rollup_bundle_impl(ctx):
     ctx.actions.run(
         env = {
             # "NODE_TRACE_FS": "true",
-            "NODE_OPTIONS_APPEND": '-r ./%s -r ./%s' % (config_vfs.path, vfs.path),
+            "NODE_OPTIONS_APPEND": "-r ./%s -r ./%s" % (config_vfs.path, vfs.path),
             "ROLLUP_INPUT_ROOT": "%s/%s" % (_VFS_ROOT, cjs_path(dep.root)),
             "ROLLUP_OUTPUT": bundle.path,
         },
@@ -90,7 +90,7 @@ def _rollup_bundle_impl(ctx):
                 dep.js_entry_set.transitive_files,
                 dep.src_entry_set.transitive_files,
                 dep.transitive_descriptors,
-            ]
+            ],
         ),
         outputs = [bundle],
     )

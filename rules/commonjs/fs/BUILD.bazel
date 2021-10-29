@@ -4,19 +4,24 @@ load("//rules/commonjs:rules.bzl", "cjs_root")
 package(default_visibility = ["//visibility:public"])
 
 cjs_root(
-    descriptor = "package.json",
     name = "root",
     package_name = "@better_rules_javascript/commonjs-fs",
+    descriptor = "package.json",
 )
 
 ts_library(
     name = "ts",
+    srcs = glob(["src/**/*.ts"]),
     compiler = "//rules:tsc",
-    compiler_options = ["--lib", "dom,es2016", "--target", "es2019"],
+    compiler_options = [
+        "--lib",
+        "dom,es2016",
+        "--target",
+        "es2019",
+    ],
     root = ":root",
     strip_prefix = "better_rules_javascript/rules/commonjs/fs/src",
-    srcs = glob(["src/**/*.ts"]),
     types = [
         "@better_rules_javascript_npm//types_node:lib",
-    ]
+    ],
 )
