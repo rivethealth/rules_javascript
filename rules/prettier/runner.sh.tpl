@@ -5,7 +5,7 @@ exit=0
 
 function format {
     if [ "$arg" = write ]; then
-        if ! diff -q "$1" "$2"; then
+        if ! cmp "$1" "$2"; then
             echo "$1"
             cp "$2" "$1"
         fi

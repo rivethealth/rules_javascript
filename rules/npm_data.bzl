@@ -115,6 +115,12 @@ PACKAGES = [
         "deps": [],
     },
     {
+        "name": "@types/prettier@1.12.4",
+        "url": "https://registry.yarnpkg.com/@types/prettier/-/prettier-1.12.4.tgz#6b9c9fdd9c5b13f94f7b27a5501e6091fd810ac0",
+        "integrity": "sha512-6Mr72wzKYi4AJze2Moc0nn1AImafbYGXcD/zMcxgLRxLprr3uxxQ8wpvGQEmWVOeT9q6CQNGlrCdKHdJWJB0UQ==",
+        "deps": [],
+    },
+    {
         "name": "@types/resolve@1.17.1",
         "url": "https://registry.yarnpkg.com/@types/resolve/-/resolve-1.17.1.tgz#3afd6ad8967c77e4376c598a82ddd58f46ec45d6",
         "integrity": "sha512-yy7HuzQhj0dhGpD8RLXSZWEkLsV9ibvxvi6EiJ3bkqLAO1RGo0WbkWQiwpRlSFymTJRz0d3k5LM3kkx8ArDbLw==",
@@ -540,6 +546,10 @@ ROOTS = [
     {
         "name": "@types/node",
         "dep": "@types/node@12.19.4",
+    },
+    {
+        "name": "@types/prettier",
+        "dep": "@types/prettier@1.12.4",
     },
     {
         "name": "@types/yarnpkg__lockfile",

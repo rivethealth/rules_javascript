@@ -13,6 +13,10 @@ def configure_prettier(name, config, dep, visibility = None):
             dep,
             "@better_rules_javascript_npm//argparse:lib",
             "@better_rules_javascript_npm//types_argparse:lib",
+            "@better_rules_javascript_npm//types_prettier:lib",
+        ],
+        types = [
+            "@better_rules_javascript_npm//types_node:lib",
         ],
         root = "@better_rules_javascript//rules/prettier/format:root",
     )

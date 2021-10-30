@@ -19,14 +19,5 @@ else
     ARG=write
 fi
 
-BAZEL_BIN="$(bazel info bazel-bin)"
-bazel query 'kind("prettier_format", //...)' | while IFS= read -r target; do
-    target="${target#//}"
-    target="${target//://}"
-    "$BAZEL_BIN/$target/bin" "$ARG"
-done
-bazel query 'kind("js_library", //...) + kind("ts_library", //...) - //rules:tsc_ts' | while IFS= read -r target; do
-    target="${target#//}"
-    target="${target//://}"
-    "$BAZEL_BIN/$target/_prettier_format/bin" "$ARG"
-done
+bazel run :prettier_format $ARG
+bazel run :prettier_aspect_format $ARG

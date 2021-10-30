@@ -1,5 +1,6 @@
 load("@com_github_bazelbuild_buildtools//buildifier:def.bzl", "buildifier")
 load("//rules/prettier:rules.bzl", "prettier_format")
+load("//rules/lint:rules.bzl", "lint", "lint_aspect")
 
 exports_files(["prettierrc.yml"])
 
@@ -20,4 +21,17 @@ prettier_format(
         "prettierrc.yml",
     ],
     prettier = "//tools:prettier",
+)
+
+lint(
+    name = "prettier_format",
+    path = "bin",
+    query = 'kind("prettier_format rule", //...)',
+)
+
+lint_aspect(
+    name = "prettier_aspect_format",
+    aspect = "//tools:aspects.bzl%format",
+    path = "_prettier_format/bin",
+    query = 'kind("js_library rule", //...) + kind("ts_library rule", //...) - //rules:tsc_ts',
 )

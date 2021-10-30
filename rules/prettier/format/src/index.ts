@@ -1,6 +1,6 @@
-const { ArgumentParser } = require("argparse");
-const fs = require("fs");
-const prettier = require("prettier");
+import { ArgumentParser } from "argparse";
+import * as fs from "fs";
+import * as prettier from "prettier";
 
 const parser = new ArgumentParser();
 parser.add_argument("--config");
