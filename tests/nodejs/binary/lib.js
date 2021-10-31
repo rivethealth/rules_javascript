@@ -1,3 +1,3 @@
-exports.print = function() {
-    console.log('Hello world');
-}
+exports.print = function () {
+  console.log("Hello world");
+};

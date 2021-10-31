@@ -1,3 +1,3 @@
-const lib = require('./lib');
+const lib = require("./lib");
 
 lib.print();

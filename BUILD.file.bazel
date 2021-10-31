@@ -1,0 +1,27 @@
+package(default_visibility = ["//visibility:public"])
+
+filegroup(
+    name = "buildifier_files",
+    srcs = glob([
+        "files/rules/**/*.bazel",
+        "files/rules/**/*.bzl",
+        "files/rules/**/BUILD",
+        "files/rules/**/WORKSPACE",
+    ]),
+)
+
+filegroup(
+    name = "prettier_files",
+    srcs = glob(
+        [
+            "files/rules/**/*.js",
+            "files/rules/**/*.ts",
+            "files/README.md",
+        ],
+        [
+            "**/bazel-*/**",
+            "**/dist/**",
+            "**/node_modules/**",
+        ],
+    ),
+)

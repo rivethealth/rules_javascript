@@ -127,6 +127,21 @@ http_archive(
     ],
 )
 
+# Format
+
+local_repository(
+    name = "rules_format",
+    path = "../rules_format",
+)
+
+load("@rules_format//rules/file:workspace.bzl", "files")
+
+files(
+    name = "better_rules_javascript_files",
+    build = "@better_rules_javascript//:BUILD.file.bazel",
+    root_file = "@better_rules_javascript//:WORKSPACE.bazel",
+)
+
 # TypeScript
 
 local_repository(

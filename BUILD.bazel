@@ -1,37 +1,28 @@
-load("@com_github_bazelbuild_buildtools//buildifier:def.bzl", "buildifier")
-load("//rules/prettier:rules.bzl", "prettier_format")
-load("//rules/lint:rules.bzl", "lint", "lint_aspect")
-
-exports_files(["prettierrc.yml"])
+load("@rules_format//rules/buildifier:rules.bzl", "buildifier")
+load("@rules_format//rules/format:rules.bzl", "format")
+load("//rules/prettier:rules.bzl", "configure_prettier")
 
 buildifier(
     name = "buildifier",
 )
 
-buildifier(
-    name = "buildifier_check",
-    mode = "check",
+format(
+    name = "buildifier_format",
+    srcs = ["@better_rules_javascript_files//:buildifier_files"],
+    formatter = ":buildifier",
+    prefix = "external/better_rules_javascript_files/files",
 )
 
-prettier_format(
+configure_prettier(
     name = "prettier",
-    srcs = [
-        "README.md",
-        "package.json",
-        "prettierrc.yml",
-    ],
-    prettier = "//tools:prettier",
+    config = "prettierrc.yml",
+    dep = "@better_rules_javascript_npm//prettier:lib",
+    visibility = ["//visibility:public"],
 )
 
-lint(
+format(
     name = "prettier_format",
-    path = "bin",
-    query = 'kind("prettier_format rule", //...)',
-)
-
-lint_aspect(
-    name = "prettier_aspect_format",
-    aspect = "//tools:aspects.bzl%format",
-    path = "_prettier_format/bin",
-    query = 'kind("js_library rule", //...) + kind("ts_library rule", //...) - //rules:tsc_ts',
+    srcs = ["@better_rules_javascript_files//:prettier_files"],
+    formatter = ":prettier",
+    prefix = "external/better_rules_javascript_files/files",
 )

@@ -1,6 +1,3 @@
 package(default_visibility = ["//visibility:public"])
 
-exports_files([
-    "all.sh.tpl",
-    "aspect-all.sh.tpl",
-])
+exports_files(["runner.sh.tpl"])

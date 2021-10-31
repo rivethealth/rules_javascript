@@ -1,7 +1,6 @@
 load("@better_rules_typescript//rules/typescript:rules.bzl", "ts_library")
+load("@rules_format//rules/format:providers.bzl", "FormatInfo")
 load("//rules/nodejs:rules.bzl", "nodejs_binary")
-load("//rules/javascript:providers.bzl", "JsInfo")
-load(":providers.bzl", "PrettierInfo")
 
 def configure_prettier(name, config, dep, visibility = None):
     ts_library(
@@ -28,19 +27,33 @@ def configure_prettier(name, config, dep, visibility = None):
     )
 
     prettier(
+        config = config,
         name = name,
         bin = "%s_bin" % name,
-        config = config,
         visibility = visibility,
     )
 
-def _prettier_impl(ctx):
-    prettier_info = PrettierInfo(
-        config = ctx.file.config,
-        bin = ctx.attr.bin[DefaultInfo].files_to_run,
+def _prettier_fn(ctx, src, out, bin, config):
+    ctx.actions.run(
+        arguments = ["--config", config.path, src.path, out.path],
+        executable = bin.executable,
+        inputs = [config, src],
+        outputs = [out],
+        tools = [bin],
     )
 
-    return [prettier_info]
+def _prettier_impl(ctx):
+    bin = ctx.attr.bin[DefaultInfo]
+    config = ctx.file.config
+
+    format_info = FormatInfo(
+        fn = _prettier_fn,
+        args = [bin.files_to_run, config],
+    )
+
+    default_info = DefaultInfo(files = depset([config], transitive = [bin.files]))
+
+    return [default_info, format_info]
 
 prettier = rule(
     implementation = _prettier_impl,
@@ -48,81 +61,13 @@ prettier = rule(
         "config": attr.label(
             doc = "Configuration file",
             allow_single_file = True,
+            mandatory = True,
         ),
         "bin": attr.label(
             doc = "Prettier",
             mandatory = True,
             executable = True,
             cfg = "exec",
-        ),
-        # "plugins": attr.label_list(
-        #     doc = "Plugins to load",
-        #     providers = [JsInfo],
-        # ),
-    },
-)
-
-def prettier_format_impl_(ctx):
-    prettier_info = ctx.attr.prettier[PrettierInfo]
-
-    script = ""
-
-    outputs = []
-
-    output_prefix = ctx.label.name
-
-    for src in ctx.files.srcs:
-        inputs = []
-        args = ctx.actions.args()
-
-        formatted = ctx.actions.declare_file("%s/src/%s" % (output_prefix, src.path))
-        outputs.append(formatted)
-        script += "format %s %s \n" % (src.path, formatted.path)
-
-        if prettier_info.config:
-            args.add("--config", prettier_info.config.path)
-            inputs.append(prettier_info.config)
-
-        args.add(src.path)
-        inputs.append(src)
-
-        args.add(formatted.path)
-        outputs.append(formatted)
-
-        ctx.actions.run(
-            arguments = [args],
-            executable = prettier_info.bin.executable,
-            inputs = inputs,
-            outputs = [formatted],
-            tools = [prettier_info.bin],
-        )
-
-    bin = ctx.actions.declare_file("%s/bin" % output_prefix)
-    ctx.actions.expand_template(
-        template = ctx.file._runner,
-        output = bin,
-        substitutions = {"%{files}": script},
-    )
-
-    default_info = DefaultInfo(
-        files = depset(outputs + [bin]),
-    )
-    return [default_info]
-
-prettier_format = rule(
-    implementation = prettier_format_impl_,
-    attrs = {
-        "prettier": attr.label(
-            mandatory = True,
-            providers = [PrettierInfo],
-        ),
-        "srcs": attr.label_list(
-            allow_files = True,
-            mandatory = True,
-        ),
-        "_runner": attr.label(
-            default = "@better_rules_javascript//rules/prettier:runner.sh.tpl",
-            allow_single_file = True,
         ),
     },
 )

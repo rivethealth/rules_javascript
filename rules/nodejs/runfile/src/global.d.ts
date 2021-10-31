@@ -1,5 +1,5 @@
 export {};
 
 declare global {
-    export function runfilePath(path: string): string;
+  export function runfilePath(path: string): string;
 }

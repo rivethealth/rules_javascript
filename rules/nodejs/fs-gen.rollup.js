@@ -1,11 +1,11 @@
-import commonjs from '@rollup/plugin-commonjs';
-import { nodeResolve } from '@rollup/plugin-node-resolve';
+import commonjs from "@rollup/plugin-commonjs";
+import { nodeResolve } from "@rollup/plugin-node-resolve";
 
 export default {
-  input: 'fs-gen-js/main.js',
+  input: "fs-gen-js/main.js",
   output: {
-    file: 'fs-gen.js',
-    format: 'cjs'
+    file: "fs-gen.js",
+    format: "cjs",
   },
-  plugins: [commonjs(), nodeResolve()]
+  plugins: [commonjs(), nodeResolve()],
 };

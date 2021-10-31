@@ -1,4 +1,4 @@
-import { Foo } from './foo';
+import { Foo } from "./foo";
 
-const foo = new Foo('Example');
+const foo = new Foo("Example");
 foo.print();

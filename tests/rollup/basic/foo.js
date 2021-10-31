@@ -1,9 +1,9 @@
 export class Foo {
-    constructor(content) {
-        this.content = content;
-    }
+  constructor(content) {
+    this.content = content;
+  }
 
-    print() {
-        console.log(this.content);
-    }
+  print() {
+    console.log(this.content);
+  }
 }

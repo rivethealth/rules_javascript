@@ -7,29 +7,10 @@ var path = require('path');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
-function _interopNamespace(e) {
-	if (e && e.__esModule) return e;
-	var n = Object.create(null);
-	if (e) {
-		Object.keys(e).forEach(function (k) {
-			if (k !== 'default') {
-				var d = Object.getOwnPropertyDescriptor(e, k);
-				Object.defineProperty(n, k, d.get ? d : {
-					enumerable: true,
-					get: function () { return e[k]; }
-				});
-			}
-		});
-	}
-	n["default"] = e;
-	return Object.freeze(n);
-}
-
 var assert__default = /*#__PURE__*/_interopDefaultLegacy(assert);
 var util__default = /*#__PURE__*/_interopDefaultLegacy(util);
 var fs__default = /*#__PURE__*/_interopDefaultLegacy(fs);
 var path__default = /*#__PURE__*/_interopDefaultLegacy(path);
-var path__namespace = /*#__PURE__*/_interopNamespace(path);
 
 function getDefaultExportFromCjs (x) {
 	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
@@ -4258,7 +4239,262 @@ Object.defineProperty(module.exports, 'Const', {
 // end
 });
 
-var JsonFormat;
+/*! *****************************************************************************
+Copyright (c) Microsoft Corporation.
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+PERFORMANCE OF THIS SOFTWARE.
+***************************************************************************** */
+/* global Reflect, Promise */
+
+var extendStatics = function(d, b) {
+    extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+    return extendStatics(d, b);
+};
+
+function __extends(d, b) {
+    extendStatics(d, b);
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+}
+
+var __assign = function() {
+    __assign = Object.assign || function __assign(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+
+function __rest(s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+}
+
+function __decorate(decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+}
+
+function __param(paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+}
+
+function __metadata(metadataKey, metadataValue) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(metadataKey, metadataValue);
+}
+
+function __awaiter(thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+}
+
+function __generator(thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+}
+
+var __createBinding = Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+});
+
+function __exportStar(m, o) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(o, p)) __createBinding(o, m, p);
+}
+
+function __values(o) {
+    var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
+    if (m) return m.call(o);
+    if (o && typeof o.length === "number") return {
+        next: function () {
+            if (o && i >= o.length) o = void 0;
+            return { value: o && o[i++], done: !o };
+        }
+    };
+    throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
+}
+
+function __read(o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o), r, ar = [], e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+    }
+    catch (error) { e = { error: error }; }
+    finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        }
+        finally { if (e) throw e.error; }
+    }
+    return ar;
+}
+
+function __spread() {
+    for (var ar = [], i = 0; i < arguments.length; i++)
+        ar = ar.concat(__read(arguments[i]));
+    return ar;
+}
+
+function __spreadArrays() {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
+}
+function __await(v) {
+    return this instanceof __await ? (this.v = v, this) : new __await(v);
+}
+
+function __asyncGenerator(thisArg, _arguments, generator) {
+    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
+    var g = generator.apply(thisArg, _arguments || []), i, q = [];
+    return i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i;
+    function verb(n) { if (g[n]) i[n] = function (v) { return new Promise(function (a, b) { q.push([n, v, a, b]) > 1 || resume(n, v); }); }; }
+    function resume(n, v) { try { step(g[n](v)); } catch (e) { settle(q[0][3], e); } }
+    function step(r) { r.value instanceof __await ? Promise.resolve(r.value.v).then(fulfill, reject) : settle(q[0][2], r); }
+    function fulfill(value) { resume("next", value); }
+    function reject(value) { resume("throw", value); }
+    function settle(f, v) { if (f(v), q.shift(), q.length) resume(q[0][0], q[0][1]); }
+}
+
+function __asyncDelegator(o) {
+    var i, p;
+    return i = {}, verb("next"), verb("throw", function (e) { throw e; }), verb("return"), i[Symbol.iterator] = function () { return this; }, i;
+    function verb(n, f) { i[n] = o[n] ? function (v) { return (p = !p) ? { value: __await(o[n](v)), done: n === "return" } : f ? f(v) : v; } : f; }
+}
+
+function __asyncValues(o) {
+    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
+    var m = o[Symbol.asyncIterator], i;
+    return m ? m.call(o) : (o = typeof __values === "function" ? __values(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i);
+    function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
+    function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
+}
+
+function __makeTemplateObject(cooked, raw) {
+    if (Object.defineProperty) { Object.defineProperty(cooked, "raw", { value: raw }); } else { cooked.raw = raw; }
+    return cooked;
+}
+var __setModuleDefault = Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+};
+
+function __importStar(mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+}
+
+function __importDefault(mod) {
+    return (mod && mod.__esModule) ? mod : { default: mod };
+}
+
+function __classPrivateFieldGet(receiver, privateMap) {
+    if (!privateMap.has(receiver)) {
+        throw new TypeError("attempted to get private field on non-instance");
+    }
+    return privateMap.get(receiver);
+}
+
+function __classPrivateFieldSet(receiver, privateMap, value) {
+    if (!privateMap.has(receiver)) {
+        throw new TypeError("attempted to set private field on non-instance");
+    }
+    privateMap.set(receiver, value);
+    return value;
+}
+
+var tslib_es6 = /*#__PURE__*/Object.freeze({
+	__proto__: null,
+	__extends: __extends,
+	get __assign () { return __assign; },
+	__rest: __rest,
+	__decorate: __decorate,
+	__param: __param,
+	__metadata: __metadata,
+	__awaiter: __awaiter,
+	__generator: __generator,
+	__createBinding: __createBinding,
+	__exportStar: __exportStar,
+	__values: __values,
+	__read: __read,
+	__spread: __spread,
+	__spreadArrays: __spreadArrays,
+	__await: __await,
+	__asyncGenerator: __asyncGenerator,
+	__asyncDelegator: __asyncDelegator,
+	__asyncValues: __asyncValues,
+	__makeTemplateObject: __makeTemplateObject,
+	__importStar: __importStar,
+	__importDefault: __importDefault,
+	__classPrivateFieldGet: __classPrivateFieldGet,
+	__classPrivateFieldSet: __classPrivateFieldSet
+});
+
+var json = createCommonjsModule(function (module, exports) {
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.JsonFormat = void 0;
 (function (JsonFormat) {
     function array(elementFormat) {
         return new ArrayJsonFormat(elementFormat);
@@ -4279,7 +4515,7 @@ var JsonFormat;
             },
             toJson(value) {
                 return format().toJson(value);
-            }
+            },
         };
     }
     JsonFormat.defer = defer;
@@ -4287,16 +4523,16 @@ var JsonFormat;
         return new StringJsonFormat();
     }
     JsonFormat.string = string;
-})(JsonFormat || (JsonFormat = {}));
+})(exports.JsonFormat || (exports.JsonFormat = {}));
 class ArrayJsonFormat {
     constructor(elementFormat) {
         this.elementFormat = elementFormat;
     }
     fromJson(json) {
-        return json.map(element => this.elementFormat.fromJson(element));
+        return json.map((element) => this.elementFormat.fromJson(element));
     }
     toJson(json) {
-        return json.map(element => this.elementFormat.toJson(element));
+        return json.map((element) => this.elementFormat.toJson(element));
     }
 }
 class ObjectJsonFormat {
@@ -4324,10 +4560,16 @@ class MapJsonFormat {
         this.valueFormat = valueFormat;
     }
     fromJson(json) {
-        return new Map(json.map(({ key, value }) => [this.keyFormat.fromJson(key), this.valueFormat.fromJson(value)]));
+        return new Map(json.map(({ key, value }) => [
+            this.keyFormat.fromJson(key),
+            this.valueFormat.fromJson(value),
+        ]));
     }
     toJson(value) {
-        return [...value.entries()].map(([key, value]) => ({ key: this.keyFormat.toJson(key), value: this.valueFormat.toJson(value) }));
+        return [...value.entries()].map(([key, value]) => ({
+            key: this.keyFormat.toJson(key),
+            value: this.valueFormat.toJson(value),
+        }));
     }
 }
 class StringJsonFormat {
@@ -4339,45 +4581,59 @@ class StringJsonFormat {
     }
 }
 
-var json = /*#__PURE__*/Object.freeze({
-	__proto__: null,
-	get JsonFormat () { return JsonFormat; }
 });
+
+var tslib_1 = /*@__PURE__*/getAugmentedNamespace(tslib_es6);
+
+var __rules_commonjs_fs_root = createCommonjsModule(function (module, exports) {
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Vfs = exports.FsResult = exports.VfsMount = exports.VfsPath = exports.VfsEntry = void 0;
+
+const path = tslib_1.__importStar(path__default["default"]);
 
 var VfsEntry;
 (function (VfsEntry) {
     VfsEntry.DIRECTORY = Symbol("DIRECTORY");
     VfsEntry.LINK = Symbol("LINK");
     VfsEntry.PATH = Symbol("PATH");
-    function json() {
+    function json$1() {
         let children;
         const result = {
-            fromJson(json) {
-                switch (json.type) {
-                    case 'LINK':
-                        return { type: VfsEntry.LINK, path: VfsPath.parse(json.path) };
-                    case 'DIRECTORY':
-                        return { type: VfsEntry.DIRECTORY, children: children.fromJson(json.children) };
-                    case 'PATH':
-                        return { type: VfsEntry.PATH, path: JsonFormat.string().fromJson(json.path) };
+            fromJson(json$1) {
+                switch (json$1.type) {
+                    case "LINK":
+                        return { type: VfsEntry.LINK, path: VfsPath.parse(json$1.path) };
+                    case "DIRECTORY":
+                        return {
+                            type: VfsEntry.DIRECTORY,
+                            children: children.fromJson(json$1.children),
+                        };
+                    case "PATH":
+                        return {
+                            type: VfsEntry.PATH,
+                            path: json.JsonFormat.string().fromJson(json$1.path),
+                        };
                 }
             },
             toJson(entry) {
                 switch (entry.type) {
                     case VfsEntry.LINK:
-                        return { type: 'LINK', path: VfsPath.text(entry.path) };
+                        return { type: "LINK", path: VfsPath.text(entry.path) };
                     case VfsEntry.PATH:
-                        return { type: 'PATH', path: entry.path };
+                        return { type: "PATH", path: entry.path };
                     case VfsEntry.DIRECTORY:
-                        return { type: 'DIRECTORY', children: children.toJson(entry.children) };
+                        return {
+                            type: "DIRECTORY",
+                            children: children.toJson(entry.children),
+                        };
                 }
-            }
+            },
         };
-        children = JsonFormat.map(JsonFormat.string(), JsonFormat.defer(() => result));
+        children = json.JsonFormat.map(json.JsonFormat.string(), json.JsonFormat.defer(() => result));
         return result;
     }
-    VfsEntry.json = json;
-})(VfsEntry || (VfsEntry = {}));
+    VfsEntry.json = json$1;
+})(VfsEntry = exports.VfsEntry || (exports.VfsEntry = {}));
 var VfsPath;
 (function (VfsPath) {
     /**
@@ -4397,7 +4653,7 @@ var VfsPath;
         return path.join("/");
     }
     VfsPath.text = text;
-})(VfsPath || (VfsPath = {}));
+})(VfsPath = exports.VfsPath || (exports.VfsPath = {}));
 /**
  * Mounted part of link file system
  */
@@ -4426,7 +4682,7 @@ class VfsMount {
                 case VfsEntry.PATH:
                     return {
                         type: VfsEntry.PATH,
-                        path: [entry.path, ...path.slice(i)].join('/'),
+                        path: [entry.path, ...path.slice(i)].join("/"),
                     };
             }
         }
@@ -4453,16 +4709,16 @@ class VfsMount {
                     i = 0;
                     break;
                 case VfsEntry.PATH:
-                    return [entry.path, ...path.slice(i)].join('/');
+                    return [entry.path, ...path.slice(i)].join("/");
             }
         }
-        return realpath.join('/');
+        return realpath.join("/");
     }
     *tree() {
         yield* (function* f(entry) {
             switch (entry.type) {
                 case VfsEntry.LINK:
-                    yield `-> ${entry.path.join('/')}`;
+                    yield `-> ${entry.path.join("/")}`;
                     break;
                 case VfsEntry.PATH:
                     yield entry.path;
@@ -4479,14 +4735,15 @@ class VfsMount {
         })(this.root);
     }
 }
+exports.VfsMount = VfsMount;
 var FsResult;
 (function (FsResult) {
-    FsResult.LINK = Symbol('LINK');
-    FsResult.PATH = Symbol('PATH');
-    FsResult.DIRECTORY = Symbol('DIRECTORY');
-    FsResult.NOT_FOUND = Symbol('NOT_FOUND');
+    FsResult.LINK = Symbol("LINK");
+    FsResult.PATH = Symbol("PATH");
+    FsResult.DIRECTORY = Symbol("DIRECTORY");
+    FsResult.NOT_FOUND = Symbol("NOT_FOUND");
     FsResult.NotFound = { type: FsResult.NOT_FOUND };
-})(FsResult || (FsResult = {}));
+})(FsResult = exports.FsResult || (exports.FsResult = {}));
 /**
  * Link file system.
  * First path component is the mount point.
@@ -4496,12 +4753,15 @@ class Vfs {
         this._mountPoints = [];
     }
     _resolvePath(path_) {
-        path_ = path__namespace.resolve(path_);
+        path_ = path.resolve(path_);
         const mount = this._mountPoints.find(({ path }) => path === path_ || path_.startsWith(`${path}/`));
         if (!mount) {
             return;
         }
-        return { mountPoint: mount, path: VfsPath.parse(path_.slice(mount.path.length + 1)) };
+        return {
+            mountPoint: mount,
+            path: VfsPath.parse(path_.slice(mount.path.length + 1)),
+        };
     }
     _prepend(mountPoint, path) {
         if (!path) {
@@ -4515,7 +4775,7 @@ class Vfs {
      * Add mount
      */
     mount(path_, mount) {
-        path_ = path__namespace.resolve(path_);
+        path_ = path.resolve(path_);
         this._mountPoints.push({ path: path_, mount });
     }
     /**
@@ -4533,7 +4793,10 @@ class Vfs {
         }
         switch (resolved.type) {
             case VfsEntry.LINK:
-                return { type: FsResult.LINK, path: this._prepend(mountPoint, VfsPath.text(resolved.path)) };
+                return {
+                    type: FsResult.LINK,
+                    path: this._prepend(mountPoint, VfsPath.text(resolved.path)),
+                };
             case VfsEntry.PATH:
                 return { type: FsResult.PATH, path: resolved.path };
             case VfsEntry.DIRECTORY:
@@ -4580,107 +4843,104 @@ class Vfs {
         }
     }
 }
+exports.Vfs = Vfs;
 
-var __rules_commonjs_fs_root = /*#__PURE__*/Object.freeze({
-	__proto__: null,
-	get VfsEntry () { return VfsEntry; },
-	get VfsPath () { return VfsPath; },
-	VfsMount: VfsMount,
-	get FsResult () { return FsResult; },
-	Vfs: Vfs
 });
 
-var commonjs_fs_1 = /*@__PURE__*/getAugmentedNamespace(__rules_commonjs_fs_root);
-
-var json_1 = /*@__PURE__*/getAugmentedNamespace(json);
-
 var gen_1 = createCommonjsModule(function (module, exports) {
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.gen = exports.ExtraLink = exports.Entry = exports.RootLink = exports.Root = void 0;
+
+const fs = tslib_1.__importStar(fs__default["default"]);
 (function (Root) {
-    function json() {
-        return json_1.JsonFormat.object({
-            descriptor: json_1.JsonFormat.string(),
-            id: json_1.JsonFormat.string(),
-            label: json_1.JsonFormat.string(),
-            links: json_1.JsonFormat.array(RootLink.json()),
-            name: json_1.JsonFormat.string(),
-            path: json_1.JsonFormat.string()
+    function json$1() {
+        return json.JsonFormat.object({
+            descriptor: json.JsonFormat.string(),
+            id: json.JsonFormat.string(),
+            label: json.JsonFormat.string(),
+            links: json.JsonFormat.array(RootLink.json()),
+            name: json.JsonFormat.string(),
+            path: json.JsonFormat.string(),
         });
     }
-    Root.json = json;
+    Root.json = json$1;
 })(exports.Root || (exports.Root = {}));
 var RootLink;
 (function (RootLink) {
-    function json() {
-        return json_1.JsonFormat.object({
-            id: json_1.JsonFormat.string(),
-            name: json_1.JsonFormat.string()
+    function json$1() {
+        return json.JsonFormat.object({
+            id: json.JsonFormat.string(),
+            name: json.JsonFormat.string(),
         });
     }
-    RootLink.json = json;
+    RootLink.json = json$1;
 })(RootLink = exports.RootLink || (exports.RootLink = {}));
 (function (Entry) {
-    function json() {
-        return json_1.JsonFormat.object({
-            file: json_1.JsonFormat.string(),
-            name: json_1.JsonFormat.string(),
-            root: json_1.JsonFormat.string(),
-            label: json_1.JsonFormat.string()
+    function json$1() {
+        return json.JsonFormat.object({
+            file: json.JsonFormat.string(),
+            name: json.JsonFormat.string(),
+            root: json.JsonFormat.string(),
+            label: json.JsonFormat.string(),
         });
     }
-    Entry.json = json;
+    Entry.json = json$1;
 })(exports.Entry || (exports.Entry = {}));
 (function (ExtraLink) {
-    function json() {
-        return json_1.JsonFormat.object({
-            root: json_1.JsonFormat.string(),
-            dep: json_1.JsonFormat.string()
+    function json$1() {
+        return json.JsonFormat.object({
+            root: json.JsonFormat.string(),
+            dep: json.JsonFormat.string(),
         });
     }
-    ExtraLink.json = json;
+    ExtraLink.json = json$1;
 })(exports.ExtraLink || (exports.ExtraLink = {}));
-var root = {
-    type: commonjs_fs_1.VfsEntry.DIRECTORY,
-    children: new Map()
+const root = {
+    type: __rules_commonjs_fs_root.VfsEntry.DIRECTORY,
+    children: new Map(),
 };
 function mkdir(dir, name) {
-    var result = dir.children.get(name);
+    let result = dir.children.get(name);
     if (!result) {
-        result = { type: commonjs_fs_1.VfsEntry.DIRECTORY, children: new Map() };
+        result = { type: __rules_commonjs_fs_root.VfsEntry.DIRECTORY, children: new Map() };
         dir.children.set(name, result);
     }
-    else if (result.type !== commonjs_fs_1.VfsEntry.DIRECTORY) {
+    else if (result.type !== __rules_commonjs_fs_root.VfsEntry.DIRECTORY) {
         throw new Error();
     }
     return result;
 }
 function addDep(root, name, path) {
-    var dir = root.children.get('node_modules');
-    var parts = name.split('/');
-    for (var _i = 0, _a = parts.slice(0, -1); _i < _a.length; _i++) {
-        var part = _a[_i];
+    let dir = root.children.get("node_modules");
+    const parts = name.split("/");
+    for (const part of parts.slice(0, -1)) {
         dir = mkdir(dir, part);
     }
-    dir.children.set(parts[parts.length - 1], { type: commonjs_fs_1.VfsEntry.LINK, path: [path] });
+    dir.children.set(parts[parts.length - 1], {
+        type: __rules_commonjs_fs_root.VfsEntry.LINK,
+        path: [path],
+    });
 }
 function gen(args) {
-    var paths = new Map();
-    for (var _i = 0, _a = args.roots; _i < _a.length; _i++) {
-        var root_ = _a[_i];
+    const paths = new Map();
+    for (const root_ of args.roots) {
         paths.set(root_.id, root_.path);
     }
-    var names = new Map();
-    var targets = new Map();
+    const names = new Map();
+    const targets = new Map();
     // add roots
-    for (var _b = 0, _c = args.roots; _b < _c.length; _b++) {
-        var root_ = _c[_b];
-        var packageRoot = mkdir(root, root_.path);
-        var t = new Set();
-        packageRoot.children.set('package.json', { type: commonjs_fs_1.VfsEntry.PATH, path: root_.descriptor });
-        packageRoot.children.set('node_modules', { type: commonjs_fs_1.VfsEntry.DIRECTORY, children: new Map() });
-        for (var _d = 0, _e = root_.links; _d < _e.length; _d++) {
-            var link = _e[_d];
+    for (const root_ of args.roots) {
+        const packageRoot = mkdir(root, root_.path);
+        const t = new Set();
+        packageRoot.children.set("package.json", {
+            type: __rules_commonjs_fs_root.VfsEntry.PATH,
+            path: root_.descriptor,
+        });
+        packageRoot.children.set("node_modules", {
+            type: __rules_commonjs_fs_root.VfsEntry.DIRECTORY,
+            children: new Map(),
+        });
+        for (const link of root_.links) {
             t.add(link.id);
             addDep(packageRoot, link.name, paths.get(link.id));
         }
@@ -4689,38 +4949,44 @@ function gen(args) {
         paths.set(root_.id, root_.path);
     }
     // add additional deps, if not already present
-    for (var _f = 0, _g = args.extraLinks; _f < _g.length; _f++) {
-        var dep = _g[_f];
+    for (const dep of args.extraLinks) {
         if (targets.get(dep.root).has(dep.dep)) {
             continue;
         }
-        var packageRoot = root.children.get(paths.get(dep.root));
+        const packageRoot = (root.children.get(paths.get(dep.root)));
         addDep(packageRoot, names.get(dep.dep), paths.get(dep.dep));
     }
     // add entries
-    for (var _h = 0, _j = args.entries; _h < _j.length; _h++) {
-        var entry = _j[_h];
-        var parts = entry.name.split('/');
-        var packageRoot = root.children.get(paths.get(entry.root));
+    for (const entry of args.entries) {
+        const parts = entry.name.split("/");
+        const packageRoot = root.children.get(paths.get(entry.root));
         if (!packageRoot) {
-            throw new Error('No package root');
+            throw new Error("No package root");
         }
-        var dir = packageRoot;
-        for (var _k = 0, _l = parts.slice(0, -1); _k < _l.length; _k++) {
-            var part = _l[_k];
+        let dir = packageRoot;
+        for (const part of parts.slice(0, -1)) {
             dir = mkdir(dir, part);
         }
-        dir.children.set(parts[parts.length - 1], { type: commonjs_fs_1.VfsEntry.PATH, path: entry.file });
+        dir.children.set(parts[parts.length - 1], {
+            type: __rules_commonjs_fs_root.VfsEntry.PATH,
+            path: entry.file,
+        });
     }
-    var json = JSON.stringify(commonjs_fs_1.VfsEntry.json().toJson(root));
-    var content = "global.linkFsMount(\n  " + JSON.stringify(args.mount) + ",\n  " + json + ",\n  " + JSON.stringify(args.runfiles) + ",\n);\n";
-    fs__default["default"].writeFileSync(args.outputPath, content, 'utf8');
+    const json = JSON.stringify(__rules_commonjs_fs_root.VfsEntry.json().toJson(root));
+    const content = `global.linkFsMount(
+  ${JSON.stringify(args.mount)},
+  ${json},
+  ${JSON.stringify(args.runfiles)},
+);
+`;
+    fs.writeFileSync(args.outputPath, content, "utf8");
 }
 exports.gen = gen;
+
 });
 
 var main = createCommonjsModule(function (module, exports) {
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 
 
 function rootArg(value) {
@@ -4732,21 +4998,39 @@ function extraDepArg(value) {
 function entrysArg(value) {
     return gen_1.Entry.json().fromJson(JSON.parse(value));
 }
-var parser = new argparse.ArgumentParser({ description: 'Resolve dependency information into LinkFs' });
-var subparsers = parser.add_subparsers({ dest: 'command' });
-var genParser = subparsers.add_parser('gen');
-genParser.add_argument('--extra-link', { action: 'append', "default": [], dest: 'extraLinks', type: extraDepArg });
-genParser.add_argument('--entry', { action: 'append', "default": [], dest: 'entries', type: entrysArg });
-genParser.add_argument('--runfiles', { "default": false, type: Boolean });
-genParser.add_argument('--root', { action: 'append', "default": [], dest: 'roots', type: rootArg });
-genParser.add_argument('mount', { help: 'Path to mount' });
-genParser.add_argument('outputPath', { metavar: 'output' });
-var args = parser.parse_args();
+const parser = new argparse.ArgumentParser({
+    description: "Resolve dependency information into LinkFs",
+});
+const subparsers = parser.add_subparsers({ dest: "command" });
+const genParser = subparsers.add_parser("gen");
+genParser.add_argument("--extra-link", {
+    action: "append",
+    default: [],
+    dest: "extraLinks",
+    type: extraDepArg,
+});
+genParser.add_argument("--entry", {
+    action: "append",
+    default: [],
+    dest: "entries",
+    type: entrysArg,
+});
+genParser.add_argument("--runfiles", { default: false, type: Boolean });
+genParser.add_argument("--root", {
+    action: "append",
+    default: [],
+    dest: "roots",
+    type: rootArg,
+});
+genParser.add_argument("mount", { help: "Path to mount" });
+genParser.add_argument("outputPath", { metavar: "output" });
+const args = parser.parse_args();
 switch (args.command) {
-    case 'gen':
+    case "gen":
         gen_1.gen(args);
         break;
 }
+
 });
 
 var main$1 = /*@__PURE__*/getDefaultExportFromCjs(main);

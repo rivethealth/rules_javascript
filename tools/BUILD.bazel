@@ -1,10 +1,3 @@
 load("//rules/nodejs:rules.bzl", "nodejs_binary")
-load("//rules/prettier:rules.bzl", "configure_prettier")
 
 package(default_visibility = ["//visibility:public"])
-
-configure_prettier(
-    name = "prettier",
-    config = "//:prettierrc.yml",
-    dep = "@better_rules_javascript_npm//prettier:lib",
-)
