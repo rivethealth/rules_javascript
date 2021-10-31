@@ -14,9 +14,11 @@ filegroup(
     name = "prettier_files",
     srcs = glob(
         [
-            "files/rules/**/*.js",
-            "files/rules/**/*.ts",
-            "files/README.md",
+            "files/**/*.js",
+            "files/**/*.json",
+            "files/**/*.ts",
+            "files/**/*.md",
+            "files/**/*.yml",
         ],
         [
             "**/bazel-*/**",
