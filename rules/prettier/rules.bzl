@@ -8,13 +8,15 @@ def configure_prettier(name, config, dep, visibility = None):
         srcs = ["@better_rules_javascript//rules/prettier/format:src"],
         strip_prefix = "better_rules_javascript/rules/prettier/format/src",
         compiler = "@better_rules_javascript//rules:tsc",
+        compiler_options = ["--esModuleInterop"],
         deps = [
             dep,
+            "@better_rules_javascript//rules/worker:lib",
             "@better_rules_javascript_npm//argparse:lib",
             "@better_rules_javascript_npm//types_argparse:lib",
             "@better_rules_javascript_npm//types_prettier:lib",
         ],
-        types = [
+        global_deps = [
             "@better_rules_javascript_npm//types_node:lib",
         ],
         root = "@better_rules_javascript//rules/prettier/format:root",
@@ -33,13 +35,24 @@ def configure_prettier(name, config, dep, visibility = None):
         visibility = visibility,
     )
 
-def _prettier_fn(ctx, src, out, bin, config):
+def _prettier_fn(ctx, name, src, out, bin, config):
+    args = ctx.actions.args()
+    args.add(src.path)
+    args.add(out.path)
+    args.set_param_file_format("multiline")
+    args.use_param_file("@%s", use_always = True)
+
     ctx.actions.run(
-        arguments = ["--config", config.path, src.path, out.path],
+        arguments = ["--config", config.path, args],
         executable = bin.executable,
+        mnemonic = "PrettierFormat",
         inputs = [config, src],
+        progress_message = "Formatting %s" % name,
         outputs = [out],
         tools = [bin],
+        execution_requirements = {
+            "supports-workers": "1",
+        },
     )
 
 def _prettier_impl(ctx):

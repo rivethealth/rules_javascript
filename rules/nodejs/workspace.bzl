@@ -1,6 +1,6 @@
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
-DEFAULT_NODE_VERSION = "14.9.0"
+DEFAULT_NODE_VERSION = "16.9.1"
 
 NODEJS_URLS = [
     "https://nodejs.org/dist/{url}",
@@ -8,23 +8,6 @@ NODEJS_URLS = [
 ]
 
 NODEJS_REPOSITORIES = {
-    "10.16.0": {
-        "darwin_x86_64": {
-            "url": "v10.16.0/node-v10.16.0-darwin-x64.tar.gz",
-            "prefix": "node-v10.16.0-darwin-x64",
-            "sha256": "6c009df1b724026d84ae9a838c5b382662e30f6c5563a0995532f2bece39fa9c",
-        },
-        "linux_x86_64": {
-            "url": "v10.16.0/node-v10.16.0-linux-x64.tar.xz",
-            "prefix": "node-v10.16.0-linux-x64",
-            "sha256": "1827f5b99084740234de0c506f4dd2202a696ed60f76059696747c34339b9d48",
-        },
-        "windows_x86_64": {
-            "url": "v10.16.0/node-v10.16.0-win-x64.zip",
-            "prefix": "node-v10.16.0-win-x64",
-            "sha256": "aa22cb357f0fb54ccbc06b19b60e37eefea5d7dd9940912675d3ed988bf9a059",
-        },
-    },
     "12.9.1": {
         "darwin_x86_64": {
             "url": "v12.9.1/node-v12.9.1-darwin-x64.tar.gz",
@@ -32,9 +15,9 @@ NODEJS_REPOSITORIES = {
             "sha256": "9aaf29d30056e2233fd15dfac56eec12e8342d91bb6c13d54fb5e599383dddb9",
         },
         "linux_x86_64": {
-            "url": "v12.9.1/node-v12.9.1-linux-x64.tar.xz",
+            "url": "v12.9.1/node-v12.9.1-linux-x64.tar.gz",
             "prefix": "node-v12.9.1-linux-x64",
-            "sha256": "680a1263c9f5f91adadcada549f0a9c29f1b26d09658d2b501c334c3f63719e5",
+            "sha256": "5488e9d9e860eb344726aabdc8f90d09e36602da38da3d16a7ee852fd9fbd91f",
         },
         "windows_x86_64": {
             "url": "v12.9.1/node-v12.9.1-win-x64.zip",
@@ -43,21 +26,37 @@ NODEJS_REPOSITORIES = {
         },
     },
     "14.9.0": {
-        # todo: update hashes
         "darwin_x86_64": {
             "url": "v14.9.0/node-v14.9.0-darwin-x64.tar.gz",
             "prefix": "node-v14.9.0-darwin-x64",
-            "sha256": "00af29d30056e2233fd15dfac56eec12e8342d91bb6c13d54fb5e599383dddb9",
+            "sha256": "8427e07e3ca70d6ccf5274dde535c9a42b7f873f5a086323eaf2406cdb324daf",
         },
         "linux_x86_64": {
-            "url": "v14.9.0/node-v14.9.0-linux-x64.tar.xz",
+            "url": "v14.9.0/node-v14.9.0-linux-x64.tar.gz",
             "prefix": "node-v14.9.0-linux-x64",
-            "sha256": "ded70899f43cf8138f88b838aecff5045e763bcab91c4b7f57fe5b69c6722df4",
+            "sha256": "78b9e06c40a34ae1b7e0540bc3667459ed6439bbc4deff0bbe13f32817e8ac9c",
         },
         "windows_x86_64": {
             "url": "v14.9.0/node-v14.9.0-win-x64.zip",
             "prefix": "node-v14.9.0-win-x64",
-            "sha256": "00b682df8bd057c81bb30460d606b81e252fc263eb7532e647aa3350ee0ceb64",
+            "sha256": "bcd3fc61739e7ac9a4b6103da3fe5f8c9e310b7b0f1b1f0200d5a4b5dd65d723",
+        },
+    },
+    "16.9.1": {
+        "darwin_x86_64": {
+            "url": "v16.9.1/node-v16.9.1-darwin-x64.tar.gz",
+            "prefix": "node-v16.9.1-darwin-x64",
+            "sha256": "90ff3ce95882ad41ae5c7a2f4f7303e9ba445caf5ef41d270a385c0a76e43bc6",
+        },
+        "linux_x86_64": {
+            "url": "v16.9.1/node-v16.9.1-linux-x64.tar.gz",
+            "prefix": "node-v16.9.1-linux-x64",
+            "sha256": "1d48c69e4141792f314d29f081501dc22218cfc22f9992c098f7e3f5e0531139",
+        },
+        "windows_x86_64": {
+            "url": "v16.9.1/node-v16.9.1-win-x64.zip",
+            "prefix": "node-v16.9.1-win-x64",
+            "sha256": "44b36846f45c3599d4230008cc5064d3e72405eea26268731b2374fe4ab998ed",
         },
     },
 }

@@ -58,7 +58,7 @@ nodejs_simple_binary = rule(
     toolchains = ["@better_rules_javascript//rules/nodejs:toolchain_type"],
 )
 
-def gen_fs(actions, gen, file, mount, entries, extra_links, roots, is_runfiles):
+def gen_fs(actions, gen, file, mount, entries, extra_links, roots, globals, is_runfiles):
     args = actions.args()
     args.set_param_file_format("multiline")
     args.add("gen")
@@ -72,6 +72,7 @@ def gen_fs(actions, gen, file, mount, entries, extra_links, roots, is_runfiles):
         args.add_all(entries, before_each = "--entry", map_each = _entry_arg)
         args.add_all(roots, before_each = "--root", map_each = _root_arg)
     args.add_all(extra_links, before_each = "--extra-link", map_each = _extra_link_arg)
+    args.add_all(globals, before_each = "--global")
     args.add(file)
 
     actions.run(
@@ -94,6 +95,7 @@ def js_info_gen_fs(actions, gen, file, mount, js_info, include_sources, is_runfi
         depset([], transitive = entries),
         js_info.transitive_extra_links,
         js_info.transitive_roots,
+        js_info.transitive_globals,
         is_runfiles,
     )
 
@@ -129,6 +131,7 @@ def _nodejs_binary_implementation(ctx):
         substitutions = {
             "%{main_module}": shell.quote(main_module),
             "%{node}": shell.quote(runfile_path(ctx, nodejs_toolchain.nodejs.bin)),
+            "%{node_options}": " ".join([shell.quote(option) for option in ctx.attr.node_options]),
             "%{fs_manifest}": shell.quote(runfile_path(ctx, fs_manifest)),
             "%{shim}": shell.quote(runfile_path(ctx, ctx.file._shim)),
             "%{workspace}": shell.quote(ctx.workspace_name),
@@ -149,6 +152,8 @@ nodejs_binary = rule(
         "dep": attr.label(mandatory = True, providers = [JsInfo]),
         "main": attr.string(
             default = "",
+        ),
+        "node_options": attr.string_list(
         ),
         "include_sources": attr.bool(
             default = True,

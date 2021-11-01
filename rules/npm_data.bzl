@@ -1,5 +1,74 @@
 PACKAGES = [
     {
+        "name": "@protobufjs/aspromise@1.1.2",
+        "url": "https://registry.yarnpkg.com/@protobufjs/aspromise/-/aspromise-1.1.2.tgz#9b8b0cc663d669a7d8f6f5d0893a14d348f30fbf",
+        "integrity": "sha1-m4sMxmPWaafY9vXQiToU00jzD78=",
+        "deps": [],
+    },
+    {
+        "name": "@protobufjs/base64@1.1.2",
+        "url": "https://registry.yarnpkg.com/@protobufjs/base64/-/base64-1.1.2.tgz#4c85730e59b9a1f1f349047dbf24296034bb2735",
+        "integrity": "sha512-AZkcAA5vnN/v4PDqKyMR5lx7hZttPDgClv83E//FMNhR2TMcLUhfRUBHCmSl0oi9zMgDDqRUJkSxO3wm85+XLg==",
+        "deps": [],
+    },
+    {
+        "name": "@protobufjs/codegen@2.0.4",
+        "url": "https://registry.yarnpkg.com/@protobufjs/codegen/-/codegen-2.0.4.tgz#7ef37f0d010fb028ad1ad59722e506d9262815cb",
+        "integrity": "sha512-YyFaikqM5sH0ziFZCN3xDC7zeGaB/d0IUb9CATugHWbd1FRFwWwt4ld4OYMPWu5a3Xe01mGAULCdqhMlPl29Jg==",
+        "deps": [],
+    },
+    {
+        "name": "@protobufjs/eventemitter@1.1.0",
+        "url": "https://registry.yarnpkg.com/@protobufjs/eventemitter/-/eventemitter-1.1.0.tgz#355cbc98bafad5978f9ed095f397621f1d066b70",
+        "integrity": "sha1-NVy8mLr61ZePntCV85diHx0Ga3A=",
+        "deps": [],
+    },
+    {
+        "name": "@protobufjs/fetch@1.1.0",
+        "url": "https://registry.yarnpkg.com/@protobufjs/fetch/-/fetch-1.1.0.tgz#ba99fb598614af65700c1619ff06d454b0d84c45",
+        "integrity": "sha1-upn7WYYUr2VwDBYZ/wbUVLDYTEU=",
+        "deps": [
+            {
+                "dep": "@protobufjs/aspromise@1.1.2",
+                "name": "@protobufjs/aspromise",
+            },
+            {
+                "dep": "@protobufjs/inquire@1.1.0",
+                "name": "@protobufjs/inquire",
+            },
+        ],
+    },
+    {
+        "name": "@protobufjs/float@1.0.2",
+        "url": "https://registry.yarnpkg.com/@protobufjs/float/-/float-1.0.2.tgz#5e9e1abdcb73fc0a7cb8b291df78c8cbd97b87d1",
+        "integrity": "sha1-Xp4avctz/Ap8uLKR33jIy9l7h9E=",
+        "deps": [],
+    },
+    {
+        "name": "@protobufjs/inquire@1.1.0",
+        "url": "https://registry.yarnpkg.com/@protobufjs/inquire/-/inquire-1.1.0.tgz#ff200e3e7cf2429e2dcafc1140828e8cc638f089",
+        "integrity": "sha1-/yAOPnzyQp4tyvwRQIKOjMY48Ik=",
+        "deps": [],
+    },
+    {
+        "name": "@protobufjs/path@1.1.2",
+        "url": "https://registry.yarnpkg.com/@protobufjs/path/-/path-1.1.2.tgz#6cc2b20c5c9ad6ad0dccfd21ca7673d8d7fbf68d",
+        "integrity": "sha1-bMKyDFya1q0NzP0hynZz2Nf79o0=",
+        "deps": [],
+    },
+    {
+        "name": "@protobufjs/pool@1.1.0",
+        "url": "https://registry.yarnpkg.com/@protobufjs/pool/-/pool-1.1.0.tgz#09fd15f2d6d3abfa9b65bc366506d6ad7846ff54",
+        "integrity": "sha1-Cf0V8tbTq/qbZbw2ZQbWrXhG/1Q=",
+        "deps": [],
+    },
+    {
+        "name": "@protobufjs/utf8@1.1.0",
+        "url": "https://registry.yarnpkg.com/@protobufjs/utf8/-/utf8-1.1.0.tgz#a777360b5b39a1a2e5106f8e858f2fd2d060c570",
+        "integrity": "sha1-p3c2C1s5oaLlEG+OhY8v0tBgxXA=",
+        "deps": [],
+    },
+    {
         "name": "@rollup/plugin-commonjs@16.0.0",
         "url": "https://registry.yarnpkg.com/@rollup/plugin-commonjs/-/plugin-commonjs-16.0.0.tgz#169004d56cd0f0a1d0f35915d31a036b0efe281f",
         "integrity": "sha512-LuNyypCP3msCGVQJ7ki8PqYdpjfEkE/xtFa5DqlF+7IBD0JsfMZ87C58heSwIMint58sAUZbt3ITqOmdQv/dXw==",
@@ -103,21 +172,39 @@ PACKAGES = [
         "deps": [],
     },
     {
+        "name": "@types/long@4.0.1",
+        "url": "https://registry.yarnpkg.com/@types/long/-/long-4.0.1.tgz#459c65fa1867dafe6a8f322c4c51695663cc55e9",
+        "integrity": "sha512-5tXH6Bx/kNGd3MgffdmP4dy2Z+G4eaXw0SE81Tq3BNadtnMR5/ySMzX4SLEzHJzSmPNn4HIdpQsBvXMUykr58w==",
+        "deps": [],
+    },
+    {
         "name": "@types/node@16.9.1",
         "url": "https://registry.yarnpkg.com/@types/node/-/node-16.9.1.tgz#0611b37db4246c937feef529ddcc018cf8e35708",
         "integrity": "sha512-QpLcX9ZSsq3YYUUnD3nFDY8H7wctAhQj/TFKL8Ya8v5fMm3CFXxo8zStsLAl780ltoYoo1WvKUVGBQK+1ifr7g==",
         "deps": [],
     },
     {
-        "name": "@types/node@12.19.4",
-        "url": "https://registry.yarnpkg.com/@types/node/-/node-12.19.4.tgz#cdfbb62e26c7435ed9aab9c941393cc3598e9b46",
-        "integrity": "sha512-o3oj1bETk8kBwzz1WlO6JWL/AfAA3Vm6J1B3C9CsdxHYp7XgPiH7OEXPUbZTndHlRaIElrANkQfe6ZmfJb3H2w==",
+        "name": "@types/node@16.11.6",
+        "url": "https://registry.yarnpkg.com/@types/node/-/node-16.11.6.tgz#6bef7a2a0ad684cf6e90fcfe31cecabd9ce0a3ae",
+        "integrity": "sha512-ua7PgUoeQFjmWPcoo9khiPum3Pd60k4/2ZGXt18sm2Slk0W0xZTqt5Y0Ny1NyBiN1EVQ/+FaF9NcY4Qe6rwk5w==",
         "deps": [],
     },
     {
-        "name": "@types/prettier@1.12.4",
-        "url": "https://registry.yarnpkg.com/@types/prettier/-/prettier-1.12.4.tgz#6b9c9fdd9c5b13f94f7b27a5501e6091fd810ac0",
-        "integrity": "sha512-6Mr72wzKYi4AJze2Moc0nn1AImafbYGXcD/zMcxgLRxLprr3uxxQ8wpvGQEmWVOeT9q6CQNGlrCdKHdJWJB0UQ==",
+        "name": "@types/object-hash@1.3.4",
+        "url": "https://registry.yarnpkg.com/@types/object-hash/-/object-hash-1.3.4.tgz#079ba142be65833293673254831b5e3e847fe58b",
+        "integrity": "sha512-xFdpkAkikBgqBdG9vIlsqffDV8GpvnPEzs0IUtr1v3BEB97ijsFQ4RXVbUZwjFThhB4MDSTUfvmxUD5PGx0wXA==",
+        "deps": [],
+    },
+    {
+        "name": "@types/prettier@1.19.1",
+        "url": "https://registry.yarnpkg.com/@types/prettier/-/prettier-1.19.1.tgz#33509849f8e679e4add158959fdb086440e9553f",
+        "integrity": "sha512-5qOlnZscTn4xxM5MeGXAMOsIOIKIbh9e85zJWfBRVPlRMEVawzoPhINYbRGkBZCI8LxvBe7tJCdWiarA99OZfQ==",
+        "deps": [],
+    },
+    {
+        "name": "@types/prettier@2.4.1",
+        "url": "https://registry.yarnpkg.com/@types/prettier/-/prettier-2.4.1.tgz#e1303048d5389563e130f5bdd89d37a99acb75eb",
+        "integrity": "sha512-Fo79ojj3vdEZOHg3wR9ksAMRz4P3S5fDB5e/YWZiFnyFQI1WY2Vftu9XoXVVtJfxB7Bpce/QTqWSSntkz2Znrw==",
         "deps": [],
     },
     {
@@ -186,6 +273,12 @@ PACKAGES = [
         "name": "concat-map@0.0.1",
         "url": "https://registry.yarnpkg.com/concat-map/-/concat-map-0.0.1.tgz#d8a96bd77fd68df7793a73036a3ba0d5405d477b",
         "integrity": "sha1-2Klr13/Wjfd5OnMDajug1UBdR3s=",
+        "deps": [],
+    },
+    {
+        "name": "dataloader@1.4.0",
+        "url": "https://registry.yarnpkg.com/dataloader/-/dataloader-1.4.0.tgz#bca11d867f5d3f1b9ed9f737bd15970c65dff5c8",
+        "integrity": "sha512-68s5jYdlvasItOJnCuI2Q9s4q98g0pCyL3HrcKJu8KNugUl8ahgmZYg38ysLTgQjjXX3H8CJLkAvWrclWfcalw==",
         "deps": [],
     },
     {
@@ -271,12 +364,6 @@ PACKAGES = [
         ],
     },
     {
-        "name": "google-protobuf@3.13.0",
-        "url": "https://registry.yarnpkg.com/google-protobuf/-/google-protobuf-3.13.0.tgz#909c5983d75dd6101ed57c79e0528d000cdc3251",
-        "integrity": "sha512-ZIf3qfLFayVrPvAjeKKxO5FRF1/NwRxt6Dko+fWEMuHwHbZx8/fcaAao9b0wCM6kr8qeg2te8XTpyuvKuD9aKw==",
-        "deps": [],
-    },
-    {
         "name": "graceful-fs@4.2.8",
         "url": "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.2.8.tgz#e412b8d33f5e006593cbd3cee6df9f2cebbe802a",
         "integrity": "sha512-qkIilPUYcNhJpd33n0GBXTB1MMPp14TxEsEs0pTrsSVucApsYzW5V+Q8Qxhik6KU3evy+qkAAowTByymK0avdg==",
@@ -354,6 +441,18 @@ PACKAGES = [
         ],
     },
     {
+        "name": "lodash@4.17.21",
+        "url": "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c",
+        "integrity": "sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==",
+        "deps": [],
+    },
+    {
+        "name": "long@4.0.0",
+        "url": "https://registry.yarnpkg.com/long/-/long-4.0.0.tgz#9a7b71cfb7d361a194ea555241c92f7468d5bf28",
+        "integrity": "sha512-XsP+KhQif4bjX1kbuSiySJFNAehNxgLb6hPRGJ9QsUr8ajHkuXGdrHmFUTUUXhDwVX2R5bY4JNZEwbUiMhV+MA==",
+        "deps": [],
+    },
+    {
         "name": "magic-string@0.25.7",
         "url": "https://registry.yarnpkg.com/magic-string/-/magic-string-0.25.7.tgz#3f497d6fd34c669c6798dcb821f2ef31f5445051",
         "integrity": "sha512-4CrMT5DOHTDk4HYDlzmwu4FVCcIYI8gauveasrdCu2IKIFOJ3f0v/8MDGJCDL9oD2ppz/Av1b0Nj345H9M+XIA==",
@@ -374,6 +473,12 @@ PACKAGES = [
                 "name": "brace-expansion",
             },
         ],
+    },
+    {
+        "name": "object-hash@1.3.1",
+        "url": "https://registry.yarnpkg.com/object-hash/-/object-hash-1.3.1.tgz#fde452098a951cb145f039bb7d455449ddc126df",
+        "integrity": "sha512-OSuu/pU4ENM9kmREg0BdNrUDIl1heYa4mBZacJc+vVWz4GtAwu7jO8s4AIt2aGRUTqxykpWzI3Oqnsm13tTMDA==",
+        "deps": [],
     },
     {
         "name": "once@1.4.0",
@@ -405,10 +510,75 @@ PACKAGES = [
         "deps": [],
     },
     {
+        "name": "prettier@2.4.1",
+        "url": "https://registry.yarnpkg.com/prettier/-/prettier-2.4.1.tgz#671e11c89c14a4cfc876ce564106c4a6726c9f5c",
+        "integrity": "sha512-9fbDAXSBcc6Bs1mZrDYb3XKzDLm4EXXL9sC1LqKP5rZkT6KRr/rf9amVUcODVXgguK/isJz0d0hP72WeaKWsvA==",
+        "deps": [],
+    },
+    {
         "name": "prettier@2.1.2",
         "url": "https://registry.yarnpkg.com/prettier/-/prettier-2.1.2.tgz#3050700dae2e4c8b67c4c3f666cdb8af405e1ce5",
         "integrity": "sha512-16c7K+x4qVlJg9rEbXl7HEGmQyZlG4R9AgP+oHKRMsMsuk8s+ATStlf1NpDqyBI1HpVyfjLOeMhH2LvuNvV5Vg==",
         "deps": [],
+    },
+    {
+        "name": "protobufjs@6.11.2",
+        "url": "https://registry.yarnpkg.com/protobufjs/-/protobufjs-6.11.2.tgz#de39fabd4ed32beaa08e9bb1e30d08544c1edf8b",
+        "integrity": "sha512-4BQJoPooKJl2G9j3XftkIXjoC9C0Av2NOrWmbLWT1vH32GcSUHjM0Arra6UfTsVyfMAuFzaLucXn1sadxJydAw==",
+        "deps": [
+            {
+                "dep": "@protobufjs/aspromise@1.1.2",
+                "name": "@protobufjs/aspromise",
+            },
+            {
+                "dep": "@protobufjs/base64@1.1.2",
+                "name": "@protobufjs/base64",
+            },
+            {
+                "dep": "@protobufjs/codegen@2.0.4",
+                "name": "@protobufjs/codegen",
+            },
+            {
+                "dep": "@protobufjs/eventemitter@1.1.0",
+                "name": "@protobufjs/eventemitter",
+            },
+            {
+                "dep": "@protobufjs/fetch@1.1.0",
+                "name": "@protobufjs/fetch",
+            },
+            {
+                "dep": "@protobufjs/float@1.0.2",
+                "name": "@protobufjs/float",
+            },
+            {
+                "dep": "@protobufjs/inquire@1.1.0",
+                "name": "@protobufjs/inquire",
+            },
+            {
+                "dep": "@protobufjs/path@1.1.2",
+                "name": "@protobufjs/path",
+            },
+            {
+                "dep": "@protobufjs/pool@1.1.0",
+                "name": "@protobufjs/pool",
+            },
+            {
+                "dep": "@protobufjs/utf8@1.1.0",
+                "name": "@protobufjs/utf8",
+            },
+            {
+                "dep": "@types/long@4.0.1",
+                "name": "@types/long",
+            },
+            {
+                "dep": "@types/node@16.11.6",
+                "name": "@types/node",
+            },
+            {
+                "dep": "long@4.0.0",
+                "name": "long",
+            },
+        ],
     },
     {
         "name": "resolve@1.19.0",
@@ -471,6 +641,71 @@ PACKAGES = [
         "deps": [],
     },
     {
+        "name": "ts-poet@4.6.1",
+        "url": "https://registry.yarnpkg.com/ts-poet/-/ts-poet-4.6.1.tgz#015dc823d726655af9f095c900f84ed7c60e2dd3",
+        "integrity": "sha512-DXJ+mBJIDp+jiaUgB4N5I/sczHHDU2FWacdbDNVAVS4Mh4hb7ckpvUWVW7m7/nAOcjR0r4Wt+7AoO7FeJKExfA==",
+        "deps": [
+            {
+                "dep": "@types/prettier@1.19.1",
+                "name": "@types/prettier",
+            },
+            {
+                "dep": "lodash@4.17.21",
+                "name": "lodash",
+            },
+            {
+                "dep": "prettier@2.4.1",
+                "name": "prettier",
+            },
+        ],
+    },
+    {
+        "name": "ts-proto-descriptors@1.3.1",
+        "url": "https://registry.yarnpkg.com/ts-proto-descriptors/-/ts-proto-descriptors-1.3.1.tgz#760ebaaa19475b03662f7b358ffea45b9c5348f5",
+        "integrity": "sha512-Cybb3fqceMwA6JzHdC32dIo8eVGVmXrM6TWhdk1XQVVHT/6OQqk0ioyX1dIdu3rCIBhRmWUhUE4HsyK+olmgMw==",
+        "deps": [
+            {
+                "dep": "long@4.0.0",
+                "name": "long",
+            },
+            {
+                "dep": "protobufjs@6.11.2",
+                "name": "protobufjs",
+            },
+        ],
+    },
+    {
+        "name": "ts-proto@1.83.3",
+        "url": "https://registry.yarnpkg.com/ts-proto/-/ts-proto-1.83.3.tgz#ada7483035ddc946aa686dad1049e4fe45ae1d0f",
+        "integrity": "sha512-r6MKFjoc4Og2kB4cNJ/bddLebdIwhouG5plu0Rry1jJMEqp2GKA7AE4FrR/FnTCIGbNPYP4622lBqckZd7UHcQ==",
+        "deps": [
+            {
+                "dep": "@types/object-hash@1.3.4",
+                "name": "@types/object-hash",
+            },
+            {
+                "dep": "dataloader@1.4.0",
+                "name": "dataloader",
+            },
+            {
+                "dep": "object-hash@1.3.1",
+                "name": "object-hash",
+            },
+            {
+                "dep": "protobufjs@6.11.2",
+                "name": "protobufjs",
+            },
+            {
+                "dep": "ts-poet@4.6.1",
+                "name": "ts-poet",
+            },
+            {
+                "dep": "ts-proto-descriptors@1.3.1",
+                "name": "ts-proto-descriptors",
+            },
+        ],
+    },
+    {
         "name": "tslib@2.0.3",
         "url": "https://registry.yarnpkg.com/tslib/-/tslib-2.0.3.tgz#8e0741ac45fc0c226e58a17bfc3e64b9bc6ca61c",
         "integrity": "sha512-uZtkfKblCEQtZKBF6EBXVZeQNl82yqtDQdv+eck8u7tdPxjLu2/lp5/uPW+um2tpuxINHWy3GhiccY7QgEaVHQ==",
@@ -512,8 +747,12 @@ ROOTS = [
         "dep": "enhanced-resolve@5.8.3",
     },
     {
-        "name": "google-protobuf",
-        "dep": "google-protobuf@3.13.0",
+        "name": "protobufjs",
+        "dep": "protobufjs@6.11.2",
+    },
+    {
+        "name": "long",
+        "dep": "long@4.0.0",
     },
     {
         "name": "prettier",
@@ -536,6 +775,10 @@ ROOTS = [
         "dep": "tslib@2.0.3",
     },
     {
+        "name": "ts-proto",
+        "dep": "ts-proto@1.83.3",
+    },
+    {
         "name": "typescript",
         "dep": "typescript@4.0.5",
     },
@@ -544,12 +787,16 @@ ROOTS = [
         "dep": "@types/argparse@2.0.10",
     },
     {
+        "name": "@types/long",
+        "dep": "@types/long@4.0.1",
+    },
+    {
         "name": "@types/node",
-        "dep": "@types/node@12.19.4",
+        "dep": "@types/node@16.11.6",
     },
     {
         "name": "@types/prettier",
-        "dep": "@types/prettier@1.12.4",
+        "dep": "@types/prettier@2.4.1",
     },
     {
         "name": "@types/yarnpkg__lockfile",

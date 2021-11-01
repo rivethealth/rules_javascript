@@ -1,6 +1,7 @@
 import * as fs from "fs";
 import { VfsEntry } from "@better_rules_javascript/commonjs-fs";
 import { JsonFormat } from "@better_rules_javascript/commonjs-fs/json";
+import { dir } from "console";
 
 export interface Root {
   links: RootLink[];
@@ -99,6 +100,7 @@ function addDep(root: VfsEntry.Directory, name: string, path: string) {
 }
 
 export interface GenArgs {
+  globals: string;
   runfiles: boolean;
   mount: string;
   extraLinks: ExtraLink[];
@@ -171,6 +173,12 @@ export function gen(args: GenArgs): void {
       type: VfsEntry.PATH,
       path: entry.file,
     });
+  }
+
+  // add globals
+  mkdir(root, "node_modules");
+  for (const global_ of args.globals) {
+    addDep(root, names.get(global_)!, paths.get(global_)!);
   }
 
   const json = JSON.stringify(VfsEntry.json().toJson(root));

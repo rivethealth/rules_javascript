@@ -31,11 +31,11 @@ ts_library(
         "--lib",
         "dom,es2016",
     ],
-    root = ":root",
-    strip_prefix = "better_rules_javascript/rules/nodejs/fs-gen/src",
-    types = [
+    global_deps = [
         "@better_rules_javascript_npm//types_node:lib",
     ],
+    root = ":root",
+    strip_prefix = "better_rules_javascript/rules/nodejs/fs-gen/src",
     deps = [
         "//rules/commonjs/fs:ts",
         "@better_rules_javascript_npm//argparse:lib",

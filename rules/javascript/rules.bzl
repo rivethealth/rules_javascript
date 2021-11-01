@@ -33,28 +33,32 @@ def _js_library_impl(ctx):
         entries.append(create_entry(label = ctx.label, name = path, file = src, root = cjs_info.root.id))
 
     js_deps = [dep[JsInfo] for dep in ctx.attr.deps]
+    js_globals = [dep[JsInfo] for dep in ctx.attr.global_deps]
 
     transitive_descriptors = depset(
         [cjs_info.descriptor],
-        transitive = [js_info.transitive_descriptors for js_info in js_deps],
+        transitive = [js_info.transitive_descriptors for js_info in js_deps + js_globals],
     )
     transitive_extra_links = depset(
         [
             create_extra_link(root = cjs_info.id, dep = dep[JsInfo].root, label = dep.label)
             for dep in ctx.attr.deps
         ],
-        transitive = [js_info.transitive_extra_links for js_info in js_deps],
+        transitive = [js_info.transitive_extra_links for js_info in js_deps + js_globals],
+    )
+    transitive_globals = depset(
+        transitive = [js_info.transitive_globals for js_info in js_globals],
     )
     transitive_roots = depset(
         [cjs_info.root],
-        transitive = [js_info.transitive_roots for js_info in js_deps],
+        transitive = [js_info.transitive_roots for js_info in js_deps + js_globals],
     )
     js_entry_set = create_entry_set(
         entries = entries,
-        entry_sets = [js_info.js_entry_set for js_info in js_deps],
+        entry_sets = [js_info.js_entry_set for js_info in js_deps + js_globals],
     )
     src_entry_set = create_entry_set(
-        entry_sets = [js_info.src_entry_set for js_info in js_deps],
+        entry_sets = [js_info.src_entry_set for js_info in js_deps + js_globals],
     )
 
     js_info = JsInfo(
@@ -64,6 +68,7 @@ def _js_library_impl(ctx):
         transitive_descriptors = transitive_descriptors,
         transitive_extra_links = transitive_extra_links,
         transitive_roots = transitive_roots,
+        transitive_globals = transitive_globals,
     )
 
     return [js_info]
@@ -72,6 +77,9 @@ js_library = rule(
     attrs = {
         "deps": attr.label_list(
             doc = "Dependencies.",
+            providers = [JsInfo],
+        ),
+        "global_deps": attr.label_list(
             providers = [JsInfo],
         ),
         "prefix": attr.string(

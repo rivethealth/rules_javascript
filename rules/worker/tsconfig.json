@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "baseUrl": "../..",
+    "paths": {
+      "@bazel_tools/*": [
+        "bazel-bin/external/bazel_tools/src/main/protobuf/worker_protocol_proto/ts_proto/dts/*"
+      ]
+    }
+  }
+}

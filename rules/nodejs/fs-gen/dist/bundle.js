@@ -4972,6 +4972,11 @@ function gen(args) {
             path: entry.file,
         });
     }
+    // add globals
+    mkdir(root, "node_modules");
+    for (const global_ of args.globals) {
+        addDep(root, names.get(global_), paths.get(global_));
+    }
     const json = JSON.stringify(__rules_commonjs_fs_root.VfsEntry.json().toJson(root));
     const content = `global.linkFsMount(
   ${JSON.stringify(args.mount)},
@@ -5003,6 +5008,11 @@ const parser = new argparse.ArgumentParser({
 });
 const subparsers = parser.add_subparsers({ dest: "command" });
 const genParser = subparsers.add_parser("gen");
+genParser.add_argument("--global", {
+    action: "append",
+    default: [],
+    dest: "globals",
+});
 genParser.add_argument("--extra-link", {
     action: "append",
     default: [],

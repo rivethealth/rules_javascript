@@ -19,6 +19,11 @@ const parser = new ArgumentParser({
 const subparsers = parser.add_subparsers({ dest: "command" });
 
 const genParser = subparsers.add_parser("gen");
+genParser.add_argument("--global", {
+  action: "append",
+  default: [],
+  dest: "globals",
+});
 genParser.add_argument("--extra-link", {
   action: "append",
   default: [],

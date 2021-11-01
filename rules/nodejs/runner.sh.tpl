@@ -19,6 +19,7 @@ BAZEL_WORKSPACE=%{workspace} \
   exec "$(rlocation %{node})" \
   -r "$(realpath "$(rlocation %{shim})")" \
   -r "$(realpath "$(rlocation %{fs_manifest})")" \
+  %{node_options} \
   ${NODE_OPTIONS_APPEND:-} \
   %{main_module} \
   "$@"

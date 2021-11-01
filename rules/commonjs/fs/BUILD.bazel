@@ -19,9 +19,9 @@ ts_library(
         "--target",
         "es2019",
     ],
-    root = ":root",
-    strip_prefix = "better_rules_javascript/rules/commonjs/fs/src",
-    types = [
+    global_deps = [
         "@better_rules_javascript_npm//types_node:lib",
     ],
+    root = ":root",
+    strip_prefix = "better_rules_javascript/rules/commonjs/fs/src",
 )
