@@ -3,7 +3,7 @@ import { patchFs } from "./fs";
 import { traceFs } from "./trace-fs";
 
 if (process.env.NODE_TRACE_FS === "true") {
-  console.log("Shimming Node.js FS");
+  console.error("Shimming Node.js FS");
 }
 
 const linkFs = new Vfs();
@@ -19,7 +19,7 @@ if (process.env.NODE_TRACE_FS === "true") {
   isRunfiles: boolean,
 ) => {
   if (process.env.NODE_TRACE_FS === "true") {
-    console.log(`Mounting FS ${name}`);
+    console.error(`Mounting FS ${name}`);
   }
 
   const entry = VfsEntry.json().fromJson(config);

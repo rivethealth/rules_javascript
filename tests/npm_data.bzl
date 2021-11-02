@@ -1,5 +1,20 @@
 PACKAGES = [
     {
+        "name": "@prettier/plugin-xml@1.1.0",
+        "url": "https://registry.yarnpkg.com/@prettier/plugin-xml/-/plugin-xml-1.1.0.tgz#534e1372eec54627f5d43714b019527998a08fd8",
+        "integrity": "sha512-ftQAIB3icdzvfMWmQ6HhxWFwIkVE2bZaPb2Z2YgX9BVqq3ucf33eQAdPwD1wWvPwXwbeZvDoz60vYZv/Qjq+rg==",
+        "deps": [
+            {
+                "dep": "@xml-tools/parser@1.0.11",
+                "name": "@xml-tools/parser"
+            },
+            {
+                "dep": "prettier@2.4.1",
+                "name": "prettier"
+            }
+        ]
+    },
+    {
         "name": "@protobufjs/aspromise@1.1.2",
         "url": "https://registry.yarnpkg.com/@protobufjs/aspromise/-/aspromise-1.1.2.tgz#9b8b0cc663d669a7d8f6f5d0893a14d348f30fbf",
         "integrity": "sha1-m4sMxmPWaafY9vXQiToU00jzD78=",
@@ -147,6 +162,17 @@ PACKAGES = [
         "deps": []
     },
     {
+        "name": "@xml-tools/parser@1.0.11",
+        "url": "https://registry.yarnpkg.com/@xml-tools/parser/-/parser-1.0.11.tgz#a118a14099ea5c3c537e4781fad2fc195b57f8ff",
+        "integrity": "sha512-aKqQ077XnR+oQtHJlrAflaZaL7qZsulWc/i/ZEooar5JiWj1eLt0+Wg28cpa+XLney107wXqneC+oG1IZvxkTA==",
+        "deps": [
+            {
+                "dep": "chevrotain@7.1.1",
+                "name": "chevrotain"
+            }
+        ]
+    },
+    {
         "name": "accepts@1.3.7",
         "url": "https://registry.yarnpkg.com/accepts/-/accepts-1.3.7.tgz#531bc726517a3b2b41f850021c6cc15eaab507cd",
         "integrity": "sha512-Il80Qs2WjYlJIBNzNkK6KYqlVMTbZLXgHx2oT0pU/fjRHyEp+PEfEPY0R3WCwAGVOtauxh1hOxNgIf5bv7dQpA==",
@@ -276,6 +302,17 @@ PACKAGES = [
             {
                 "dep": "supports-color@7.2.0",
                 "name": "supports-color"
+            }
+        ]
+    },
+    {
+        "name": "chevrotain@7.1.1",
+        "url": "https://registry.yarnpkg.com/chevrotain/-/chevrotain-7.1.1.tgz#5122814eafd1585a9601f9180a7be9c42d5699c6",
+        "integrity": "sha512-wy3mC1x4ye+O+QkEinVJkPf5u2vsrDIYW9G7ZuwFl6v/Yu0LwUuT2POsb+NUWApebyxfkQq6+yDfRExbnI5rcw==",
+        "deps": [
+            {
+                "dep": "regexp-to-ast@0.5.0",
+                "name": "regexp-to-ast"
             }
         ]
     },
@@ -1038,6 +1075,12 @@ PACKAGES = [
         "deps": []
     },
     {
+        "name": "prettier@2.4.1",
+        "url": "https://registry.yarnpkg.com/prettier/-/prettier-2.4.1.tgz#671e11c89c14a4cfc876ce564106c4a6726c9f5c",
+        "integrity": "sha512-9fbDAXSBcc6Bs1mZrDYb3XKzDLm4EXXL9sC1LqKP5rZkT6KRr/rf9amVUcODVXgguK/isJz0d0hP72WeaKWsvA==",
+        "deps": []
+    },
+    {
         "name": "protobufjs@6.10.1",
         "url": "https://registry.yarnpkg.com/protobufjs/-/protobufjs-6.10.1.tgz#e6a484dd8f04b29629e9053344e3970cccf13cd2",
         "integrity": "sha512-pb8kTchL+1Ceg4lFd5XUpK8PdWacbvV5SK2ULH2ebrYtl4GjJmS24m6CKME67jzV53tbJxHlnNOSqQHbTsR9JQ==",
@@ -1145,6 +1188,12 @@ PACKAGES = [
                 "name": "unpipe"
             }
         ]
+    },
+    {
+        "name": "regexp-to-ast@0.5.0",
+        "url": "https://registry.yarnpkg.com/regexp-to-ast/-/regexp-to-ast-0.5.0.tgz#56c73856bee5e1fef7f73a00f1473452ab712a24",
+        "integrity": "sha512-tlbJqcMHnPKI9zSrystikWKwHkBqu2a/Sgw01h3zFjvYrMxEDYHzzoMZnUrbIfpTFEsoRnnviOXNCzFiSc54Qw==",
+        "deps": []
     },
     {
         "name": "resolve@1.19.0",
@@ -1367,6 +1416,10 @@ PACKAGES = [
 ]
 
 ROOTS = [
+    {
+        "name": "@prettier/plugin-xml",
+        "dep": "@prettier/plugin-xml@1.1.0"
+    },
     {
         "name": "@rollup/plugin-commonjs",
         "dep": "@rollup/plugin-commonjs@16.0.0"

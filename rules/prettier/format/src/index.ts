@@ -7,7 +7,6 @@ class PrettierWorker {
   constructor(private readonly options: any) {}
 
   run(a: string[]) {
-    console.error("here");
     const parser = new ArgumentParser();
     parser.add_argument("input");
     parser.add_argument("output");
@@ -18,7 +17,6 @@ class PrettierWorker {
       filepath: args.input,
     });
     fs.writeFileSync(args.output, output, "utf8");
-    console.error("there");
   }
 }
 

@@ -1,5 +1,6 @@
 {
     "dependencies": {
+        "@prettier/plugin-xml": "~1.1.0",
         "@rollup/plugin-commonjs": "~16.0.0",
         "chalk": "~4.1.0",
         "escodegen": "~2.0.0",

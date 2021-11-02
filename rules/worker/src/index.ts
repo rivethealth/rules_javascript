@@ -69,6 +69,7 @@ async function runOnce(worker: Worker, path: string) {
   process.on("SIGINT", () => abort.abort());
   process.on("SIGTERM", () => abort.abort());
   const result = await worker(args, [], abort.signal);
+  console.error(result.output);
   process.exitCode = result.exitCode;
 }
 

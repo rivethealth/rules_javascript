@@ -119,7 +119,11 @@ define("commonjs/fs/index", [
 ], function (require, exports, json_1) {
   "use strict";
   Object.defineProperty(exports, "__esModule", { value: true });
-  exports.LinkFs = exports.LinkMount = exports.Path = exports.LinkEntry = void 0;
+  exports.LinkFs =
+    exports.LinkMount =
+    exports.Path =
+    exports.LinkEntry =
+      void 0;
   var LinkEntry;
   (function (LinkEntry) {
     LinkEntry.DIRECTORY = Symbol("DIRECTORY");

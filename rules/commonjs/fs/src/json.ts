@@ -17,9 +17,9 @@ export namespace JsonFormat {
     return new MapJsonFormat(keyFormat, valueFormat);
   }
 
-  export function object<V>(
-    format: { [K in keyof V]: JsonFormat<V[K]> },
-  ): JsonFormat<V> {
+  export function object<V>(format: {
+    [K in keyof V]: JsonFormat<V[K]>;
+  }): JsonFormat<V> {
     return new ObjectJsonFormat(format);
   }
 

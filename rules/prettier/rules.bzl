@@ -2,7 +2,7 @@ load("@better_rules_typescript//rules/typescript:rules.bzl", "ts_library")
 load("@rules_format//rules/format:providers.bzl", "FormatInfo")
 load("//rules/nodejs:rules.bzl", "nodejs_binary")
 
-def configure_prettier(name, config, dep, visibility = None):
+def configure_prettier(name, config, dep, plugins = [], visibility = None):
     ts_library(
         name = "%s_lib" % name,
         srcs = ["@better_rules_javascript//rules/prettier/format:src"],
@@ -18,7 +18,7 @@ def configure_prettier(name, config, dep, visibility = None):
         ],
         global_deps = [
             "@better_rules_javascript_npm//types_node:lib",
-        ],
+        ] + plugins,
         root = "@better_rules_javascript//rules/prettier/format:root",
     )
 

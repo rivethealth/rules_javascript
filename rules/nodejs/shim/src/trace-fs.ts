@@ -16,17 +16,17 @@ function trace<F extends Function>(name: string, delegate: F): F {
       if (args[i] instanceof Function) {
         const f = args[i];
         args[i] = function (...args) {
-          console.log(name, "callback", ...args.map(toString));
+          console.error(name, "callback", ...args.map(toString));
           return f.apply(this, args);
         };
       }
     }
     try {
       const result = delegate.apply(this, args);
-      console.log(name, ...args.map(toString), toString(result));
+      console.error(name, ...args.map(toString), toString(result));
       return result;
     } catch (e) {
-      console.log(name, ...args.map(toString), toString(e));
+      console.error(name, ...args.map(toString), toString(e));
       throw e;
     }
   });

@@ -1870,18 +1870,18 @@ function trace(name, delegate) {
             if (args[i] instanceof Function) {
                 const f = args[i];
                 args[i] = function (...args) {
-                    console.log(name, "callback", ...args.map(toString));
+                    console.error(name, "callback", ...args.map(toString));
                     return f.apply(this, args);
                 };
             }
         }
         try {
             const result = delegate.apply(this, args);
-            console.log(name, ...args.map(toString), toString(result));
+            console.error(name, ...args.map(toString), toString(result));
             return result;
         }
         catch (e) {
-            console.log(name, ...args.map(toString), toString(e));
+            console.error(name, ...args.map(toString), toString(e));
             throw e;
         }
     };
@@ -1956,7 +1956,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 
 
 if (process.env.NODE_TRACE_FS === "true") {
-    console.log("Shimming Node.js FS");
+    console.error("Shimming Node.js FS");
 }
 const linkFs = new __rules_commonjs_fs_root.Vfs();
 fs_1.patchFs(linkFs, fs__default["default"]);
@@ -1965,7 +1965,7 @@ if (process.env.NODE_TRACE_FS === "true") {
 }
 commonjsGlobal.linkFsMount = (name, config, isRunfiles) => {
     if (process.env.NODE_TRACE_FS === "true") {
-        console.log(`Mounting FS ${name}`);
+        console.error(`Mounting FS ${name}`);
     }
     const entry = __rules_commonjs_fs_root.VfsEntry.json().fromJson(config);
     if (isRunfiles) {
