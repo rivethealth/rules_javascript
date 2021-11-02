@@ -47,7 +47,8 @@ def _js_library_impl(ctx):
         transitive = [js_info.transitive_extra_links for js_info in js_deps + js_globals],
     )
     transitive_globals = depset(
-        transitive = [js_info.transitive_globals for js_info in js_globals],
+        [dep.root for dep in js_globals],
+        transitive = [js_info.transitive_globals for js_info in js_deps + js_globals],
     )
     transitive_roots = depset(
         [cjs_info.root],
