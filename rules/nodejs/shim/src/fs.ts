@@ -239,7 +239,7 @@ function stringPath(value: fs.PathLike): string {
     value = value.toString();
   }
   if (value instanceof URL) {
-    if (value.protocol !== "file") {
+    if (value.protocol !== "file:") {
       throw new Error(`Invalid protocol: ${value.protocol}`);
     }
     value = fileURLToPath(value);

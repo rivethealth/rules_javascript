@@ -947,7 +947,7 @@ function stringPath(value) {
         value = value.toString();
     }
     if (value instanceof url_1__default["default"].URL) {
-        if (value.protocol !== "file") {
+        if (value.protocol !== "file:") {
             throw new Error(`Invalid protocol: ${value.protocol}`);
         }
         value = url_1__default["default"].fileURLToPath(value);
