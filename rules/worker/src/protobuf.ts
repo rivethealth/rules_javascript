@@ -45,7 +45,6 @@ export async function* readFromStream<T>(
       }
       buffer = concat([buffer, next.value]);
     }
-    console.error("Decoding");
     yield messageType.decode(new Uint8Array(buffer), length);
     buffer = buffer.slice(length);
   }

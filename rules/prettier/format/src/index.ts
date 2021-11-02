@@ -36,7 +36,7 @@ run(async (a) => {
     try {
       worker.run(a);
     } catch (e) {
-      return { exitCode: 1, output: e.stack };
+      return { exitCode: 1, output: String(e?.stack || e) };
     }
     return { exitCode: 0, output: "" };
   };

@@ -43,6 +43,19 @@ Alternatively `--preserve-symlinks` could remove symlinks from module
 resolution. Packages would be hoisted to the various levels within the nested
 node_modules tree. However, hoisting is a difficult problem to solve.
 
+### Assemble packages
+
+Instead of attempting to use files in their existing locations, move the files
+to their package structure, and create node_modules symlinks.
+
+Creating arbitrary symlinks requires `--experimental_allow_unresolved_symlinks`
+and has outstanding bugs https://github.com/bazelbuild/bazel/issues/10298 .
+
+To assemble a package without losing flexibility and incrementality requires
+unusual patterns. Rules defer creating files and instead pass information to
+package rules, where the files are created. Other rules then expose the files
+via providers.
+
 ## Resolution APIs
 
 ### Yarn PnP
