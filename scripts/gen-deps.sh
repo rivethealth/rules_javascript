@@ -3,7 +3,7 @@ ROOT="$(realpath "$(dirname "$0")")/.."
 
 cd "$ROOT"
 yarn install
-bazel run @better_rules_javascript//rules/npm/gen:bin -- \
+bazel run @better_rules_javascript//npm/gen:bin -- \
     yarn \
     --package "$(pwd)/package.json" \
     --lock "$(pwd)/yarn.lock" \
@@ -11,7 +11,7 @@ bazel run @better_rules_javascript//rules/npm/gen:bin -- \
 
 cd "$ROOT/tests"
 yarn install
-bazel run @better_rules_javascript//rules/npm/gen:bin -- \
+bazel run @better_rules_javascript//npm/gen:bin -- \
     yarn \
     --package "$(pwd)/package.json" \
     --lock "$(pwd)/yarn.lock" \

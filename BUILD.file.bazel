@@ -2,41 +2,60 @@ package(default_visibility = ["//visibility:public"])
 
 filegroup(
     name = "buildifier_files",
-    srcs = glob([
-        "files/rules/**/*.bazel",
-        "files/rules/**/*.bzl",
-        "files/tests/**/*.bazel",
-        "files/tests/**/*.bzl",
-        "files/BUILD.bazel",
-        "files/WORKSPACE.bazel",
-    ]),
+    srcs = glob([pattern for root in [
+        "files/",
+        "files/commonjs/**/",
+        "files/docs/**/",
+        "files/javascript/**/",
+        "files/npm/**/",
+        "files/prettier/**/",
+        "files/protobuf/**/",
+        "files/protobufjs/**/",
+        "files/rollup/**/",
+        "files/util/**/",
+        "files/worker/**/",
+    ] for pattern in [
+        "%s*.bazel" % root,
+        "%s*.bzl" % root,
+    ]]),
 )
 
 filegroup(
     name = "prettier_files",
-    srcs = glob(
-        [
-            "files/rules/**/*.js",
-            "files/rules/**/*.json",
-            "files/rules/**/*.ts",
-            "files/rules/**/*.md",
-            "files/rules/**/*.yml",
-        ],
-        [
-            "**/bazel-*/**",
-            "**/dist/**",
-            "**/node_modules/**",
-        ],
-    ),
+    srcs = glob([pattern for root in [
+        "files/",
+        "files/commonjs/**/",
+        "files/docs/**/",
+        "files/javascript/**/",
+        "files/npm/**/",
+        "files/prettier/**/",
+        "files/protobuf/**/",
+        "files/protobufjs/**/",
+        "files/rollup/**/",
+        "files/util/**/",
+        "files/worker/**/",
+    ] for pattern in [
+        "%s*.js" % root,
+        "%s*.json" % root,
+        "%s*.md" % root,
+        "%s*.ts" % root,
+        "%s*.yml" % root,
+    ]]),
 )
 
 filegroup(
     name = "files",
-    srcs = glob(
-        ["files/BUILD.bazel", "files/WORKSPACE.bazel", "files/rules/**/*"],
-        [
-            "**/bazel-*/**",
-            "**/node_modules/**",
-        ],
-    ),
+    srcs = glob(["%s*" % root for root in [
+        "files/",
+        "files/commonjs/**/",
+        "files/docs/**/",
+        "files/javascript/**/",
+        "files/npm/**/",
+        "files/prettier/**/",
+        "files/protobuf/**/",
+        "files/protobufjs/**/",
+        "files/rollup/**/",
+        "files/util/**/",
+        "files/worker/**/",
+    ]]),
 )

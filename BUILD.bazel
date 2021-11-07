@@ -1,6 +1,6 @@
 load("@rules_format//rules/buildifier:rules.bzl", "buildifier")
 load("@rules_format//rules/format:rules.bzl", "format")
-load("//rules/prettier:rules.bzl", "configure_prettier")
+load("//prettier:rules.bzl", "configure_prettier")
 
 buildifier(
     name = "buildifier",

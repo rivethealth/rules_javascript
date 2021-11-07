@@ -1,2 +1,0 @@
-build --experimental_strict_action_env
-build --disk_cache=../.bazel_cache

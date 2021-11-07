@@ -1,0 +1,45 @@
+load("@better_rules_typescript//rules/typescript:rules.bzl", "ts_library")
+load("//commonjs:rules.bzl", "cjs_root")
+load("//nodejs:rules.bzl", "nodejs_binary")
+load("//rules:rules.bzl", "ts_proto_library")
+
+package(default_visibility = ["//visibility:public"])
+
+cjs_root(
+    name = "root",
+    package_name = "@better_rules_javascript/worker",
+    descriptor = "package.json",
+)
+
+ts_proto_library(
+    name = "proto_lib",
+    dep = "@bazel_tools//src/main/protobuf:worker_protocol_proto",
+)
+
+ts_library(
+    name = "lib",
+    srcs = glob(["src/**/*.ts"]),
+    compiler = "//rules:tsc",
+    compiler_options = [
+        "--esModuleInterop",
+        "--lib",
+        "es2019",
+        "--target",
+        "es2019",
+    ],
+    global_deps = [
+        "@better_rules_javascript_npm//types_node:lib",
+    ],
+    root = ":root",
+    strip_prefix = "better_rules_javascript/worker/src",
+    deps = [
+        ":proto_lib",
+        "@better_rules_javascript_npm//protobufjs:lib",
+    ],
+)
+
+nodejs_binary(
+    name = "bin",
+    dep = ":lib",
+    main = "worker.js",
+)

@@ -10,7 +10,8 @@ Module resolution is difficult:
    Bable, TypeScript.
 3. Package resolutions are complex, and often involve interpreting package.json
    imports, exports, etc.
-4. Often, the number input files is very large; tens of thousands of files is common.
+4. Often, the number input files is very large; tens of thousands of files is
+   common.
 
 ## File layout
 
@@ -50,24 +51,33 @@ to their package structure, and create node_modules symlinks.
 Creating arbitrary symlinks requires `--experimental_allow_unresolved_symlinks`
 and has outstanding bugs https://github.com/bazelbuild/bazel/issues/10298 .
 
-The dependency must be created for the entire package. If package part are separated from the package itself (e.g. TypeScript library plus TypeScript test library), that could result in duplicate dependencies: package dependencies and module dependencies.
+The dependency must be created for the entire package. If package part are
+separated from the package itself (e.g. TypeScript library plus TypeScript test
+library), that could result in duplicate dependencies: package dependencies and
+module dependencies.
 
 ### Realpath
 
-The propensity of tools to resolve symlinks allows extraneous files to "leak" in module/asset loading. Note that Bazel does not clean up old outputs. Sandboxing solves this issue, however it is sometimes unavailable (Windows) or unused (bazel run).
+The propensity of tools to resolve symlinks allows extraneous files to "leak" in
+module/asset loading. Note that Bazel does not clean up old outputs. Sandboxing
+solves this issue, however it is sometimes unavailable (Windows) or unused
+(bazel run).
 
 ## Resolution APIs
 
 ### Yarn PnP
 
-Plug'n'Play is a package resolution API with broad support, natively or via tool plugins. Rules would arrange files with their package structure, and use PnP to describe the relationships between packages.
+Plug'n'Play is a package resolution API with broad support, natively or via tool
+plugins. Rules would arrange files with their package structure, and use PnP to
+describe the relationships between packages.
 
-Unfortunately, Yarn's support for Node.js resolution (CJS and ESM) actually uses Yarn internals,
-not the PnP API.
+Unfortunately, Yarn's support for Node.js resolution (CJS and ESM) actually uses
+Yarn internals, not the PnP API.
 
 ### Custom resolution
 
-Most tools have APIs to customize module resolution. However, adapting or reimplementing the algorithms would be complex and error-prone.
+Most tools have APIs to customize module resolution. However, adapting or
+reimplementing the algorithms would be complex and error-prone.
 
 ## Package managers
 
@@ -81,8 +91,8 @@ isn't flexible in the way that other Bazel rulesets are.
 A virtual file system could transparently locate files without interfering with
 symlink usage.
 
-This requires postprocessing source maps, error messages, etc. if actual file names are
-desired.
+This requires postprocessing source maps, error messages, etc. if actual file
+names are desired.
 
 ### DDL interception
 

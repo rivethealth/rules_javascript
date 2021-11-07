@@ -102,9 +102,9 @@ console.log(a.example);
 **BUILD.bazel**
 
 ```bzl
-load("@better_rules_javascript//rules/commonjs:rules.bzl", "cjs_root")
-load("@better_rules_javascript//rules/javascript:rules.bzl", "js_library")
-load("@better_rules_javascript//rules/nodejs:rules.bzl", "nodejs_binary")
+load("@better_rules_javascript//commonjs:rules.bzl", "cjs_root")
+load("@better_rules_javascript//javascript:rules.bzl", "js_library")
+load("@better_rules_javascript//nodejs:rules.bzl", "nodejs_binary")
 
 cjs_root(
   name = "root",
@@ -153,7 +153,7 @@ yarn install
 #### Convert data to Bazel representation
 
 ```sh
-bazel run @better_rules_javascript//rules/npm/gen:bin -- \
+bazel run @better_rules_javascript//npm/gen:bin -- \
     yarn --package "$(pwd)/package.json" --lock "$(pwd)/yarn.lock" "$(pwd)/npm_data.bzl"
 ```
 
@@ -162,7 +162,7 @@ bazel run @better_rules_javascript//rules/npm/gen:bin -- \
 **WORKSPACE.bazel**
 
 ```bzl
-load("@better_rules_javascript//rules/npm:workspace.bzl", "npm")
+load("@better_rules_javascript//npm:workspace.bzl", "npm")
 load(":npm_data.bzl", NPM_PACKAGES = "PACKAGES", NPM_ROOTS = "ROOTS")
 npm("npm", NPM_PACKAGES, NPM_ROOTS)
 ```
@@ -193,7 +193,7 @@ Add rollup as an [external dependency](#external_dependencies).
 **BUILD.bzl**
 
 ```bzl
-load("@better_rules_javascript//rules/rollup:rules.bzl", "configure_rollup")
+load("@better_rules_javascript//rollup:rules.bzl", "configure_rollup")
 
 configure_rollup(
     name = "rollup",
@@ -235,8 +235,8 @@ export default {
 **example/BUILD.bzl**
 
 ```bzl
-load("@better_rules_javascript//rules/javascript:rules.bzl", "js_library")
-load("@better_rules_javascript//rules/rollup:rules.bzl", "rollup_bundle")
+load("@better_rules_javascript//javascript:rules.bzl", "js_library")
+load("@better_rules_javascript//rollup:rules.bzl", "rollup_bundle")
 
 cjs_root(
   name = "root",
@@ -275,7 +275,7 @@ Add prettier as an [external dependency](#external_dependencies).
 **tools/BUILD.bzl**
 
 ```bzl
-load("@better_rules_javascript//rules/prettier:rules.bzl", "prettier")
+load("@better_rules_javascript//prettier:rules.bzl", "prettier")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -289,7 +289,7 @@ prettier(
 **tools/aspects.bzl**
 
 ```bzl
-load("@better_rules_javascript//rules/prettier:aspects.bzl", "format_aspect")
+load("@better_rules_javascript//prettier:aspects.bzl", "format_aspect")
 
 format = format_aspect("@example_repo//tools:prettier")
 ```
@@ -343,7 +343,7 @@ Add google-protobuf as an [external dependency](#external-dependencies).
 **BUILD.bazel**
 
 ```bzl
-load("@better_rules_javascript//rules/protobuf:rules.bzl", "js_protoc")
+load("@better_rules_javascript//protobuf:rules.bzl", "js_protoc")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -369,8 +369,8 @@ js_protoc(
 **rules.bzl**
 
 ```bzl
-load("@better_rules_javascript//rules/protobuf:aspects.bzl", "js_proto_aspect")
-load("@better_rules_javascript//rules/protobuf:rules.bzl", "js_proto_library_rule")
+load("@better_rules_javascript//protobuf:aspects.bzl", "js_proto_aspect")
+load("@better_rules_javascript//protobuf:rules.bzl", "js_proto_library_rule")
 
 js_proto = js_proto_aspect("@better_rules_javascript_test//:lib_protoc")
 
@@ -405,7 +405,7 @@ Add protobufjs as an [external dependency](#external-dependencies).
 **BUILD.bazel**
 
 ```bzl
-load("@better_rules_javascript//rules/protobufjs:rules.bzl", configure_js_proto)
+load("@better_rules_javascript//protobufjs:rules.bzl", configure_js_proto)
 
 configure_js_proto(
     name = "js_proto",
@@ -416,8 +416,8 @@ configure_js_proto(
 #### Use
 
 ```bzl
-load("@better_rules_javascript//rules/commonjs:rules.bzl", "cjs_root")
-load("@better_rules_javascript//rules/protobufjs:rules.bzl", "js_proto_library")
+load("@better_rules_javascript//commonjs:rules.bzl", "cjs_root")
+load("@better_rules_javascript//protobufjs:rules.bzl", "js_proto_library")
 load("@rules_proto//proto:defs.bzl", "proto_library")
 
 cjs_root(

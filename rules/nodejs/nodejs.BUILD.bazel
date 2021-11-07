@@ -1,8 +1,0 @@
-package(default_visibility = ["//visibility:public"])
-
-load("@better_rules_javascript//rules/nodejs:toolchains.bzl", "nodejs_toolchain")
-
-nodejs_toolchain(
-    name = "nodejs",
-    nodejs = "bin/node",
-)

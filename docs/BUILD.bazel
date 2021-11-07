@@ -5,21 +5,21 @@ load(":rules.bzl", "stardoc")
 #     name = "docs",
 #     srcs = [
 #         # Can't import @bazel_tools//tools/build_defs/repo:http.bzl
-#         "//rules/javascript:rules_doc",
-#         "//rules/npm:doc",
-#         #"//rules/prettier:doc",
-#         "//rules/protobuf:doc",
-#         # "//rules/nodejs:doc",
-#         # "//rules/rollup:doc",
+#         "//javascript:rules_doc",
+#         "//npm:doc",
+#         #"//prettier:doc",
+#         "//protobuf:doc",
+#         # "//nodejs:doc",
+#         # "//rollup:doc",
 #     ],
 #     mode = "0644",
 #     strip_prefix = ".",
 # )
 
 stardoc(
-    "//rules/javascript:bzl",
+    "//javascript:bzl",
     [
-        "//rules/javascript:providers.bzl",
-        "//rules/javascript:rules.bzl",
+        "//javascript:providers.bzl",
+        "//javascript:rules.bzl",
     ],
 )
