@@ -1,4 +1,4 @@
-load("@better_rules_typescript//rules/typescript:rules.bzl", "ts_library")
+load("@better_rules_typescript//typescript:rules.bzl", "ts_library")
 load("//commonjs:rules.bzl", "cjs_root")
 load("//nodejs:rules.bzl", "nodejs_binary")
 

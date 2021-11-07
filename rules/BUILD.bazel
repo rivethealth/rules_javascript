@@ -1,5 +1,5 @@
-load("@better_rules_typescript//rules/protobuf:rules.bzl", "configure_ts_protoc")
-load("@better_rules_typescript//rules/typescript:rules.bzl", "configure_ts_compiler")
+load("@better_rules_typescript//protobuf:rules.bzl", "configure_ts_protoc")
+load("@better_rules_typescript//typescript:rules.bzl", "configure_ts_compiler")
 load("//commonjs:rules.bzl", "cjs_root")
 load("//rollup:rules.bzl", "configure_rollup")
 

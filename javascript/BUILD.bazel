@@ -1,5 +1,5 @@
 load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
-load("@better_rules_typescript//rules/typescript:rules.bzl", "ts_import")
+load("@better_rules_typescript//typescript:rules.bzl", "ts_import")
 load("//javascript:rules.bzl", "js_library")
 
 package(default_visibility = ["//visibility:public"])

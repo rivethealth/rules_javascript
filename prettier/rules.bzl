@@ -1,4 +1,4 @@
-load("@better_rules_typescript//rules/typescript:rules.bzl", "ts_library")
+load("@better_rules_typescript//typescript:rules.bzl", "ts_library")
 load("@rules_format//rules/format:providers.bzl", "FormatInfo")
 load("//nodejs:rules.bzl", "nodejs_binary")
 

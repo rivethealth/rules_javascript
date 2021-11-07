@@ -1,7 +1,7 @@
 load("//commonjs:rules.bzl", "cjs_root")
 load("//nodejs:rules.bzl", "nodejs_simple_binary")
 load("//rollup:rules.bzl", "rollup_bundle")
-load("@better_rules_typescript//rules/typescript:rules.bzl", "ts_library")
+load("@better_rules_typescript//typescript:rules.bzl", "ts_library")
 
 package(default_visibility = ["//visibility:public"])
 
