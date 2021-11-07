@@ -1,0 +1,12 @@
+aquery --deleted_packages=%{deleted_packages}
+build --deleted_packages=%{deleted_packages}
+build --disk_cache=.bazel_cache
+build --experimental_strict_action_env
+cquery --deleted_packages=%{deleted_packages}
+query --deleted_packages=%{deleted_packages}
+run --deleted_packages=%{deleted_packages}
+run --disk_cache=.bazel_cache
+run --experimental_strict_action_env
+test --deleted_packages=%{deleted_packages}
+test --disk_cache=.bazel_cache
+test --experimental_strict_action_env

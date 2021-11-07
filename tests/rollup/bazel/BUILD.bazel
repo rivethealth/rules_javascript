@@ -1,0 +1,6 @@
+load("@better_rules_javascript//rules/rollup:rules.bzl", "configure_rollup")
+
+configure_rollup(
+    name = "rollup",
+    dep = "@npm//rollup:lib",
+)

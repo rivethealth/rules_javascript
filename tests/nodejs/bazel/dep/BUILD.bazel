@@ -1,0 +1,21 @@
+load("@better_rules_javascript//rules/commonjs:rules.bzl", "cjs_root")
+load("@better_rules_javascript//rules/javascript:rules.bzl", "js_library")
+load("@better_rules_javascript//rules/nodejs:rules.bzl", "nodejs_binary")
+
+cjs_root(
+    name = "root",
+    package_name = "@better-rules-javascript-test/nodejs-dep",
+    descriptor = "package.json",
+)
+
+js_library(
+    name = "main",
+    srcs = ["main.js"],
+    root = ":root",
+    deps = ["//dep/other:lib"],
+)
+
+nodejs_binary(
+    name = "bin",
+    dep = ":main",
+)

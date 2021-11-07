@@ -1,6 +1,15 @@
-load("@better_rules_javascript//rules/rollup:rules.bzl", "create_rollup")
+filegroup(
+    name = "bazel",
+    srcs =  glob(["bazel/**/*"]),
+)
 
-create_rollup(
-    "rollup",
-    "@npm//rollup:lib",
+sh_test(
+    name = "basic",
+    srcs = ["test_basic.sh"],
+    data =
+        [
+            ":bazel",
+            "@better_rules_javascript_files//:files",
+        ],
+    tags = ["local"],
 )

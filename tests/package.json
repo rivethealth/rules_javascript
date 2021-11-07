@@ -2,6 +2,7 @@
     "dependencies": {
         "@prettier/plugin-xml": "~1.1.0",
         "@rollup/plugin-commonjs": "~16.0.0",
+        "@rollup/plugin-node-resolve": "13.0.4",
         "chalk": "~4.1.0",
         "escodegen": "~2.0.0",
         "espree": "~7.3.0",

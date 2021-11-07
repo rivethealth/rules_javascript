@@ -5,8 +5,10 @@ filegroup(
     srcs = glob([
         "files/rules/**/*.bazel",
         "files/rules/**/*.bzl",
-        "files/rules/**/BUILD",
-        "files/rules/**/WORKSPACE",
+        "files/tests/**/*.bazel",
+        "files/tests/**/*.bzl",
+        "files/BUILD.bazel",
+        "files/WORKSPACE.bazel",
     ]),
 )
 
@@ -14,15 +16,26 @@ filegroup(
     name = "prettier_files",
     srcs = glob(
         [
-            "files/**/*.js",
-            "files/**/*.json",
-            "files/**/*.ts",
-            "files/**/*.md",
-            "files/**/*.yml",
+            "files/rules/**/*.js",
+            "files/rules/**/*.json",
+            "files/rules/**/*.ts",
+            "files/rules/**/*.md",
+            "files/rules/**/*.yml",
         ],
         [
             "**/bazel-*/**",
             "**/dist/**",
+            "**/node_modules/**",
+        ],
+    ),
+)
+
+filegroup(
+    name = "files",
+    srcs = glob(
+        ["files/BUILD.bazel", "files/WORKSPACE.bazel", "files/rules/**/*"],
+        [
+            "**/bazel-*/**",
             "**/node_modules/**",
         ],
     ),

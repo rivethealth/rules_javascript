@@ -58,7 +58,7 @@ local_repository(
 
 local_repository(
     name = "better_rules_javascript",
-    path = "..",
+    path = "../../../external/better_rules_javascript_files/files",
 )
 
 load("@better_rules_javascript//rules:workspace.bzl", javascript_repositories = "repositories")
@@ -69,15 +69,9 @@ javascript_repositories()
 
 local_repository(
     name = "better_rules_typescript",
-    path = "../../rules_typescript",
+    path = "/home/paul/dev/rivethealth/rules_typescript",
 )
 
 load("@better_rules_typescript//rules:workspace.bzl", typescript_repositories = "repositories")
 
 typescript_repositories()
-
-## NPM
-
-load(":npm.bzl", "npm")
-
-npm("npm")
