@@ -4,25 +4,26 @@ load("//nodejs:rules.bzl", "nodejs_binary")
 
 cjs_root(
     name = "root",
-    package_name = "@better_rules_javascript/npm-gen",
+    package_name = "@better_rules_javascript/yarn-gen",
     descriptor = "package.json",
 )
 
 ts_library(
-    name = "ts",
+    name = "lib",
     srcs = glob(["src/**/*.ts"]),
     compiler = "//rules:tsc",
     compiler_options = [
         "--lib",
         "dom,es2019",
     ],
+    root = ":root",
+    strip_prefix = "better_rules_javascript/npm/yarn-gen/src",
     global_deps = [
         "@better_rules_javascript_npm//types_node:lib",
     ],
-    root = ":root",
-    strip_prefix = "better_rules_javascript/npm/gen/src",
     deps = [
         "@better_rules_javascript_npm//argparse:lib",
+        "@better_rules_javascript_npm//source_map_support:lib",
         "@better_rules_javascript_npm//types_argparse:lib",
         "@better_rules_javascript_npm//types_yarnpkg__lockfile:lib",
         "@better_rules_javascript_npm//yarnpkg_lockfile:lib",
@@ -31,5 +32,7 @@ ts_library(
 
 nodejs_binary(
     name = "bin",
-    dep = ":ts",
+    data = ["//npm:yarn"],
+    dep = ":lib",
+    env = {"YARN_BIN": "npm/yarn/bin"},
 )

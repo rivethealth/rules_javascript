@@ -100,6 +100,7 @@ def js_info_gen_fs(actions, gen, file, mount, js_info, include_sources, is_runfi
     )
 
 def _nodejs_binary_implementation(ctx):
+    env = ctx.attr.env
     js_info = ctx.attr.dep[JsInfo]
     main = ctx.attr.main
 
@@ -129,6 +130,7 @@ def _nodejs_binary_implementation(ctx):
         template = ctx.file._runner,
         output = bin,
         substitutions = {
+            "%{env}": " ".join(["%s=%s" % (name, shell.quote(value)) for name, value in env.items()]),
             "%{main_module}": shell.quote(main_module),
             "%{node}": shell.quote(runfile_path(ctx, nodejs_toolchain.nodejs.bin)),
             "%{node_options}": " ".join([shell.quote(option) for option in ctx.attr.node_options]),
@@ -139,17 +141,34 @@ def _nodejs_binary_implementation(ctx):
         is_executable = True,
     )
 
+    for dep in ctx.attr.data:
+        if DefaultInfo not in dep:
+            continue
+        if dep[DefaultInfo].default_runfiles != None:
+            files.append(dep[DefaultInfo].default_runfiles.files)
+
     runfiles = depset(
-        ctx.files._bash_runfiles + [nodejs_toolchain.nodejs.bin, ctx.file._shim, fs_manifest],
+        ctx.files._bash_runfiles + [nodejs_toolchain.nodejs.bin, ctx.file._shim, fs_manifest] + ctx.files.data,
         transitive = files,
     )
+    default_info = DefaultInfo(
+        executable = bin,
+        runfiles = ctx.runfiles(transitive_files = runfiles)
+    )
 
-    default_info = DefaultInfo(executable = bin, runfiles = ctx.runfiles(transitive_files = runfiles))
-    return default_info
+    return [default_info]
 
 nodejs_binary = rule(
     attrs = {
+        "data": attr.label_list(
+            allow_files = True,
+            providers = [DefaultInfo],
+            doc = "Runtime data",
+        ),
         "dep": attr.label(mandatory = True, providers = [JsInfo]),
+        "env": attr.string_dict(
+            doc = "Environment variables",
+        ),
         "main": attr.string(
             default = "",
         ),

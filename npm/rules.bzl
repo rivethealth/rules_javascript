@@ -1,3 +1,5 @@
+load("//nodejs:rules.bzl", "nodejs_binary")
+
 def _js_import_external_impl(ctx):
     ctx.download_and_extract(
         ctx.attr.urls,
@@ -14,7 +16,7 @@ js_import_external = rule(
     implementation = _js_import_external_impl,
     attrs = {
         "package": attr.label(
-            allow_single_file = ".json",
+            allow_single_file = [".json"],
             doc = "package.json",
         ),
         "sha256": attr.string(

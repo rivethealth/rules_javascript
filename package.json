@@ -5,15 +5,17 @@
     "@yarnpkg/lockfile": "~1.1.0",
     "argparse": "~2.0.1",
     "enhanced-resolve": "~5.8.0",
-    "protobufjs": "~6.11.2",
     "long": "~4.0.0",
     "prettier": "~2.4.0",
+    "protobufjs": "~6.11.2",
     "rollup": "~2.58.0",
     "rollup-plugin-hypothetical": "~2.1.0",
     "rollup-plugin-ignore": "~1.0.0",
-    "tslib": "~2.0.0",
+    "source-map-support": "~0.5.0",
     "ts-proto": "~1.83.0",
-    "typescript": "~4.0.0"
+    "tslib": "~2.0.0",
+    "typescript": "~4.0.0",
+    "yarn": "~1.22.0"
   },
   "devDependencies": {
     "@types/argparse": "~2.0.0",

@@ -146,15 +146,16 @@ nodejs_binary(
 }
 ```
 
-```sh
-yarn install
-```
-
 #### Convert data to Bazel representation
 
 ```sh
-bazel run @better_rules_javascript//npm/gen:bin -- \
-    yarn --package "$(pwd)/package.json" --lock "$(pwd)/yarn.lock" "$(pwd)/npm_data.bzl"
+bazel run @better_rules_javascript//npm/yarn-gen:bin -- --refresh npm_data.bzl
+```
+
+For full options, see
+
+```sh
+bazel run @better_rules_javascript//npm/yarn-gen:bin -- --help
 ```
 
 #### Create external repositories
