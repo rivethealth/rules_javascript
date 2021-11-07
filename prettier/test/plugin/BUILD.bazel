@@ -1,5 +1,5 @@
 load("@better_rules_javascript//prettier:rules.bzl", "configure_prettier")
-load("@rules_format//rules/format:rules.bzl", "format")
+load("@rules_format//format:rules.bzl", "format")
 
 configure_prettier(
     name = "prettier",

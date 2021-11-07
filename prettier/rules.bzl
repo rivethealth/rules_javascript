@@ -1,5 +1,5 @@
 load("@better_rules_typescript//typescript:rules.bzl", "ts_library")
-load("@rules_format//rules/format:providers.bzl", "FormatInfo")
+load("@rules_format//format:providers.bzl", "FormatInfo")
 load("//nodejs:rules.bzl", "nodejs_binary")
 
 def configure_prettier(name, config, dep, plugins = [], visibility = None):

@@ -134,7 +134,7 @@ local_repository(
     path = "../rules_format",
 )
 
-load("@rules_format//rules/file:workspace.bzl", "files")
+load("@rules_format//file:workspace.bzl", "files")
 
 files(
     name = "better_rules_javascript_files",
