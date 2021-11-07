@@ -2,6 +2,8 @@ load("@rules_format//buildifier:rules.bzl", "buildifier")
 load("@rules_format//format:rules.bzl", "format")
 load("//prettier:rules.bzl", "configure_prettier")
 
+package(default_visibility = ["//visibility:public"])
+
 buildifier(
     name = "buildifier",
 )
@@ -17,7 +19,6 @@ configure_prettier(
     name = "prettier",
     config = "prettierrc.yml",
     dep = "@better_rules_javascript_npm//prettier:lib",
-    visibility = ["//visibility:public"],
 )
 
 format(
