@@ -16,3 +16,9 @@ nodejs_binary(
     dep = "@better_rules_javascript_npm//yarn:lib",
     main = "bin/yarn.js",
 )
+
+nodejs_binary(
+    name = "yarn2",
+    dep = "@better_rules_javascript_npm//yarnpkg_cli_dist:lib",
+    main = "bin/yarn.js",
+)

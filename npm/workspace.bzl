@@ -162,7 +162,7 @@ def npm_package(name, package):
         name = name + "_" + package_repo_name(package["name"]),
         deps = ["@%s_%s//:lib" % (name, package_repo_name(dep["dep"])) for dep in package["deps"]],
         urls = [package["url"]],
-        integrity = package["integrity"] if not package["integrity"].startswith("sha1-") else None,
+        integrity = package["integrity"] if "integrity" in package and not package["integrity"].startswith("sha1-") else None,
     )
 
 def npm_roots(name, roots):

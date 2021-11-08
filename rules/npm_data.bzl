@@ -260,9 +260,26 @@ PACKAGES = [
         ],
     },
     {
+        "name": "@types/yaml@1.9.7",
+        "url": "https://registry.yarnpkg.com/@types/yaml/-/yaml-1.9.7.tgz#2331f36e0aac91311a63d33eb026c21687729679",
+        "integrity": "sha512-8WMXRDD1D+wCohjfslHDgICd2JtMATZU8CkhH8LVJqcJs6dyYj5TGptzP8wApbmEullGBSsCEzzap73DQ1HJaA==",
+        "deps": [
+            {
+                "dep": "yaml@1.10.2",
+                "name": "yaml",
+            },
+        ],
+    },
+    {
         "name": "@types/yarnpkg__lockfile@1.1.5",
         "url": "https://registry.yarnpkg.com/@types/yarnpkg__lockfile/-/yarnpkg__lockfile-1.1.5.tgz#9639020e1fb65120a2f4387db8f1e8b63efdf229",
         "integrity": "sha512-8NYnGOctzsI4W0ApsP/BIHD/LnxpJ6XaGf2AZmz4EyDYJMxtprN4279dLNI1CPZcwC9H18qYcaFv4bXi0wmokg==",
+        "deps": [],
+    },
+    {
+        "name": "@yarnpkg/cli-dist@3.1.0",
+        "url": "https://registry.yarnpkg.com/@yarnpkg/cli-dist/-/cli-dist-3.1.0.tgz#960d4db54d4b7edc24e7823daff2de30e4f3a6ea",
+        "integrity": "sha512-2KfhcWKIiYbQyqV/MMJjaNu1RCNeNJTF9+yrjVsp269ZXyv09GqmuqRJ6bzeFlfoeLEfdaXnlxsOr2hP1yIwYg==",
         "deps": [],
     },
     {
@@ -1395,6 +1412,12 @@ PACKAGES = [
         "deps": [],
     },
     {
+        "name": "yaml@1.10.2",
+        "url": "https://registry.yarnpkg.com/yaml/-/yaml-1.10.2.tgz#2301c5ffbf12b467de8da2333a459e29e7920e4b",
+        "integrity": "sha512-r3vXyErRCYJ7wg28yvBY5VSoAF8ZvlcW9/BwUzEtUsjvX/DKs24dIkuwjtuprwJJHsbyUbLApepYTR1BN4uHrg==",
+        "deps": [],
+    },
+    {
         "name": "yarn@1.22.17",
         "url": "https://registry.yarnpkg.com/yarn/-/yarn-1.22.17.tgz#bf910747d22497b573131f7341c0e1d15c74036c",
         "integrity": "sha512-H0p241BXaH0UN9IeH//RT82tl5PfNraVpSpEoW+ET7lmopNC61eZ+A+IDvU8FM6Go5vx162SncDL8J1ZjRBriQ==",
@@ -1410,6 +1433,10 @@ ROOTS = [
     {
         "name": "@rollup/plugin-node-resolve",
         "dep": "@rollup/plugin-node-resolve@13.0.4",
+    },
+    {
+        "name": "@yarnpkg/cli-dist",
+        "dep": "@yarnpkg/cli-dist@3.1.0",
     },
     {
         "name": "@yarnpkg/lockfile",
@@ -1468,6 +1495,10 @@ ROOTS = [
         "dep": "typescript@4.0.5",
     },
     {
+        "name": "yaml",
+        "dep": "yaml@1.10.2",
+    },
+    {
         "name": "yarn",
         "dep": "yarn@1.22.17",
     },
@@ -1486,6 +1517,10 @@ ROOTS = [
     {
         "name": "@types/prettier",
         "dep": "@types/prettier@2.4.1",
+    },
+    {
+        "name": "@types/yaml",
+        "dep": "@types/yaml@1.9.7",
     },
     {
         "name": "@types/yarnpkg__lockfile",
