@@ -9,7 +9,8 @@ sh_test(
     data =
         [
             ":bazel",
-            "@better_rules_javascript_files//:files",
+            "@better_rules_javascript_files//:nodejs",
+            "@better_rules_javascript_files//:npm",
         ],
     tags = ["local"],
 )
@@ -20,7 +21,8 @@ sh_test(
     data =
         [
             ":bazel",
-            "@better_rules_javascript_files//:files",
+            "@better_rules_javascript_files//:nodejs",
+            "@better_rules_javascript_files//:npm",
         ],
     tags = ["local"],
 )
