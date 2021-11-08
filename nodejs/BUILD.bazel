@@ -9,14 +9,9 @@ exports_files([
     "runner.sh.tpl",
 ])
 
-exports_files(glob(["**/*.bzl"]))
-
 bzl_library(
     name = "bzl",
-    srcs = glob(
-        ["**/*.bzl"],
-        ["workspace.bzl"],
-    ),
+    srcs = glob(["**/*.bzl"]),
     deps = [
         "//javascript:bzl",
         "//third-party:repo_bzl",

@@ -6,8 +6,6 @@ package(default_visibility = ["//visibility:public"])
 
 exports_files(["runner.sh.tpl"])
 
-exports_files(["**/*.bzl"])
-
 bzl_library(
     name = "bzl",
     srcs = glob(["**/*.bzl"]),

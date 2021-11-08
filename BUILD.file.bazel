@@ -52,19 +52,22 @@ filegroup(
 
 filegroup(
     name = "files",
-    srcs = glob(["%s*" % root for root in [
-        "files/",
-        "files/commonjs/**/",
-        "files/docs/**/",
-        "files/javascript/**/",
-        "files/nodejs/**/",
-        "files/npm/**/",
-        "files/prettier/**/",
-        "files/protobuf/**/",
-        "files/protobufjs/**/",
-        "files/rollup/**/",
-        "files/rules/**/",
-        "files/util/**/",
-        "files/worker/**/",
-    ]]),
+    srcs = glob(
+        ["%s*" % root for root in [
+            "files/",
+            "files/commonjs/**/",
+            "files/docs/**/",
+            "files/javascript/**/",
+            "files/nodejs/**/",
+            "files/npm/**/",
+            "files/prettier/**/",
+            "files/protobuf/**/",
+            "files/protobufjs/**/",
+            "files/rollup/**/",
+            "files/rules/**/",
+            "files/util/**/",
+            "files/worker/**/",
+        ]],
+        ["**/test/**"],
+    ),
 )

@@ -34,5 +34,5 @@ nodejs_binary(
     name = "bin",
     data = ["//npm:yarn"],
     dep = ":lib",
-    env = {"YARN_BIN": "npm/yarn/bin"},
+    env = {"YARN_BIN": "../better_rules_javascript/npm/yarn/bin"},
 )
