@@ -1,13 +1,13 @@
 load(":providers.bzl", "CjsInfo", "create_link", "create_root")
 
-def default_package_name(ctx):
+def _default_package_name(ctx):
     workspace = "@%s" % (ctx.label.workspace_name or ctx.workspace_name)
     parts = [workspace]
     if ctx.label.package:
         parts.append(ctx.label.package)
     return "/".join(parts)
 
-def default_strip_prefix(ctx):
+def _default_strip_prefix(ctx):
     workspace = ctx.label.workspace_name or ctx.workspace_name
     parts = [workspace]
     if ctx.label.package:
@@ -15,7 +15,7 @@ def default_strip_prefix(ctx):
     return "/".join(parts)
 
 def _cjs_root_impl(ctx):
-    name = ctx.attr.package_name or default_package_name(ctx)
+    name = ctx.attr.package_name or _default_package_name(ctx)
 
     links = tuple([
         create_link(dep = dep[CjsInfo].root.id, name = dep[CjsInfo].root.name, label = dep.label)
@@ -30,7 +30,7 @@ def _cjs_root_impl(ctx):
     cjs = CjsInfo(
         descriptor = ctx.file.descriptor,
         id = str(ctx.label),
-        prefix = default_strip_prefix(ctx),
+        prefix = _default_strip_prefix(ctx),
         root = root,
     )
 

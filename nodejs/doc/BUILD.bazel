@@ -1,0 +1,13 @@
+load("//docs:rules.bzl", "stardoc")
+
+package(default_visibility = ["//visibility:public"])
+
+stardoc(
+    "doc",
+    "//nodejs:bzl",
+    [
+        "//nodejs:rules.bzl",
+        "//nodejs:toolchains.bzl",
+        "//nodejs:workspace.bzl",
+    ],
+)

@@ -1,15 +1,29 @@
 # Module resolution
 
+Perhaps the most difficult part of JavaScript tooling is resolving modules.
+
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+- [Background](#background)
+- [File layout](#file-layout)
+- [Resolution APIs](#resolution-apis)
+- [Package managers](#package-managers)
+- [Virtual file system](#virtual-file-system)
+- [Solution](#solution)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 ## Background
 
-Perhaps the most difficult part of JavaScript tooling is resolving modules.
 Module resolution is difficult:
 
-1. Resolution is relative to the current module.
+1. Resolution is relative to the current module. I.e. the same specifier
+   resolves differently from different modules.
 2. There are a variety of algorithms: Node.js CommonJS, Node.js ES, Webpack,
    Bable, TypeScript.
-3. Package resolutions are complex, and often involve interpreting package.json
-   imports, exports, etc.
+3. Package resolution algorithms are complex, and often involve interpreting
+   package.json imports, exports, etc.
 4. Often, the number input files is very large; tens of thousands of files is
    common.
 

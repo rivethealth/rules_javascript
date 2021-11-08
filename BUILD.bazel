@@ -1,6 +1,7 @@
+load("//nodejs:rules.bzl", "nodejs_binary")
+load("//prettier:rules.bzl", "configure_prettier")
 load("@rules_format//buildifier:rules.bzl", "buildifier")
 load("@rules_format//format:rules.bzl", "format")
-load("//prettier:rules.bzl", "configure_prettier")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -26,4 +27,18 @@ format(
     srcs = ["@better_rules_javascript_files//:prettier_files"],
     formatter = ":prettier",
     prefix = "external/better_rules_javascript_files/files",
+)
+
+nodejs_binary(
+    name = "doctoc",
+    dep = "@better_rules_javascript_npm//doctoc:lib",
+    main = "doctoc.js",
+)
+
+test_suite(
+    name = "test",
+    tests = [
+        "//nodejs/test",
+        "//rollup/test",
+    ],
 )

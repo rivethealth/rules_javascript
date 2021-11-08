@@ -1,5 +1,15 @@
-
 # Rollup
+
+Rollup bundles modules into one or more files.
+
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+- [Install](#install)
+- [Configure](#configure)
+- [Use](#use)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ## Install
 
@@ -29,13 +39,13 @@ configure_rollup(
 **example/a.js**
 
 ```js
-export const a = 'apple';
+export const a = "apple";
 ```
 
 **example/b.js**
 
 ```js
-import { a } from './a';
+import { a } from "./a";
 
 console.log(a);
 ```
@@ -45,7 +55,7 @@ console.log(a);
 ```js
 export default {
   input: `${process.env.ROLLUP_INPUT_ROOT}/index.js`,
-  output: { file: process.env.ROLLUP_OUTPUT, format: 'cjs' },
+  output: { file: process.env.ROLLUP_OUTPUT, format: "cjs" },
 };
 ```
 

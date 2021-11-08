@@ -1,3 +1,3 @@
 #!/bin/sh -e
-cd tests/rollup/bazel
+cd rollup/test/bazel
 env -i bazel build basic:bundle

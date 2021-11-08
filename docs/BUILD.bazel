@@ -1,25 +1,16 @@
 load("@rules_pkg//:pkg.bzl", "pkg_tar")
-load(":rules.bzl", "stardoc")
 
-# pkg_tar(
-#     name = "docs",
-#     srcs = [
-#         # Can't import @bazel_tools//tools/build_defs/repo:http.bzl
-#         "//javascript:rules_doc",
-#         "//npm:doc",
-#         #"//prettier:doc",
-#         "//protobuf:doc",
-#         # "//nodejs:doc",
-#         # "//rollup:doc",
-#     ],
-#     mode = "0644",
-#     strip_prefix = ".",
-# )
-
-stardoc(
-    "//javascript:bzl",
-    [
-        "//javascript:providers.bzl",
-        "//javascript:rules.bzl",
+pkg_tar(
+    name = "docs",
+    srcs = [
+        "//commonjs/doc",
+        "//javascript/doc",
+        "//nodejs/doc",
+        "//npm/doc",
+        "//prettier/doc",
+        "//protobuf/doc",
+        "//protobufjs/doc",
+        "//rollup/doc",
     ],
+    mode = "0644",
 )

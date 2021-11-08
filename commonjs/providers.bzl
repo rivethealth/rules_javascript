@@ -22,38 +22,38 @@ def create_entry_set(entries = [], entry_sets = []):
     )
 
 def create_root(id, name, descriptor, links):
-    """
-    :param str id: ID
-    :param str name: Name
-    :param File descriptor: package.json descriptor
-    :param list links: List of dependency structs
+    """Create root.
+
+    Args:
+        id: ID
+        name: Name
+        descriptor: package.json descriptor
+        links: List of dependency structs
     """
     return struct(id = id, name = name, descriptor = descriptor, links = links)
 
 def create_entry(root, name, file, label):
-    """
-    Create entry for CommonJS package
+    """Create entry for CommonJS package.
 
-    :param str root: Root ID
-    :param str name: Name
-    :param File file: File
+    Args:
+        root: Root ID
+        name: Name
+        file: File
     """
     return struct(file = file, name = name, root = root, label = label)
 
 def create_link(dep, name, label):
-    """
-    Create link for CommonJs package
+    """Create link for CommonJs package.
 
-    :param str dep: Dependency ID
-    :param str name: Name
-    :param Label label: Source label
+    Args:
+        dep: Dependency ID
+        name: Name
+        label: Source label
     """
     return struct(dep = dep, name = name, label = label)
 
 def create_extra_link(root, dep, label):
-    """
-    Create extra dep for CommonJs package
-    """
+    """Create extra dep for CommonJs package."""
     return struct(root = root, dep = dep, label = label)
 
 def entry_json(entry):

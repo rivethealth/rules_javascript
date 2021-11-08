@@ -87,11 +87,10 @@ def _js_proto_impl(target, ctx):
     return [js_info]
 
 def js_proto_aspect(js_protoc):
-    """
-    Create js_proto aspect
+    """Create js_proto aspect.
 
-    :param str|Label js_protoc: JsProtobuf label
-    :param str package_name: Package name
+    Args:
+        js_protoc: JsProtobuf label
     """
     return aspect(
         implementation = _js_proto_impl,

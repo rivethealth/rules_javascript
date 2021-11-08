@@ -3,11 +3,13 @@ load("//nodejs:rules.bzl", "nodejs_binary")
 
 package(default_visibility = ["//visibility:public"])
 
+exports_files(glob(["**/*.bzl"]))
+
 bzl_library(
     name = "bzl",
     srcs = glob(["**/*.bzl"]),
     deps = [
-        "//util/bzl",
+        "//util:bzl",
     ],
 )
 

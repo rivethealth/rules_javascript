@@ -1,25 +1,26 @@
 # rules_javascript
 
-Bazel rules for JavaScript, prioritzing, performance, and flexibility.
+Bazel rules for JavaScript.
 
-- [rules_javascript](#rules_javascript)
-  - [Features](#features)
-  - [Install](#install)
-  - [Usage](#usage)
-    - [Basic](#basic)
-    - [External dependencies](#external-dependencies)
-    - [Rollup](#rollup)
-    - [Prettier](#prettier)
-    - [Protobuf](#protobuf)
-  - [Stardoc](#stardoc)
-  - [Module resolution](#module-resolution)
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+- [Priorities](#priorities)
+- [Features](#features)
+- [Install](#install)
+- [Example](#example)
+- [Documentation](#documentation)
+- [Differences with rules_nodejs](#differences-with-rules_nodejs)
+- [Developing](#developing)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ## Priorities
 
-* Bazel idioms
-* Performance
-* Extensibility
-* Clear factorization
+1. Flexibility and extensibility
+1. Performance
+1. Bazel idioms
+1. Clear factorization
 
 ## Features
 
@@ -151,6 +152,14 @@ Hello world
 
 ## Documentation
 
+### Topics
+
+[CommonJS](docs/commonjs.md)
+
+[JavaScript](docs/javascript.md)
+
+[Node.js](docs/nodejs.md)
+
 [Npm](docs/npm.md)
 
 [Prettier](docs/prettier.md)
@@ -161,13 +170,13 @@ Hello world
 
 [Rollup](docs/rollup.md)
 
-## Stardoc
+### Stardoc
 
-Auto-generated [Stardoc documentation](docs/stardoc).
+See auto-generated [Stardoc documentation](docs/stardoc).
 
-## Differences with rules_javascrizpt
+## Differences with rules_nodejs
 
-See [docs/rules_javascript.md](docs/rules_javascript.md).
+See [Differences with rules_nodejs](docs/rules_nodejs.md).
 
 ## Developing
 

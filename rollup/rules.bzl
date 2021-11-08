@@ -1,6 +1,7 @@
 load("//commonjs:providers.bzl", "cjs_path")
 load("//javascript:providers.bzl", "JsInfo")
-load("//nodejs:rules.bzl", "js_info_gen_fs", "nodejs_binary")
+load("//nodejs:providers.bzl", "js_info_gen_fs")
+load("//nodejs:rules.bzl", "nodejs_binary")
 load(":providers.bzl", "RollupInfo")
 
 _VFS_ROOT = "bazel-rollup"
@@ -17,15 +18,24 @@ def _rollup_impl(ctx):
 rollup = rule(
     attrs = {
         "bin": attr.label(
+            doc = "Rollup executable",
             executable = True,
             mandatory = True,
             cfg = "exec",
         ),
     },
+    doc = "Rollup tools",
     implementation = _rollup_impl,
 )
 
 def configure_rollup(name, dep):
+    """Set up rollup tools.
+
+    Args:
+        name: Name
+        dep: Rollup library
+    """
+
     nodejs_binary(
         main = "dist/bin/rollup",
         name = "%s_bin" % name,
@@ -102,15 +112,20 @@ def _rollup_bundle_impl(ctx):
 rollup_bundle = rule(
     attrs = {
         "config_path": attr.string(
+            doc = "Path to config file",
             mandatory = True,
         ),
         "config_dep": attr.label(
+            doc = "JavaScript library for config",
             providers = [JsInfo],
-            doc = "Config file",
             mandatory = True,
         ),
-        "dep": attr.label(providers = [JsInfo]),
+        "dep": attr.label(
+            doc = "JavaScript dependencies",
+            providers = [JsInfo],
+        ),
         "rollup": attr.label(
+            doc = "Rollup tools",
             mandatory = True,
             providers = [RollupInfo],
         ),
@@ -120,5 +135,6 @@ rollup_bundle = rule(
             default = "//nodejs/fs-gen:bin",
         ),
     },
+    doc = "Rollup bundle",
     implementation = _rollup_bundle_impl,
 )

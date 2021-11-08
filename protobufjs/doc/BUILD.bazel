@@ -1,0 +1,12 @@
+load("//docs:rules.bzl", "stardoc")
+
+package(default_visibility = ["//visibility:public"])
+
+stardoc(
+    "doc",
+    "//protobufjs:bzl",
+    [
+        "//protobufjs:providers.bzl",
+        "//protobufjs:rules.bzl",
+    ],
+)

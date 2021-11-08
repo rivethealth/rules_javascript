@@ -24,3 +24,7 @@ sh_test(
         ],
     tags = ["local"],
 )
+
+test_suite(
+    name = "test",
+)

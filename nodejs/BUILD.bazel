@@ -18,10 +18,10 @@ bzl_library(
         ["workspace.bzl"],
     ),
     deps = [
-        "//javascript/bzl",
-        "//util/bzl",
+        "//javascript:bzl",
+        "//third-party:repo_bzl",
+        "//util:bzl",
         "@bazel_skylib//lib:shell",
-        # "@bazel_tools//tools/build_defs/repo:lib",
     ],
 )
 

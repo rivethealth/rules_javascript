@@ -24,6 +24,7 @@ js_protoc = rule(
             providers = [_JsInfo],
         ),
     },
+    doc = "JavaScript protobuf tools",
 )
 
 def _js_proto_library(ctx):
@@ -32,11 +33,19 @@ def _js_proto_library(ctx):
     return [js_info]
 
 def js_proto_library_rule(js_proto):
+    """
+    Create js_proto_library rule.
+
+    Args:
+        js_proto: Aspect
+    """
+
     return rule(
         implementation = _js_proto_library,
         attrs = {
             "dep": attr.label(
                 aspects = [js_proto],
+                doc = "Protobuf library",
             ),
         },
     )

@@ -16,11 +16,11 @@ ts_library(
         "--lib",
         "dom,es2019",
     ],
-    root = ":root",
-    strip_prefix = "better_rules_javascript/npm/yarn-gen/src",
     global_deps = [
         "@better_rules_javascript_npm//types_node:lib",
     ],
+    root = ":root",
+    strip_prefix = "better_rules_javascript/npm/yarn-gen/src",
     deps = [
         "@better_rules_javascript_npm//argparse:lib",
         "@better_rules_javascript_npm//source_map_support:lib",

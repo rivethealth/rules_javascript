@@ -2,8 +2,21 @@
 
 Better_rules_javascript can use npm packages.
 
-A package manager resolves the
-dependency graph. The information is converted to Bazel repositories. This approach integrates very into the Bazel ecosystem and avoid excessive downloads.
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+- [Strategy](#strategy)
+- [Yarn](#yarn)
+- [IDE](#ide)
+- [Limitations](#limitations)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+## Strategy
+
+A package manager resolves the dependency graph. The information is converted to
+Bazel repositories. This approach integrates very into the Bazel ecosystem and
+avoid excessive downloads.
 
 Currently, only the yarn package manager is supported.
 
@@ -58,8 +71,9 @@ js_library(
 
 ## IDE
 
-IDEs require modules installed in `node_modules`. This is done as a side-effect of `npm/yarn-gen:bin` with `--refresh`. Otherwise, this can be
-done separately with `yarn install`.
+IDEs require modules installed in `node_modules`. This is done as a side-effect
+of `npm/yarn-gen:bin` with `--refresh`. Otherwise, this can be done separately
+with `yarn install`.
 
 ## Limitations
 

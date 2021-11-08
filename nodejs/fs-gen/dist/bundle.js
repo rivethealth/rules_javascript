@@ -4585,7 +4585,7 @@ class StringJsonFormat {
 
 var tslib_1 = /*@__PURE__*/getAugmentedNamespace(tslib_es6);
 
-var __rules_commonjs_fs_root = createCommonjsModule(function (module, exports) {
+var __commonjs_fs_root = createCommonjsModule(function (module, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Vfs = exports.FsResult = exports.VfsMount = exports.VfsPath = exports.VfsEntry = void 0;
 
@@ -4896,16 +4896,16 @@ var RootLink;
     ExtraLink.json = json$1;
 })(exports.ExtraLink || (exports.ExtraLink = {}));
 const root = {
-    type: __rules_commonjs_fs_root.VfsEntry.DIRECTORY,
+    type: __commonjs_fs_root.VfsEntry.DIRECTORY,
     children: new Map(),
 };
 function mkdir(dir, name) {
     let result = dir.children.get(name);
     if (!result) {
-        result = { type: __rules_commonjs_fs_root.VfsEntry.DIRECTORY, children: new Map() };
+        result = { type: __commonjs_fs_root.VfsEntry.DIRECTORY, children: new Map() };
         dir.children.set(name, result);
     }
-    else if (result.type !== __rules_commonjs_fs_root.VfsEntry.DIRECTORY) {
+    else if (result.type !== __commonjs_fs_root.VfsEntry.DIRECTORY) {
         throw new Error();
     }
     return result;
@@ -4917,7 +4917,7 @@ function addDep(root, name, path) {
         dir = mkdir(dir, part);
     }
     dir.children.set(parts[parts.length - 1], {
-        type: __rules_commonjs_fs_root.VfsEntry.LINK,
+        type: __commonjs_fs_root.VfsEntry.LINK,
         path: [path],
     });
 }
@@ -4933,11 +4933,11 @@ function gen(args) {
         const packageRoot = mkdir(root, root_.path);
         const t = new Set();
         packageRoot.children.set("package.json", {
-            type: __rules_commonjs_fs_root.VfsEntry.PATH,
+            type: __commonjs_fs_root.VfsEntry.PATH,
             path: root_.descriptor,
         });
         packageRoot.children.set("node_modules", {
-            type: __rules_commonjs_fs_root.VfsEntry.DIRECTORY,
+            type: __commonjs_fs_root.VfsEntry.DIRECTORY,
             children: new Map(),
         });
         for (const link of root_.links) {
@@ -4968,7 +4968,7 @@ function gen(args) {
             dir = mkdir(dir, part);
         }
         dir.children.set(parts[parts.length - 1], {
-            type: __rules_commonjs_fs_root.VfsEntry.PATH,
+            type: __commonjs_fs_root.VfsEntry.PATH,
             path: entry.file,
         });
     }
@@ -4977,7 +4977,7 @@ function gen(args) {
     for (const global_ of args.globals) {
         addDep(root, names.get(global_), paths.get(global_));
     }
-    const json = JSON.stringify(__rules_commonjs_fs_root.VfsEntry.json().toJson(root));
+    const json = JSON.stringify(__commonjs_fs_root.VfsEntry.json().toJson(root));
     const content = `global.linkFsMount(
   ${JSON.stringify(args.mount)},
   ${json},

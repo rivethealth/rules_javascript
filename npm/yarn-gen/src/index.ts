@@ -1,4 +1,4 @@
-import 'source-map-support/register';
+import "source-map-support/register";
 import { ArgumentParser } from "argparse";
 import * as fs from "fs";
 import * as childProcess from "child_process";
@@ -10,7 +10,7 @@ async function main() {
   const parser = new ArgumentParser({
     description: "Convert yarn lock file to Starlark",
   });
-  parser.add_argument("--dir", { default: '.' });
+  parser.add_argument("--dir", { default: "." });
   parser.add_argument("--package");
   parser.add_argument("--lock");
   parser.add_argument("--refresh", { action: "store_true" });
@@ -27,11 +27,10 @@ async function main() {
 
   if (args.refresh) {
     const yarnBin = (<any>global).runfilePath(process.env.YARN_BIN);
-    const installProcess = childProcess.spawn(
-      yarnBin,
-      ["install"],
-      { cwd: args.dir, stdio: ["ignore", "inherit", "inherit"] },
-    );
+    const installProcess = childProcess.spawn(yarnBin, ["install"], {
+      cwd: args.dir,
+      stdio: ["ignore", "inherit", "inherit"],
+    });
     await new Promise((resolve) => installProcess.on("close", resolve));
     if (installProcess.exitCode) {
       throw new Error(

@@ -1,3 +1,3 @@
 #!/bin/sh -e
-cd tests/nodejs/bazel
+cd nodejs/test/bazel
 env -i bazel run binary:bin | grep -q 'Hello world'
