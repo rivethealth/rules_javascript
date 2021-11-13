@@ -30,6 +30,7 @@ export namespace VfsEntry {
   }
 
   export function json(): JsonFormat<VfsEntry> {
+    // eslint-disable-next-line prefer-const
     let children: JsonFormat<Map<string, VfsEntry>>;
     const result: JsonFormat<VfsEntry> = {
       fromJson(json: any) {
@@ -131,7 +132,7 @@ export class VfsMount {
   }
 
   realpath(path: VfsPath): string | undefined {
-    let realpath = [];
+    const realpath = [];
     for (let i = 0, entry: VfsEntry = this.root; i < path.length; ) {
       switch (entry.type) {
         case VfsEntry.DIRECTORY: {

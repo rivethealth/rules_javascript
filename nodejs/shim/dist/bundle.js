@@ -494,6 +494,7 @@ var VfsEntry;
     VfsEntry.LINK = Symbol("LINK");
     VfsEntry.PATH = Symbol("PATH");
     function json$1() {
+        // eslint-disable-next-line prefer-const
         let children;
         const result = {
             fromJson(json$1) {
@@ -586,7 +587,7 @@ class VfsMount {
         return entry;
     }
     realpath(path) {
-        let realpath = [];
+        const realpath = [];
         for (let i = 0, entry = this.root; i < path.length;) {
             switch (entry.type) {
                 case VfsEntry.DIRECTORY: {
@@ -977,10 +978,11 @@ function access(linkFs, delegate) {
             case __commonjs_fs_root.FsResult.NOT_FOUND:
                 callback(new NotFoundError(stringPath(path), "access"));
                 break;
-            case __commonjs_fs_root.FsResult.PATH:
+            case __commonjs_fs_root.FsResult.PATH: {
                 const args = [...arguments];
                 args[0] = resolved.path;
                 return delegate.apply(this, args);
+            }
         }
     }
     return addPromisify(access);
@@ -1001,10 +1003,11 @@ function accessSync(linkFs, delegate) {
                 break;
             case __commonjs_fs_root.FsResult.NOT_FOUND:
                 throw new NotFoundError(stringPath(path), "access");
-            case __commonjs_fs_root.FsResult.PATH:
+            case __commonjs_fs_root.FsResult.PATH: {
                 const args = [...arguments];
                 args[0] = resolved.path;
                 return delegate.apply(this, args);
+            }
         }
     };
 }
@@ -1127,10 +1130,11 @@ function copyFile(linkFs, delegate) {
             case __commonjs_fs_root.FsResult.NOT_FOUND:
                 callback(new NotFoundError(stringPath(src), "copyfile"));
                 break;
-            case __commonjs_fs_root.FsResult.PATH:
+            case __commonjs_fs_root.FsResult.PATH: {
                 const args = [...arguments];
                 args[0] = resolvedSrc.path;
                 return delegate.apply(this, args);
+            }
         }
     }
     return addPromisify(copyFile);
@@ -1168,7 +1172,7 @@ function createWriteStream(linkFs, delegate) {
     };
 }
 function copyFileSync(linkFs, delegate) {
-    return function (src, dest, flags) {
+    return function (src, dest) {
         const srcPath = stringPath(src);
         const destPath = stringPath(dest);
         const resolvedSrc = linkFs.resolve(srcPath);
@@ -1184,10 +1188,11 @@ function copyFileSync(linkFs, delegate) {
                 throw new IsDirError(stringPath(src), "copyfile");
             case __commonjs_fs_root.FsResult.NOT_FOUND:
                 throw new NotFoundError(stringPath(src), "copyfile");
-            case __commonjs_fs_root.FsResult.PATH:
+            case __commonjs_fs_root.FsResult.PATH: {
                 const args = [...arguments];
                 args[0] = resolvedSrc.path;
                 return delegate.apply(this, args);
+            }
         }
     };
 }
@@ -1208,10 +1213,11 @@ function exists(linkFs, delegate) {
             case __commonjs_fs_root.FsResult.DIRECTORY:
                 callback(true);
                 break;
-            case __commonjs_fs_root.FsResult.PATH:
+            case __commonjs_fs_root.FsResult.PATH: {
                 const args = [...arguments];
                 args[0] = resolved.path;
                 return delegate.apply(this, args);
+            }
         }
     }
     return addPromisify(exists);
@@ -1222,7 +1228,7 @@ function dirEntry(name, entry) {
             return new fs.Dir(name, fsConstants.UV_DIRENT_DIR);
         case __commonjs_fs_root.FsResult.LINK:
             return new fs.Dir(name, fsConstants.UV_DIRENT_LINK);
-        case __commonjs_fs_root.FsResult.DIRECTORY:
+        case __commonjs_fs_root.FsResult.FILE:
             return new fs.Dir(name, fsConstants.UV_DIRENT_FILE);
     }
 }
@@ -1238,10 +1244,11 @@ function existsSync(linkFs, delegate) {
                 return true;
             case __commonjs_fs_root.FsResult.NOT_FOUND:
                 return false;
-            case __commonjs_fs_root.FsResult.PATH:
+            case __commonjs_fs_root.FsResult.PATH: {
                 const args = [...arguments];
                 args[0] = resolved.path;
                 return delegate.apply(this, args);
+            }
         }
     };
 }
@@ -1294,7 +1301,7 @@ function mkdtempSync(linkFs, delegate) {
     };
 }
 function open(linkFs, delegate) {
-    function open(path, flags, mode, callback) {
+    function open(path, flags, mode) {
         const filePath = stringPath(path);
         const resolved = linkFs.resolve(filePath);
         if (resolved === undefined) {
@@ -1404,7 +1411,7 @@ function readdir(linkFs, delegate) {
     return addPromisify(readdir);
 }
 function readdirSync(linkFs, delegate) {
-    return function (path, options) {
+    return function (path) {
         const filePath = stringPath(path);
         const resolved = linkFs.resolve(filePath);
         if (resolved === undefined) {
@@ -1440,17 +1447,18 @@ function readFile(linkFs, delegate) {
             case __commonjs_fs_root.FsResult.NOT_FOUND:
                 callback(new NotFoundError(stringPath(path), "readfile"), undefined);
                 break;
-            case __commonjs_fs_root.FsResult.PATH:
+            case __commonjs_fs_root.FsResult.PATH: {
                 const args = [...arguments];
                 args[0] = resolved.path;
                 delegate.apply(this, args);
                 break;
+            }
         }
     }
     return addPromisify(readFile);
 }
 function readFileSync(linkFs, delegate) {
-    return function (path, options) {
+    return function (path) {
         if (typeof path === "number") {
             return delegate.apply(this, arguments);
         }
@@ -1464,10 +1472,11 @@ function readFileSync(linkFs, delegate) {
                 throw new InvalidError(stringPath(path), "readfile");
             case __commonjs_fs_root.FsResult.NOT_FOUND:
                 throw new NotFoundError(stringPath(path), "readfile");
-            case __commonjs_fs_root.FsResult.PATH:
+            case __commonjs_fs_root.FsResult.PATH: {
                 const args = [...arguments];
                 args[0] = resolved.path;
                 return delegate.apply(this, args);
+            }
         }
     };
 }
@@ -1497,7 +1506,7 @@ function readlink(linkFs, delegate) {
     return addPromisify(readlink);
 }
 function readlinkSync(linkFs, delegate) {
-    return function (path, options) {
+    return function (path) {
         const filePath = stringPath(path);
         const resolved = linkFs.entry(filePath);
         if (resolved === undefined) {
@@ -1632,10 +1641,11 @@ function stat(linkFs, delegate) {
             case __commonjs_fs_root.FsResult.NOT_FOUND:
                 callback(new NotFoundError(stringPath(path), "stat"), null);
                 break;
-            case __commonjs_fs_root.FsResult.PATH:
+            case __commonjs_fs_root.FsResult.PATH: {
                 const args = [...arguments];
                 args[0] = resolved.path;
                 return delegate.apply(this, args);
+            }
         }
     }
     return addPromisify(stat);
@@ -1653,10 +1663,11 @@ function statSync(linkFs, delegate) {
                 return bigint ? new LinkBigintStat(resolved) : new LinkStat(resolved);
             case __commonjs_fs_root.FsResult.NOT_FOUND:
                 throw new NotFoundError(stringPath(path), "stat");
-            case __commonjs_fs_root.FsResult.PATH:
+            case __commonjs_fs_root.FsResult.PATH: {
                 const args = [...arguments];
                 args[0] = resolved.path;
                 return delegate.apply(this, args);
+            }
         }
     }
     return statSync;
@@ -1959,8 +1970,10 @@ if (process.env.NODE_TRACE_FS === "true") {
     console.error("Shimming Node.js FS");
 }
 const linkFs = new __commonjs_fs_root.Vfs();
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 fs_1.patchFs(linkFs, fs__default["default"]);
 if (process.env.NODE_TRACE_FS === "true") {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     traceFs_1.traceFs(fs__default["default"]);
 }
 commonjsGlobal.linkFsMount = (name, config, isRunfiles) => {
@@ -8936,6 +8949,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.patchModule = exports.load = void 0;
 
 const module_1 = tslib_1.__importDefault(require$$0__default$2["default"]);
+const path = tslib_1.__importStar(path__default["default"]);
 function load(resolve, delegate) {
     const resolver = resolve.create.sync({ conditionNames: ["require", "node"] });
     return function (request, parent) {
@@ -8944,7 +8958,7 @@ function load(resolve, delegate) {
             return delegate.apply(this, arguments);
         }
         else {
-            return resolver(parent ? parent.path : "/", request);
+            return resolver(parent ? parent.path || path.dirname(parent.filename) : "/", request);
         }
     };
 }
@@ -8961,6 +8975,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 
 const enhancedResolve = tslib_1.__importStar(lib);
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 module$1.patchModule(enhancedResolve, require$$0__default$2["default"]);
 
 });

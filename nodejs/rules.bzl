@@ -91,13 +91,9 @@ def _nodejs_binary_implementation(ctx):
         if dep[DefaultInfo].default_runfiles != None:
             files.append(dep[DefaultInfo].default_runfiles.files)
 
-    runfiles = depset(
-        ctx.files._bash_runfiles + [nodejs_toolchain.nodejs.bin, ctx.file._shim, fs_manifest] + ctx.files.data,
-        transitive = files,
-    )
     default_info = DefaultInfo(
         executable = bin,
-        runfiles = ctx.runfiles(transitive_files = runfiles),
+        runfiles = ctx.runfiles(files = ctx.files._bash_runfiles + [nodejs_toolchain.nodejs.bin, ctx.file._shim, fs_manifest] + ctx.files.data, transitive_files = depset(transitive = files)),
     )
 
     return [default_info]

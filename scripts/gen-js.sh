@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-set -ex
+set -e
 cd "$(dirname "$0")/.."
 
 bazel build nodejs/shim:bundle

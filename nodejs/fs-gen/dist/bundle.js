@@ -4597,6 +4597,7 @@ var VfsEntry;
     VfsEntry.LINK = Symbol("LINK");
     VfsEntry.PATH = Symbol("PATH");
     function json$1() {
+        // eslint-disable-next-line prefer-const
         let children;
         const result = {
             fromJson(json$1) {
@@ -4689,7 +4690,7 @@ class VfsMount {
         return entry;
     }
     realpath(path) {
-        let realpath = [];
+        const realpath = [];
         for (let i = 0, entry = this.root; i < path.length;) {
             switch (entry.type) {
                 case VfsEntry.DIRECTORY: {
@@ -4940,6 +4941,7 @@ function gen(args) {
             type: __commonjs_fs_root.VfsEntry.DIRECTORY,
             children: new Map(),
         });
+        // addDep(packageRoot, root_.name, root_.path);
         for (const link of root_.links) {
             t.add(link.id);
             addDep(packageRoot, link.name, paths.get(link.id));

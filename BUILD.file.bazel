@@ -6,6 +6,7 @@ filegroup(
         "files/",
         "files/commonjs/**/",
         "files/docs/**/",
+        "files/eslint/**/",
         "files/javascript/**/",
         "files/nodejs/**/",
         "files/npm/**/",
@@ -23,12 +24,39 @@ filegroup(
 )
 
 filegroup(
+    name = "eslint_files",
+    srcs = glob(
+        [pattern for root in [
+            "files/",
+            "files/commonjs/**/",
+            "files/docs/**/",
+            "files/eslint/**/",
+            "files/javascript/**/",
+            "files/nodejs/**/",
+            "files/npm/**/",
+            "files/prettier/**/",
+            "files/protobuf/**/",
+            "files/protobufjs/**/",
+            "files/rollup/**/",
+            "files/rules/**/",
+            "files/util/**/",
+            "files/worker/**/",
+        ] for pattern in [
+            # "%s*.js" % root,
+            "%s*.ts" % root,
+        ]],
+        ["**/dist/**"],
+    ),
+)
+
+filegroup(
     name = "prettier_files",
     srcs = glob(
         [pattern for root in [
             "files/",
             "files/commonjs/**/",
             "files/docs/**/",
+            "files/eslint/**/",
             "files/javascript/**/",
             "files/nodejs/**/",
             "files/npm/**/",

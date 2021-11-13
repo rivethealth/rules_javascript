@@ -24,7 +24,7 @@ export async function* readFromStream<T>(
   let buffer: ArrayBuffer = new Uint8Array(0);
   outer: while (true) {
     while (new Uint8Array(buffer).every((v) => 128 <= v)) {
-      let next = await it.next();
+      const next = await it.next();
       if (next.done) {
         if (buffer.byteLength) {
           throw new Error("Unexpected EOF");
@@ -39,7 +39,7 @@ export async function* readFromStream<T>(
     console.error(length);
     buffer = buffer.slice(reader.pos);
     while (buffer.byteLength < length) {
-      let next = await it.next();
+      const next = await it.next();
       if (next.done) {
         throw new Error("Unexpected EOF");
       }

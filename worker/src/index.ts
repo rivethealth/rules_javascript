@@ -14,7 +14,11 @@ export interface WorkerFactory {
 }
 
 export interface Worker {
-  (args: string[], inputs: Input[], abort: AbortSignal): Promise<Result>;
+  (
+    args: string[],
+    inputs: Input[] | undefined,
+    abort: AbortSignal,
+  ): Promise<Result>;
 }
 
 export interface Result {
@@ -68,7 +72,7 @@ async function runOnce(worker: Worker, path: string) {
   const abort = new AbortController();
   process.on("SIGINT", () => abort.abort());
   process.on("SIGTERM", () => abort.abort());
-  const result = await worker(args, [], abort.signal);
+  const result = await worker(args, undefined, abort.signal);
   console.error(result.output);
   process.exitCode = result.exitCode;
 }

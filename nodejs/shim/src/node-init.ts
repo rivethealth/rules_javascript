@@ -7,9 +7,11 @@ if (process.env.NODE_TRACE_FS === "true") {
 }
 
 const linkFs = new Vfs();
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 patchFs(linkFs, require("fs"));
 
 if (process.env.NODE_TRACE_FS === "true") {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
   traceFs(require("fs"));
 }
 

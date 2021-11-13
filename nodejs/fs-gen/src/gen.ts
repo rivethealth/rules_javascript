@@ -1,7 +1,6 @@
 import * as fs from "fs";
 import { VfsEntry } from "@better_rules_javascript/commonjs-fs";
 import { JsonFormat } from "@better_rules_javascript/commonjs-fs/json";
-import { dir } from "console";
 
 export interface Root {
   links: RootLink[];
@@ -132,6 +131,7 @@ export function gen(args: GenArgs): void {
       children: new Map(),
     });
 
+    // addDep(packageRoot, root_.name, root_.path);
     for (const link of root_.links) {
       t.add(link.id);
       addDep(packageRoot, link.name, paths.get(link.id));

@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "paths": {
+      "@better_rules_javascript/worker": [
+        "../../../bazel-bin/rules/worker/lib/dts"
+      ],
+      "@better_rules_javascript/worker/*": [
+        "../../../bazel-bin/rules/worker/lib/dts/*"
+      ],
+      "@bazel_tools/*": [
+        "../../../bazel-bin/external/bazel_tools/src/main/protobuf/worker_protocol_proto/ts_proto/dts/*"
+      ]
+    },
+    "types": ["node"]
+  }
+}

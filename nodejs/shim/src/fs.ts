@@ -170,7 +170,7 @@ class LinkStat implements fs.Stats {
   uid = 0;
 }
 
-class LinkDir {
+class LinkDir implements fs.Dir {
   constructor(private readonly dir: FsResult.Directory) {}
 
   private readonly iterator = this.dir.children[Symbol.iterator]();
@@ -281,10 +281,11 @@ function access(linkFs: Vfs, delegate: typeof fs.access): typeof fs.access {
       case FsResult.NOT_FOUND:
         callback(new NotFoundError(stringPath(path), "access"));
         break;
-      case FsResult.PATH:
+      case FsResult.PATH: {
         const args = [...arguments];
         args[0] = resolved.path;
         return delegate.apply(this, args);
+      }
     }
   }
   return addPromisify(access);
@@ -311,10 +312,11 @@ function accessSync(
         break;
       case FsResult.NOT_FOUND:
         throw new NotFoundError(stringPath(path), "access");
-      case FsResult.PATH:
+      case FsResult.PATH: {
         const args = [...arguments];
         args[0] = resolved.path;
         return delegate.apply(this, args);
+      }
     }
   };
 }
@@ -509,10 +511,11 @@ function copyFile(
       case FsResult.NOT_FOUND:
         callback(new NotFoundError(stringPath(src), "copyfile"));
         break;
-      case FsResult.PATH:
+      case FsResult.PATH: {
         const args = [...arguments];
         args[0] = resolvedSrc.path;
         return delegate.apply(this, args);
+      }
     }
   }
   return addPromisify(copyFile);
@@ -574,7 +577,7 @@ function copyFileSync(
   linkFs: Vfs,
   delegate: typeof fs.copyFileSync,
 ): typeof fs.copyFileSync {
-  return function (src: fs.PathLike, dest: fs.PathLike, flags?: number): void {
+  return function (src: fs.PathLike, dest: fs.PathLike): void {
     const srcPath = stringPath(src);
     const destPath = stringPath(dest);
 
@@ -594,10 +597,11 @@ function copyFileSync(
         throw new IsDirError(stringPath(src), "copyfile");
       case FsResult.NOT_FOUND:
         throw new NotFoundError(stringPath(src), "copyfile");
-      case FsResult.PATH:
+      case FsResult.PATH: {
         const args = [...arguments];
         args[0] = resolvedSrc.path;
         return delegate.apply(this, args);
+      }
     }
   };
 }
@@ -624,10 +628,11 @@ function exists(linkFs: Vfs, delegate: typeof fs.exists): typeof fs.exists {
       case FsResult.DIRECTORY:
         callback(true);
         break;
-      case FsResult.PATH:
+      case FsResult.PATH: {
         const args = [...arguments];
         args[0] = resolved.path;
         return delegate.apply(this, args);
+      }
     }
   }
   return addPromisify(exists);
@@ -639,7 +644,7 @@ function dirEntry(name: string, entry: EntryResult) {
       return new (<any>fs.Dir)(name, fsConstants.UV_DIRENT_DIR);
     case FsResult.LINK:
       return new (<any>fs.Dir)(name, fsConstants.UV_DIRENT_LINK);
-    case FsResult.DIRECTORY:
+    case FsResult.FILE:
       return new (<any>fs.Dir)(name, fsConstants.UV_DIRENT_FILE);
   }
 }
@@ -660,10 +665,11 @@ function existsSync(
         return true;
       case FsResult.NOT_FOUND:
         return false;
-      case FsResult.PATH:
+      case FsResult.PATH: {
         const args = [...arguments];
         args[0] = resolved.path;
         return delegate.apply(this, args);
+      }
     }
   };
 }
@@ -807,7 +813,6 @@ function open(linkFs: Vfs, delegate: typeof fs.open): typeof fs.open {
       | undefined
       | null
       | ((err: NodeJS.ErrnoException | null, fd: number) => void),
-    callback?: (err: NodeJS.ErrnoException | null, fd: number) => void,
   ) {
     const filePath = stringPath(path);
 
@@ -1006,10 +1011,7 @@ function readdirSync(
   linkFs: Vfs,
   delegate: typeof fs.readdirSync,
 ): typeof fs.readdirSync {
-  return function (
-    path: fs.PathLike,
-    options: string | { encoding?: string | null; withFileTypes?: boolean },
-  ) {
+  return function (path: fs.PathLike) {
     const filePath = stringPath(path);
 
     const resolved = linkFs.resolve(filePath);
@@ -1093,11 +1095,12 @@ function readFile(
       case FsResult.NOT_FOUND:
         callback(new NotFoundError(stringPath(path), "readfile"), undefined);
         break;
-      case FsResult.PATH:
+      case FsResult.PATH: {
         const args = [...arguments];
         args[0] = resolved.path;
         delegate.apply(this, args);
         break;
+      }
     }
   }
 
@@ -1108,10 +1111,7 @@ function readFileSync(
   linkFs: Vfs,
   delegate: typeof fs.readFileSync,
 ): typeof fs.readFileSync {
-  return function (
-    path: fs.PathLike | number,
-    options?: { encoding?: string | null; flag?: string } | string | null,
-  ): string & Buffer {
+  return function (path: fs.PathLike | number): string & Buffer {
     if (typeof path === "number") {
       return delegate.apply(this, arguments);
     }
@@ -1128,10 +1128,11 @@ function readFileSync(
         throw new InvalidError(stringPath(path), "readfile");
       case FsResult.NOT_FOUND:
         throw new NotFoundError(stringPath(path), "readfile");
-      case FsResult.PATH:
+      case FsResult.PATH: {
         const args = [...arguments];
         args[0] = resolved.path;
         return delegate.apply(this, args);
+      }
     }
   };
 }
@@ -1212,7 +1213,7 @@ function readlinkSync(
   linkFs: Vfs,
   delegate: typeof fs.readlinkSync,
 ): typeof fs.readlinkSync {
-  return function (path: fs.PathLike, options) {
+  return function (path: fs.PathLike) {
     const filePath = stringPath(path);
 
     const resolved = linkFs.entry(filePath);
@@ -1486,10 +1487,11 @@ function stat(linkFs: Vfs, delegate: typeof fs.stat) {
       case FsResult.NOT_FOUND:
         callback(new NotFoundError(stringPath(path), "stat"), null);
         break;
-      case FsResult.PATH:
+      case FsResult.PATH: {
         const args = [...arguments];
         args[0] = resolved.path;
         return delegate.apply(this, args);
+      }
     }
   }
   return addPromisify(stat);
@@ -1526,10 +1528,11 @@ function statSync(
         return bigint ? new LinkBigintStat(resolved) : new LinkStat(resolved);
       case FsResult.NOT_FOUND:
         throw new NotFoundError(stringPath(path), "stat");
-      case FsResult.PATH:
+      case FsResult.PATH: {
         const args = [...arguments];
         args[0] = resolved.path;
         return delegate.apply(this, args);
+      }
     }
   }
   return statSync;
