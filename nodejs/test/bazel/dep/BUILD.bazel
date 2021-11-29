@@ -5,7 +5,7 @@ load("@better_rules_javascript//nodejs:rules.bzl", "nodejs_binary")
 cjs_root(
     name = "root",
     package_name = "@better-rules-javascript-test/nodejs-dep",
-    descriptor = "package.json",
+    descriptors = ["package.json"],
 )
 
 js_library(
@@ -18,4 +18,5 @@ js_library(
 nodejs_binary(
     name = "bin",
     dep = ":main",
+    main = "main.js",
 )

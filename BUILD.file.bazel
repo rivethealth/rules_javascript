@@ -1,50 +1,42 @@
 package(default_visibility = ["//visibility:public"])
 
+DIRS = ["files/"] + [
+    "%s/**/" % file
+    for file in glob(
+        ["files/*"],
+        exclude_directories = 0,
+    )
+    if file != "files/node_modules" and
+       file != "files/.git" and
+       file != "files/.bazel_cache" and
+       not file.startswith("files/bazel-")
+]
+
 filegroup(
     name = "buildifier_files",
-    srcs = glob([pattern for root in [
-        "files/",
-        "files/commonjs/**/",
-        "files/docs/**/",
-        "files/eslint/**/",
-        "files/javascript/**/",
-        "files/nodejs/**/",
-        "files/npm/**/",
-        "files/prettier/**/",
-        "files/protobuf/**/",
-        "files/protobufjs/**/",
-        "files/rollup/**/",
-        "files/rules/**/",
-        "files/util/**/",
-        "files/worker/**/",
-    ] for pattern in [
-        "%s*.bazel" % root,
-        "%s*.bzl" % root,
-    ]]),
+    srcs = glob(
+        [
+            dir + pattern
+            for dir in DIRS
+            for pattern in [
+                "*.bazel",
+                "*.bzl",
+            ]
+        ],
+    ),
 )
 
 filegroup(
     name = "eslint_files",
     srcs = glob(
-        [pattern for root in [
-            "files/",
-            "files/commonjs/**/",
-            "files/docs/**/",
-            "files/eslint/**/",
-            "files/javascript/**/",
-            "files/nodejs/**/",
-            "files/npm/**/",
-            "files/prettier/**/",
-            "files/protobuf/**/",
-            "files/protobufjs/**/",
-            "files/rollup/**/",
-            "files/rules/**/",
-            "files/util/**/",
-            "files/worker/**/",
-        ] for pattern in [
-            # "%s*.js" % root,
-            "%s*.ts" % root,
-        ]],
+        [
+            dir + pattern
+            for dir in DIRS
+            for pattern in [
+                "*.js",
+                "*.ts",
+            ]
+        ],
         ["**/dist/**"],
     ),
 )
@@ -52,109 +44,32 @@ filegroup(
 filegroup(
     name = "prettier_files",
     srcs = glob(
-        [pattern for root in [
-            "files/",
-            "files/commonjs/**/",
-            "files/docs/**/",
-            "files/eslint/**/",
-            "files/javascript/**/",
-            "files/nodejs/**/",
-            "files/npm/**/",
-            "files/prettier/**/",
-            "files/protobuf/**/",
-            "files/protobufjs/**/",
-            "files/rollup/**/",
-            "files/rules/**/",
-            "files/util/**/",
-            "files/worker/**/",
-        ] for pattern in [
-            "%s*.js" % root,
-            "%s*.json" % root,
-            "%s*.md" % root,
-            "%s*.ts" % root,
-            "%s*.yml" % root,
-        ]],
+        [
+            dir + pattern
+            for dir in DIRS
+            for pattern in [
+                "*.html",
+                "*.js",
+                "*.json",
+                "*.md",
+                "*.ts",
+                "*.yml",
+            ]
+        ],
         ["**/dist/**"],
     ),
 )
 
 filegroup(
     name = "common",
-    srcs = glob([
-        "files/*.bazel",
-        "files/*.bzl",
-        "files/rules/**/*",
-    ]),
-)
-
-filegroup(
-    name = "commonjs",
     srcs = glob(
-        ["files/commonjs/**/*"],
-        ["**/test/**/*"],
-    ) + [
-        ":common",
-    ],
-)
-
-filegroup(
-    name = "javascript",
-    srcs = glob(
-        ["files/javascript/**/*"],
-        ["**/test/**/*"],
-    ) + [
-        ":common",
-        ":commonjs",
-    ],
-)
-
-filegroup(
-    name = "nodejs",
-    srcs = glob(
-        ["files/nodejs/**/*"],
-        ["**/test/**/*"],
-    ) + glob(
-        ["files/rollup/**/*"],
-        ["**/test/**/*"],
-    ) + [
-        ":common",
-        ":commonjs",
-        ":javascript",
-        ":util",
-    ],
-)
-
-filegroup(
-    name = "npm",
-    srcs = glob(
-        ["files/npm/**/*"],
-        ["**/test/**/*"],
-    ) + [
-        ":common",
-        ":commonjs",
-        ":javascript",
-        ":nodejs",
-        ":util",
-    ],
-)
-
-filegroup(
-    name = "rollup",
-    srcs = glob(
-        ["files/rollup/**/*"],
-        ["**/test/**/*"],
-    ) + [
-        ":common",
-        ":commonjs",
-        ":javascript",
-        ":nodejs",
-    ],
-)
-
-filegroup(
-    name = "util",
-    srcs = glob(
-        ["files/util/**/*"],
-        ["**/test/**/*"],
+        [
+            dir + pattern
+            for dir in DIRS
+            for pattern in ["*"]
+        ],
+        [
+            "**/test/**",
+        ],
     ),
 )

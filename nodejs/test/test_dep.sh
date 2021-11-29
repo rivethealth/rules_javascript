@@ -1,3 +1,4 @@
 #!/bin/sh -e
 cd nodejs/test/bazel
-env -i bazel run dep:bin | grep -q 'Hello world'
+unset RUNFILES_DIR
+bazel run dep:bin | grep -q 'Hello world'

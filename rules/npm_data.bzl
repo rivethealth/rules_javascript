@@ -703,12 +703,6 @@ PACKAGES = [
         ],
     },
     {
-        "name": "buffer-from@1.1.2",
-        "url": "https://registry.yarnpkg.com/buffer-from/-/buffer-from-1.1.2.tgz#2b146a6fd72e80b4f55d255f35ed59a3a9a41bd5",
-        "integrity": "sha512-E+XQCRwSbaaiChtv6k6Dwgc+bx+Bs6vuKJHHl5kox/BaKbhiXzqQOwK4cO22yElGp2OCmjwVhT3HmxgyPGnJfQ==",
-        "deps": [],
-    },
-    {
         "name": "builtin-modules@3.2.0",
         "url": "https://registry.yarnpkg.com/builtin-modules/-/builtin-modules-3.2.0.tgz#45d5db99e7ee5e6bc4f362e008bf917ab5049887",
         "integrity": "sha512-lGzLKcioL90C7wMczpkY0n/oART3MbBa8R9OFGE1rJxoVI86u4WAGfEk8Wjv10eKSyTHVGkSo3bvBylCEtk7LA==",
@@ -2294,9 +2288,9 @@ PACKAGES = [
         "deps": [],
     },
     {
-        "name": "rollup@2.58.0",
-        "url": "https://registry.yarnpkg.com/rollup/-/rollup-2.58.0.tgz#a643983365e7bf7f5b7c62a8331b983b7c4c67fb",
-        "integrity": "sha512-NOXpusKnaRpbS7ZVSzcEXqxcLDOagN6iFS8p45RkoiMqPHDLwJm758UF05KlMoCRbLBTZsPOIa887gZJ1AiXvw==",
+        "name": "rollup@2.58.3",
+        "url": "https://registry.yarnpkg.com/rollup/-/rollup-2.58.3.tgz#71a08138d9515fb65043b6a18618b2ed9ac8d239",
+        "integrity": "sha512-ei27MSw1KhRur4p87Q0/Va2NAYqMXOX++FNEumMBcdreIRLURKy+cE2wcDJKBn0nfmhP2ZGrJkP1XPO+G8FJQw==",
         "deps": [],
     },
     {
@@ -2342,27 +2336,6 @@ PACKAGES = [
         "name": "slash@3.0.0",
         "url": "https://registry.yarnpkg.com/slash/-/slash-3.0.0.tgz#6539be870c165adbd5240220dbe361f1bc4d4634",
         "integrity": "sha512-g9Q1haeby36OSStwb4ntCGGGaKsaVSjQ68fBxoQcutl5fS1vuY18H3wSt3jFyFtrkx+Kz0V1G85A4MyAdDMi2Q==",
-        "deps": [],
-    },
-    {
-        "name": "source-map-support@0.5.20",
-        "url": "https://registry.yarnpkg.com/source-map-support/-/source-map-support-0.5.20.tgz#12166089f8f5e5e8c56926b377633392dd2cb6c9",
-        "integrity": "sha512-n1lZZ8Ve4ksRqizaBQgxXDgKwttHDhyfQjA6YZZn8+AroHbsIz+JjwxQDxbp+7y5OYCI8t1Yk7etjD9CRd2hIw==",
-        "deps": [
-            {
-                "dep": "buffer-from@1.1.2",
-                "name": "buffer-from",
-            },
-            {
-                "dep": "source-map@0.6.1",
-                "name": "source-map",
-            },
-        ],
-    },
-    {
-        "name": "source-map@0.6.1",
-        "url": "https://registry.yarnpkg.com/source-map/-/source-map-0.6.1.tgz#74722af32e9614e9c287a8d0bbde48b5e2f1a263",
-        "integrity": "sha512-UjgapumWlbMhkBgzT7Ykc5YXUT46F0iKu8SGXq0bcwP5dz/h0Plj6enJqjz1Zbq2l5WaqYnrVbwWOWMyF3F47g==",
         "deps": [],
     },
     {
@@ -2844,7 +2817,7 @@ ROOTS = [
     },
     {
         "name": "rollup",
-        "dep": "rollup@2.58.0",
+        "dep": "rollup@2.58.3",
     },
     {
         "name": "rollup-plugin-hypothetical",
@@ -2853,10 +2826,6 @@ ROOTS = [
     {
         "name": "rollup-plugin-ignore",
         "dep": "rollup-plugin-ignore@1.0.10",
-    },
-    {
-        "name": "source-map-support",
-        "dep": "source-map-support@0.5.20",
     },
     {
         "name": "ts-proto",

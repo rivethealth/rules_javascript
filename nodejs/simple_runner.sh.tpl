@@ -15,6 +15,11 @@ source "${RUNFILES_DIR:-/dev/null}/$f" 2>/dev/null || \
   { echo>&2 "ERROR: cannot find $f"; exit 1; }; f=; set -e
 # --- end runfiles.bash initialization v2 ---
 
+if ! [ -z "${BUILD_WORKING_DIRECTORY:-}" ]; then
+  cd "$BUILD_WORKING_DIRECTORY"
+  unset BUILD_WORKING_DIRECTORY
+fi
+
 BAZEL_WORKSPACE=%{workspace} \
   exec "$(rlocation %{node})" \
   "$(rlocation %{module})" \

@@ -1,12 +1,12 @@
 JsInfo = provider(
     doc = "JavaScript",
     fields = {
-        "js_entry_set": "JavaScript entry set",
-        "root": "CommonJS root ID",
-        "src_entry_set": "Sources entry set",
-        "transitive_descriptors": "Depset of package descriptors",
-        "transitive_extra_links": "Depset of extra links",
-        "transitive_globals": "Depset of global root IDs",
-        "transitive_roots": "Depset of roots",
+        "name": "CommonJS name",
+        "package": "CommonJS package struct",
+        "transitive_deps": "Depset of dependency structs",
+        "transitive_descriptors": "Depset of package descriptor files",
+        "transitive_js": "Depset of JavaScript files",
+        "transitive_packages": "Depset of packages",
+        "transitive_srcs": "Depset of sources",
     },
 )

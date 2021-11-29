@@ -1,19 +1,16 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
 # For additional options to the Node.js runtime, use the
 # NODE_OPTIONS environment variable.
 
-# See https://github.com/bazelbuild/bazel/blob/master/tools/bash/runfiles/runfiles.bash
-# --- begin runfiles.bash initialization v2 ---
-# Copy-pasted from the Bazel Bash runfiles library v2.
-set -uo pipefail; f=bazel_tools/tools/bash/runfiles/runfiles.bash
-source "${RUNFILES_DIR:-/dev/null}/$f" 2>/dev/null || \
-  source "$(grep -sm1 "^$f " "${RUNFILES_MANIFEST_FILE:-/dev/null}" | cut -f2- -d' ')" 2>/dev/null || \
-  source "$0.runfiles/$f" 2>/dev/null || \
-  source "$(grep -sm1 "^$f " "$0.runfiles_manifest" | cut -f2- -d' ')" 2>/dev/null || \
-  source "$(grep -sm1 "^$f " "$0.exe.runfiles_manifest" | cut -f2- -d' ')" 2>/dev/null || \
-  { echo>&2 "ERROR: cannot find $f"; exit 1; }; f=; set -e
-# --- end runfiles.bash initialization v2 ---
+if [ -z "${RUNFILES_DIR:-}" ]; then
+  if [ ! -z "${RUNFILES_MANIFEST_FILE:-}" ]; then
+    export RUNFILES_DIR="$(realpath "${RUNFILES_MANIFEST_FILE%.runfiles_manifest}.runfiles")"
+  else
+    export RUNFILES_DIR="$(realpath "$0.runfiles")"
+  fi
+fi
 
 if ! [ -z "${BUILD_WORKING_DIRECTORY:-}" ]; then
   cd "$BUILD_WORKING_DIRECTORY"
@@ -21,11 +18,14 @@ if ! [ -z "${BUILD_WORKING_DIRECTORY:-}" ]; then
 fi
 
 BAZEL_WORKSPACE=%{workspace} \
+  NODE_PACKAGE_MANIFEST="$RUNFILES_DIR"/%{package_manifest} \
   %{env} \
-  exec "$(rlocation %{node})" \
-  -r "$(realpath "$(rlocation %{shim})")" \
-  -r "$(realpath "$(rlocation %{fs_manifest})")" \
+  exec "$RUNFILES_DIR"/%{node} \
+  -r "$RUNFILES_DIR"/%{module_linker} \
+  --enable-source-maps \
+  --preserve-symlinks \
+  --preserve-symlinks-main \
   %{node_options} \
   ${NODE_OPTIONS_APPEND:-} \
-  %{main_module} \
+  "$RUNFILES_DIR"/%{main_module} \
   "$@"

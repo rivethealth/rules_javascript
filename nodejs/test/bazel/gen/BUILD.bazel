@@ -17,5 +17,5 @@ js_library(
 nodejs_binary(
     name = "bin",
     dep = ":lib",
-    main = "example",
+    main = "example.js",
 )

@@ -51,6 +51,10 @@ so that each package as siblings, with symlinks to dependencies.
 However, this approach gives important meaning to symlinks, thus precluding the
 abililty to use symlinks for transparent file layout.
 
+A minor concern Node.js would resolve the realpath and "escape" the runfile
+tree, which -- without sandboxing (e.g. `bazel run`) -- could lead to pulling in
+old files.
+
 ### Hoisting
 
 Alternatively `--preserve-symlinks` could remove symlinks from module
@@ -65,10 +69,15 @@ to their package structure, and create node_modules symlinks.
 Creating arbitrary symlinks requires `--experimental_allow_unresolved_symlinks`
 and has outstanding bugs https://github.com/bazelbuild/bazel/issues/10298 .
 
-The dependency must be created for the entire package. If package part are
-separated from the package itself (e.g. TypeScript library plus TypeScript test
-library), that could result in duplicate dependencies: package dependencies and
-module dependencies.
+Symlinks must be created for the entire package. Assuming a package can consist
+of multiple rules (e.g. TypeScript library plus TypeScript tests), that involves
+duplication of dependency information: package dependencies and module
+dependencies.
+
+There is additional difficulty in managing "global" dependencies...dynamically
+required modules (noteably tool plugins), that aren't explicit dependencies of
+the package itself. NODE_PATH can help here, but it is not supported for ESM
+modules.
 
 ### Realpath
 
@@ -81,12 +90,15 @@ solves this issue, however it is sometimes unavailable (Windows) or unused
 
 ### Yarn PnP
 
-Plug'n'Play is a package resolution API with broad support, natively or via tool
-plugins. Rules would arrange files with their package structure, and use PnP to
-describe the relationships between packages.
+Plug'n'Play is a package resolution API. To be precise, tt does not itself
+resolve module, but rather resolves "packages" to directories. It has broad
+support, natively or via tool plugins. With this approach, rules would arrange
+files with their package structure, and use PnP to describe the relationships
+between packages.
 
-Unfortunately, Yarn's support for Node.js resolution (CJS and ESM) actually uses
-Yarn internals, not the PnP API.
+Unfortunately, Yarn plugins currently have several issues, and generally fail to
+use findPnpApi, for multi-root dependency trees (namely tools with a different
+dependency tree).
 
 ### Custom resolution
 
@@ -115,7 +127,9 @@ This is platform specific and difficult.
 ### Monkey-patching (current approach)
 
 Shim the `fs` module (or `process.binding('fs')`). However, a lot of Node.js
-internals are written in such a way they cannot be monkey-patched.
+internals are
+[deliberately](https://github.com/nodejs/node/pull/39513#pullrequestreview-714334718)
+written in such a way they cannot be monkey-patched.
 
 Adding the `path` module improves the situation, however, it is a fragile
 approach.

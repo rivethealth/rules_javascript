@@ -1,11 +1,13 @@
-load("//commonjs:rules.bzl", "cjs_root")
-
 package(default_visibility = ["//visibility:public"])
 
-cjs_root(
-    name = "root",
-    package_name = "@better_rules_javascript/prettier-format",
-    descriptor = "package.json",
+filegroup(
+    name = "descriptors",
+    srcs = ["package.json"],
+)
+
+filegroup(
+    name = "tsconfig",
+    srcs = ["tsconfig.json"],
 )
 
 filegroup(

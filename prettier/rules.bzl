@@ -1,30 +1,38 @@
 load("@better_rules_typescript//typescript:rules.bzl", "ts_library")
 load("@rules_format//format:providers.bzl", "FormatInfo")
+load("//commonjs:rules.bzl", "cjs_root")
 load("//nodejs:rules.bzl", "nodejs_binary")
 
 def configure_prettier(name, config, dep, plugins = [], visibility = None):
+    cjs_root(
+        name = "%s_root" % name,
+        package_name = "@better_rules_javascript/prettier-format",
+        descriptors = ["@better_rules_javascript//prettier/format:descriptors"],
+        strip_prefix = "better_rules_javascript/prettier/format",
+    )
+
     ts_library(
         name = "%s_lib" % name,
+        config = "@better_rules_javascript//prettier/format:tsconfig",
         srcs = ["@better_rules_javascript//prettier/format:src"],
         strip_prefix = "better_rules_javascript/prettier/format/src",
         compiler = "@better_rules_javascript//rules:tsc",
-        compiler_options = ["--esModuleInterop"],
         deps = [
             dep,
             "@better_rules_javascript//worker:lib",
             "@better_rules_javascript_npm//argparse:lib",
             "@better_rules_javascript_npm//types_argparse:lib",
             "@better_rules_javascript_npm//types_prettier:lib",
-        ],
-        global_deps = [
             "@better_rules_javascript_npm//types_node:lib",
-        ] + plugins,
-        root = "@better_rules_javascript//prettier/format:root",
+        ],
+        root = ":%s_root" % name,
     )
 
     nodejs_binary(
+        main = "index.js",
         name = "%s_bin" % name,
         dep = "%s_lib" % name,
+        global_deps = plugins,
         visibility = ["//visibility:private"],
     )
 

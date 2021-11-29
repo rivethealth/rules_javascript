@@ -1,0 +1,54 @@
+load("@better_rules_typescript//typescript:rules.bzl", "ts_library")
+load("//commonjs:rules.bzl", "cjs_root")
+load("//javascript:rules.bzl", "js_library")
+load("//nodejs:rules.bzl", "nodejs_simple_binary")
+load("//rollup:rules.bzl", "configure_rollup", "rollup_bundle")
+
+package(default_visibility = ["//visibility:public"])
+
+filegroup(
+    name = "file",
+    srcs = ["dist/bundle.js"],
+)
+
+cjs_root(
+    name = "root",
+    package_name = "@better-rules-javascript/nodejs-fs-linker",
+    descriptors = ["package.json"],
+)
+
+js_library(
+    name = "rollup_config",
+    srcs = ["rollup.config.cjs"],
+    root = ":root",
+    deps = [
+        "@better_rules_javascript_npm//rollup_plugin_commonjs:lib",
+        "@better_rules_javascript_npm//rollup_plugin_node_resolve:lib",
+    ],
+)
+
+ts_library(
+    name = "lib",
+    srcs = glob(["src/**/*.ts"]),
+    compiler = "//rules:tsc",
+    config = "tsconfig.json",
+    root = ":root",
+    strip_prefix = "better_rules_javascript/nodejs/fs-linker/src",
+    deps = [
+        "//commonjs/package:lib",
+        "@better_rules_javascript_npm//types_node:lib",
+    ],
+)
+
+configure_rollup(
+    name = "rollup",
+    config = "rollup.config.cjs",
+    config_dep = ":rollup_config",
+    dep = "@better_rules_javascript_npm//rollup:lib",
+)
+
+rollup_bundle(
+    name = "bundle",
+    dep = ":lib",
+    rollup = ":rollup",
+)

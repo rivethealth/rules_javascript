@@ -63,16 +63,17 @@ format(
 cjs_root(
     name = "root",
     package_name = "@better_rules_javascript/root",
-    descriptor = "package.json",
+    descriptors = ["package.json"],
 )
 
 js_library(
     name = "eslint_config",
     srcs = [".eslintrc.js"],
-    global_deps = [
+    root = ":root",
+    # global_deps
+    deps = [
         "@better_rules_javascript_npm//typescript:lib",
         "@better_rules_javascript_npm//typescript_eslint_eslint_plugin:lib",
         "@better_rules_javascript_npm//typescript_eslint_parser:lib",
     ],
-    root = ":root",
 )

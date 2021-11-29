@@ -1,4 +1,3 @@
-import "source-map-support/register";
 import { ArgumentParser } from "argparse";
 import * as fs from "fs";
 import * as childProcess from "child_process";
@@ -49,13 +48,13 @@ async function main() {
   if (args.refresh) {
     let installProcess: childProcess.ChildProcess;
     if (args.version === "1") {
-      const yarnBin = (<any>global).runfilePath(process.env._YARN_BIN);
+      const yarnBin = `${process.env.RUNFILES_DIR}/${process.env._YARN_BIN}`;
       installProcess = childProcess.spawn(yarnBin, ["install"], {
         cwd: args.dir,
         stdio: ["ignore", "inherit", "inherit"],
       });
     } else {
-      const yarnBin = (<any>global).runfilePath(process.env._YARN2_BIN);
+      const yarnBin = `${process.env.RUNFILES_DIR}/${process.env._YARN2_BIN}`;
       installProcess = childProcess.spawn(
         yarnBin,
         ["install", "--mode", "update-lockfile"],
@@ -116,7 +115,7 @@ async function main() {
         continue;
       }
       for (const [name, version] of Object.entries(obj.dependencies)) {
-        let specifier = specifierV1(name, version);
+        let specifier = specifierV1(name, <string>version);
         if (specifier === "@isaacs/string-locale-compare@^1.1.0") {
           specifier = "@isaacs/string-locale-compare@^1.0.1";
         }
@@ -135,7 +134,9 @@ async function main() {
       ...(packageData.dependencies || {}),
       ...(packageData.devDependencies || {}),
     })) {
-      const package_ = packageBySpecifier.get(specifierV1(name, version));
+      const package_ = packageBySpecifier.get(
+        specifierV1(name, <string>version),
+      );
       if (!package_) {
         throw new Error(`No package for ${name}`);
       }
@@ -196,7 +197,9 @@ async function main() {
       ...(packageData.dependencies || {}),
       ...(packageData.devDependencies || {}),
     })) {
-      const package_ = packageBySpecifier.get(specifierV2(name, version));
+      const package_ = packageBySpecifier.get(
+        specifierV2(name, <string>version),
+      );
       if (!package_) {
         throw new Error(`No package for ${name}`);
       }

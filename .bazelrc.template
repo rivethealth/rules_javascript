@@ -10,4 +10,5 @@ run --experimental_strict_action_env
 test --deleted_packages=%{deleted_packages}
 test --disk_cache=.bazel_cache
 test --experimental_strict_action_env
+test --test_env=HOME
 test --test_output=errors

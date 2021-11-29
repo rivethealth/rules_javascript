@@ -6,7 +6,7 @@ package(default_visibility = ["//visibility:public"])
 cjs_root(
     name = "root",
     package_name = "other",
-    descriptor = "package.json",
+    descriptors = ["package.json"],
 )
 
 js_library(

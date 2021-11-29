@@ -9,8 +9,7 @@ sh_test(
     data =
         [
             ":bazel",
-            "@better_rules_javascript_files//:npm",
-            "@better_rules_javascript_files//:rollup",
+            "@better_rules_javascript_files//:common",
         ],
     tags = ["local"],
 )

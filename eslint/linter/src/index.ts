@@ -17,7 +17,7 @@ class EslintWorker {
     const report = this.linter.verifyAndFix(input, this.options, args.input);
 
     fs.writeFileSync(args.output, report.output, "utf8");
-    return report.messages.map(message => messageString(args.input, message));
+    return report.messages.map((message) => messageString(args.input, message));
   }
 }
 
@@ -26,11 +26,11 @@ function messageString(file: string, message: Linter.LintMessage) {
 }
 
 function pluginPackage(name: string) {
-  if (name.includes('/')) {
-    const [scope, package_] = name.split('/', 2);
+  if (name.includes("/")) {
+    const [scope, package_] = name.split("/", 2);
     return `${scope}/eslint-plugin-${package_}`;
   }
-  if (name.startsWith('@')) {
+  if (name.startsWith("@")) {
     return `${name}/eslint-plugin`;
   }
   return `eslint-plugin-${name}`;
@@ -38,7 +38,7 @@ function pluginPackage(name: string) {
 
 async function resolveOptions(file: string) {
   const esLint = new ESLint({ overrideConfigFile: file, useEslintrc: false });
-  return await esLint.calculateConfigForFile('_dummy');
+  return await esLint.calculateConfigForFile("_dummy");
 }
 
 function createLinter(options: any) {
@@ -71,7 +71,7 @@ run(async (a) => {
     try {
       const errors = await worker.run(a);
       if (errors.length) {
-        return { exitCode: 2, output: errors.join('\n') };
+        return { exitCode: 2, output: errors.join("\n") };
       }
     } catch (e) {
       return { exitCode: 1, output: String(e?.stack || e) };

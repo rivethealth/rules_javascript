@@ -1,5 +1,3 @@
-load("//util:json.bzl", "json")
-
 def _js_import_external_impl(ctx):
     ctx.download_and_extract(
         ctx.attr.urls,
@@ -65,12 +63,14 @@ load("@better_rules_javascript//javascript:rules.bzl", "js_library")
 package(default_visibility = ["//visibility:public"])
 
 cjs_root(
-    descriptor = "npm/package.json",
+    descriptors = ["npm/package.json"],
     name = "root",
     package_name = {js_name},
+    strip_prefix = "%s/npm" % {name},
 )
     """.strip().format(
         js_name = json.encode(package_name),
+        name = json.encode(ctx.name),
     )
 
     build += "\n"
@@ -102,7 +102,6 @@ cjs_root(
             deps = json.encode(deps),
         )
         build += "\n"
-
     ctx.file("BUILD.bazel", build)
 
 js_import_external = repository_rule(

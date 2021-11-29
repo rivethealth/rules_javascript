@@ -6,6 +6,8 @@ import {
 } from "@bazel_tools/src/main/protobuf/worker_protocol";
 import { readFromStream } from "./protobuf";
 
+class CliError extends Error {}
+
 export interface WorkerFactory {
   /**
    * @param args Start-up args
@@ -88,10 +90,14 @@ export async function run(workerFactory: WorkerFactory) {
       const path = last.slice(1);
       await runOnce(worker, path);
     } else {
-      throw new Error();
+      throw new CliError("Invalid worker arguments");
     }
   } catch (e) {
-    console.error(e.stack);
+    if (e instanceof CliError) {
+      console.error(e.message);
+    } else {
+      console.error(e.stack);
+    }
     process.exit(1);
   }
 }

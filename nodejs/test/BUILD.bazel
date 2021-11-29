@@ -1,29 +1,20 @@
 filegroup(
     name = "bazel",
     srcs = glob(["bazel/**/*"]),
+    data = ["@better_rules_javascript_files//:common"],
 )
 
 sh_test(
     name = "binary",
     srcs = ["test_binary.sh"],
-    data =
-        [
-            ":bazel",
-            "@better_rules_javascript_files//:nodejs",
-            "@better_rules_javascript_files//:npm",
-        ],
+    data = [":bazel"],
     tags = ["local"],
 )
 
 sh_test(
     name = "dep",
     srcs = ["test_dep.sh"],
-    data =
-        [
-            ":bazel",
-            "@better_rules_javascript_files//:nodejs",
-            "@better_rules_javascript_files//:npm",
-        ],
+    data = [":bazel"],
     tags = ["local"],
 )
 

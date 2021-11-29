@@ -1,3 +1,4 @@
 #!/bin/sh -e
 cd rollup/test/bazel
-env -i bazel build basic:bundle
+unset RUNFILES_DIR
+bazel build basic:bundle

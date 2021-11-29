@@ -2,32 +2,40 @@ load("@better_rules_typescript//typescript:rules.bzl", "ts_library")
 load("@bazel_skylib//lib:shell.bzl", "shell")
 load("@rules_format//format:providers.bzl", "FormatInfo")
 load("//commonjs:providers.bzl", "cjs_path")
+load("//commonjs:rules.bzl", "cjs_root")
 load("//javascript:providers.bzl", "JsInfo")
 load("//nodejs:rules.bzl", "nodejs_binary")
 load("//util:path.bzl", "runfile_path")
 
 def configure_eslint(name, config, config_path, dep, visibility = None):
+    cjs_root(
+        name = "%s_root" % name,
+        package_name = "@better_rules_javascript/eslint-format",
+        descriptors = ["@better_rules_javascript//eslint/linter:descriptors"],
+    )
+
     ts_library(
         name = "%s_lib" % name,
+        config = "@better_rules_javascript//eslint/linter:tsconfig",
         srcs = ["@better_rules_javascript//eslint/linter:src"],
         strip_prefix = "better_rules_javascript/eslint/linter/src",
         compiler = "@better_rules_javascript//rules:tsc",
-        compiler_options = ["--esModuleInterop"],
         deps = [
             dep,
             "@better_rules_javascript//worker:lib",
             "@better_rules_javascript_npm//argparse:lib",
             "@better_rules_javascript_npm//types_argparse:lib",
-            "@better_rules_javascript_npm//types_eslint:lib",
+            "@better_rules_javascript_npm//types_node:lib",
+            config,
         ],
         global_deps = [
-            config,
-            "@better_rules_javascript_npm//types_node:lib",
+            "@better_rules_javascript_npm//types_eslint:lib",
         ],
-        root = "@better_rules_javascript//eslint/linter:root",
+        root = "%s_root" % name,
     )
 
     nodejs_binary(
+        main = "index.js",
         name = "%s_bin" % name,
         dep = "%s_lib" % name,
         visibility = ["//visibility:private"],
@@ -69,7 +77,8 @@ def _eslint_linter_impl(ctx):
         runfiles = ctx.runfiles(files = ctx.files._bash_runfiles, transitive_files = depset(transitive = [
             config_js_info.js_entry_set.transitive_files,
             config_js_info.transitive_descriptors,
-            eslint_bin.default_runfiles.files]))
+            eslint_bin.default_runfiles.files,
+        ])),
     )
 
     return [default_info]

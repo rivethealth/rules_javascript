@@ -1,19 +1,13 @@
 load("@better_rules_typescript//protobuf:rules.bzl", "configure_ts_protoc")
 load("@better_rules_typescript//typescript:rules.bzl", "configure_ts_compiler")
 load("//commonjs:rules.bzl", "cjs_root")
-load("//rollup:rules.bzl", "configure_rollup")
 
 package(default_visibility = ["//visibility:public"])
 
 cjs_root(
     name = "bazel_root",
     package_name = "@bazel_tools",
-    descriptor = "package.json",
-)
-
-configure_rollup(
-    name = "rollup",
-    dep = "@better_rules_javascript_npm//rollup:lib",
+    descriptors = ["package.json"],
 )
 
 configure_ts_compiler(

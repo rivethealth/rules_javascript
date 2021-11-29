@@ -1,0 +1,21 @@
+[
+  {
+    "key": "example",
+    "value": {
+      "deps": [
+        {
+          "key": "example2",
+          "value": "example2"
+        }
+      ],
+      "path": "example"
+    }
+  },
+  {
+    "key": "example2",
+    "value": {
+      "deps": [],
+      "path": "example2"
+    }
+  }
+]

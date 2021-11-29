@@ -1,11 +1,11 @@
 load("@better_rules_javascript//commonjs:rules.bzl", "cjs_root")
 load("@better_rules_javascript//javascript:rules.bzl", "js_library")
-load("@better_rules_javascript//rollup:rules.bzl", "rollup_bundle")
+load("@better_rules_javascript//rollup:rules.bzl", "configure_rollup", "rollup_bundle")
 
 cjs_root(
     name = "root",
     package_name = "@better_rules_javascript_test/rollup-basic",
-    descriptor = "package.json",
+    descriptors = ["package.json"],
 )
 
 js_library(
@@ -19,7 +19,7 @@ js_library(
 
 js_library(
     name = "rollup_config",
-    srcs = ["rollup.config.js"],
+    srcs = ["rollup.config.cjs"],
     root = ":root",
     deps = [
         "@better_rules_javascript_npm//rollup_plugin_commonjs:lib",
@@ -27,10 +27,15 @@ js_library(
     ],
 )
 
+configure_rollup(
+    name = "rollup",
+    config = "rollup.config.cjs",
+    config_dep = ":rollup_config",
+    dep = "@better_rules_javascript_npm//rollup:lib",
+)
+
 rollup_bundle(
     name = "bundle",
-    config_dep = ":rollup_config",
-    config_path = "rollup.config.js",
     dep = ":lib",
-    rollup = "//:rollup",
+    rollup = ":rollup",
 )
