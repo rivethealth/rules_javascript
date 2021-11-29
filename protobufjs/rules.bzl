@@ -1,11 +1,9 @@
+load("@better_rules_javascript//commonjs:rules.bzl", "output_prefix")
 load("@rules_proto//proto:defs.bzl", "ProtoInfo")
-load("//commonjs:providers.bzl", "CjsInfo", "create_entry", "create_entry_set", "create_extra_link")
+load("//commonjs:providers.bzl", "CjsInfo", "create_dep", "create_package")
 load("//javascript:providers.bzl", "JsInfo")
 load("//nodejs:rules.bzl", "nodejs_binary")
 load(":providers.bzl", "JsProtobuf")
-
-def _path(file):
-    return file.path
 
 def _js_proto_impl(ctx):
     js_protobuf = JsProtobuf(
@@ -47,22 +45,21 @@ def configure_js_proto(name, dep, visibility = None):
 
 def _js_proto_library_impl(ctx):
     cjs_info = ctx.attr.root[CjsInfo]
-
     js_proto = ctx.attr.js_proto[JsProtobuf]
+    runtime_package = js_proto.runtime
+    prefix = output_prefix(cjs_info.package.path, ctx.label, ctx.actions)
+
+    output = ctx.actions.declare_file("%s/%s" % (prefix, ctx.attr.output) if prefix else output)
 
     args = ctx.actions.args()
-
     for dep in ctx.attr.deps:
         args.add_all(dep[ProtoInfo].transitive_proto_path, before_each = "-p")
-
-    output = ctx.actions.declare_file("%s/pb.js" % ctx.label.name)
     args.add("-o", output.path)
     args.add("-t", "static-module")
     args.add("-w", "commonjs")
+
     # args.add("--es6")
-
-    args.add_all(dep[ProtoInfo].transitive_sources, map_each = _path)
-
+    args.add_all(dep[ProtoInfo].transitive_sources)
     ctx.actions.run(
         executable = js_proto.bin.executable,
         tools = [js_proto.bin],
@@ -71,42 +68,38 @@ def _js_proto_library_impl(ctx):
         outputs = [output],
     )
 
-    runtime_package = js_proto.runtime
-
-    entries = [create_entry(root = cjs_info.id, name = ctx.attr.module_name, file = output, label = ctx.label)]
-
     js_deps = [js_proto.runtime]
 
     transitive_descriptors = depset(
-        [cjs_info.descriptor],
+        cjs_info.descriptors,
         transitive = [js_info.transitive_descriptors for js_info in js_deps],
     )
-    transitive_extra_links = depset(
+    transitive_deps = depset(
         [
-            create_extra_link(root = cjs_info.id, dep = js_proto.runtime.root, label = ctx.attr.js_proto.label),
+            create_dep(id = cjs_info.package.id, dep = js_proto.runtime.package.id, name = js_proto.runtime.name, label = ctx.attr.js_proto.label),
         ],
-        transitive = [js_info.transitive_extra_links for js_info in js_deps],
+        transitive = [js_info.transitive_deps for js_info in js_deps],
     )
-    transitive_roots = depset(
-        [cjs_info.root],
-        transitive = [js_info.transitive_roots for js_info in js_deps],
+    transitive_packages = depset(
+        [cjs_info.package],
+        transitive = [js_info.transitive_packages for js_info in js_deps],
     )
-    js_entry_set = create_entry_set(
-        entries = entries,
-        entry_sets = [js_info.js_entry_set for js_info in js_deps],
+    transitive_js = depset(
+        [output],
+        transitive = [js_info.transitive_js for js_info in js_deps],
     )
-    src_entry_set = create_entry_set(
-        # TODO: entries,
-        entry_sets = [js_info.src_entry_set for js_info in js_deps],
+    transitive_srcs = depset(
+        [],
+        transitive = [js_info.transitive_srcs for js_info in js_deps],
     )
 
     js_info = JsInfo(
-        js_entry_set = js_entry_set,
-        root = cjs_info.id,
-        src_entry_set = src_entry_set,
+        transitive_js = transitive_js,
+        package = cjs_info.package,
+        transitive_deps = transitive_deps,
         transitive_descriptors = transitive_descriptors,
-        transitive_extra_links = transitive_extra_links,
-        transitive_roots = transitive_roots,
+        transitive_packages = transitive_packages,
+        transitive_srcs = transitive_srcs,
     )
 
     default_info = DefaultInfo(files = depset([output]))
@@ -131,7 +124,7 @@ js_proto_library = rule(
             mandatory = True,
             providers = [ProtoInfo],
         ),
-        "module_name": attr.string(
+        "output": attr.string(
             mandatory = True,
         ),
     },

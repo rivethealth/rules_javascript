@@ -8,6 +8,7 @@ bzl_library(
     deps = [
         "//commonjs:bzl",
         "//javascript:bzl",
+        "//util:bzl",
         "@rules_proto//proto:defs",
     ],
 )

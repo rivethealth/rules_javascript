@@ -5,20 +5,20 @@
 ## JsInfo
 
 <pre>
-JsInfo(<a href="#JsInfo-js_entry_set">js_entry_set</a>, <a href="#JsInfo-root">root</a>, <a href="#JsInfo-src_entry_set">src_entry_set</a>, <a href="#JsInfo-transitive_descriptors">transitive_descriptors</a>, <a href="#JsInfo-transitive_extra_links">transitive_extra_links</a>,
-       <a href="#JsInfo-transitive_globals">transitive_globals</a>, <a href="#JsInfo-transitive_roots">transitive_roots</a>)
+JsInfo(<a href="#JsInfo-name">name</a>, <a href="#JsInfo-package">package</a>, <a href="#JsInfo-transitive_deps">transitive_deps</a>, <a href="#JsInfo-transitive_descriptors">transitive_descriptors</a>, <a href="#JsInfo-transitive_js">transitive_js</a>, <a href="#JsInfo-transitive_packages">transitive_packages</a>,
+       <a href="#JsInfo-transitive_srcs">transitive_srcs</a>)
 </pre>
 
 JavaScript
 
 **FIELDS**
 
-| Name                                                             | Description                   |
-| :--------------------------------------------------------------- | :---------------------------- |
-| <a id="JsInfo-js_entry_set"></a>js_entry_set                     | JavaScript entry set          |
-| <a id="JsInfo-root"></a>root                                     | CommonJS root ID              |
-| <a id="JsInfo-src_entry_set"></a>src_entry_set                   | Sources entry set             |
-| <a id="JsInfo-transitive_descriptors"></a>transitive_descriptors | Depset of package descriptors |
-| <a id="JsInfo-transitive_extra_links"></a>transitive_extra_links | Depset of extra links         |
-| <a id="JsInfo-transitive_globals"></a>transitive_globals         | Depset of global root IDs     |
-| <a id="JsInfo-transitive_roots"></a>transitive_roots             | Depset of roots               |
+| Name                                                             | Description                        |
+| :--------------------------------------------------------------- | :--------------------------------- |
+| <a id="JsInfo-name"></a>name                                     | CommonJS name                      |
+| <a id="JsInfo-package"></a>package                               | CommonJS package struct            |
+| <a id="JsInfo-transitive_deps"></a>transitive_deps               | Depset of dependency structs       |
+| <a id="JsInfo-transitive_descriptors"></a>transitive_descriptors | Depset of package descriptor files |
+| <a id="JsInfo-transitive_js"></a>transitive_js                   | Depset of JavaScript files         |
+| <a id="JsInfo-transitive_packages"></a>transitive_packages       | Depset of packages                 |
+| <a id="JsInfo-transitive_srcs"></a>transitive_srcs               | Depset of sources                  |
