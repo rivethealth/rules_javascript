@@ -7,5 +7,5 @@ else
     ARG=write
 fi
 
-bazel run @better_rules_javascript//:buildifier_format -- $ARG
-bazel run @better_rules_javascript//:prettier_format -- $ARG
+bazel run :buildifier_format -- $ARG
+bazel run :prettier_format -- $ARG

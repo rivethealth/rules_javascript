@@ -1,5 +1,5 @@
 load("@better_rules_typescript//protobuf:rules.bzl", "ts_proto_export")
-load("@better_rules_typescript//typescript:rules.bzl", "ts_library")
+load("@better_rules_typescript//typescript:rules.bzl", "simple_ts_library")
 load("//commonjs:rules.bzl", "cjs_root")
 load("//rules:rules.bzl", "ts_proto_libraries")
 
@@ -29,11 +29,21 @@ ts_proto_export(
     lib = ":proto_lib",
 )
 
-ts_library(
+simple_ts_library(
     name = "lib",
     srcs = glob(["src/**/*.ts"]),
-    compiler = "//rules:tsc",
-    config = "tsconfig.json",
+    compiler = "//rules:simple_tsc",
+    compiler_options = [
+        "--esModuleInterop",
+        "--lib",
+        "es2019",
+        "--module",
+        "commonjs",
+        "--moduleResolution",
+        "node",
+        "--target",
+        "es2019",
+    ],
     root = ":root",
     strip_prefix = "better_rules_javascript/worker/src",
     deps = [
