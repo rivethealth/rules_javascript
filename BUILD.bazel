@@ -19,9 +19,16 @@ format(
     prefix = "external/better_rules_javascript_files/files",
 )
 
+js_library(
+    name = "prettier_config",
+    srcs = ["prettierrc.yml"],
+    root = ":root",
+)
+
 configure_prettier(
     name = "prettier",
     config = "prettierrc.yml",
+    config_dep = ":prettier_config",
     dep = "@better_rules_javascript_npm//prettier:lib",
 )
 

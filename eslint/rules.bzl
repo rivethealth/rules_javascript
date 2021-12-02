@@ -7,7 +7,7 @@ load("//javascript:providers.bzl", "JsInfo")
 load("//nodejs:rules.bzl", "nodejs_binary")
 load("//util:path.bzl", "runfile_path")
 
-def configure_eslint(name, config, config_path, dep, visibility = None):
+def configure_eslint(name, config, config_path, dep, plugins = [], visibility = None):
     cjs_root(
         name = "%s_root" % name,
         package_name = "@better_rules_javascript/eslint-format",
@@ -35,9 +35,10 @@ def configure_eslint(name, config, config_path, dep, visibility = None):
     )
 
     nodejs_binary(
-        main = "index.js",
         name = "%s_bin" % name,
         dep = "%s_lib" % name,
+        global_deps = plugins,
+        main = "index.js",
         visibility = ["//visibility:private"],
     )
 

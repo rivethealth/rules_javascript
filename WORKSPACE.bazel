@@ -144,11 +144,11 @@ files(
 
 # TypeScript
 
-TYPESCRIPT_VERSION = "a1230c3a0662c062d87e272bbcc070cb0ccbf467"
+TYPESCRIPT_VERSION = "0d8d287d1055b3486702eacb0d2f1a6116090654"
 
 http_archive(
     name = "better_rules_typescript",
-    sha256 = "d0b98df3342b3ac81eaa5ccf7f0f543963489032ed764694f6caa3cfff2145e6",
+    sha256 = "420d6350986b2b52aef52318101d0b0da83e48adcda9ff26d0d5794a5bdb8413",
     strip_prefix = "rules_typescript-%s" % TYPESCRIPT_VERSION,
     urls = [
         "https://github.com/rivethealth/rules_typescript/archive/%s.zip" % TYPESCRIPT_VERSION,
