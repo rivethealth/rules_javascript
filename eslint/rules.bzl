@@ -12,6 +12,7 @@ def configure_eslint(name, config, config_path, dep, plugins = [], visibility = 
         name = "%s_root" % name,
         package_name = "@better_rules_javascript/eslint-format",
         descriptors = ["@better_rules_javascript//eslint/linter:descriptors"],
+        strip_prefix = "better_rules_javascript/eslint/linter"
     )
 
     ts_library(
