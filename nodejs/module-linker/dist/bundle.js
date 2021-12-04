@@ -31,7 +31,7 @@ t.json=function(){return s.object({id:s.string(),deps:s.map(s.string(),s.string(
 function(t){t.json=function(){return s.map(s.string(),w.json())}}(a||(a={}));const k=process.env.NODE_PACKAGE_MANIFEST
 ;if(!k)throw new Error("NODE_PACKAGE_MANIFEST is not set");const y=s.parse(a.json(),c.readFileSync(k,"utf8"))
 ;!function(t,e){e._resolveFilename=function(t,e){return function(r,n,o,s){
-if(u.default.builtinModules.includes(r)||!n||"internal"===n.path||r.startsWith("./")||r.startsWith("../")||r.startsWith("/"))return e.apply(this,arguments)
+if(u.default.builtinModules.includes(r)||!n||"internal"===n.path||"."==r||r.startsWith("./")||r.startsWith("../")||r.startsWith("/"))return e.apply(this,arguments)
 ;const a=r=t.resolve(n.path,r);let i=a.package.split("/").slice(-1)[0];a.inner&&(i=`${i}/${a.inner}`)
 ;const c=u.default._resolveLookupPaths;u.default._resolveLookupPaths=()=>[a.package.split("/").slice(0,-1).join("/")]
 ;try{return e.call(this,i,n,o,s)}finally{u.default._resolveLookupPaths=c}}}(t,e._resolveFilename)

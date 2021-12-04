@@ -12,6 +12,7 @@ function resolveFilename(resolver: Resolver, delegate: Function): Function {
       Module.builtinModules.includes(request) ||
       !parent ||
       parent.path === "internal" ||
+      request == "." ||
       request.startsWith("./") ||
       request.startsWith("../") ||
       request.startsWith("/")
