@@ -16,12 +16,17 @@ function pathParts(path_: string): string[] {
   return path_.split("/").slice(1);
 }
 
+export interface Resolution {
+  package: string;
+  inner: string;
+}
+
 export class Resolver {
   private constructor(
     private readonly packages: Trie<string, ResolverPackage>,
   ) {}
 
-  resolve(parent: string, request: string) {
+  resolve(parent: string, request: string): Resolution {
     if (request.startsWith(".") || request.startsWith("/")) {
       throw new Error(`Specifier "${request}" is not for a package`);
     }
@@ -40,7 +45,7 @@ export class Resolver {
       );
     }
 
-    return [dep, ...depRest].join("/");
+    return { package: dep, inner: depRest.join("/") };
   }
 
   static create(packageTree: PackageTree, runfiles: boolean): Resolver {

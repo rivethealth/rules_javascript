@@ -55,9 +55,20 @@ test_suite(
 
 configure_eslint(
     name = "eslint",
-    config = ":eslint_config",
-    config_path = ".eslintrc.js",
+    config = ".eslintrc.js",
+    config_dep = ":eslint_config",
     dep = "@better_rules_javascript_npm//eslint:lib",
+    plugins = [
+        "@better_rules_javascript_npm//typescript:lib",
+        "@better_rules_javascript_npm//typescript_eslint_eslint_plugin:lib",
+        "@better_rules_javascript_npm//typescript_eslint_parser:lib",
+    ],
+)
+
+js_library(
+    name = "eslint_config",
+    srcs = [".eslintrc.js"],
+    root = ":root",
 )
 
 format(
@@ -71,16 +82,4 @@ cjs_root(
     name = "root",
     package_name = "@better_rules_javascript/root",
     descriptors = ["package.json"],
-)
-
-js_library(
-    name = "eslint_config",
-    srcs = [".eslintrc.js"],
-    root = ":root",
-    # global_deps
-    deps = [
-        "@better_rules_javascript_npm//typescript:lib",
-        "@better_rules_javascript_npm//typescript_eslint_eslint_plugin:lib",
-        "@better_rules_javascript_npm//typescript_eslint_parser:lib",
-    ],
 )

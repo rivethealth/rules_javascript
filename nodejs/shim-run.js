@@ -1,1 +1,0 @@
-requirejs(["nodejs/shim/index"]);

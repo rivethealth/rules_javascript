@@ -8,6 +8,7 @@ module.exports = {
     'plugin:@typescript-eslint/recommended',
   ],
   rules: {
+    '@typescript-eslint/no-var-requires': 'off',
     // https://github.com/typescript-eslint/typescript-eslint/issues/930
     // https://github.com/typescript-eslint/typescript-eslint/issues/1640
     '@typescript-eslint/no-empty-interface': 'off',

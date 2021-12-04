@@ -1,35 +1,44 @@
 import { Resolver } from "@better-rules-javascript/commonjs-package/resolve";
-import module from "module";
-import * as path from "path";
+import Module from "module";
 
 function resolveFilename(resolver: Resolver, delegate: Function): Function {
-  return function (request, parent) {
+  return function (
+    request: string,
+    parent: Module,
+    isMain: boolean,
+    options: any,
+  ) {
     if (
-      module.builtinModules.includes(request) ||
-      (parent && parent.path === "internal")
+      Module.builtinModules.includes(request) ||
+      !parent ||
+      parent.path === "internal" ||
+      request.startsWith("./") ||
+      request.startsWith("../") ||
+      request.startsWith("/")
     ) {
       return delegate.apply(this, arguments);
     }
+
+    const resolved = (request = resolver.resolve(parent.path, request));
+    let newRequest = resolved.package.split("/").slice(-1)[0];
+    if (resolved.inner) {
+      newRequest = `${newRequest}/${resolved.inner}`;
+    }
+
+    const resolvedLookupPaths = (<any>Module)._resolveLookupPaths;
+    (<any>Module)._resolveLookupPaths = () => [
+      resolved.package.split("/").slice(0, -1).join("/"),
+    ];
     try {
-      request = resolver.resolve(
-        parent ? parent.path || path.dirname(parent.filename) : "/",
-        request,
-      );
-    } catch (e) {}
-    const args = [...arguments];
-    if (args[0] !== request) {
-      args[0] = request;
+      return delegate.call(this, newRequest, parent, isMain, options);
+    } finally {
+      (<any>Module)._resolveLookupPaths = resolvedLookupPaths;
     }
-    if (args[2]) {
-      args[2] = false;
-    }
-    return delegate.apply(this, args);
   };
 }
-
-export function patchModule(resolver: Resolver, delegate: typeof module) {
-  (<any>delegate.Module)._resolveFilename = resolveFilename(
+export function patchModule(resolver: Resolver, delegate: typeof Module) {
+  (<any>delegate)._resolveFilename = resolveFilename(
     resolver,
-    (<any>delegate.Module)._resolveFilename,
+    (<any>delegate)._resolveFilename,
   );
 }

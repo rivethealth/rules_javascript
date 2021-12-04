@@ -11,7 +11,7 @@ export class Trie<K, V> {
     let i: number;
     for (i = 0; i < key.length && data; i++) {
       const k = key[i];
-      let newData = data.children.get(k);
+      const newData = data.children.get(k);
       if (!newData) {
         break;
       }

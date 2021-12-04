@@ -128,10 +128,10 @@ class SetJsonFormat {
         this.format = format;
     }
     fromJson(json) {
-        return new Set(json.map(element => this.format.fromJson(element)));
+        return new Set(json.map((element) => this.format.fromJson(element)));
     }
     toJson(value) {
-        return [...value].map(element => this.format.toJson(element));
+        return [...value].map((element) => this.format.toJson(element));
     }
 }
 class StringJsonFormat {
@@ -4381,11 +4381,32 @@ async function main() {
     function packageArg(value) {
         return JSON.parse(value);
     }
-    const parser = new argparse.ArgumentParser({ description: 'Create package manifest', prog: 'package-manifest' });
-    parser.add_argument("--global", { action: "append", default: [], dest: "globals", help: "Global dependencies", type: globalArg });
-    parser.add_argument('--package', { action: "append", default: [], dest: "packages", help: 'Package', type: packageArg });
-    parser.add_argument('--dep', { action: "append", default: [], dest: "deps", help: 'Dependency', type: depArg });
-    parser.add_argument('output', { help: 'Output' });
+    const parser = new argparse.ArgumentParser({
+        description: "Create package manifest",
+        prog: "package-manifest",
+    });
+    parser.add_argument("--global", {
+        action: "append",
+        default: [],
+        dest: "globals",
+        help: "Global dependencies",
+        type: globalArg,
+    });
+    parser.add_argument("--package", {
+        action: "append",
+        default: [],
+        dest: "packages",
+        help: "Package",
+        type: packageArg,
+    });
+    parser.add_argument("--dep", {
+        action: "append",
+        default: [],
+        dest: "deps",
+        help: "Dependency",
+        type: depArg,
+    });
+    parser.add_argument("output", { help: "Output" });
     const args = parser.parse_args();
     const packages = new Map();
     for (const package_ of args.packages) {
@@ -4418,10 +4439,16 @@ async function main() {
             }
         }
     }
-    const tree = new Map([...packages.entries()].map(([id, package_]) => [id, ({ path: package_.path, deps: new Map([...package_.deps.entries()].map(([name, dep]) => [name, dep.id])) })]));
+    const tree = new Map([...packages.entries()].map(([id, package_]) => [
+        id,
+        {
+            path: package_.path,
+            deps: new Map([...package_.deps.entries()].map(([name, dep]) => [name, dep.id])),
+        },
+    ]));
     await fs__namespace.promises.writeFile(args.output, JsonFormat.stringify(PackageTree.json(), tree));
 }
-main().catch(e => {
+main().catch((e) => {
     console.error(e.stack);
     process.exit(1);
 });

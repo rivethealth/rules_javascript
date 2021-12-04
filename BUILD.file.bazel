@@ -33,6 +33,7 @@ filegroup(
             dir + pattern
             for dir in DIRS
             for pattern in [
+                "*.cjs",
                 "*.js",
                 "*.ts",
             ]
@@ -48,6 +49,7 @@ filegroup(
             dir + pattern
             for dir in DIRS
             for pattern in [
+                "*.cjs",
                 "*.html",
                 "*.js",
                 "*.json",

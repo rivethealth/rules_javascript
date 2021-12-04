@@ -7,12 +7,12 @@ load("//javascript:providers.bzl", "JsInfo")
 load("//nodejs:rules.bzl", "nodejs_binary")
 load("//util:path.bzl", "runfile_path")
 
-def configure_eslint(name, config, config_path, dep, plugins = [], visibility = None):
+def configure_eslint(name, dep, config_dep, config, plugins = [], visibility = None):
     cjs_root(
         name = "%s_root" % name,
         package_name = "@better_rules_javascript/eslint-format",
         descriptors = ["@better_rules_javascript//eslint/linter:descriptors"],
-        strip_prefix = "better_rules_javascript/eslint/linter"
+        strip_prefix = "better_rules_javascript/eslint/linter",
     )
 
     ts_library(
@@ -27,7 +27,6 @@ def configure_eslint(name, config, config_path, dep, plugins = [], visibility = 
             "@better_rules_javascript_npm//argparse:lib",
             "@better_rules_javascript_npm//types_argparse:lib",
             "@better_rules_javascript_npm//types_node:lib",
-            config,
         ],
         global_deps = [
             "@better_rules_javascript_npm//types_eslint:lib",
@@ -37,23 +36,18 @@ def configure_eslint(name, config, config_path, dep, plugins = [], visibility = 
 
     nodejs_binary(
         name = "%s_bin" % name,
-        dep = "%s_lib" % name,
+        dep = ":%s_lib" % name,
         global_deps = plugins,
-        main = "index.js",
+        other_deps = [config_dep],
+        main = "main.js",
         visibility = ["//visibility:private"],
-    )
-
-    eslint_linter(
-        bin = "%s_bin" % name,
-        name = "%s_linter" % name,
-        visibility = ["//visibility:private"],
-        config = config,
-        config_path = config_path,
     )
 
     eslint(
         name = name,
-        bin = "%s_linter" % name,
+        config_dep = config_dep,
+        config = config,
+        bin = ":%s_bin" % name,
         visibility = visibility,
     )
 
@@ -112,15 +106,15 @@ eslint_linter = rule(
     implementation = _eslint_linter_impl,
 )
 
-def _eslint_fn(ctx, name, src, out, bin):
+def _eslint_fn(ctx, name, src, out, bin, config):
     args = ctx.actions.args()
-    args.add(src.path)
-    args.add(out.path)
+    args.add(src)
+    args.add(out)
     args.set_param_file_format("multiline")
     args.use_param_file("@%s", use_always = True)
 
     ctx.actions.run(
-        arguments = [args],
+        arguments = ["--config", config, args],
         executable = bin.executable,
         mnemonic = "EslintLint",
         inputs = [src],
@@ -135,9 +129,14 @@ def _eslint_fn(ctx, name, src, out, bin):
 def _eslint_impl(ctx):
     bin = ctx.attr.bin[DefaultInfo]
 
+    config_path = "%s/%s" % (runfile_path(ctx, ctx.attr.config_dep[JsInfo].package), ctx.attr.config)
+
     format_info = FormatInfo(
         fn = _eslint_fn,
-        args = [bin.files_to_run],
+        args = [
+            bin.files_to_run,
+            "./%s.runfiles/%s" % (bin.files_to_run.executable.path, config_path),
+        ],
     )
 
     default_info = DefaultInfo(files = depset(transitive = [bin.files]))
@@ -152,6 +151,15 @@ eslint = rule(
             mandatory = True,
             executable = True,
             cfg = "exec",
+        ),
+        "config": attr.string(
+            doc = "Configuration file path",
+            mandatory = True,
+        ),
+        "config_dep": attr.label(
+            cfg = "exec",
+            mandatory = True,
+            providers = [JsInfo],
         ),
     },
 )

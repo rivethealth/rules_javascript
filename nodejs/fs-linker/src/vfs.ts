@@ -157,7 +157,7 @@ export class Vfs {
   print() {
     return (function print(name: string, node: VfsNode, prefix: string) {
       switch (node.type) {
-        case VfsNode.PATH:
+        case VfsNode.PATH: {
           let result: string;
           if (node.path) {
             result = `${prefix}${name}/ (${node.path})\n`;
@@ -168,6 +168,7 @@ export class Vfs {
             result += print(name, child, prefix + "  ");
           }
           return result;
+        }
         case VfsNode.SYMLINK:
           return `${prefix}${name} -> ${node.path}\n`;
       }
