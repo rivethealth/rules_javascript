@@ -127,21 +127,6 @@ http_archive(
     ],
 )
 
-# Format
-
-local_repository(
-    name = "rules_format",
-    path = "../rules_format",
-)
-
-load("@rules_format//file:workspace.bzl", "files")
-
-files(
-    name = "better_rules_javascript_files",
-    build = "@better_rules_javascript//:BUILD.file.bazel",
-    root_file = "@better_rules_javascript//:WORKSPACE.bazel",
-)
-
 # TypeScript
 
 TYPESCRIPT_VERSION = "0d8d287d1055b3486702eacb0d2f1a6116090654"
@@ -170,4 +155,23 @@ javascript_repositories()
 bind(
     name = "prettier",
     actual = "//tools:prettier",
+)
+
+# Format
+
+FORMAT_VERSION = "7b82d7748ac39b3068f63daf3ab39015864c2a6c"
+
+http_archive(
+    name = "rules_format",
+    sha256 = "f84aaba100b1557b7e5935e9989d90c6f7bbdc6c7cb822f37300dfcaf0dbacca",
+    strip_prefix = "rules_format-%s" % FORMAT_VERSION,
+    url = "https://github.com/rivethealth/rules_format/archive/%s.tar.gz" % FORMAT_VERSION,
+)
+
+load("@rules_format//file:workspace.bzl", "files")
+
+files(
+    name = "better_rules_javascript_files",
+    build = "@better_rules_javascript//:BUILD.file.bazel",
+    root_file = "@better_rules_javascript//:WORKSPACE.bazel",
 )

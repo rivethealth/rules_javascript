@@ -15,19 +15,6 @@ Rollup bundles modules into one or more files.
 
 Add rollup as an [external dependency](#external_dependencies).
 
-## Configure
-
-**BUILD.bzl**
-
-```bzl
-load("@better_rules_javascript//rollup:rules.bzl", "configure_rollup")
-
-configure_rollup(
-    name = "rollup",
-    dep = "@npm//rollup:lib",
-)
-```
-
 ## Use
 
 **example/package.json**
@@ -63,7 +50,7 @@ export default {
 
 ```bzl
 load("@better_rules_javascript//javascript:rules.bzl", "js_library")
-load("@better_rules_javascript//rollup:rules.bzl", "rollup_bundle")
+load("@better_rules_javascript//rollup:rules.bzl", "configure_rollup", "rollup_bundle")
 
 cjs_root(
   name = "root",
@@ -79,14 +66,19 @@ js_library(
 js_library(
     name = "rollup_config",
     root = ":root",
-    srcs = ["rollup.config.js"]
+    srcs = ["rollup.config.js"],
+)
+
+configure_rollup(
+    name = "rollup",
+    config = "rollup.config.cjs",
+    config_dep = ":rollup_config",
+    dep = "@npm//rollup:lib",
 )
 
 rollup_bundle(
     name = "bundle",
     dep = ":b",
-    config_dep = ":rollup_config",
-    config_path = "rollup.config.js",
-    rollup = "//:rollup",
+    rollup = ":rollup",
 )
 ```

@@ -26,7 +26,6 @@ Bazel rules for JavaScript.
 
 - [ ] library
   - [x] files
-  - [ ] directories
   - [x] multiple versions
 - [ ] bundle
   - [x] rollup
@@ -42,16 +41,16 @@ Bazel rules for JavaScript.
   - [ ] sharding
   - [ ] JUnit output
 - [ ] serialization
-  - [ ] protobuf
+  - [x] protobuf
 - [ ] external dependencies
   - [ ] npm
   - [x] yarn
   - [ ] node-gyp
 - [ ] lint
-  - [ ] prettier
-  - [ ] eslint (TODO: config file, plugins)
+  - [x] prettier
+  - [x] eslint
 - [ ] dev
-  - [ ] Stardoc
+  - [x] Stardoc
   - [ ] CI
 
 ## Install
