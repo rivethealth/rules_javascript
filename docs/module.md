@@ -136,10 +136,18 @@ approach.
 
 ## Solution
 
-rules_javascript creates virtual file system by shimming the Node.js `fs`
-module. This works very well for most too.
+better_rules_javascript adopts different approach depending on the runtime/tool.
 
-However, since Node.js uses internal file access methods for
-`require`/`require.resolve`, rules_javascript overrides `Module._load` with
-enhanced-resolve, which is an external implementation of the Node.js module
-resolution algorithm, and uses the (shimmed) `fs` module.
+The underlying concept is packages. A package is directory of files. Files are
+generated or symlinked to be in this directory. better_rules_javascript tracks
+dependencies between packages, and uses that in module resolution. Much of
+module resolution: extensions, package.json exports, etc. are delegated to the
+underlying resolver. better_rules_javascript just tells what packages are
+related to which other ones.
+
+This is an approach similar to Yarn PnP, though it does not use PnP.
+
+For Node.js, better_rules_javascript overrides Module.\_resolveFilename
+(shimming `fs` module isn't possible because Node.js uses internal functions).
+For other tools, better_rules_javascript shims the fs module and synthesizes a
+node_module directory with symlinks.
