@@ -62,12 +62,9 @@ def create_entries(ctx, actions, srcs, prefix, strip_prefix):
         if prefix:
             path = prefix + "/" + path
         file = actions.declare_file(path)
-        actions.run(
-            arguments = [src.path, file.path],
-            executable = "cp",
-            inputs = [src],
-            mnemonic = "CopyFile",
-            outputs = [file],
+        actions.symlink(
+            output = file,
+            target_file = src,
             progress_message = "Copying file to %{output}",
         )
         files.append(file)

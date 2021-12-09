@@ -40,12 +40,9 @@ def _js_proto_libraries_impl(ctx):
             if prefix:
                 path = "%s/%s" % (prefix, path)
             file = ctx.actions.declare_file(path)
-            ctx.actions.run(
-                arguments = [js_.path, file.path],
-                executable = "cp",
-                inputs = [js_],
-                mnemonic = "CopyFile",
-                outputs = [file],
+            actions.symlink(
+                output = file,
+                target_file = js_,
                 progress_message = "Copying file to %{output}",
             )
             js.append(file)

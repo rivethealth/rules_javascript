@@ -6,10 +6,6 @@ load("//nodejs:rules.bzl", "nodejs_binary")
 load("//util:path.bzl", "runfile_path")
 load(":providers.bzl", "RollupInfo")
 
-_VFS_ROOT = "bazel-rollup"
-
-_VFS_CONFIG_ROOT = "bazel-rollup-config"
-
 def _rollup_impl(ctx):
     rollup_info = RollupInfo(
         bin = ctx.attr.bin[DefaultInfo].files_to_run,
