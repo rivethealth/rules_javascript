@@ -19,7 +19,8 @@ Bazel repositories. This approach integrates well into the Bazel ecosystem and
 avoid excessive downloads. Compare with
 [rules_jvm_external](https://github.com/bazelbuild/rules_jvm_external).
 
-Currently, only the yarn package manager is supported.
+better_rules_javascript uses Yarn 2, as its lock file provides all the necessary
+information.
 
 ## Yarn
 
@@ -44,20 +45,18 @@ bazel run @better_rules_javascript//npm/yarn-gen:bin -- --refresh npm_data.bzl
 Full options:
 
 ```txt
-usage: yarn-gen [-h] [--dir DIR] [--package PACKAGE] [--lock LOCK] [--refresh] [--version {1,2}] output
+usage: yarn-gen [-h] [--dir DIR] [--lock LOCK] [--refresh] output
 
 Convert yarn lock file to Starlark
 
 positional arguments:
-  output             Path to Starlark output.
+  output       Path to Starlark output.
 
 optional arguments:
-  -h, --help         show this help message and exit
-  --dir DIR          Directory for refresh. Defaults to .
-  --package PACKAGE  Path to package.json.
-  --lock LOCK        Path to yarn.lock.
-  --refresh          Run yarn to refresh yarn.lock. For version 1, node_modules will also be updated.
-  --version {1,2}    Yarn version. Defaults to 1.
+  -h, --help   show this help message and exit
+  --dir DIR    Directory for refresh. Defaults to .
+  --lock LOCK  Path to yarn.lock.
+  --refresh    Run yarn to refresh yarn.lock.
 ```
 
 Then load the repositories into the workspace.
@@ -88,16 +87,15 @@ js_library(
 
 ### Executable
 
-For convenience, yarn executables are available as targets in `npm:yarn` and
-`npm:yarn2`.
+For convenience, the yarn executable is available as
+`@better_rules_javascript//npm:yarn`.
 
 ## IDE
 
-IDEs require packages installed in `node_modules`. This may be done as a
-side-effect of a package manager refresh.
+IDEs require packages installed in `node_modules`.
 
-Otherwise, packages can be installed separately with a usual package manager
-install.
+These package may be installed separately with a usual package manager install,
+or you may use Bazel (comming soon).
 
 ## Limitations
 

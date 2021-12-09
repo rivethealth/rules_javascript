@@ -12,6 +12,11 @@ def _fix_typescript_eslint_plugin(package, eslint, typescript):
     package["deps"] = package["deps"] + [{"dep": eslint, "name": "eslint"}, {"dep": typescript, "name": "typescript"}]
     return package
 
+def _fix_webpack_cli(package, webpack):
+    package = dict(**package)
+    package["deps"] = package["deps"] + [{"dep": webpack, "name": "webpack"}]
+    return package
+
 def repositories():
     nodejs_repositories()
     npm_repositories()
@@ -19,8 +24,9 @@ def repositories():
     eslint = [package["name"] for package in PACKAGES if package["name"].startswith("eslint@")][0]
     typescript = [package["name"] for package in PACKAGES if package["name"].startswith("typescript@")][0]
     typescript_eslint_parser = [package["name"] for package in PACKAGES if package["name"].startswith("@typescript-eslint/parser@")][0]
+    webpack = [package["name"] for package in PACKAGES if package["name"].startswith("webpack@")][0]
     packages = [
-        _fix_typescript_eslint_utils(package, eslint) if package["name"].startswith("@typescript-eslint/experimental-utils@") else _fix_typescript_eslint_plugin(package, eslint, typescript) if package["name"].startswith("@typescript-eslint/eslint-plugin@") else package
+        _fix_typescript_eslint_utils(package, eslint) if package["name"].startswith("@typescript-eslint/experimental-utils@") else _fix_typescript_eslint_plugin(package, eslint, typescript) if package["name"].startswith("@typescript-eslint/eslint-plugin@") else _fix_webpack_cli(package, webpack) if package["name"].startswith("webpack-cli@") else package
         for package in PACKAGES
     ]
 

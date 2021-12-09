@@ -20,24 +20,21 @@ ts_library(
     strip_prefix = "better_rules_javascript/npm/yarn-gen/src",
     deps = [
         "@better_rules_javascript_npm//argparse:lib",
+        "@better_rules_javascript_npm//semver:lib",
         "@better_rules_javascript_npm//types_argparse:lib",
+        "@better_rules_javascript_npm//types_semver:lib",
         "@better_rules_javascript_npm//types_yaml:lib",
         "@better_rules_javascript_npm//types_yarnpkg__lockfile:lib",
         "@better_rules_javascript_npm//yaml:lib",
-        "@better_rules_javascript_npm//yarnpkg_lockfile:lib",
     ],
 )
 
 nodejs_binary(
     name = "bin",
-    data = [
-        "//npm:yarn",
-        "//npm:yarn2",
-    ],
+    data = ["//npm:yarn"],
     dep = ":lib",
     env = {
         "_YARN_BIN": "better_rules_javascript/npm/yarn/bin",
-        "_YARN2_BIN": "better_rules_javascript/npm/yarn2/bin",
     },
-    main = "index.js",
+    main = "main.js",
 )

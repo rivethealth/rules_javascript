@@ -3,3 +3,4 @@ bazel-*
 
 node_modules
 .bazel_cache
+.yarn
