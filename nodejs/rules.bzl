@@ -14,8 +14,8 @@ def _nodejs_simple_binary_implementation(ctx):
         template = ctx.file._runner,
         output = bin,
         substitutions = {
-            "%{module}": shell.quote(ctx.workspace_name + "/" + ctx.file.src.short_path),
-            "%{node}": shell.quote(ctx.workspace_name + "/" + nodejs_toolchain.nodejs.bin.short_path),
+            "%{module}": shell.quote(runfile_path(ctx, ctx.file.src)),
+            "%{node}": shell.quote(runfile_path(ctx, nodejs_toolchain.nodejs.bin)),
             "%{example}": ctx.file.src.short_path,
         },
         is_executable = True,

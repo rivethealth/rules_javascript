@@ -1,6 +1,6 @@
 # rules_javascript
 
-Bazel rules for JavaScript and related technologies, such as TypeScript.
+Bazel rules for JavaScript, TypeScript, and related technologies.
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
@@ -186,6 +186,8 @@ Hello world
 [Ts-proto](docs/ts-proto.md)
 
 [TypeScript](docs/typescript.md)
+
+[Webpack](docs/webpack.md)
 
 ### Stardoc
 

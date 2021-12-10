@@ -13,6 +13,7 @@ pkg_tar(
         "//rollup/doc",
         "//ts-proto/doc",
         "//typescript/doc",
+        "//webpack/doc",
     ],
     mode = "0644",
 )
