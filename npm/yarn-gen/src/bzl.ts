@@ -1,6 +1,7 @@
 export interface BzlPackage {
   deps: BzlDep[];
   name: string;
+  id: string;
   url: string;
 }
 
@@ -25,6 +26,6 @@ export interface BzlDep {
   dep: string;
 }
 
-export function bzlName(resolution: string) {
+export function bzlId(resolution: string) {
   return resolution.replace("@npm:", "@");
 }

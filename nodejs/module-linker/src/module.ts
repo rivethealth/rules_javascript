@@ -13,6 +13,7 @@ function resolveFilename(resolver: Resolver, delegate: Function): Function {
       !parent ||
       parent.path === "internal" ||
       request == "." ||
+      request == ".." ||
       request.startsWith("./") ||
       request.startsWith("../") ||
       request.startsWith("/")

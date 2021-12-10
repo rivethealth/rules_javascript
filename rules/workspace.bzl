@@ -2,31 +2,32 @@ load("//nodejs:workspace.bzl", nodejs_repositories = "repositories")
 load("//npm:workspace.bzl", "npm", npm_repositories = "repositories")
 load(":npm_data.bzl", "PACKAGES", "ROOTS")
 
-def _fix_typescript_eslint_utils(package, eslint):
+def _fix_terser_webpack_plugin(package):
     package = dict(**package)
-    package["deps"] = package["deps"] + [{"dep": eslint, "name": "eslint"}]
+    package["deps"] = [dep for dep in package["deps"] if dep["name"] != "webpack"]
     return package
 
-def _fix_typescript_eslint_plugin(package, eslint, typescript):
+def _fix_webpack_cli_configtest(package):
     package = dict(**package)
-    package["deps"] = package["deps"] + [{"dep": eslint, "name": "eslint"}, {"dep": typescript, "name": "typescript"}]
+    package["deps"] = [dep for dep in package["deps"] if dep["name"] != "webpack-cli"]
     return package
 
-def _fix_webpack_cli(package, webpack):
+def _fix_webpack_cli_info(package):
     package = dict(**package)
-    package["deps"] = package["deps"] + [{"dep": webpack, "name": "webpack"}]
+    package["deps"] = [dep for dep in package["deps"] if dep["name"] != "webpack-cli"]
+    return package
+
+def _fix_webpack_serve(package):
+    package = dict(**package)
+    package["deps"] = [dep for dep in package["deps"] if dep["name"] != "webpack-cli"]
     return package
 
 def repositories():
     nodejs_repositories()
     npm_repositories()
 
-    eslint = [package["name"] for package in PACKAGES if package["name"].startswith("eslint@")][0]
-    typescript = [package["name"] for package in PACKAGES if package["name"].startswith("typescript@")][0]
-    typescript_eslint_parser = [package["name"] for package in PACKAGES if package["name"].startswith("@typescript-eslint/parser@")][0]
-    webpack = [package["name"] for package in PACKAGES if package["name"].startswith("webpack@")][0]
     packages = [
-        _fix_typescript_eslint_utils(package, eslint) if package["name"].startswith("@typescript-eslint/experimental-utils@") else _fix_typescript_eslint_plugin(package, eslint, typescript) if package["name"].startswith("@typescript-eslint/eslint-plugin@") else _fix_webpack_cli(package, webpack) if package["name"].startswith("webpack-cli@") else package
+        _fix_terser_webpack_plugin(package) if package["name"] == "terser-webpack-plugin" else _fix_webpack_cli_configtest(package) if package["name"] == "@webpack-cli/configtest" else _fix_webpack_cli_info(package) if package["name"] == "@webpack-cli/info" else _fix_webpack_serve(package) if package["name"] == "@webpack-cli/serve" else package
         for package in PACKAGES
     ]
 

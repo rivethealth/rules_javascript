@@ -38,11 +38,6 @@ def _js_import_external_impl(ctx):
         deps.append("@npm_uglify_js3.11.6//:lib")
         deps.append("@npm_estraverse5.2.0//:lib")
 
-    name_result = ctx.execute(["jq", "-r", ".name", "npm/package.json"])
-    if name_result.return_code:
-        fail("Reading package.json failed")
-    package_name = name_result.stdout.rstrip()
-
     build = """
 load("@better_rules_javascript//commonjs:rules.bzl", "cjs_root")
     """.strip()
@@ -63,13 +58,13 @@ load("@better_rules_javascript//javascript:rules.bzl", "js_library")
 package(default_visibility = ["//visibility:public"])
 
 cjs_root(
-    descriptors = ["npm/package.json"],
+    descriptors = glob(["npm/**/package.json"]),
     name = "root",
-    package_name = {js_name},
+    package_name = {package_name},
     strip_prefix = "%s/npm" % {name},
 )
     """.strip().format(
-        js_name = json.encode(package_name),
+        package_name = json.encode(ctx.attr.package_name),
         name = json.encode(ctx.name),
     )
 
@@ -77,27 +72,27 @@ cjs_root(
 
     if typescript:
         build += """
-            ts_import(
-                declarations = glob(["npm/**/*.d.ts"]),
-                name = "lib",
-                root = ":root",
-                deps = {deps},
-                js = glob(["npm/**/*"]),
-                strip_prefix = "%s/npm" % repository_name()[1:],
-            )
+ts_import(
+    declarations = glob(["npm/**/*.d.ts"]),
+    name = "lib",
+    root = ":root",
+    deps = {deps},
+    js = glob(["npm/**/*"]),
+    strip_prefix = "%s/npm" % repository_name()[1:],
+)
         """.strip().format(
             deps = json.encode(deps),
         )
         build += "\n"
     else:
         build += """
-            js_library(
-                name = "lib",
-                root = ":root",
-                deps = {deps},
-                srcs = glob(["npm/**/*"]),
-                strip_prefix = "%s/npm" % repository_name()[1:],
-            )
+js_library(
+    name = "lib",
+    root = ":root",
+    deps = {deps},
+    srcs = glob(["npm/**/*"]),
+    strip_prefix = "%s/npm" % repository_name()[1:],
+)
         """.strip().format(
             deps = json.encode(deps),
         )
@@ -109,6 +104,9 @@ js_import_external = repository_rule(
     attrs = {
         "deps": attr.string_list(
             doc = "Dependencies",
+        ),
+        "package_name": attr.string(
+            mandatory = True,
         ),
         "urls": attr.string_list(
             doc = "URLs",
@@ -158,7 +156,8 @@ def package_repo_name(name):
 
 def npm_package(name, package):
     js_import_external(
-        name = name + "_" + package_repo_name(package["name"]),
+        name = name + "_" + package_repo_name(package["id"]),
+        package_name = package["name"],
         deps = ["@%s_%s//:lib" % (name, package_repo_name(dep["dep"])) for dep in package["deps"]],
         urls = [package["url"]],
         integrity = package["integrity"] if "integrity" in package and not package["integrity"].startswith("sha1-") else None,

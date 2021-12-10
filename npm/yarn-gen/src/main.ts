@@ -3,7 +3,7 @@ import * as fs from "fs";
 import * as childProcess from "child_process";
 import * as path from "path";
 import * as semver from "semver";
-import { BzlPackages, BzlDep, BzlRoots, bzlName } from "./bzl";
+import { BzlPackages, BzlDep, BzlRoots, bzlId, BzlPackage } from "./bzl";
 import { npmUrl } from "./npm";
 import {
   NPM_SCHEMA,
@@ -94,10 +94,11 @@ async function main() {
       deps = [];
       // would add integrity, but can't understand how Yarn checksum is calculated
       // (seems like SHA-512 but doesn't match)
-      const bzlPackage = {
-        name: bzlName(package_.resolution),
-        url: npmUrl(specifier.name, package_.version),
+      const bzlPackage: BzlPackage = {
         deps,
+        id: bzlId(package_.resolution),
+        name: specifier.name,
+        url: npmUrl(specifier.name, package_.version),
       };
       bzlPackages.push(bzlPackage);
     } else if (
@@ -129,7 +130,7 @@ async function main() {
       if (!package_) {
         throw new Error(`Dependency ${specifier} not found for ${key}`);
       }
-      deps.push({ dep: bzlName(package_.resolution), name });
+      deps.push({ dep: bzlId(package_.resolution), name });
     }
 
     for (let [name, versionRange] of Object.entries(
@@ -145,7 +146,9 @@ async function main() {
       }
       for (const candidate of packagesByName.get(name) || []) {
         if (semver.satisfies(candidate.version, versionRange)) {
-          deps.push({ dep: bzlName(candidate.resolution), name });
+          if (!deps.some((dep) => dep.name === name)) {
+            deps.push({ dep: bzlId(candidate.resolution), name });
+          }
           break;
         }
       }
