@@ -62,8 +62,8 @@ configure_eslint(
     dep = "@better_rules_javascript_npm//eslint:lib",
     plugins = [
         "@better_rules_javascript_npm//typescript:lib",
-        "@better_rules_javascript_npm//typescript_eslint_eslint_plugin:lib",
-        "@better_rules_javascript_npm//typescript_eslint_parser:lib",
+        "@better_rules_javascript_npm//@typescript-eslint/eslint-plugin:lib",
+        "@better_rules_javascript_npm//@typescript-eslint/parser:lib",
     ],
 )
 

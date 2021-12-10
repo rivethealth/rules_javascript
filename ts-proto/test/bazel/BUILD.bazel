@@ -6,11 +6,11 @@ package(default_visibility = ["//visibility:public"])
 configure_ts_protoc(
     name = "ts_protoc",
     compiler = ":simple_tsc",
-    ts_proto = "@better_rules_javascript_npm//ts_proto:lib",
+    ts_proto = "@better_rules_javascript_npm//ts-proto:lib",
     deps = [
+        "@better_rules_javascript_npm//@types/long:lib",
         "@better_rules_javascript_npm//long:lib",
         "@better_rules_javascript_npm//protobufjs:lib",
-        "@better_rules_javascript_npm//types_long:lib",
     ],
 )
 

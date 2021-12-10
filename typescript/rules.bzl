@@ -285,8 +285,8 @@ def configure_ts_compiler(name, ts, tslib, visibility = None):
             ts,
             "@better_rules_javascript//worker:lib",
             "@better_rules_javascript_npm//argparse:lib",
-            "@better_rules_javascript_npm//types_argparse:lib",
-            "@better_rules_javascript_npm//types_node:lib",
+            "@better_rules_javascript_npm//@types/argparse:lib",
+            "@better_rules_javascript_npm//@types/node:lib",
         ],
         visibility = ["//visibility:private"],
     )
@@ -302,8 +302,8 @@ def configure_ts_compiler(name, ts, tslib, visibility = None):
             ts,
             "@better_rules_javascript_npm//argparse:lib",
             "@better_rules_javascript//worker:lib",
-            "@better_rules_javascript_npm//types_argparse:lib",
-            "@better_rules_javascript_npm//types_node:lib",
+            "@better_rules_javascript_npm//@types/argparse:lib",
+            "@better_rules_javascript_npm//@types/node:lib",
         ],
         visibility = ["//visibility:private"],
     )

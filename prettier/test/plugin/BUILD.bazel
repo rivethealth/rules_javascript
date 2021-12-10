@@ -5,7 +5,7 @@ configure_prettier(
     name = "prettier",
     config = "prettierrc.yml",
     dep = "@better_rules_javascript_npm//prettier:lib",
-    plugins = ["@npm//prettier_plugin_xml:lib"],
+    plugins = ["@npm//@prettier/plugin-xml:lib"],
 )
 
 format(

@@ -14,17 +14,16 @@ ts_library(
     compiler = "//rules:tsc",
     config = "tsconfig.json",
     global_deps = [
-        "@better_rules_javascript_npm//types_node:lib",
+        "@better_rules_javascript_npm//@types/node:lib",
     ],
     root = ":root",
     strip_prefix = "better_rules_javascript/npm/yarn-gen/src",
     deps = [
+        "@better_rules_javascript_npm//@types/argparse:lib",
+        "@better_rules_javascript_npm//@types/semver:lib",
+        "@better_rules_javascript_npm//@types/yaml:lib",
         "@better_rules_javascript_npm//argparse:lib",
         "@better_rules_javascript_npm//semver:lib",
-        "@better_rules_javascript_npm//types_argparse:lib",
-        "@better_rules_javascript_npm//types_semver:lib",
-        "@better_rules_javascript_npm//types_yaml:lib",
-        "@better_rules_javascript_npm//types_yarnpkg__lockfile:lib",
         "@better_rules_javascript_npm//yaml:lib",
     ],
 )

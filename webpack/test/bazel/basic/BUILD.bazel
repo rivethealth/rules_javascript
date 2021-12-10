@@ -28,7 +28,7 @@ configure_webpack(
     name = "webpack",
     config = "webpack.config.js",
     config_dep = ":webpack_config",
-    dep = "@better_rules_javascript_npm//webpack_cli:lib",
+    dep = "@better_rules_javascript_npm//webpack-cli:lib",
 )
 
 webpack_bundle(

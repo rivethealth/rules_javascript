@@ -22,8 +22,8 @@ js_library(
     srcs = ["rollup.config.cjs"],
     root = ":root",
     deps = [
-        "@better_rules_javascript_npm//rollup_plugin_commonjs:lib",
-        "@better_rules_javascript_npm//rollup_plugin_node_resolve:lib",
+        "@better_rules_javascript_npm//@rollup/plugin-commonjs:lib",
+        "@better_rules_javascript_npm//@rollup/plugin-node-resolve:lib",
     ],
 )
 

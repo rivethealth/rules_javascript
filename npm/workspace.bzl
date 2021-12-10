@@ -164,7 +164,7 @@ def npm_package(name, package):
     )
 
 def npm_roots(name, roots):
-    root_packages = {package_repo_name(root["name"]): "@%s_%s" % (name, package_repo_name(root["dep"])) for root in roots}
+    root_packages = {root["name"]: "@%s_%s" % (name, package_repo_name(root["dep"])) for root in roots}
     js_import_npm(name = name, packages = root_packages)
 
 def repositories():

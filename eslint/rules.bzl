@@ -25,11 +25,11 @@ def configure_eslint(name, dep, config_dep, config, plugins = [], visibility = N
             dep,
             "@better_rules_javascript//worker:lib",
             "@better_rules_javascript_npm//argparse:lib",
-            "@better_rules_javascript_npm//types_argparse:lib",
-            "@better_rules_javascript_npm//types_node:lib",
+            "@better_rules_javascript_npm//@types/argparse:lib",
+            "@better_rules_javascript_npm//@types/node:lib",
         ],
         global_deps = [
-            "@better_rules_javascript_npm//types_eslint:lib",
+            "@better_rules_javascript_npm//@types/eslint:lib",
         ],
         root = "%s_root" % name,
     )

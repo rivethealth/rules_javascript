@@ -34,7 +34,7 @@ cjs_root(
 js_protoc(
     name = "js_protoc",
     root = ":proto_root",
-    runtime = "@npm//google_protobuf:lib",
+    runtime = "@npm//google-protobuf:lib",
 )
 ```
 

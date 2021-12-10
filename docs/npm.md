@@ -71,8 +71,7 @@ npm("npm", NPM_PACKAGES, NPM_ROOTS)
 
 ### Usage
 
-JS libraries are available as `@npm//<package_name>:lib`. The package name
-replaces '/' with '\_' and strips other non-alpanumerics.
+JS libraries are available as `@npm//<package_name>:lib`.
 
 For example,
 
@@ -81,7 +80,7 @@ For example,
 ```bzl
 js_library(
     name = "example",
-    deps = ["@npm//org_package:lib"],
+    deps = ["@npm//@org/package:lib"],
 )
 ```
 

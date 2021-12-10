@@ -22,10 +22,10 @@ def configure_prettier(name, dep, config_dep, config, plugins = [], visibility =
         deps = [
             dep,
             "@better_rules_javascript//worker:lib",
+            "@better_rules_javascript_npm//@types/argparse:lib",
+            "@better_rules_javascript_npm//@types/node:lib",
+            "@better_rules_javascript_npm//@types/prettier:lib",
             "@better_rules_javascript_npm//argparse:lib",
-            "@better_rules_javascript_npm//types_argparse:lib",
-            "@better_rules_javascript_npm//types_prettier:lib",
-            "@better_rules_javascript_npm//types_node:lib",
         ],
         root = ":%s_root" % name,
     )

@@ -18,6 +18,6 @@ ts_library(
     root = ":root",
     strip_prefix = "better_rules_javascript/commonjs/package/src",
     deps = [
-        "@better_rules_javascript_npm//types_node:lib",
+        "@better_rules_javascript_npm//@types/node:lib",
     ],
 )

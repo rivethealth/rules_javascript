@@ -13,6 +13,6 @@ bzl_library(
 
 nodejs_binary(
     name = "yarn",
-    dep = "@better_rules_javascript_npm//yarnpkg_cli_dist:lib",
+    dep = "@better_rules_javascript_npm//@yarnpkg/cli-dist:lib",
     main = "bin/yarn.js",
 )
