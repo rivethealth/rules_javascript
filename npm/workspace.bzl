@@ -45,7 +45,7 @@ load("@better_rules_javascript//commonjs:rules.bzl", "cjs_root")
 
     if typescript:
         build += """
-load("@better_rules_typescript//typescript:rules.bzl", "ts_import")
+load("@better_rules_javascript//typescript:rules.bzl", "ts_import")
         """.strip()
         build += "\n"
     else:

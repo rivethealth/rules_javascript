@@ -1,5 +1,5 @@
-load("@better_rules_typescript//protobuf:rules.bzl", "ts_proto_export")
-load("@better_rules_typescript//typescript:rules.bzl", "simple_ts_library")
+load("@better_rules_javascript//ts-proto:rules.bzl", "ts_proto_export")
+load("@better_rules_javascript//typescript:rules.bzl", "simple_ts_library")
 load("//commonjs:rules.bzl", "cjs_root")
 load("//rules:rules.bzl", "ts_proto_libraries")
 

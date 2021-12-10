@@ -11,6 +11,8 @@ pkg_tar(
         "//protobuf/doc",
         "//protobufjs/doc",
         "//rollup/doc",
+        "//ts-proto/doc",
+        "//typescript/doc",
     ],
     mode = "0644",
 )

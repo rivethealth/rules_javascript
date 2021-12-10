@@ -127,23 +127,6 @@ http_archive(
     ],
 )
 
-# TypeScript
-
-TYPESCRIPT_VERSION = "de3bc7ec8864cbf3700b235fc98a148f6ba45ff6"
-
-http_archive(
-    name = "better_rules_typescript",
-    sha256 = "6fc6067ad12d17106cffe93685f0e89f77c373f0909abc795c3f6aeb714b3071",
-    strip_prefix = "rules_typescript-%s" % TYPESCRIPT_VERSION,
-    urls = [
-        "https://github.com/rivethealth/rules_typescript/archive/%s.zip" % TYPESCRIPT_VERSION,
-    ],
-)
-
-load("@better_rules_typescript//rules:workspace.bzl", typescript_repositories = "repositories")
-
-typescript_repositories()
-
 # JavaScript
 
 load("//rules:workspace.bzl", javascript_repositories = "repositories")

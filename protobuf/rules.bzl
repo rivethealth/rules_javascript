@@ -40,7 +40,7 @@ def _js_proto_libraries_impl(ctx):
             if prefix:
                 path = "%s/%s" % (prefix, path)
             file = ctx.actions.declare_file(path)
-            actions.symlink(
+            ctx.actions.symlink(
                 output = file,
                 target_file = js_,
                 progress_message = "Copying file to %{output}",

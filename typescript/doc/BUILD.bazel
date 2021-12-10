@@ -1,0 +1,12 @@
+load("@better_rules_javascript//docs:rules.bzl", "stardoc")
+
+package(default_visibility = ["//visibility:public"])
+
+stardoc(
+    "doc",
+    "//typescript:bzl",
+    [
+        "//typescript:providers.bzl",
+        "//typescript:rules.bzl",
+    ],
+)

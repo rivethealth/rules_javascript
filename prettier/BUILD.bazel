@@ -12,7 +12,7 @@ bzl_library(
     deps = [
         "//javascript:bzl",
         "//nodejs:bzl",
-        "@better_rules_typescript//typescript:bzl",
+        "//typescript:bzl",
         "@rules_format//format:bzl",
     ],
 )

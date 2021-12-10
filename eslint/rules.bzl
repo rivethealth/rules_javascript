@@ -1,10 +1,10 @@
-load("@better_rules_typescript//typescript:rules.bzl", "ts_library")
 load("@bazel_skylib//lib:shell.bzl", "shell")
 load("@rules_format//format:providers.bzl", "FormatInfo")
 load("//commonjs:providers.bzl", "cjs_path")
 load("//commonjs:rules.bzl", "cjs_root")
 load("//javascript:providers.bzl", "JsInfo")
 load("//nodejs:rules.bzl", "nodejs_binary")
+load("//typescript:rules.bzl", "ts_library")
 load("//util:path.bzl", "runfile_path")
 
 def configure_eslint(name, dep, config_dep, config, plugins = [], visibility = None):

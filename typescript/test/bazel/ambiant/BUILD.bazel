@@ -1,0 +1,18 @@
+load("@better_rules_javascript//commonjs:rules.bzl", "cjs_root")
+load("@better_rules_javascript//typescript:rules.bzl", "ts_import", "ts_library")
+
+cjs_root(
+    name = "root",
+    package_name = "example",
+    descriptors = ["package.json"],
+)
+
+ts_library(
+    name = "example",
+    srcs = [
+        "ambiant.d.ts",
+        "example.ts",
+    ],
+    compiler = "//:ts",
+    root = ":root",
+)

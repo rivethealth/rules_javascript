@@ -50,6 +50,8 @@ test_suite(
     tests = [
         "//nodejs/test",
         "//rollup/test",
+        "//ts-proto/test",
+        "//typescript/test",
     ],
 )
 

@@ -71,6 +71,7 @@ filegroup(
             for pattern in ["*"]
         ],
         [
+            "**/docs/**",
             "**/test/**",
         ],
     ),

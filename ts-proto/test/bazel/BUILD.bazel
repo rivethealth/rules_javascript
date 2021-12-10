@@ -1,0 +1,26 @@
+load("@better_rules_javascript//ts-proto:rules.bzl", "configure_ts_protoc")
+load("@better_rules_javascript//typescript:rules.bzl", "configure_simple_ts_compiler", "configure_ts_compiler")
+
+package(default_visibility = ["//visibility:public"])
+
+configure_ts_protoc(
+    name = "ts_protoc",
+    compiler = ":simple_tsc",
+    ts_proto = "@better_rules_javascript_npm//ts_proto:lib",
+    deps = [
+        "@better_rules_javascript_npm//long:lib",
+        "@better_rules_javascript_npm//protobufjs:lib",
+        "@better_rules_javascript_npm//types_long:lib",
+    ],
+)
+
+configure_simple_ts_compiler(
+    name = "simple_tsc",
+    ts = "@better_rules_javascript_npm//typescript:lib",
+)
+
+configure_ts_compiler(
+    name = "tsc",
+    ts = "@better_rules_javascript_npm//typescript:lib",
+    tslib = "@better_rules_javascript_npm//tslib:lib",
+)

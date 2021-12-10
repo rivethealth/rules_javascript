@@ -1,6 +1,6 @@
 # rules_javascript
 
-Bazel rules for JavaScript.
+Bazel rules for JavaScript and related technologies, such as TypeScript.
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
@@ -24,13 +24,13 @@ Bazel rules for JavaScript.
 
 ## Features
 
-- [ ] library
-  - [x] files
-  - [x] multiple versions
+- [x] languages
+  - [ ] Angular
+  - [x] JavaScript
+  - [x] TypeScript
 - [ ] bundle
   - [x] rollup
   - [ ] webpack
-  - [ ] unused deps
 - [ ] runtime
   - [x] nodejs_binary
   - [ ] docker
@@ -42,13 +42,14 @@ Bazel rules for JavaScript.
   - [ ] JUnit output
 - [ ] serialization
   - [x] protobuf
+  - [x] protobufjs
+  - [x] ts-proto
 - [ ] external dependencies
-  - [ ] npm
   - [x] yarn
   - [ ] node-gyp
-- [ ] lint
-  - [x] prettier
+- [x] lint
   - [x] eslint
+  - [x] prettier
 - [ ] dev
   - [x] Stardoc
   - [ ] CI
@@ -91,42 +92,55 @@ javascript_respositories()
 {}
 ```
 
-**lib.js**
+**lib.ts**
 
-```js
-exports.text = "Hello world";
+```ts
+export const TEXT = "Hello world";
 ```
 
-**main.js**
+**main.ts**
 
-```js
-const lib = require("./lib");
-console.log(lib.text);
+```ts
+import { TEXT } from "./lib";
+console.log(TEXT);
+```
+
+**tsconfig.json**
+
+```
+{
+  "compilerOptions": {
+    "lib": ["dom"],
+    "module": "commonjs"
+  }
+}
 ```
 
 **BUILD.bazel**
 
 ```bzl
 load("@better_rules_javascript//commonjs:rules.bzl", "cjs_root")
-load("@better_rules_javascript//javascript:rules.bzl", "js_library")
+load("@better_rules_javascript//javascript:rules.bzl", "ts_library")
 load("@better_rules_javascript//nodejs:rules.bzl", "nodejs_binary")
 
 cjs_root(
   name = "root",
-  descriptor = "package.json",
+  descriptors = ["package.json"],
   package_name = "example",
 )
 
-js_library(
+ts_library(
     name = "lib",
+    config = "tsconfig.json",
     root = ":root",
-    srcs = ["lib.js"],
+    srcs = ["lib.ts"],
 )
 
-js_library(
+ts_library(
     name = "main",
+    config = "tsconfig.json",
     root = ":root",
-    srcs = ["main.js"],
+    srcs = ["main.ts"],
     deps = [":lib"],
 )
 
@@ -168,6 +182,10 @@ Hello world
 [Protobuf.js](docs/protobufjs.md)
 
 [Rollup](docs/rollup.md)
+
+[Ts-proto](docs/ts-proto.md)
+
+[TypeScript](docs/typescript.md)
 
 ### Stardoc
 

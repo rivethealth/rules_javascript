@@ -9,5 +9,5 @@ non-trivial difference between that project and this one.
   downloaded and managed entirely by Bazel. This is an idiomatic Bazel approach,
   e.g. rules_jvm_external.
 - There is no special treatment of node module dependencies. Rather, everything
-  uses the same rules (e.g. js_library).
-- Typescript support is separate, in rules_javascript.
+  uses the same rules (e.g. js_library, ts_import).
+- Clear factorization between components, e.g. JavaScript and TypeScript.
