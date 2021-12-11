@@ -1,10 +1,10 @@
 load("//ts-proto:rules.bzl", "configure_ts_protoc")
-load("//typescript:rules.bzl", "configure_simple_ts_compiler", "configure_ts_compiler")
+load("//typescript:rules.bzl", "configure_ts_compiler", "configure_ts_simple_compiler")
 
 package(default_visibility = ["//visibility:public"])
 
-configure_simple_ts_compiler(
-    name = "simple_tsc",
+configure_ts_simple_compiler(
+    name = "ts_simplec",
     ts = "@better_rules_javascript_npm//typescript:lib",
 )
 
@@ -16,7 +16,7 @@ configure_ts_compiler(
 
 configure_ts_protoc(
     name = "ts_protoc",
-    compiler = ":simple_tsc",
+    compiler = ":ts_simplec",
     ts_proto = "@better_rules_javascript_npm//ts-proto:lib",
     deps = [
         "@better_rules_javascript_npm//@types/long:lib",

@@ -6,7 +6,7 @@ load("@better_rules_javascript//javascript:providers.bzl", "JsInfo")
 load("@better_rules_javascript//util:path.bzl", "output", "runfile_path")
 load(":providers.bzl", "SimpleTsCompilerInfo", "TsCompilerInfo", "TsInfo")
 
-def configure_simple_ts_compiler(name, ts, visibility = None):
+def configure_ts_simple_compiler(name, ts, visibility = None):
     nodejs_binary(
         main = "lib/tsc.js",
         name = "%s_bin" % name,
@@ -14,27 +14,27 @@ def configure_simple_ts_compiler(name, ts, visibility = None):
         visibility = ["//visibility:private"],
     )
 
-    simple_ts_compiler(
+    ts_simple_compiler(
         name = name,
         bin = "%s_bin" % name,
         visibility = visibility,
     )
 
-def _simple_ts_compiler_impl(ctx):
+def _ts_simple_compiler_impl(ctx):
     compiler_info = SimpleTsCompilerInfo(
         bin = ctx.attr.bin[DefaultInfo],
     )
 
     return [compiler_info]
 
-simple_ts_compiler = rule(
+ts_simple_compiler = rule(
     attrs = {
         "bin": attr.label(
             executable = True,
             cfg = "exec",
         ),
     },
-    implementation = _simple_ts_compiler_impl,
+    implementation = _ts_simple_compiler_impl,
 )
 
 def declaration_path(input):
@@ -46,7 +46,7 @@ def compiled_path(input):
 def map_path(input):
     return input + ".map"
 
-def _simple_ts_library_impl(ctx):
+def _ts_simple_library_impl(ctx):
     cjs_info = ctx.attr.root[CjsInfo]
     js_deps = [dep[JsInfo] for dep in ctx.attr.deps if JsInfo in dep]
     ts_deps = [dep[TsInfo] for dep in ctx.attr.deps if TsInfo in dep]
@@ -224,8 +224,8 @@ def _simple_ts_library_impl(ctx):
 
     return [default_info, js_info, ts_info]
 
-simple_ts_library = rule(
-    implementation = _simple_ts_library_impl,
+ts_simple_library = rule(
+    implementation = _ts_simple_library_impl,
     attrs = {
         "srcs": attr.label_list(
             allow_files = [".ts"],
@@ -284,10 +284,10 @@ def configure_ts_compiler(name, ts, tslib = None, visibility = None):
         visibility = ["//visibility:private"],
     )
 
-    simple_ts_library(
+    ts_simple_library(
         name = "%s_js_lib" % name,
         srcs = ["@better_rules_javascript//typescript/js-compiler:src"],
-        compiler = "@better_rules_javascript//rules:simple_tsc",
+        compiler = "@better_rules_javascript//rules:ts_simplec",
         root = ":%s_root" % name,
         compiler_options = ["--esModuleInterop", "--lib", "dom,es2019", "--types", "node"],
         strip_prefix = "better_rules_javascript/typescript/js-compiler/src",
@@ -301,10 +301,10 @@ def configure_ts_compiler(name, ts, tslib = None, visibility = None):
         visibility = ["//visibility:private"],
     )
 
-    simple_ts_library(
+    ts_simple_library(
         name = "%s_dts_lib" % name,
         srcs = ["@better_rules_javascript//typescript/dts-compiler:src"],
-        compiler = "@better_rules_javascript//rules:simple_tsc",
+        compiler = "@better_rules_javascript//rules:ts_simplec",
         root = ":%s_root" % name,
         compiler_options = ["--esModuleInterop", "--lib", "dom,es2019", "--types", "node"],
         strip_prefix = "better_rules_javascript/typescript/dts-compiler/src",

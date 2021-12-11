@@ -1,42 +1,5 @@
 <!-- Generated with Stardoc: http://skydoc.bazel.build -->
 
-<a id="#simple_ts_compiler"></a>
-
-## simple_ts_compiler
-
-<pre>
-simple_ts_compiler(<a href="#simple_ts_compiler-name">name</a>, <a href="#simple_ts_compiler-bin">bin</a>)
-</pre>
-
-**ATTRIBUTES**
-
-| Name                                     | Description                    | Type                                                               | Mandatory | Default |
-| :--------------------------------------- | :----------------------------- | :----------------------------------------------------------------- | :-------- | :------ |
-| <a id="simple_ts_compiler-name"></a>name | A unique name for this target. | <a href="https://bazel.build/docs/build-ref.html#name">Name</a>    | required  |         |
-| <a id="simple_ts_compiler-bin"></a>bin   | -                              | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a> | optional  | None    |
-
-<a id="#simple_ts_library"></a>
-
-## simple_ts_library
-
-<pre>
-simple_ts_library(<a href="#simple_ts_library-name">name</a>, <a href="#simple_ts_library-compiler">compiler</a>, <a href="#simple_ts_library-compiler_options">compiler_options</a>, <a href="#simple_ts_library-deps">deps</a>, <a href="#simple_ts_library-libs">libs</a>, <a href="#simple_ts_library-prefix">prefix</a>, <a href="#simple_ts_library-root">root</a>, <a href="#simple_ts_library-srcs">srcs</a>, <a href="#simple_ts_library-strip_prefix">strip_prefix</a>)
-</pre>
-
-**ATTRIBUTES**
-
-| Name                                                            | Description                    | Type                                                                        | Mandatory | Default |
-| :-------------------------------------------------------------- | :----------------------------- | :-------------------------------------------------------------------------- | :-------- | :------ |
-| <a id="simple_ts_library-name"></a>name                         | A unique name for this target. | <a href="https://bazel.build/docs/build-ref.html#name">Name</a>             | required  |         |
-| <a id="simple_ts_library-compiler"></a>compiler                 | -                              | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a>          | required  |         |
-| <a id="simple_ts_library-compiler_options"></a>compiler_options | Compiler CLI options           | List of strings                                                             | optional  | []      |
-| <a id="simple_ts_library-deps"></a>deps                         | Dependencies                   | <a href="https://bazel.build/docs/build-ref.html#labels">List of labels</a> | optional  | []      |
-| <a id="simple_ts_library-libs"></a>libs                         | -                              | List of strings                                                             | optional  | []      |
-| <a id="simple_ts_library-prefix"></a>prefix                     | Prefix                         | String                                                                      | optional  | ""      |
-| <a id="simple_ts_library-root"></a>root                         | -                              | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a>          | required  |         |
-| <a id="simple_ts_library-srcs"></a>srcs                         | TypeScript sources             | <a href="https://bazel.build/docs/build-ref.html#labels">List of labels</a> | required  |         |
-| <a id="simple_ts_library-strip_prefix"></a>strip_prefix         | Strip prefix                   | String                                                                      | optional  | ""      |
-
 <a id="#ts_compiler"></a>
 
 ## ts_compiler
@@ -98,6 +61,43 @@ ts_library(<a href="#ts_library-name">name</a>, <a href="#ts_library-compiler">c
 | <a id="ts_library-srcs"></a>srcs                 | TypeScript sources             | <a href="https://bazel.build/docs/build-ref.html#labels">List of labels</a> | required  |         |
 | <a id="ts_library-strip_prefix"></a>strip_prefix | Strip prefix                   | String                                                                      | optional  | ""      |
 
+<a id="#ts_simple_compiler"></a>
+
+## ts_simple_compiler
+
+<pre>
+ts_simple_compiler(<a href="#ts_simple_compiler-name">name</a>, <a href="#ts_simple_compiler-bin">bin</a>)
+</pre>
+
+**ATTRIBUTES**
+
+| Name                                     | Description                    | Type                                                               | Mandatory | Default |
+| :--------------------------------------- | :----------------------------- | :----------------------------------------------------------------- | :-------- | :------ |
+| <a id="ts_simple_compiler-name"></a>name | A unique name for this target. | <a href="https://bazel.build/docs/build-ref.html#name">Name</a>    | required  |         |
+| <a id="ts_simple_compiler-bin"></a>bin   | -                              | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a> | optional  | None    |
+
+<a id="#ts_simple_library"></a>
+
+## ts_simple_library
+
+<pre>
+ts_simple_library(<a href="#ts_simple_library-name">name</a>, <a href="#ts_simple_library-compiler">compiler</a>, <a href="#ts_simple_library-compiler_options">compiler_options</a>, <a href="#ts_simple_library-deps">deps</a>, <a href="#ts_simple_library-libs">libs</a>, <a href="#ts_simple_library-prefix">prefix</a>, <a href="#ts_simple_library-root">root</a>, <a href="#ts_simple_library-srcs">srcs</a>, <a href="#ts_simple_library-strip_prefix">strip_prefix</a>)
+</pre>
+
+**ATTRIBUTES**
+
+| Name                                                            | Description                    | Type                                                                        | Mandatory | Default |
+| :-------------------------------------------------------------- | :----------------------------- | :-------------------------------------------------------------------------- | :-------- | :------ |
+| <a id="ts_simple_library-name"></a>name                         | A unique name for this target. | <a href="https://bazel.build/docs/build-ref.html#name">Name</a>             | required  |         |
+| <a id="ts_simple_library-compiler"></a>compiler                 | -                              | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a>          | required  |         |
+| <a id="ts_simple_library-compiler_options"></a>compiler_options | Compiler CLI options           | List of strings                                                             | optional  | []      |
+| <a id="ts_simple_library-deps"></a>deps                         | Dependencies                   | <a href="https://bazel.build/docs/build-ref.html#labels">List of labels</a> | optional  | []      |
+| <a id="ts_simple_library-libs"></a>libs                         | -                              | List of strings                                                             | optional  | []      |
+| <a id="ts_simple_library-prefix"></a>prefix                     | Prefix                         | String                                                                      | optional  | ""      |
+| <a id="ts_simple_library-root"></a>root                         | -                              | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a>          | required  |         |
+| <a id="ts_simple_library-srcs"></a>srcs                         | TypeScript sources             | <a href="https://bazel.build/docs/build-ref.html#labels">List of labels</a> | required  |         |
+| <a id="ts_simple_library-strip_prefix"></a>strip_prefix         | Strip prefix                   | String                                                                      | optional  | ""      |
+
 <a id="#compiled_path"></a>
 
 ## compiled_path
@@ -111,22 +111,6 @@ compiled_path(<a href="#compiled_path-input">input</a>)
 | Name                                  | Description               | Default Value |
 | :------------------------------------ | :------------------------ | :------------ |
 | <a id="compiled_path-input"></a>input | <p align="center"> - </p> | none          |
-
-<a id="#configure_simple_ts_compiler"></a>
-
-## configure_simple_ts_compiler
-
-<pre>
-configure_simple_ts_compiler(<a href="#configure_simple_ts_compiler-name">name</a>, <a href="#configure_simple_ts_compiler-ts">ts</a>, <a href="#configure_simple_ts_compiler-visibility">visibility</a>)
-</pre>
-
-**PARAMETERS**
-
-| Name                                                           | Description               | Default Value     |
-| :------------------------------------------------------------- | :------------------------ | :---------------- |
-| <a id="configure_simple_ts_compiler-name"></a>name             | <p align="center"> - </p> | none              |
-| <a id="configure_simple_ts_compiler-ts"></a>ts                 | <p align="center"> - </p> | none              |
-| <a id="configure_simple_ts_compiler-visibility"></a>visibility | <p align="center"> - </p> | <code>None</code> |
 
 <a id="#configure_ts_compiler"></a>
 
@@ -146,6 +130,22 @@ Configure TypeScript compiler.
 | <a id="configure_ts_compiler-ts"></a>ts                 | Typescript library.                           | none              |
 | <a id="configure_ts_compiler-tslib"></a>tslib           | Tslib library. If set, importHelpers is true. | <code>None</code> |
 | <a id="configure_ts_compiler-visibility"></a>visibility | Visibility.                                   | <code>None</code> |
+
+<a id="#configure_ts_simple_compiler"></a>
+
+## configure_ts_simple_compiler
+
+<pre>
+configure_ts_simple_compiler(<a href="#configure_ts_simple_compiler-name">name</a>, <a href="#configure_ts_simple_compiler-ts">ts</a>, <a href="#configure_ts_simple_compiler-visibility">visibility</a>)
+</pre>
+
+**PARAMETERS**
+
+| Name                                                           | Description               | Default Value     |
+| :------------------------------------------------------------- | :------------------------ | :---------------- |
+| <a id="configure_ts_simple_compiler-name"></a>name             | <p align="center"> - </p> | none              |
+| <a id="configure_ts_simple_compiler-ts"></a>ts                 | <p align="center"> - </p> | none              |
+| <a id="configure_ts_simple_compiler-visibility"></a>visibility | <p align="center"> - </p> | <code>None</code> |
 
 <a id="#declaration_path"></a>
 
