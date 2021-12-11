@@ -1,27 +1,26 @@
 filegroup(
     name = "bazel",
-    srcs = glob(["bazel/**/*"]),
+    srcs = glob(["bazel/**/*"]) + ["@better_rules_javascript_files//:common"],
 )
 
 sh_test(
     name = "ambiant",
     srcs = ["test_ambiant.sh"],
-    data =
-        [
-            ":bazel",
-            "@better_rules_javascript_files//:common",
-        ],
+    data = [":bazel"],
     tags = ["local"],
 )
 
 sh_test(
     name = "basic",
     srcs = ["test_basic.sh"],
-    data =
-        [
-            ":bazel",
-            "@better_rules_javascript_files//:common",
-        ],
+    data = [":bazel"],
+    tags = ["local"],
+)
+
+sh_test(
+    name = "tslib",
+    srcs = ["test_tslib.sh"],
+    data = [":bazel"],
     tags = ["local"],
 )
 

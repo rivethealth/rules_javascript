@@ -8,3 +8,8 @@ configure_ts_compiler(
     ts = "@better_rules_javascript_npm//typescript:lib",
     tslib = "@better_rules_javascript_npm//tslib:lib",
 )
+
+configure_ts_compiler(
+    name = "ts_nolib",
+    ts = "@better_rules_javascript_npm//typescript:lib",
+)

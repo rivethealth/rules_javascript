@@ -105,6 +105,7 @@ mkdir -p "$out"
     tsconfig = ctx.actions.declare_file("%s/tsconfig.json" % output_name)
     args = ctx.actions.args()
     args.add("--config", ctx.file._tsconfig)
+    args.add("--import-helpers", "false")
     args.add("--out-dir", "%s/js" % output_.path)
     args.add("--root-dir", "%s/ts" % output_.path)
     args.add_all(

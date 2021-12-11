@@ -47,12 +47,12 @@ ts_compiler(<a href="#ts_compiler-name">name</a>, <a href="#ts_compiler-bin">bin
 
 **ATTRIBUTES**
 
-| Name                                                | Description                    | Type                                                               | Mandatory | Default |
-| :-------------------------------------------------- | :----------------------------- | :----------------------------------------------------------------- | :-------- | :------ |
-| <a id="ts_compiler-name"></a>name                   | A unique name for this target. | <a href="https://bazel.build/docs/build-ref.html#name">Name</a>    | required  |         |
-| <a id="ts_compiler-bin"></a>bin                     | -                              | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a> | optional  | None    |
-| <a id="ts_compiler-runtime"></a>runtime             | -                              | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a> | required  |         |
-| <a id="ts_compiler-transpile_bin"></a>transpile_bin | -                              | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a> | optional  | None    |
+| Name                                                | Description                                          | Type                                                               | Mandatory | Default |
+| :-------------------------------------------------- | :--------------------------------------------------- | :----------------------------------------------------------------- | :-------- | :------ |
+| <a id="ts_compiler-name"></a>name                   | A unique name for this target.                       | <a href="https://bazel.build/docs/build-ref.html#name">Name</a>    | required  |         |
+| <a id="ts_compiler-bin"></a>bin                     | Declaration compiler executable.                     | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a> | optional  | None    |
+| <a id="ts_compiler-runtime"></a>runtime             | Runtime library. If set, importHelpers will be used. | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a> | optional  | None    |
+| <a id="ts_compiler-transpile_bin"></a>transpile_bin | JS compiler executable.                              | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a> | optional  | None    |
 
 <a id="#ts_import"></a>
 
@@ -136,14 +136,16 @@ configure_simple_ts_compiler(<a href="#configure_simple_ts_compiler-name">name</
 configure_ts_compiler(<a href="#configure_ts_compiler-name">name</a>, <a href="#configure_ts_compiler-ts">ts</a>, <a href="#configure_ts_compiler-tslib">tslib</a>, <a href="#configure_ts_compiler-visibility">visibility</a>)
 </pre>
 
+Configure TypeScript compiler.
+
 **PARAMETERS**
 
-| Name                                                    | Description               | Default Value     |
-| :------------------------------------------------------ | :------------------------ | :---------------- |
-| <a id="configure_ts_compiler-name"></a>name             | <p align="center"> - </p> | none              |
-| <a id="configure_ts_compiler-ts"></a>ts                 | <p align="center"> - </p> | none              |
-| <a id="configure_ts_compiler-tslib"></a>tslib           | <p align="center"> - </p> | none              |
-| <a id="configure_ts_compiler-visibility"></a>visibility | <p align="center"> - </p> | <code>None</code> |
+| Name                                                    | Description                                   | Default Value     |
+| :------------------------------------------------------ | :-------------------------------------------- | :---------------- |
+| <a id="configure_ts_compiler-name"></a>name             | Name to use for targets.                      | none              |
+| <a id="configure_ts_compiler-ts"></a>ts                 | Typescript library.                           | none              |
+| <a id="configure_ts_compiler-tslib"></a>tslib           | Tslib library. If set, importHelpers is true. | <code>None</code> |
+| <a id="configure_ts_compiler-visibility"></a>visibility | Visibility.                                   | <code>None</code> |
 
 <a id="#declaration_path"></a>
 

@@ -266,7 +266,17 @@ simple_ts_library = rule(
     },
 )
 
-def configure_ts_compiler(name, ts, tslib, visibility = None):
+def configure_ts_compiler(name, ts, tslib = None, visibility = None):
+    """Configure TypeScript compiler.
+
+    Args:
+        name: Name to use for targets.
+        ts: Typescript library.
+        tslib: Tslib library. If set, importHelpers is true.
+        descriptors: List of package descriptors.
+        visibility: Visibility.
+    """
+
     cjs_root(
         name = "%s_root" % name,
         package_name = "@better_rules_javascript/typescript",
@@ -341,7 +351,7 @@ def _ts_compiler_impl(ctx):
     ts_compiler_info = TsCompilerInfo(
         bin = ctx.attr.bin[DefaultInfo],
         transpile_bin = ctx.attr.transpile_bin[DefaultInfo],
-        runtime = ctx.attr.runtime[JsInfo],
+        runtime = ctx.attr.runtime[JsInfo] if ctx.attr.runtime else None,
     )
 
     return [ts_compiler_info]
@@ -351,14 +361,16 @@ ts_compiler = rule(
     attrs = {
         "bin": attr.label(
             cfg = "exec",
+            doc = "Declaration compiler executable.",
             executable = True,
         ),
         "transpile_bin": attr.label(
             cfg = "exec",
+            doc = "JS compiler executable.",
             executable = True,
         ),
         "runtime": attr.label(
-            mandatory = True,
+            doc = "Runtime library. If set, importHelpers will be used.",
             providers = [JsInfo],
         ),
     },
@@ -368,7 +380,9 @@ def _ts_library_impl(ctx):
     cjs_info = ctx.attr.root[CjsInfo]
     config = ctx.attr._config[DefaultInfo]
     compiler = ctx.attr.compiler[TsCompilerInfo]
-    js_deps = [dep[JsInfo] for dep in ctx.attr.deps + ctx.attr.global_deps if JsInfo in dep] + [compiler.runtime]
+    js_deps = [dep[JsInfo] for dep in ctx.attr.deps + ctx.attr.global_deps if JsInfo in dep]
+    if compiler.runtime:
+        js_deps.append(compiler.runtime)
     ts_deps = [dep[TsInfo] for dep in ctx.attr.deps + ctx.attr.global_deps if TsInfo in dep]
     output_ = output(ctx.label, ctx.actions)
     prefix = output_prefix(cjs_info.package.path, ctx.label, ctx.actions)
@@ -428,7 +442,7 @@ def _ts_library_impl(ctx):
                 executable = compiler.transpile_bin.files_to_run.executable,
                 execution_requirements = {"supports-workers": "1"},
                 inputs = [src, tsconfig],
-                mnemonic = "TypescriptTranspile",
+                mnemonic = "TypeScriptTranspile",
                 outputs = [js_, map],
                 tools = [compiler.transpile_bin.files_to_run],
             )
@@ -439,6 +453,7 @@ def _ts_library_impl(ctx):
     if ctx.file.config:
         args.add("--config", ctx.file.config)
         inputs.append(ctx.file.config)
+    args.add("--import-helpers", "true" if compiler.runtime else "false")
     args.add("--out-dir", ("%s/%s" % (output_.path, prefix)) if prefix else output_.path)
     args.add("--root-dir", "%s/%s.ts" % (output_.path, ctx.attr.name))
     args.add("--root-dirs", "%s/%s.ts" % (output_.path, ctx.attr.name))
@@ -485,11 +500,18 @@ def _ts_library_impl(ctx):
                     short_path = "%s/%s.ts" % (output_.short_path, ctx.attr.name),
                     label = cjs_info.package.label,
                 ),
-            ],
+            ] + ([compiler.runtime.package] if compiler.runtime else []),
             transitive = [transitive_packages],
         ),
         deps = depset(
-            [
+            ([
+                create_dep(
+                    dep = compiler.runtime.package.id,
+                    id = "",
+                    label = ctx.label,
+                    name = "tslib",
+                ),
+            ] if compiler.runtime else []) + [
                 create_dep(id = "", dep = dep[TsInfo].package.id, name = dep[TsInfo].name, label = dep.label)
                 for dep in ctx.attr.deps
                 if TsInfo in dep
@@ -512,7 +534,7 @@ def _ts_library_impl(ctx):
             [package_manifest, ctx.file._fs_linker, tsconfig] + ts,
             transitive = [transitive_descriptors] + [ts_info.transitive_declarations for ts_info in ts_deps],
         ),
-        mnemonic = "TypescriptCompile",
+        mnemonic = "TypeScriptCompile",
         outputs = declarations,
         tools = [compiler.bin.files_to_run],
     )
@@ -540,9 +562,9 @@ def _ts_library_impl(ctx):
             create_dep(id = cjs_info.package.id, dep = dep[JsInfo].package.id, name = dep[JsInfo].name, label = dep.label)
             for dep in ctx.attr.deps
             if JsInfo in dep
-        ] + [
+        ] + ([
             create_dep(id = cjs_info.package.id, dep = compiler.runtime.package.id, name = compiler.runtime.name, label = ctx.attr.compiler.label),
-        ],
+        ] if compiler.runtime else []),
         transitive = [js_info.transitive_deps for js_info in js_deps],
     )
     transitive_packages = depset(

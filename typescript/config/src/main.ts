@@ -2,8 +2,22 @@ import { ArgumentParser } from "argparse";
 import * as fs from "fs";
 import * as path from "path";
 
+function booleanType(str: string) {
+  switch (str) {
+    case "true":
+      return true;
+    case "false":
+      return false;
+  }
+  throw new TypeError(`Could not covert string to boolean: ${str}`);
+}
+
 const parser = new ArgumentParser();
 parser.add_argument("--config");
+parser.add_argument("--import-helpers", {
+  dest: "importHelpers",
+  type: booleanType,
+});
 parser.add_argument("--root-dir", { dest: "rootDir" });
 parser.add_argument("--root-dirs", {
   action: "append",
@@ -32,12 +46,13 @@ parser.add_argument("files", { nargs: "*", default: [] });
     tsconfig = {};
   }
   tsconfig.compilerOptions = tsconfig.compilerOptions || {};
-  tsconfig.compilerOptions.target = "es2019";
-  tsconfig.compilerOptions.sourceMap = true;
   tsconfig.compilerOptions.declaration = true;
+  console.error("IMPORT HELPERS IS", args.importHelpers);
+  tsconfig.compilerOptions.importHelpers = args.importHelpers;
+  tsconfig.compilerOptions.outDir = relative(args.outDir);
   tsconfig.compilerOptions.rootDir = relative(args.rootDir);
   tsconfig.compilerOptions.rootDirs = args.rootDirs.map(relative);
-  tsconfig.compilerOptions.outDir = relative(args.outDir);
+  tsconfig.compilerOptions.sourceMap = true;
   tsconfig.compilerOptions.typeRoots = args.typeRoots.map(relative);
   tsconfig.files = args.files.map(relative);
   delete tsconfig.compilerOptions.declarationDir;
