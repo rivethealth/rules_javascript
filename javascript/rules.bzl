@@ -62,6 +62,14 @@ def _js_library_impl(ctx):
                 name = dep[JsInfo].name,
             )
             for dep in ctx.attr.deps
+        ] + [
+            create_dep(
+                dep = id,
+                id = cjs_info.package.id,
+                label = Label(id),
+                name = name,
+            )
+            for name, id in ctx.attr.extra_deps.items()
         ],
         transitive = [js_info.transitive_deps for js_info in js_deps],
     )
@@ -95,6 +103,9 @@ js_library = rule(
         "deps": attr.label_list(
             doc = "Dependencies.",
             providers = [JsInfo],
+        ),
+        "extra_deps": attr.string_dict(
+            doc = "Extra dependencies.",
         ),
         "prefix": attr.string(
             doc = "Prefix to add. Defaults to empty.",

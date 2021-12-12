@@ -61,7 +61,7 @@ TypeScript
 ## TsconfigInfo
 
 <pre>
-TsconfigInfo(<a href="#TsconfigInfo-config">config</a>, <a href="#TsconfigInfo-name">name</a>, <a href="#TsconfigInfo-transitive_configs">transitive_configs</a>, <a href="#TsconfigInfo-transitive_deps">transitive_deps</a>, <a href="#TsconfigInfo-transitive_descriptors">transitive_descriptors</a>,
+TsconfigInfo(<a href="#TsconfigInfo-config">config</a>, <a href="#TsconfigInfo-name">name</a>, <a href="#TsconfigInfo-package">package</a>, <a href="#TsconfigInfo-transitive_configs">transitive_configs</a>, <a href="#TsconfigInfo-transitive_deps">transitive_deps</a>, <a href="#TsconfigInfo-transitive_descriptors">transitive_descriptors</a>,
              <a href="#TsconfigInfo-transitive_packages">transitive_packages</a>)
 </pre>
 
@@ -73,6 +73,7 @@ TypeScript config file
 | :--------------------------------------------------------------------- | :---------------------------- |
 | <a id="TsconfigInfo-config"></a>config                                 | Config file                   |
 | <a id="TsconfigInfo-name"></a>name                                     | Package name                  |
+| <a id="TsconfigInfo-package"></a>package                               | Package                       |
 | <a id="TsconfigInfo-transitive_configs"></a>transitive_configs         | Depset of configs             |
 | <a id="TsconfigInfo-transitive_deps"></a>transitive_deps               | Depset of extra links         |
 | <a id="TsconfigInfo-transitive_descriptors"></a>transitive_descriptors | Depset of package descriptors |

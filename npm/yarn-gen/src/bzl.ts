@@ -1,8 +1,13 @@
 export interface BzlPackage {
   deps: BzlDep[];
+  extra_deps: BazelDeps;
   name: string;
   id: string;
   url: string;
+}
+
+export interface BazelDeps {
+  [name: string]: string;
 }
 
 export type BzlPackages = BzlPackage[];

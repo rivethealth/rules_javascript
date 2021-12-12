@@ -3,12 +3,12 @@
 var r=Object.getOwnPropertyDescriptor(t,e);Object.defineProperty(n,e,r.get?r:{enumerable:!0,get:function(){return t[e]}
 })}})),n.default=t,Object.freeze(n)}var i,o,s,a=r(t),c=r(e);!function(t){t.parse=function(t,n){
 return t.fromJson(JSON.parse(n))},t.stringify=function(t,n){return JSON.stringify(t.toJson(n))}}(i||(i={})),function(t){
-t.array=function(t){return new u(t)},t.map=function(t,n){return new h(t,n)},t.object=function(t){return new l(t)},
+t.array=function(t){return new u(t)},t.map=function(t,n){return new l(t,n)},t.object=function(t){return new h(t)},
 t.defer=function(t){return{fromJson:n=>t().fromJson(n),toJson:n=>t().toJson(n)}},t.set=function(t){return new f(t)},
 t.string=function(){return new p}}(i||(i={}));class u{constructor(t){this.elementFormat=t}fromJson(t){
-return t.map((t=>this.elementFormat.fromJson(t)))}toJson(t){return t.map((t=>this.elementFormat.toJson(t)))}}class l{
+return t.map((t=>this.elementFormat.fromJson(t)))}toJson(t){return t.map((t=>this.elementFormat.toJson(t)))}}class h{
 constructor(t){this.format=t}fromJson(t){const n={};for(const e in this.format)n[e]=this.format[e].fromJson(t[e])
-;return n}toJson(t){const n={};for(const e in this.format)n[e]=this.format[e].toJson(t[e]);return n}}class h{
+;return n}toJson(t){const n={};for(const e in this.format)n[e]=this.format[e].toJson(t[e]);return n}}class l{
 constructor(t,n){this.keyFormat=t,this.valueFormat=n}fromJson(t){
 return new Map(t.map((({key:t,value:n})=>[this.keyFormat.fromJson(t),this.valueFormat.fromJson(n)])))}toJson(t){
 return[...t.entries()].map((([t,n])=>({key:this.keyFormat.toJson(t),value:this.valueFormat.toJson(n)})))}}class f{
@@ -122,23 +122,22 @@ const o=k(e);"function"==typeof r&&(i=r);const s=t.realpath(o),a=[...arguments];
 s.hardenSymlinks&&(a["function"==typeof a[1]?1:2]=function(t){if(t)return i.apply(this,arguments)
 ;i(null,"buffer"===r?Buffer.from(s.path):s.path)}),n.apply(this,a)}return e.native=n.native,e}(t,n.realpath),
 n.realpathSync=function(t,n){function e(e,r){const i=k(e),o=t.realpath(i),s=[...arguments];o&&i!=o.path&&(s[0]=o.path)
-;const a=n.apply(this,s);return(null==o?void 0:o.hardenSymlinks)?"buffer"===r?Buffer.from(o.path):o.path:a}
-return e.native=n.native,e}(t,n.realpathSync),n.rename=function(t,n){return x(t,n,[0,1])}(t,n.rename),
-n.renameSync=function(t,n){return x(t,n,[0,1])}(t,n.renameSync),n.rmdir=function(t,n){return x(t,n,[0])}(t,n.rmdir),
-n.rmdirSync=function(t,n){return x(t,n,[0])}(t,n.rmdirSync),n.rm=function(t,n){return x(t,n,[0])}(t,n.rm),
-n.rmSync=function(t,n){return x(t,n,[0])}(t,n.rmSync),n.stat=function(t,n){return function(e,r,i){
-const o=k(e),s=t.resolve(o)
-;if("function"==typeof r&&(i=r,r={}),s&&void 0===s.path)return void setImmediate((()=>i(null,r.bigint?new S(s):new v(s))))
-;const a=[...arguments];return s&&o!==s.path&&(a[0]=s.path),n.apply(this,a)}}(t,n.stat),n.statSync=function(t,n){
-return function(e,r){const i=k(e),o=t.resolve(i);if(o&&void 0===o.path)return(null==r?void 0:r.bigint)?new S(o):new v(o)
-;const s=[...arguments];return o&&i!==o.path&&(s[0]=o.path),n.apply(this,s)}}(t,n.statSync),n.symlink=function(t,n){
-return x(t,n,[0])}(t,n.symlink),n.symlinkSync=function(t,n){return x(t,n,[0])}(t,n.symlinkSync),
-n.truncate=function(t,n){return x(t,n,[0])}(t,n.truncate),n.truncateSync=function(t,n){return x(t,n,[0])
-}(t,n.truncateSync),n.unlink=function(t,n){return x(t,n,[0])}(t,n.unlink),n.unlinkSync=function(t,n){return x(t,n,[0])
-}(t,n.unlinkSync),n.utimes=function(t,n){return x(t,n,[0])}(t,n.utimes),n.utimesSync=function(t,n){return x(t,n,[0])
-}(t,n.unlinkSync),n.writeFile=function(t,n){return x(t,n,[0])}(t,n.writeFile),n.writeFileSync=function(t,n){
-return x(t,n,[0])}(t,n.writeFileSync)}(M,require("fs")),function(n,e){e.access=function(t,n){return x(t,n,[0])
-}(n,t.promises.access),e.appendFile=function(t,n){return x(t,n,[0])}(n,t.promises.appendFile),e.chmod=function(t,n){
-return x(t,n,[0])}(n,e.chmod),e.chown=function(t,n){return x(t,n,[0])}(n,e.chown),e.copyFile=function(t,n){
-return x(t,n,[0,1])}(n,e.copyFile),e.cp=function(t,n){return x(t,n,[0,1])}(n,e.cp),e.lutimes=function(t,n){
-return x(t,n,[0])}(n,e.lutimes)}(M,require("fs").promises);
+;const a=n.apply(this,s);return o?.hardenSymlinks?"buffer"===r?Buffer.from(o.path):o.path:a}return e.native=n.native,e
+}(t,n.realpathSync),n.rename=function(t,n){return x(t,n,[0,1])}(t,n.rename),n.renameSync=function(t,n){
+return x(t,n,[0,1])}(t,n.renameSync),n.rmdir=function(t,n){return x(t,n,[0])}(t,n.rmdir),n.rmdirSync=function(t,n){
+return x(t,n,[0])}(t,n.rmdirSync),n.rm=function(t,n){return x(t,n,[0])}(t,n.rm),n.rmSync=function(t,n){return x(t,n,[0])
+}(t,n.rmSync),n.stat=function(t,n){return function(e,r,i){const o=k(e),s=t.resolve(o);if("function"==typeof r&&(i=r,
+r={}),s&&void 0===s.path)return void setImmediate((()=>i(null,r.bigint?new S(s):new v(s))));const a=[...arguments]
+;return s&&o!==s.path&&(a[0]=s.path),n.apply(this,a)}}(t,n.stat),n.statSync=function(t,n){return function(e,r){
+const i=k(e),o=t.resolve(i);if(o&&void 0===o.path)return r?.bigint?new S(o):new v(o);const s=[...arguments]
+;return o&&i!==o.path&&(s[0]=o.path),n.apply(this,s)}}(t,n.statSync),n.symlink=function(t,n){return x(t,n,[0])
+}(t,n.symlink),n.symlinkSync=function(t,n){return x(t,n,[0])}(t,n.symlinkSync),n.truncate=function(t,n){
+return x(t,n,[0])}(t,n.truncate),n.truncateSync=function(t,n){return x(t,n,[0])}(t,n.truncateSync),
+n.unlink=function(t,n){return x(t,n,[0])}(t,n.unlink),n.unlinkSync=function(t,n){return x(t,n,[0])}(t,n.unlinkSync),
+n.utimes=function(t,n){return x(t,n,[0])}(t,n.utimes),n.utimesSync=function(t,n){return x(t,n,[0])}(t,n.unlinkSync),
+n.writeFile=function(t,n){return x(t,n,[0])}(t,n.writeFile),n.writeFileSync=function(t,n){return x(t,n,[0])
+}(t,n.writeFileSync)}(M,require("fs")),function(n,e){e.access=function(t,n){return x(t,n,[0])}(n,t.promises.access),
+e.appendFile=function(t,n){return x(t,n,[0])}(n,t.promises.appendFile),e.chmod=function(t,n){return x(t,n,[0])
+}(n,e.chmod),e.chown=function(t,n){return x(t,n,[0])}(n,e.chown),e.copyFile=function(t,n){return x(t,n,[0,1])
+}(n,e.copyFile),e.cp=function(t,n){return x(t,n,[0,1])}(n,e.cp),e.lutimes=function(t,n){return x(t,n,[0])}(n,e.lutimes)
+}(M,require("fs").promises);

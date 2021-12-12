@@ -63,7 +63,7 @@ export class Resolver {
         const package_ = packageTree.get(dep);
         if (!package_) {
           throw new Error(
-            `Package "${package_}" referenced by "${id}" does not exist`,
+            `Package "${dep}" referenced by "${id}" does not exist`,
           );
         }
         const path_ = resolve(package_.path);

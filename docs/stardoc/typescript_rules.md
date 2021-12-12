@@ -22,44 +22,46 @@ ts_compiler(<a href="#ts_compiler-name">name</a>, <a href="#ts_compiler-bin">bin
 ## ts_import
 
 <pre>
-ts_import(<a href="#ts_import-name">name</a>, <a href="#ts_import-declarations">declarations</a>, <a href="#ts_import-deps">deps</a>, <a href="#ts_import-js">js</a>, <a href="#ts_import-prefix">prefix</a>, <a href="#ts_import-root">root</a>, <a href="#ts_import-strip_prefix">strip_prefix</a>)
+ts_import(<a href="#ts_import-name">name</a>, <a href="#ts_import-declarations">declarations</a>, <a href="#ts_import-deps">deps</a>, <a href="#ts_import-extra_deps">extra_deps</a>, <a href="#ts_import-js">js</a>, <a href="#ts_import-prefix">prefix</a>, <a href="#ts_import-root">root</a>, <a href="#ts_import-strip_prefix">strip_prefix</a>)
 </pre>
 
 Import existing files
 
 **ATTRIBUTES**
 
-| Name                                            | Description                              | Type                                                                        | Mandatory | Default |
-| :---------------------------------------------- | :--------------------------------------- | :-------------------------------------------------------------------------- | :-------- | :------ |
-| <a id="ts_import-name"></a>name                 | A unique name for this target.           | <a href="https://bazel.build/docs/build-ref.html#name">Name</a>             | required  |         |
-| <a id="ts_import-declarations"></a>declarations | Typescript declarations                  | <a href="https://bazel.build/docs/build-ref.html#labels">List of labels</a> | optional  | []      |
-| <a id="ts_import-deps"></a>deps                 | Dependencies                             | <a href="https://bazel.build/docs/build-ref.html#labels">List of labels</a> | optional  | []      |
-| <a id="ts_import-js"></a>js                     | JavaScript                               | <a href="https://bazel.build/docs/build-ref.html#labels">List of labels</a> | optional  | []      |
-| <a id="ts_import-prefix"></a>prefix             | Prefix                                   | String                                                                      | optional  | ""      |
-| <a id="ts_import-root"></a>root                 | CommonJS root                            | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a>          | required  |         |
-| <a id="ts_import-strip_prefix"></a>strip_prefix | Strip prefix, defaults to CjsRoot prefix | String                                                                      | optional  | ""      |
+| Name                                            | Description                              | Type                                                                                      | Mandatory | Default |
+| :---------------------------------------------- | :--------------------------------------- | :---------------------------------------------------------------------------------------- | :-------- | :------ |
+| <a id="ts_import-name"></a>name                 | A unique name for this target.           | <a href="https://bazel.build/docs/build-ref.html#name">Name</a>                           | required  |         |
+| <a id="ts_import-declarations"></a>declarations | Typescript declarations                  | <a href="https://bazel.build/docs/build-ref.html#labels">List of labels</a>               | optional  | []      |
+| <a id="ts_import-deps"></a>deps                 | Dependencies                             | <a href="https://bazel.build/docs/build-ref.html#labels">List of labels</a>               | optional  | []      |
+| <a id="ts_import-extra_deps"></a>extra_deps     | Extra dependencies.                      | <a href="https://bazel.build/docs/skylark/lib/dict.html">Dictionary: String -> String</a> | optional  | {}      |
+| <a id="ts_import-js"></a>js                     | JavaScript                               | <a href="https://bazel.build/docs/build-ref.html#labels">List of labels</a>               | optional  | []      |
+| <a id="ts_import-prefix"></a>prefix             | Prefix                                   | String                                                                                    | optional  | ""      |
+| <a id="ts_import-root"></a>root                 | CommonJS root                            | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a>                        | required  |         |
+| <a id="ts_import-strip_prefix"></a>strip_prefix | Strip prefix, defaults to CjsRoot prefix | String                                                                                    | optional  | ""      |
 
 <a id="#ts_library"></a>
 
 ## ts_library
 
 <pre>
-ts_library(<a href="#ts_library-name">name</a>, <a href="#ts_library-compiler">compiler</a>, <a href="#ts_library-config">config</a>, <a href="#ts_library-deps">deps</a>, <a href="#ts_library-global_deps">global_deps</a>, <a href="#ts_library-prefix">prefix</a>, <a href="#ts_library-root">root</a>, <a href="#ts_library-srcs">srcs</a>, <a href="#ts_library-strip_prefix">strip_prefix</a>)
+ts_library(<a href="#ts_library-name">name</a>, <a href="#ts_library-compiler">compiler</a>, <a href="#ts_library-config">config</a>, <a href="#ts_library-deps">deps</a>, <a href="#ts_library-extra_deps">extra_deps</a>, <a href="#ts_library-global_deps">global_deps</a>, <a href="#ts_library-prefix">prefix</a>, <a href="#ts_library-root">root</a>, <a href="#ts_library-srcs">srcs</a>, <a href="#ts_library-strip_prefix">strip_prefix</a>)
 </pre>
 
 **ATTRIBUTES**
 
-| Name                                             | Description                    | Type                                                                        | Mandatory | Default |
-| :----------------------------------------------- | :----------------------------- | :-------------------------------------------------------------------------- | :-------- | :------ |
-| <a id="ts_library-name"></a>name                 | A unique name for this target. | <a href="https://bazel.build/docs/build-ref.html#name">Name</a>             | required  |         |
-| <a id="ts_library-compiler"></a>compiler         | -                              | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a>          | required  |         |
-| <a id="ts_library-config"></a>config             | -                              | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a>          | optional  | None    |
-| <a id="ts_library-deps"></a>deps                 | Dependencies                   | <a href="https://bazel.build/docs/build-ref.html#labels">List of labels</a> | optional  | []      |
-| <a id="ts_library-global_deps"></a>global_deps   | Types                          | <a href="https://bazel.build/docs/build-ref.html#labels">List of labels</a> | optional  | []      |
-| <a id="ts_library-prefix"></a>prefix             | Prefix                         | String                                                                      | optional  | ""      |
-| <a id="ts_library-root"></a>root                 | -                              | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a>          | required  |         |
-| <a id="ts_library-srcs"></a>srcs                 | TypeScript sources             | <a href="https://bazel.build/docs/build-ref.html#labels">List of labels</a> | required  |         |
-| <a id="ts_library-strip_prefix"></a>strip_prefix | Strip prefix                   | String                                                                      | optional  | ""      |
+| Name                                             | Description                    | Type                                                                                      | Mandatory | Default |
+| :----------------------------------------------- | :----------------------------- | :---------------------------------------------------------------------------------------- | :-------- | :------ |
+| <a id="ts_library-name"></a>name                 | A unique name for this target. | <a href="https://bazel.build/docs/build-ref.html#name">Name</a>                           | required  |         |
+| <a id="ts_library-compiler"></a>compiler         | -                              | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a>                        | required  |         |
+| <a id="ts_library-config"></a>config             | -                              | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a>                        | optional  | None    |
+| <a id="ts_library-deps"></a>deps                 | Dependencies                   | <a href="https://bazel.build/docs/build-ref.html#labels">List of labels</a>               | optional  | []      |
+| <a id="ts_library-extra_deps"></a>extra_deps     | Extra dependencies.            | <a href="https://bazel.build/docs/skylark/lib/dict.html">Dictionary: String -> String</a> | optional  | {}      |
+| <a id="ts_library-global_deps"></a>global_deps   | Types                          | <a href="https://bazel.build/docs/build-ref.html#labels">List of labels</a>               | optional  | []      |
+| <a id="ts_library-prefix"></a>prefix             | Prefix                         | String                                                                                    | optional  | ""      |
+| <a id="ts_library-root"></a>root                 | -                              | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a>                        | required  |         |
+| <a id="ts_library-srcs"></a>srcs                 | TypeScript sources             | <a href="https://bazel.build/docs/build-ref.html#labels">List of labels</a>               | required  |         |
+| <a id="ts_library-strip_prefix"></a>strip_prefix | Strip prefix                   | String                                                                                    | optional  | ""      |
 
 <a id="#ts_simple_compiler"></a>
 

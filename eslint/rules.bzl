@@ -17,6 +17,7 @@ def configure_eslint(name, dep, config_dep, config, plugins = [], visibility = N
 
     tsconfig(
         name = "%s.config" % name,
+        dep = "@better_rules_javascript//rules:tsconfig",
         root = ":root",
         src = "@better_rules_javascript//eslint/linter:tsconfig",
     )
@@ -29,7 +30,7 @@ def configure_eslint(name, dep, config_dep, config, plugins = [], visibility = N
         config = ":%s.config" % name,
         deps = [
             dep,
-            "@better_rules_javascript//worker:lib",
+            "@better_rules_javascript//worker/lib",
             "@better_rules_javascript_npm//argparse:lib",
             "@better_rules_javascript_npm//@types/argparse:lib",
             "@better_rules_javascript_npm//@types/node:lib",
@@ -53,7 +54,7 @@ def configure_eslint(name, dep, config_dep, config, plugins = [], visibility = N
         name = name,
         config_dep = config_dep,
         config = config,
-        bin = ":%s_bin" % name,
+        bin = ":%s.bin" % name,
         visibility = visibility,
     )
 

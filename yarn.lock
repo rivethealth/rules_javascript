@@ -904,13 +904,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@yarnpkg/lockfile@npm:~1.1.0":
-  version: 1.1.0
-  resolution: "@yarnpkg/lockfile@npm:1.1.0"
-  checksum: 05b881b4866a3546861fee756e6d3812776ea47fa6eb7098f983d6d0eefa02e12b66c3fff931574120f196286a7ad4879ce02743c8bb2be36c6a576c7852083a
-  languageName: node
-  linkType: hard
-
 "@yarnpkg/parsers@npm:^2.5.0-rc.5":
   version: 2.5.0-rc.5
   resolution: "@yarnpkg/parsers@npm:2.5.0-rc.5"
@@ -3749,7 +3742,6 @@ __metadata:
     "@typescript-eslint/parser": ~5.5.0
     "@yarnpkg/cli-dist": ~3.1.0
     "@yarnpkg/core": ^3.2.0-rc.7
-    "@yarnpkg/lockfile": ~1.1.0
     argparse: ~2.0.1
     doctoc: ~2.1.0
     enhanced-resolve: ~5.8.0

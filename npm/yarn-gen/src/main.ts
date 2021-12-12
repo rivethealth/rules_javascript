@@ -96,6 +96,7 @@ async function main() {
       // (seems like SHA-512 but doesn't match)
       const bzlPackage: BzlPackage = {
         deps,
+        extra_deps: {},
         id: bzlId(package_.resolution),
         name: specifier.name,
         url: npmUrl(specifier.name, package_.version),
@@ -153,6 +154,25 @@ async function main() {
         }
       }
     }
+  }
+
+  const bzlPackagesById = new Map<string, BzlPackage>(
+    bzlPackages.map((package_) => [package_.id, package_]),
+  );
+  const fixCycles = (id: string, visited = new Set<string>()) => {
+    const package_ = bzlPackagesById.get(id)!;
+    visited.add(id);
+    package_.deps = package_.deps.filter((dep) => {
+      if (!visited.has(dep.dep)) {
+        fixCycles(dep.dep, visited);
+        return true;
+      }
+      package_.extra_deps[dep.name] = dep.dep;
+    });
+    visited.delete(id);
+  };
+  for (const id of bzlPackagesById.keys()) {
+    fixCycles(id);
   }
 
   let bzl = "";

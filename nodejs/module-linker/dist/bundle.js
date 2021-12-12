@@ -13,7 +13,7 @@ if(e.startsWith(".")||e.startsWith("/"))throw new Error(`Specifier "${e}" is not
 ;if(!o)throw new Error(`Package "${r.id}" does not have any dependency for "${e}"`);return{package:o,inner:n.join("/")}}
 static create(t,e){const r=t=>i.resolve(e?`${process.env.RUNFILES_DIR}/${process.env.BAZEL_WORKSPACE}/${t}`:t),n=new f
 ;for(const[e,o]of t.entries()){const s=p(r(o.path)),a=new f;for(const[n,s]of o.deps.entries()){const o=t.get(s)
-;if(!o)throw new Error(`Package "${o}" referenced by "${e}" does not exist`);const i=r(o.path);a.put(l(n),i)}n.put(s,{
+;if(!o)throw new Error(`Package "${s}" referenced by "${e}" does not exist`);const i=r(o.path);a.put(l(n),i)}n.put(s,{
 id:e,deps:a})}return new h(n)}}!function(t){t.parse=function(t,e){return t.fromJson(JSON.parse(e))},
 t.stringify=function(t,e){return JSON.stringify(t.toJson(e))}}(s||(s={})),function(t){t.array=function(t){
 return new m(t)},t.map=function(t,e){return new J(t,e)},t.object=function(t){return new d(t)},t.defer=function(t){

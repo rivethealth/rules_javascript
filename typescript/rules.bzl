@@ -287,13 +287,13 @@ def configure_ts_compiler(name, ts, tslib = None, visibility = None):
     ts_simple_library(
         name = "%s_js_lib" % name,
         srcs = ["@better_rules_javascript//typescript/js-compiler:src"],
-        compiler = "@better_rules_javascript//rules:ts_simplec",
+        compiler = "@better_rules_javascript//rules:simple_tsc",
         root = ":%s_root" % name,
         compiler_options = ["--esModuleInterop", "--lib", "dom,es2019", "--module", "commonjs", "--target", "es2019", "--types", "node"],
         strip_prefix = "better_rules_javascript/typescript/js-compiler/src",
         deps = [
             ts,
-            "@better_rules_javascript//worker:lib",
+            "@better_rules_javascript//worker/lib",
             "@better_rules_javascript_npm//argparse:lib",
             "@better_rules_javascript_npm//@types/argparse:lib",
             "@better_rules_javascript_npm//@types/node:lib",
@@ -304,14 +304,14 @@ def configure_ts_compiler(name, ts, tslib = None, visibility = None):
     ts_simple_library(
         name = "%s_dts_lib" % name,
         srcs = ["@better_rules_javascript//typescript/dts-compiler:src"],
-        compiler = "@better_rules_javascript//rules:ts_simplec",
+        compiler = "@better_rules_javascript//rules:simple_tsc",
         root = ":%s_root" % name,
         compiler_options = ["--esModuleInterop", "--lib", "dom,es2019", "--types", "node"],
         strip_prefix = "better_rules_javascript/typescript/dts-compiler/src",
         deps = [
             ts,
             "@better_rules_javascript_npm//argparse:lib",
-            "@better_rules_javascript//worker:lib",
+            "@better_rules_javascript//worker/lib",
             "@better_rules_javascript_npm//@types/argparse:lib",
             "@better_rules_javascript_npm//@types/node:lib",
         ],
@@ -413,6 +413,7 @@ def _tsconfig_impl(ctx):
     tsconfig_info = TsconfigInfo(
         config = config,
         name = cjs_info.name,
+        package = cjs_info.package,
         transitive_configs = transitive_configs,
         transitive_packages = transitive_packages,
         transitive_deps = transitive_deps,
@@ -578,7 +579,7 @@ def _ts_library_impl(ctx):
                 executable = compiler.transpile_bin.files_to_run.executable,
                 execution_requirements = {"supports-workers": "1"},
                 inputs = depset(
-                    [src, transpile_tsconfig],
+                    [src, transpile_tsconfig, ctx.file._fs_linker, package_manifest],
                     transitive = ([tsconfig_info.transitive_configs, tsconfig_info.transitive_descriptors] if tsconfig_info else []),
                 ),
                 mnemonic = "TypeScriptTranspile",
@@ -649,6 +650,14 @@ def _ts_library_impl(ctx):
             create_dep(id = cjs_info.package.id, dep = dep[JsInfo].package.id, name = dep[JsInfo].name, label = dep.label)
             for dep in ctx.attr.deps
             if JsInfo in dep
+        ] + [
+            create_dep(
+                dep = id,
+                id = cjs_info.package.id,
+                label = Label(id),
+                name = name,
+            )
+            for name, id in ctx.attr.extra_deps.items()
         ] + ([
             create_dep(id = cjs_info.package.id, dep = compiler.runtime.package.id, name = compiler.runtime.name, label = ctx.attr.compiler.label),
         ] if compiler.runtime else []),
@@ -699,6 +708,9 @@ ts_library = rule(
             cfg = "exec",
             executable = True,
             default = "@better_rules_javascript//commonjs/manifest:bin",
+        ),
+        "extra_deps": attr.string_dict(
+            doc = "Extra dependencies.",
         ),
         "global_deps": attr.label_list(
             doc = "Types",
@@ -806,6 +818,14 @@ def _ts_import_impl(ctx):
             create_dep(id = cjs_info.package.id, dep = dep[JsInfo].package.id, label = dep.label, name = dep[JsInfo].name)
             for dep in ctx.attr.deps
             if JsInfo in dep
+        ] + [
+            create_dep(
+                dep = id,
+                id = cjs_info.package.id,
+                label = Label(id),
+                name = name,
+            )
+            for name, id in ctx.attr.extra_deps.items()
         ],
         transitive = [js_info.transitive_deps for js_info in js_deps],
     )
@@ -836,6 +856,9 @@ ts_import = rule(
         "deps": attr.label_list(
             doc = "Dependencies",
             providers = [[JsInfo], [TsInfo]],
+        ),
+        "extra_deps": attr.string_dict(
+            doc = "Extra dependencies.",
         ),
         "js": attr.label_list(
             doc = "JavaScript",

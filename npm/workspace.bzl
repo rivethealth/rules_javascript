@@ -17,6 +17,7 @@ def _js_import_external_impl(ctx):
     typescript = any([file.endswith(".d.ts") for file in files])
 
     deps = ctx.attr.deps
+    extra_deps = ctx.attr.extra_deps
 
     if ctx.name.startswith("npm_protobufjs"):
         # protobufjs attempts to run npm install dependencies(!!)
@@ -77,11 +78,13 @@ ts_import(
     name = "lib",
     root = ":root",
     deps = {deps},
+    extra_deps = {extra_deps},
     js = glob(["npm/**/*"]),
     strip_prefix = "%s/npm" % repository_name()[1:],
 )
         """.strip().format(
             deps = json.encode(deps),
+            extra_deps = json.encode(extra_deps),
         )
         build += "\n"
     else:
@@ -90,11 +93,13 @@ js_library(
     name = "lib",
     root = ":root",
     deps = {deps},
+    extra_deps = {extra_deps},
     srcs = glob(["npm/**/*"]),
     strip_prefix = "%s/npm" % repository_name()[1:],
 )
         """.strip().format(
             deps = json.encode(deps),
+            extra_deps = json.encode(extra_deps),
         )
         build += "\n"
     ctx.file("BUILD.bazel", build)
@@ -104,6 +109,9 @@ js_import_external = repository_rule(
     attrs = {
         "deps": attr.string_list(
             doc = "Dependencies",
+        ),
+        "extra_deps": attr.string_dict(
+            doc = "Extra dependencies.",
         ),
         "package_name": attr.string(
             mandatory = True,
@@ -156,9 +164,10 @@ def package_repo_name(name):
 
 def npm_package(name, package):
     js_import_external(
-        name = name + "_" + package_repo_name(package["id"]),
+        name = "%s_%s" % (name, package_repo_name(package["id"])),
         package_name = package["name"],
         deps = ["@%s_%s//:lib" % (name, package_repo_name(dep["dep"])) for dep in package["deps"]],
+        extra_deps = {n: "@%s_%s//:root" % (name, package_repo_name(id)) for n, id in package.get("extra_deps", {}).items()},
         urls = [package["url"]],
         integrity = package["integrity"] if "integrity" in package and not package["integrity"].startswith("sha1-") else None,
     )

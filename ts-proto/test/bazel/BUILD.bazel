@@ -5,7 +5,7 @@ package(default_visibility = ["//visibility:public"])
 
 configure_ts_protoc(
     name = "ts_protoc",
-    compiler = ":ts_simplec",
+    compiler = ":simple_tsc",
     ts_proto = "@better_rules_javascript_npm//ts-proto:lib",
     deps = [
         "@better_rules_javascript_npm//@types/long:lib",
@@ -15,7 +15,7 @@ configure_ts_protoc(
 )
 
 configure_ts_simple_compiler(
-    name = "ts_simplec",
+    name = "simple_tsc",
     ts = "@better_rules_javascript_npm//typescript:lib",
 )
 

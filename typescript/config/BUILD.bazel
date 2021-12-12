@@ -13,7 +13,7 @@ cjs_root(
 ts_simple_library(
     name = "lib",
     srcs = glob(["src/**/*.ts"]),
-    compiler = "//rules:ts_simplec",
+    compiler = "//rules:simple_tsc",
     compiler_options = [
         "--lib",
         "es2019",

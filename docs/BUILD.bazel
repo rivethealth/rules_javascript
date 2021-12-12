@@ -11,6 +11,7 @@ pkg_tar(
         "//protobuf/doc",
         "//protobufjs/doc",
         "//rollup/doc",
+        "//rules/doc",
         "//ts-proto/doc",
         "//typescript/doc",
         "//webpack/doc",

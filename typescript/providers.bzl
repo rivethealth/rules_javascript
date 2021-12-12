@@ -31,6 +31,7 @@ TsconfigInfo = provider(
     fields = {
         "config": "Config file",
         "name": "Package name",
+        "package": "Package",
         "transitive_configs": "Depset of configs",
         "transitive_deps": "Depset of extra links",
         "transitive_descriptors": "Depset of package descriptors",

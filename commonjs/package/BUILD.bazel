@@ -13,6 +13,7 @@ cjs_root(
 tsconfig(
     name = "config",
     src = "tsconfig.json",
+    dep = "//rules:tsconfig",
     root = ":root",
 )
 
