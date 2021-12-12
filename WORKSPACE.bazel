@@ -34,7 +34,8 @@ rules_proto_dependencies()
 
 rules_proto_toolchains()
 
-# Protobuf
+# Proto GRPC
+
 PROTO_GRPC_VERSION = "2.0.0"
 
 http_archive(
@@ -51,6 +52,7 @@ rules_proto_grpc_toolchains()
 rules_proto_grpc_repos()
 
 # Protobuf
+
 http_archive(
     name = "com_google_protobuf",
     sha256 = "9b4ee22c250fe31b16f1a24d61467e40780a3fbb9b91c3b65be2a376ed913a1a",
@@ -132,14 +134,6 @@ http_archive(
 load("//rules:workspace.bzl", javascript_repositories = "repositories")
 
 javascript_repositories()
-
-# Bind
-
-bind(
-    name = "prettier",
-    actual = "//tools:prettier",
-)
-
 # Format
 
 FORMAT_VERSION = "7b82d7748ac39b3068f63daf3ab39015864c2a6c"
