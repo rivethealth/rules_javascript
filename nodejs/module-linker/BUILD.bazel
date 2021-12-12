@@ -1,9 +1,15 @@
 load("//commonjs:rules.bzl", "cjs_root")
 load("//javascript:rules.bzl", "js_library")
 load("//rollup:rules.bzl", "configure_rollup", "rollup_bundle")
-load("//typescript:rules.bzl", "ts_library")
+load("//typescript:rules.bzl", "ts_library", "tsconfig")
 
 package(default_visibility = ["//visibility:public"])
+
+tsconfig(
+    name = "config",
+    src = "tsconfig.json",
+    root = ":root",
+)
 
 filegroup(
     name = "file",
@@ -31,7 +37,7 @@ ts_library(
     name = "lib",
     srcs = glob(["src/**/*.ts"]),
     compiler = "//rules:tsc",
-    config = "tsconfig.json",
+    config = ":config",
     root = ":root",
     strip_prefix = "better_rules_javascript/nodejs/module-linker/src",
     deps = [

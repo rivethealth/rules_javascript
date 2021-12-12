@@ -2,23 +2,29 @@ load("@rules_format//format:providers.bzl", "FormatInfo")
 load("//commonjs:rules.bzl", "cjs_root")
 load("//javascript:providers.bzl", "JsInfo")
 load("//nodejs:rules.bzl", "nodejs_binary")
-load("//typescript:rules.bzl", "ts_library")
+load("//typescript:rules.bzl", "ts_library", "tsconfig")
 load("//util:path.bzl", "runfile_path")
 
 def configure_prettier(name, dep, config_dep, config, plugins = [], visibility = None):
     cjs_root(
-        name = "%s_root" % name,
+        name = "%s.root" % name,
         package_name = "@better_rules_javascript/prettier-format",
         descriptors = ["@better_rules_javascript//prettier/format:descriptors"],
         strip_prefix = "better_rules_javascript/prettier/format",
     )
 
+    tsconfig(
+        name = "%s.config" % name,
+        root = ":root",
+        src = "@better_rules_javascript//prettier/format:tsconfig",
+    )
+
     ts_library(
-        name = "%s_lib" % name,
-        config = "@better_rules_javascript//prettier/format:tsconfig",
+        name = "%s.lib" % name,
         srcs = ["@better_rules_javascript//prettier/format:src"],
         strip_prefix = "better_rules_javascript/prettier/format/src",
         compiler = "@better_rules_javascript//rules:tsc",
+        config = ":%s.config" % name,
         deps = [
             dep,
             "@better_rules_javascript//worker:lib",
@@ -27,13 +33,13 @@ def configure_prettier(name, dep, config_dep, config, plugins = [], visibility =
             "@better_rules_javascript_npm//@types/prettier:lib",
             "@better_rules_javascript_npm//argparse:lib",
         ],
-        root = ":%s_root" % name,
+        root = ":%s.root" % name,
     )
 
     nodejs_binary(
         main = "index.js",
-        name = "%s_bin" % name,
-        dep = "%s_lib" % name,
+        name = "%s.bin" % name,
+        dep = "%s.lib" % name,
         global_deps = plugins,
         other_deps = [config_dep],
         visibility = ["//visibility:private"],
@@ -43,7 +49,7 @@ def configure_prettier(name, dep, config_dep, config, plugins = [], visibility =
         config = config,
         config_dep = config_dep,
         name = name,
-        bin = "%s_bin" % name,
+        bin = "%s.bin" % name,
         visibility = visibility,
     )
 

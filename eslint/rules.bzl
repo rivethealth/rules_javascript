@@ -4,23 +4,29 @@ load("//commonjs:providers.bzl", "cjs_path")
 load("//commonjs:rules.bzl", "cjs_root")
 load("//javascript:providers.bzl", "JsInfo")
 load("//nodejs:rules.bzl", "nodejs_binary")
-load("//typescript:rules.bzl", "ts_library")
+load("//typescript:rules.bzl", "ts_library", "tsconfig")
 load("//util:path.bzl", "runfile_path")
 
 def configure_eslint(name, dep, config_dep, config, plugins = [], visibility = None):
     cjs_root(
-        name = "%s_root" % name,
+        name = "%s.root" % name,
         package_name = "@better_rules_javascript/eslint-format",
         descriptors = ["@better_rules_javascript//eslint/linter:descriptors"],
         strip_prefix = "better_rules_javascript/eslint/linter",
     )
 
+    tsconfig(
+        name = "%s.config" % name,
+        root = ":root",
+        src = "@better_rules_javascript//eslint/linter:tsconfig",
+    )
+
     ts_library(
-        name = "%s_lib" % name,
-        config = "@better_rules_javascript//eslint/linter:tsconfig",
+        name = "%s.lib" % name,
         srcs = ["@better_rules_javascript//eslint/linter:src"],
         strip_prefix = "better_rules_javascript/eslint/linter/src",
         compiler = "@better_rules_javascript//rules:tsc",
+        config = ":%s.config" % name,
         deps = [
             dep,
             "@better_rules_javascript//worker:lib",
@@ -31,12 +37,12 @@ def configure_eslint(name, dep, config_dep, config, plugins = [], visibility = N
         global_deps = [
             "@better_rules_javascript_npm//@types/eslint:lib",
         ],
-        root = "%s_root" % name,
+        root = "%s.root" % name,
     )
 
     nodejs_binary(
-        name = "%s_bin" % name,
-        dep = ":%s_lib" % name,
+        name = "%s.bin" % name,
+        dep = ":%s.lib" % name,
         global_deps = plugins,
         other_deps = [config_dep],
         main = "main.js",

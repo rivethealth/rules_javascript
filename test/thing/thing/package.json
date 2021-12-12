@@ -1,6 +1,0 @@
-{
-  "name": "foo",
-  "dependencies": {
-    "lodash": "git+ssh://git@github.com:lodash/lodash.git#4.17.4"
-  }
-}

@@ -1,18 +1,12 @@
 import { ArgumentParser } from "argparse";
 import * as fs from "fs";
 import * as path from "path";
+import { booleanType } from "./cli";
 
-function booleanType(str: string) {
-  switch (str) {
-    case "true":
-      return true;
-    case "false":
-      return false;
-  }
-  throw new TypeError(`Could not covert string to boolean: ${str}`);
-}
-
-const parser = new ArgumentParser();
+const parser = new ArgumentParser({
+  prog: "typescript-config",
+  description: "Generate tsconfig.",
+});
 parser.add_argument("--config");
 parser.add_argument("--import-helpers", {
   dest: "importHelpers",
@@ -39,23 +33,24 @@ parser.add_argument("files", { nargs: "*", default: [] });
   const outDir = path.dirname(args.output);
   const relative = (path_: string) => path.relative(outDir, path_);
 
-  let tsconfig: any;
+  let tsconfig: any = {
+    compilerOptions: {
+      declaration: true,
+      declarationDir: relative(args.outDir),
+      importHelpers: args.importHelpers,
+      outDir: relative(args.outDir),
+      rootDir: relative(args.rootDir),
+      rootDirs: args.rootDirs.map(relative),
+      sourceMap: true,
+      typeRoots: args.typeRoots.map(relative),
+    },
+    files: args.files.map(relative),
+  };
+
   if (args.config) {
-    tsconfig = JSON.parse(await fs.promises.readFile(args.config, "utf8"));
-  } else {
-    tsconfig = {};
+    tsconfig.extends = relative(args.config);
   }
-  tsconfig.compilerOptions = tsconfig.compilerOptions || {};
-  tsconfig.compilerOptions.declaration = true;
-  console.error("IMPORT HELPERS IS", args.importHelpers);
-  tsconfig.compilerOptions.importHelpers = args.importHelpers;
-  tsconfig.compilerOptions.outDir = relative(args.outDir);
-  tsconfig.compilerOptions.rootDir = relative(args.rootDir);
-  tsconfig.compilerOptions.rootDirs = args.rootDirs.map(relative);
-  tsconfig.compilerOptions.sourceMap = true;
-  tsconfig.compilerOptions.typeRoots = args.typeRoots.map(relative);
-  tsconfig.files = args.files.map(relative);
-  delete tsconfig.compilerOptions.declarationDir;
+
   await fs.promises.writeFile(args.output, JSON.stringify(tsconfig), "utf8");
 })().catch((e) => {
   console.error(e);

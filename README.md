@@ -120,7 +120,7 @@ console.log(TEXT);
 
 ```bzl
 load("@better_rules_javascript//commonjs:rules.bzl", "cjs_root")
-load("@better_rules_javascript//javascript:rules.bzl", "ts_library")
+load("@better_rules_javascript//javascript:rules.bzl", "tsconfig", "ts_library")
 load("@better_rules_javascript//nodejs:rules.bzl", "nodejs_binary")
 
 cjs_root(
@@ -129,16 +129,22 @@ cjs_root(
   package_name = "example",
 )
 
+tsconfig(
+    name = "config",
+    root = ":root",
+    src = "tsconfig.json",
+)
+
 ts_library(
     name = "lib",
-    config = "tsconfig.json",
+    config = ":config",
     root = ":root",
     srcs = ["lib.ts"],
 )
 
 ts_library(
     name = "main",
-    config = "tsconfig.json",
+    config = ":config",
     root = ":root",
     srcs = ["main.ts"],
     deps = [":lib"],

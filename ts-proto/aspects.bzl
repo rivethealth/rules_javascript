@@ -131,7 +131,7 @@ mkdir -p "$out"
         },
         executable = compiler.bin.files_to_run.executable,
         inputs = depset(
-            ts + [tsconfig, package_manifest, ctx.file._fs_linker],
+            ts + [ctx.file._tsconfig, tsconfig, package_manifest, ctx.file._fs_linker],
             transitive =
                 [ts_info.transitive_descriptors for ts_info in ts_proto.ts_deps] +
                 [ts_info.transitive_declarations for ts_info in deps + ts_proto.ts_deps],

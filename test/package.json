@@ -1,9 +1,0 @@
-{
-  "dependencies": {
-    "foo": "file:./thing",
-    "lodash": "git+ssh://git@github.com:lodash/lodash.git#4.17.4",
-    "typescript": "~4.0.0",
-    "typescript-old": "npm:typescript@~3.9.0",
-    "typescript-old2": "npm:typescript@^3.0.0"
-  }
-}
