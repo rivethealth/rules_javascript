@@ -1,6 +1,6 @@
 import { PackageTree } from "@better-rules-javascript/commonjs-package";
 import * as path from "path";
-import { Vfs, VfsNode } from "./vfs";
+import { VfsImpl, VfsNode } from "./vfs";
 
 class DependencyConflictError extends Error {}
 
@@ -46,7 +46,7 @@ function addDep(root: VfsNode.Path, name: string, path: string) {
   });
 }
 
-export function createVfs(packageTree: PackageTree): Vfs {
+export function createVfs(packageTree: PackageTree): VfsImpl {
   const root: VfsNode = {
     type: VfsNode.PATH,
     hardenSymlinks: false,
@@ -76,5 +76,5 @@ export function createVfs(packageTree: PackageTree): Vfs {
       }
     }
   }
-  return new Vfs(root);
+  return new VfsImpl(root);
 }

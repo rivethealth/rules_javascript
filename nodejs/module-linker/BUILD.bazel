@@ -5,10 +5,10 @@ load("//typescript:rules.bzl", "ts_library", "tsconfig")
 
 package(default_visibility = ["//visibility:public"])
 
-tsconfig(
-    name = "config",
-    src = "tsconfig.json",
-    root = ":root",
+rollup_bundle(
+    name = "bundle",
+    dep = ":lib",
+    rollup = ":rollup",
 )
 
 filegroup(
@@ -16,28 +16,11 @@ filegroup(
     srcs = ["dist/bundle.js"],
 )
 
-cjs_root(
-    name = "root",
-    package_name = "@better-rules-javascript/nodejs-module-linker",
-    descriptors = ["package.json"],
-)
-
-js_file(
-    name = "rollup_config",
-    src = "rollup.config.cjs",
-    root = ":root",
-    deps = [
-        "@better_rules_javascript_npm//@rollup/plugin-commonjs:lib",
-        "@better_rules_javascript_npm//@rollup/plugin-node-resolve:lib",
-        "@better_rules_javascript_npm//rollup-plugin-terser:lib",
-    ],
-)
-
 ts_library(
     name = "lib",
     srcs = glob(["src/**/*.ts"]),
     compiler = "//rules:tsc",
-    config = ":config",
+    config = ":tsconfig",
     root = ":root",
     strip_prefix = "better_rules_javascript/nodejs/module-linker/src",
     deps = [
@@ -52,8 +35,26 @@ configure_rollup(
     dep = "@better_rules_javascript_npm//rollup:lib",
 )
 
-rollup_bundle(
-    name = "bundle",
-    dep = ":lib",
-    rollup = ":rollup",
+js_file(
+    name = "rollup_config",
+    src = "rollup.config.cjs",
+    root = ":root",
+    deps = [
+        "@better_rules_javascript_npm//@rollup/plugin-commonjs:lib",
+        "@better_rules_javascript_npm//@rollup/plugin-node-resolve:lib",
+        "@better_rules_javascript_npm//rollup-plugin-terser:lib",
+    ],
+)
+
+cjs_root(
+    name = "root",
+    package_name = "@better-rules-javascript/nodejs-module-linker",
+    descriptors = ["package.json"],
+)
+
+tsconfig(
+    name = "tsconfig",
+    src = "tsconfig.json",
+    dep = "//rules:tsconfig",
+    root = ":root",
 )

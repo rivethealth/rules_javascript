@@ -8,21 +8,21 @@ var path = require('path');
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
 function _interopNamespace(e) {
-    if (e && e.__esModule) return e;
-    var n = Object.create(null);
-    if (e) {
-        Object.keys(e).forEach(function (k) {
-            if (k !== 'default') {
-                var d = Object.getOwnPropertyDescriptor(e, k);
-                Object.defineProperty(n, k, d.get ? d : {
-                    enumerable: true,
-                    get: function () { return e[k]; }
-                });
-            }
-        });
-    }
-    n["default"] = e;
-    return Object.freeze(n);
+	if (e && e.__esModule) return e;
+	var n = Object.create(null);
+	if (e) {
+		Object.keys(e).forEach(function (k) {
+			if (k !== 'default') {
+				var d = Object.getOwnPropertyDescriptor(e, k);
+				Object.defineProperty(n, k, d.get ? d : {
+					enumerable: true,
+					get: function () { return e[k]; }
+				});
+			}
+		});
+	}
+	n["default"] = e;
+	return Object.freeze(n);
 }
 
 var assert__default = /*#__PURE__*/_interopDefaultLegacy(assert);
@@ -31,7 +31,23 @@ var fs__default = /*#__PURE__*/_interopDefaultLegacy(fs);
 var fs__namespace = /*#__PURE__*/_interopNamespace(fs);
 var path__default = /*#__PURE__*/_interopDefaultLegacy(path);
 
-var JsonFormat;
+function createCommonjsModule(fn, basedir, module) {
+	return module = {
+		path: basedir,
+		exports: {},
+		require: function (path, base) {
+			return commonjsRequire(path, (base === undefined || base === null) ? module.path : base);
+		}
+	}, fn(module, module.exports), module.exports;
+}
+
+function commonjsRequire () {
+	throw new Error('Dynamic requires are not currently supported by @rollup/plugin-commonjs');
+}
+
+var json = createCommonjsModule(function (module, exports) {
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.JsonFormat = void 0;
 (function (JsonFormat) {
     function parse(format, string) {
         return format.fromJson(JSON.parse(string));
@@ -41,7 +57,7 @@ var JsonFormat;
         return JSON.stringify(format.toJson(value));
     }
     JsonFormat.stringify = stringify;
-})(JsonFormat || (JsonFormat = {}));
+})(exports.JsonFormat || (exports.JsonFormat = {}));
 (function (JsonFormat) {
     function array(elementFormat) {
         return new ArrayJsonFormat(elementFormat);
@@ -74,7 +90,7 @@ var JsonFormat;
         return new StringJsonFormat();
     }
     JsonFormat.string = string;
-})(JsonFormat || (JsonFormat = {}));
+})(exports.JsonFormat || (exports.JsonFormat = {}));
 class ArrayJsonFormat {
     constructor(elementFormat) {
         this.elementFormat = elementFormat;
@@ -143,39 +159,33 @@ class StringJsonFormat {
     }
 }
 
+});
+
+var root = createCommonjsModule(function (module, exports) {
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.PackageTree = exports.Package = void 0;
+
 class Package {
 }
+exports.Package = Package;
 (function (Package) {
-    function json() {
-        return JsonFormat.object({
-            id: JsonFormat.string(),
-            deps: JsonFormat.map(JsonFormat.string(), JsonFormat.string()),
-            path: JsonFormat.string(),
+    function json$1() {
+        return json.JsonFormat.object({
+            id: json.JsonFormat.string(),
+            deps: json.JsonFormat.map(json.JsonFormat.string(), json.JsonFormat.string()),
+            path: json.JsonFormat.string(),
         });
     }
-    Package.json = json;
-})(Package || (Package = {}));
-var PackageTree;
+    Package.json = json$1;
+})(Package = exports.Package || (exports.Package = {}));
 (function (PackageTree) {
-    function json() {
-        return JsonFormat.map(JsonFormat.string(), Package.json());
+    function json$1() {
+        return json.JsonFormat.map(json.JsonFormat.string(), Package.json());
     }
-    PackageTree.json = json;
-})(PackageTree || (PackageTree = {}));
+    PackageTree.json = json$1;
+})(exports.PackageTree || (exports.PackageTree = {}));
 
-function createCommonjsModule(fn, basedir, module) {
-	return module = {
-		path: basedir,
-		exports: {},
-		require: function (path, base) {
-			return commonjsRequire(path, (base === undefined || base === null) ? module.path : base);
-		}
-	}, fn(module, module.exports), module.exports;
-}
-
-function commonjsRequire () {
-	throw new Error('Dynamic requires are not currently supported by @rollup/plugin-commonjs');
-}
+});
 
 const { inspect } = util__default["default"];
 
@@ -4446,7 +4456,7 @@ async function main() {
             deps: new Map([...package_.deps.entries()].map(([name, dep]) => [name, dep.id])),
         },
     ]));
-    await fs__namespace.promises.writeFile(args.output, JsonFormat.stringify(PackageTree.json(), tree));
+    await fs__namespace.promises.writeFile(args.output, json.JsonFormat.stringify(root.PackageTree.json(), tree));
 }
 main().catch((e) => {
     console.error(e.stack);

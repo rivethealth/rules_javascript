@@ -38,6 +38,7 @@ parser.add_argument("files", { nargs: "*", default: [] });
       declaration: true,
       declarationDir: relative(args.outDir),
       importHelpers: args.importHelpers,
+      inlineSources: true,
       outDir: relative(args.outDir),
       rootDir: relative(args.rootDir),
       rootDirs: args.rootDirs.map(relative),

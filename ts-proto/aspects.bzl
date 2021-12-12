@@ -206,7 +206,7 @@ def ts_proto_aspect(ts_protoc):
             ),
             "_tsconfig": attr.label(
                 allow_single_file = [".json"],
-                default = "@better_rules_javascript//ts-proto:proto.tsconfig.json",
+                default = "@better_rules_javascript//ts-proto:tsconfig",
             ),
         },
         toolchains = ["@rules_proto_grpc//protobuf:toolchain_type"],

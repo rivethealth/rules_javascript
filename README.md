@@ -123,33 +123,38 @@ load("@better_rules_javascript//commonjs:rules.bzl", "cjs_root")
 load("@better_rules_javascript//javascript:rules.bzl", "tsconfig", "ts_library")
 load("@better_rules_javascript//nodejs:rules.bzl", "nodejs_binary")
 
+# package root
 cjs_root(
   name = "root",
   descriptors = ["package.json"],
   package_name = "example",
 )
 
+# tsconfig
 tsconfig(
-    name = "config",
+    name = "tsconfig",
     root = ":root",
     src = "tsconfig.json",
 )
 
+# TypeScript library
 ts_library(
     name = "lib",
-    config = ":config",
+    config = ":tsconfig",
     root = ":root",
     srcs = ["lib.ts"],
 )
 
+# TypeScript library
 ts_library(
     name = "main",
-    config = ":config",
+    config = ":tsconfig",
     root = ":root",
     srcs = ["main.ts"],
     deps = [":lib"],
 )
 
+# Node.js executable
 nodejs_binary(
     name = "bin",
     dep = ":main",

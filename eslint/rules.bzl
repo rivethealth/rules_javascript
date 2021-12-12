@@ -19,6 +19,7 @@ def configure_eslint(name, dep, config, plugins = [], visibility = None):
         name = "%s.config" % name,
         root = ":root",
         src = "@better_rules_javascript//eslint/linter:tsconfig",
+        dep = "@better_rules_javascript//rules:tsconfig",
     )
 
     ts_library(

@@ -105,18 +105,18 @@ ts_simple_library(<a href="#ts_simple_library-name">name</a>, <a href="#ts_simpl
 ## tsconfig
 
 <pre>
-tsconfig(<a href="#tsconfig-name">name</a>, <a href="#tsconfig-dep">dep</a>, <a href="#tsconfig-root">root</a>, <a href="#tsconfig-src">src</a>, <a href="#tsconfig-strip_prefix">strip_prefix</a>)
+tsconfig(<a href="#tsconfig-name">name</a>, <a href="#tsconfig-dep">dep</a>, <a href="#tsconfig-path">path</a>, <a href="#tsconfig-root">root</a>, <a href="#tsconfig-src">src</a>)
 </pre>
 
 **ATTRIBUTES**
 
-| Name                                           | Description                    | Type                                                               | Mandatory | Default |
-| :--------------------------------------------- | :----------------------------- | :----------------------------------------------------------------- | :-------- | :------ |
-| <a id="tsconfig-name"></a>name                 | A unique name for this target. | <a href="https://bazel.build/docs/build-ref.html#name">Name</a>    | required  |         |
-| <a id="tsconfig-dep"></a>dep                   | -                              | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a> | optional  | None    |
-| <a id="tsconfig-root"></a>root                 | -                              | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a> | required  |         |
-| <a id="tsconfig-src"></a>src                   | -                              | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a> | required  |         |
-| <a id="tsconfig-strip_prefix"></a>strip_prefix | Strip prefix                   | String                                                             | optional  | ""      |
+| Name                           | Description                    | Type                                                               | Mandatory | Default |
+| :----------------------------- | :----------------------------- | :----------------------------------------------------------------- | :-------- | :------ |
+| <a id="tsconfig-name"></a>name | A unique name for this target. | <a href="https://bazel.build/docs/build-ref.html#name">Name</a>    | required  |         |
+| <a id="tsconfig-dep"></a>dep   | -                              | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a> | optional  | None    |
+| <a id="tsconfig-path"></a>path | Strip prefix                   | String                                                             | optional  | ""      |
+| <a id="tsconfig-root"></a>root | -                              | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a> | required  |         |
+| <a id="tsconfig-src"></a>src   | -                              | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a> | required  |         |
 
 <a id="#compiled_path"></a>
 

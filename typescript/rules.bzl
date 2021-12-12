@@ -278,21 +278,23 @@ def configure_ts_compiler(name, ts, tslib = None, visibility = None):
     """
 
     cjs_root(
-        name = "%s_root" % name,
+        name = "%s.root" % name,
         package_name = "@better_rules_javascript/typescript",
         descriptors = [],
         visibility = ["//visibility:private"],
     )
 
     ts_simple_library(
-        name = "%s_js_lib" % name,
+        name = "%s.js_lib" % name,
         srcs = ["@better_rules_javascript//typescript/js-compiler:src"],
         compiler = "@better_rules_javascript//rules:simple_tsc",
-        root = ":%s_root" % name,
+        root = ":%s.root" % name,
         compiler_options = ["--esModuleInterop", "--lib", "dom,es2019", "--module", "commonjs", "--target", "es2019", "--types", "node"],
         strip_prefix = "better_rules_javascript/typescript/js-compiler/src",
         deps = [
             ts,
+            "@better_rules_javascript//commonjs/package:lib",
+            "@better_rules_javascript//nodejs/fs-linker:lib",
             "@better_rules_javascript//worker/lib",
             "@better_rules_javascript_npm//argparse:lib",
             "@better_rules_javascript_npm//@types/argparse:lib",
@@ -302,10 +304,10 @@ def configure_ts_compiler(name, ts, tslib = None, visibility = None):
     )
 
     ts_simple_library(
-        name = "%s_dts_lib" % name,
+        name = "%s.dts_lib" % name,
         srcs = ["@better_rules_javascript//typescript/dts-compiler:src"],
         compiler = "@better_rules_javascript//rules:simple_tsc",
-        root = ":%s_root" % name,
+        root = ":%s.root" % name,
         compiler_options = ["--esModuleInterop", "--lib", "dom,es2019", "--types", "node"],
         strip_prefix = "better_rules_javascript/typescript/dts-compiler/src",
         deps = [
@@ -320,30 +322,30 @@ def configure_ts_compiler(name, ts, tslib = None, visibility = None):
 
     nodejs_binary(
         main = "lib/tsc.js",
-        name = "%s_bin" % name,
+        name = "%s.bin" % name,
         dep = ts,
         visibility = ["//visibility:private"],
     )
 
     nodejs_binary(
         main = "main.js",
-        name = "%s_js_bin" % name,
-        dep = ":%s_js_lib" % name,
+        name = "%s.js_bin" % name,
+        dep = ":%s.js_lib" % name,
         visibility = ["//visibility:private"],
     )
 
     nodejs_binary(
         main = "main.js",
-        name = "%s_dts_bin" % name,
-        dep = ":%s_dts_lib" % name,
+        name = "%s.dts_bin" % name,
+        dep = ":%s.dts_lib" % name,
         visibility = ["//visibility:private"],
     )
 
     ts_compiler(
         name = name,
-        bin = "%s_bin" % name,
+        bin = "%s.bin" % name,
         runtime = tslib,
-        transpile_bin = "%s_js_bin" % name,
+        transpile_bin = "%s.js_bin" % name,
         visibility = visibility,
     )
 
@@ -379,13 +381,18 @@ ts_compiler = rule(
 def _tsconfig_impl(ctx):
     cjs_info = ctx.attr.root[CjsInfo]
     deps = [ctx.attr.dep[TsconfigInfo]] if ctx.attr.dep else []
-    strip_prefix = ctx.attr.strip_prefix or default_strip_prefix(ctx)
+    prefix = output_prefix(cjs_info.package.path, ctx.label, ctx.actions)
+    if ctx.attr.path:
+        strip_prefix = runfile_path(ctx, ctx.file.src)
+        prefix = "%s/%s" % (prefix, ctx.attr.path) if prefix else ctx.attr.path
+    else:
+        strip_prefix = default_strip_prefix(ctx)
 
     config = create_entries(
-        ctx = ctx,
         actions = ctx.actions,
-        srcs = [ctx.file.src],
-        prefix = "",
+        ctx = ctx,
+        prefix = prefix,
+        srcs = ctx.files.src,
         strip_prefix = strip_prefix,
     )[0]
 
@@ -431,7 +438,7 @@ tsconfig = rule(
             mandatory = True,
             providers = [CjsInfo],
         ),
-        "strip_prefix": attr.string(
+        "path": attr.string(
             doc = "Strip prefix",
         ),
         "src": attr.label(
@@ -569,6 +576,7 @@ def _ts_library_impl(ctx):
 
             args = ctx.actions.args()
             args.add("--config", transpile_tsconfig)
+            args.add("--manifest", package_manifest)
             args.add("--js", js_)
             args.add("--map", map)
             args.add(src)
@@ -579,7 +587,7 @@ def _ts_library_impl(ctx):
                 executable = compiler.transpile_bin.files_to_run.executable,
                 execution_requirements = {"supports-workers": "1"},
                 inputs = depset(
-                    [src, transpile_tsconfig, ctx.file._fs_linker, package_manifest],
+                    [src, transpile_tsconfig, package_manifest],
                     transitive = ([tsconfig_info.transitive_configs, tsconfig_info.transitive_descriptors] if tsconfig_info else []),
                 ),
                 mnemonic = "TypeScriptTranspile",

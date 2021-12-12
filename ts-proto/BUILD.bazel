@@ -2,7 +2,10 @@ load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
 
 package(default_visibility = ["//visibility:public"])
 
-exports_files(["proto.tsconfig.json"])
+filegroup(
+    name = "tsconfig",
+    srcs = ["tsconfig.proto.json"],
+)
 
 bzl_library(
     name = "bzl",

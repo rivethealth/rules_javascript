@@ -1,12 +1,19 @@
+import { PackageTree } from "@better-rules-javascript/commonjs-package";
+import { JsonFormat } from "@better-rules-javascript/commonjs-package/json";
+import { patchFs } from "@better-rules-javascript/nodejs-fs-linker/fs";
+import { patchFsPromises } from "@better-rules-javascript/nodejs-fs-linker/fs-promises";
+import { createVfs } from "@better-rules-javascript/nodejs-fs-linker/package";
+import { WrapperVfs } from "@better-rules-javascript/nodejs-fs-linker/vfs";
+import { run } from "@better_rules_javascript/worker";
 import { ArgumentParser } from "argparse";
 import * as fs from "fs";
 import * as path from "path";
 import * as ts from "typescript";
-import { run } from "@better_rules_javascript/worker";
 import { formatDiagnostics } from "./diagnostic";
 
 interface Args {
   config: string;
+  manifest: string;
   map: string;
   js: string;
   src: string;
@@ -14,18 +21,26 @@ interface Args {
 
 class WorkerError extends Error {}
 
-class JsWorker {
-  run(a: string[]) {
-    const parser = new ArgumentParser();
-    parser.add_argument("--config", { required: true });
-    parser.add_argument("--map", { required: true });
-    parser.add_argument("--js", { required: true });
-    parser.add_argument("src");
-    const args: Args = parser.parse_args(a);
+class WorkerArgumentParser extends ArgumentParser {
+  exit(status: number, message: string) {
+    throw new WorkerError(message);
+  }
+}
 
-    const input = fs.readFileSync(args.src, "utf8");
+class JsWorker {
+  constructor(private readonly vfs: WrapperVfs) {
+    this.parser.add_argument("--config", { required: true });
+    this.parser.add_argument("--manifest", { required: true });
+    this.parser.add_argument("--map", { required: true });
+    this.parser.add_argument("--js", { required: true });
+    this.parser.add_argument("src");
+  }
+
+  private readonly parser = new WorkerArgumentParser();
+
+  private parseConfig(config: string) {
     const parsed = ts.getParsedCommandLineOfConfigFile(
-      args.config,
+      config,
       {},
       {
         ...ts.sys,
@@ -40,9 +55,29 @@ class JsWorker {
     if (errors.length) {
       throw new WorkerError(formatDiagnostics(errors));
     }
+    return parsed.options;
+  }
+
+  private setupVfs(manifest: string) {
+    const packageTree = JsonFormat.parse(
+      PackageTree.json(),
+      fs.readFileSync(manifest, "utf8"),
+    );
+    const vfs = createVfs(packageTree);
+    this.vfs.delegate = vfs;
+  }
+
+  run(a: string[]) {
+    const args: Args = this.parser.parse_args(a);
+
+    this.setupVfs(args.manifest);
+
+    const options = this.parseConfig(args.config);
+
+    const input = fs.readFileSync(args.src, "utf8");
     const result = ts.transpileModule(input, {
       fileName: args.src,
-      compilerOptions: parsed.options,
+      compilerOptions: options,
     });
     if (result.diagnostics.length) {
       throw new WorkerError(formatDiagnostics(result.diagnostics));
@@ -57,7 +92,11 @@ class JsWorker {
 }
 
 run(async () => {
-  const worker = new JsWorker();
+  const vfs = new WrapperVfs();
+  patchFs(vfs, require("fs"));
+  patchFsPromises(vfs, require("fs").promises);
+
+  const worker = new JsWorker(vfs);
   return async (a) => {
     try {
       worker.run(a);

@@ -1,9 +1,0 @@
-{
-  "compilerOptions": {
-    "lib": ["es2019"],
-    "module": "es2015",
-    "moduleResolution": "node",
-    "target": "es2020",
-    "types": ["node"]
-  }
-}

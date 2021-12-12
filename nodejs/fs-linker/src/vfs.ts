@@ -26,7 +26,13 @@ export interface RealpathResult {
   hardenSymlinks: boolean;
 }
 
-export class Vfs {
+export interface Vfs {
+  entry(path: string): VfsNode | undefined;
+  realpath(path: string): RealpathResult | undefined;
+  resolve(path: string): VfsNode.Path | undefined;
+}
+
+export class VfsImpl implements Vfs {
   constructor(private readonly root: VfsNode) {}
 
   entry(path: string): VfsNode | undefined {
@@ -173,5 +179,48 @@ export class Vfs {
           return `${prefix}${name} -> ${node.path}\n`;
       }
     })("", this.root, "");
+  }
+}
+
+export class NoopVfs implements Vfs {
+  entry(path: string): VfsNode {
+    return {
+      type: VfsNode.PATH,
+      extraChildren: new Map(),
+      hardenSymlinks: false,
+      path,
+    };
+  }
+
+  realpath(path: string): RealpathResult {
+    return {
+      hardenSymlinks: false,
+      path,
+    };
+  }
+
+  resolve(path: string): VfsNode.Path {
+    return {
+      type: VfsNode.PATH,
+      extraChildren: new Map(),
+      hardenSymlinks: false,
+      path,
+    };
+  }
+}
+
+export class WrapperVfs implements Vfs {
+  delegate: Vfs = new NoopVfs();
+
+  entry(path: string) {
+    return this.delegate.entry(path);
+  }
+
+  realpath(path: string) {
+    return this.delegate.realpath(path);
+  }
+
+  resolve(path: string) {
+    return this.delegate.resolve(path);
   }
 }

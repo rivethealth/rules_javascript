@@ -15,7 +15,7 @@ const packageTree = JsonFormat.parse(
 );
 
 const vfs = createVfs(packageTree);
-if (process.env.NODE_FS_TRACE2 === "true") {
+if (process.env.NODE_FS_TRACE === "true") {
   process.stderr.write(vfs.print());
 }
 

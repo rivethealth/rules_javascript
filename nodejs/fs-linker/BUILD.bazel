@@ -2,19 +2,13 @@ load("//commonjs:rules.bzl", "cjs_root")
 load("//javascript:rules.bzl", "js_file", "js_library")
 load("//nodejs:rules.bzl", "nodejs_simple_binary")
 load("//rollup:rules.bzl", "configure_rollup", "rollup_bundle")
-load("//typescript:rules.bzl", "ts_library", "tsconfig")
+load("//typescript:rules.bzl", "ts_simple_library")
 
 package(default_visibility = ["//visibility:public"])
 
 filegroup(
     name = "file",
     srcs = ["dist/bundle.js"],
-)
-
-tsconfig(
-    name = "config",
-    src = "tsconfig.json",
-    root = ":root",
 )
 
 cjs_root(
@@ -34,11 +28,20 @@ js_file(
     ],
 )
 
-ts_library(
+ts_simple_library(
     name = "lib",
     srcs = glob(["src/**/*.ts"]),
-    compiler = "//rules:tsc",
-    config = ":config",
+    compiler = "//rules:simple_tsc",
+    compiler_options = [
+        "--lib",
+        "es2019",
+        "--module",
+        "commonjs",
+        "--moduleResolution",
+        "node",
+        "--target",
+        "es2020",
+    ],
     root = ":root",
     strip_prefix = "better_rules_javascript/nodejs/fs-linker/src",
     deps = [

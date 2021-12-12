@@ -17,6 +17,7 @@ def configure_prettier(name, dep, config, plugins = [], visibility = None):
         name = "%s.config" % name,
         root = ":root",
         src = "@better_rules_javascript//prettier/format:tsconfig",
+        dep = "@better_rules_javascript//rules:tsconfig",
     )
 
     ts_library(
