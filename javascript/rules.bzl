@@ -1,7 +1,130 @@
 load("//commonjs:providers.bzl", "CjsInfo", "create_dep")
 load("//commonjs:rules.bzl", "create_entries", "default_strip_prefix", "output_prefix")
 load("//util:path.bzl", "runfile_path")
-load(":providers.bzl", "JsInfo")
+load(":providers.bzl", "JsFile", "JsInfo")
+
+def _js_file_impl(ctx):
+    cjs_info = ctx.attr.root[CjsInfo]
+    js_deps = [dep[JsInfo] for dep in ctx.attr.deps]
+
+    prefix = output_prefix(cjs_info.package.path, ctx.label, ctx.actions)
+    if ctx.attr.path:
+        strip_prefix = runfile_path(ctx, ctx.file.src)
+        prefix = "%s/%s" % (prefix, ctx.attr.path) if prefix else ctx.attr.path
+    else:
+        strip_prefix = default_strip_prefix(ctx)
+
+    js = create_entries(
+        actions = ctx.actions,
+        ctx = ctx,
+        prefix = prefix,
+        srcs = ctx.files.src,
+        strip_prefix = strip_prefix,
+    )
+
+    js_file = JsFile(
+        path = js[0].path[len("%s/" % cjs_info.package.path):],
+    )
+
+    transitive_descriptors = depset(
+        cjs_info.descriptors,
+        transitive = [js_info.transitive_descriptors for js_info in js_deps],
+    )
+    transitive_deps = depset(
+        [
+            create_dep(
+                dep = dep[JsInfo].package.id,
+                id = cjs_info.package.id,
+                label = dep.label,
+                name = dep[JsInfo].name,
+            )
+            for dep in ctx.attr.deps
+        ] + [
+            create_dep(
+                dep = id,
+                id = cjs_info.package.id,
+                label = Label(id),
+                name = name,
+            )
+            for name, id in ctx.attr.extra_deps.items()
+        ],
+        transitive = [js_info.transitive_deps for js_info in js_deps],
+    )
+    transitive_packages = depset(
+        [cjs_info.package],
+        transitive = [js_info.transitive_packages for js_info in js_deps],
+    )
+    transitive_js = depset(
+        js,
+        transitive = [js_info.transitive_js for js_info in js_deps],
+    )
+    transitive_srcs = depset(
+        [],
+        transitive = [js_info.transitive_srcs for js_info in js_deps],
+    )
+
+    js_info = JsInfo(
+        name = cjs_info.name,
+        package = cjs_info.package,
+        transitive_descriptors = transitive_descriptors,
+        transitive_deps = transitive_deps,
+        transitive_packages = transitive_packages,
+        transitive_js = transitive_js,
+        transitive_srcs = transitive_srcs,
+    )
+
+    return [js_file, js_info]
+
+js_file = rule(
+    attrs = {
+        "deps": attr.label_list(
+            doc = "Dependencies.",
+            providers = [JsInfo],
+        ),
+        "extra_deps": attr.string_dict(
+            doc = "Extra dependencies.",
+        ),
+        "src": attr.label(
+            allow_files = True,
+            mandatory = True,
+        ),
+        "path": attr.string(
+            doc = "Path",
+        ),
+        "root": attr.label(
+            doc = "CommonJS root",
+            mandatory = True,
+            providers = [CjsInfo],
+        ),
+    },
+    doc = "Create JS file.",
+    implementation = _js_file_impl,
+)
+
+def _js_export_file_impl(ctx):
+    js_info = ctx.attr.dep[JsInfo]
+
+    js_file = JsFile(
+        path = ctx.attr.path,
+    )
+
+    return [js_file, js_info]
+
+js_export_file = rule(
+    attrs = {
+        "dep": attr.label(
+            doc = "Dependency.",
+            mandatory = True,
+            providers = [JsInfo],
+        ),
+        "path": attr.string(
+            doc = "Path.",
+            mandatory = True,
+        ),
+    },
+    doc = "Export file from JS library.",
+    implementation = _js_export_file_impl,
+)
 
 def _js_import_impl(ctx):
     js_info = ctx.attr.dep[JsInfo]

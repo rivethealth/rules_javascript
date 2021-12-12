@@ -1,11 +1,11 @@
 load("@rules_format//format:providers.bzl", "FormatInfo")
 load("//commonjs:rules.bzl", "cjs_root")
-load("//javascript:providers.bzl", "JsInfo")
+load("//javascript:providers.bzl", "JsFile", "JsInfo")
 load("//nodejs:rules.bzl", "nodejs_binary")
 load("//typescript:rules.bzl", "ts_library", "tsconfig")
 load("//util:path.bzl", "runfile_path")
 
-def configure_prettier(name, dep, config_dep, config, plugins = [], visibility = None):
+def configure_prettier(name, dep, config, plugins = [], visibility = None):
     cjs_root(
         name = "%s.root" % name,
         package_name = "@better_rules_javascript/prettier-format",
@@ -41,13 +41,12 @@ def configure_prettier(name, dep, config_dep, config, plugins = [], visibility =
         name = "%s.bin" % name,
         dep = "%s.lib" % name,
         global_deps = plugins,
-        other_deps = [config_dep],
+        other_deps = [config],
         visibility = ["//visibility:private"],
     )
 
     prettier(
         config = config,
-        config_dep = config_dep,
         name = name,
         bin = "%s.bin" % name,
         visibility = visibility,
@@ -75,8 +74,10 @@ def _prettier_fn(ctx, name, src, out, bin, config):
 
 def _prettier_impl(ctx):
     bin = ctx.attr.bin[DefaultInfo]
+    config = ctx.attr.config[JsFile]
+    config_dep = ctx.attr.config[JsInfo]
 
-    config_path = "%s/%s" % (runfile_path(ctx, ctx.attr.config_dep[JsInfo].package), ctx.attr.config)
+    config_path = "%s/%s" % (runfile_path(ctx, config_dep.package), config.path)
 
     format_info = FormatInfo(
         fn = _prettier_fn,
@@ -99,14 +100,10 @@ prettier = rule(
             executable = True,
             cfg = "exec",
         ),
-        "config": attr.string(
-            doc = "Configuration file path",
+        "config": attr.label(
+            doc = "Configuration file",
             mandatory = True,
-        ),
-        "config_dep": attr.label(
-            cfg = "exec",
-            mandatory = True,
-            providers = [JsInfo],
+            providers = [[JsFile, JsInfo]],
         ),
     },
 )

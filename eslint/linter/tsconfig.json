@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
     "esModuleInterop": true,
-    "module": "commonjs"
-  },
-  "extends": "../rules/tsconfig.common.json"
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "target": "es2019"
+  }
 }

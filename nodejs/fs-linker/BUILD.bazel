@@ -1,5 +1,5 @@
 load("//commonjs:rules.bzl", "cjs_root")
-load("//javascript:rules.bzl", "js_library")
+load("//javascript:rules.bzl", "js_file", "js_library")
 load("//nodejs:rules.bzl", "nodejs_simple_binary")
 load("//rollup:rules.bzl", "configure_rollup", "rollup_bundle")
 load("//typescript:rules.bzl", "ts_library", "tsconfig")
@@ -23,9 +23,9 @@ cjs_root(
     descriptors = ["package.json"],
 )
 
-js_library(
+js_file(
     name = "rollup_config",
-    srcs = ["rollup.config.cjs"],
+    src = "rollup.config.cjs",
     root = ":root",
     deps = [
         "@better_rules_javascript_npm//@rollup/plugin-commonjs:lib",
@@ -49,8 +49,7 @@ ts_library(
 
 configure_rollup(
     name = "rollup",
-    config = "rollup.config.cjs",
-    config_dep = ":rollup_config",
+    config = ":rollup_config",
     dep = "@better_rules_javascript_npm//rollup:lib",
 )
 

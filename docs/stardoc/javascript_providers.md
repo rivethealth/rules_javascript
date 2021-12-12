@@ -1,5 +1,21 @@
 <!-- Generated with Stardoc: http://skydoc.bazel.build -->
 
+<a id="#JsFile"></a>
+
+## JsFile
+
+<pre>
+JsFile(<a href="#JsFile-path">path</a>)
+</pre>
+
+JavaScript file
+
+**FIELDS**
+
+| Name                         | Description |
+| :--------------------------- | :---------- |
+| <a id="JsFile-path"></a>path | Path        |
+
 <a id="#JsInfo"></a>
 
 ## JsInfo

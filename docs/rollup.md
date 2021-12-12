@@ -48,7 +48,7 @@ export default {
 **example/BUILD.bzl**
 
 ```bzl
-load("@better_rules_javascript//javascript:rules.bzl", "js_library")
+load("@better_rules_javascript//javascript:rules.bzl", "js_file", "js_library")
 load("@better_rules_javascript//rollup:rules.bzl", "configure_rollup", "rollup_bundle")
 
 cjs_root(
@@ -62,16 +62,15 @@ js_library(
     srcs = ["a.js", "b.js"],
 )
 
-js_library(
+js_file(
     name = "rollup_config",
     root = ":root",
-    srcs = ["rollup.config.js"],
+    src = "rollup.config.js",
 )
 
 configure_rollup(
     name = "rollup",
-    config = "rollup.config.cjs",
-    config_dep = ":rollup_config",
+    config = ":rollup_config",
     dep = "@npm//rollup:lib",
 )
 

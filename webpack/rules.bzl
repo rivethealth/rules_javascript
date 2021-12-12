@@ -1,15 +1,18 @@
 load("@bazel_skylib//lib:shell.bzl", "shell")
 load("//commonjs:providers.bzl", "cjs_path")
 load("//commonjs:rules.bzl", "gen_manifest")
-load("//javascript:providers.bzl", "JsInfo")
+load("//javascript:providers.bzl", "JsFile", "JsInfo")
 load("//nodejs:rules.bzl", "nodejs_binary")
 load("//util:path.bzl", "runfile_path")
 load(":providers.bzl", "WebpackInfo")
 
 def _webpack_impl(ctx):
+    config = ctx.attr.config[JsFile]
+    config_dep = ctx.attr.config[JsInfo]
+
     webpack_info = WebpackInfo(
         bin = ctx.attr.bin[DefaultInfo].files_to_run,
-        config_path = "%s/%s" % (runfile_path(ctx, ctx.attr.config_dep[JsInfo].package), ctx.attr.config),
+        config_path = "%s/%s" % (runfile_path(ctx, config_dep.package), config.path),
     )
 
     return [webpack_info]
@@ -22,40 +25,36 @@ webpack = rule(
             mandatory = True,
             cfg = "exec",
         ),
-        "config_dep": attr.label(
+        "config": attr.label(
             cfg = "exec",
             mandatory = True,
-            providers = [JsInfo],
-        ),
-        "config": attr.string(
-            mandatory = True,
+            providers = [[JsFile, JsInfo]],
         ),
     },
     doc = "Webpack tools",
     implementation = _webpack_impl,
 )
 
-def configure_webpack(name, dep, config_dep, config, visibility = None):
+def configure_webpack(name, dep, config, other_deps = [], visibility = None):
     """Set up webpack tools.
 
     Args:
         name: Name
         dep: Webpack library
-        config_dep: Configuration dependency
-        config: Configuration path
+        config: Configuration
+        other_deps: Other deps (helps with Webpack package cycles)
     """
 
     nodejs_binary(
         main = "bin/cli.js",
         name = "%s_bin" % name,
         dep = dep,
-        other_deps = [config_dep],
+        other_deps = other_deps + [config],
         visibility = visibility,
     )
 
     webpack(
         name = name,
-        config_dep = config_dep,
         config = config,
         bin = "%s_bin" % name,
         visibility = visibility,

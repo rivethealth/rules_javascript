@@ -12,7 +12,7 @@ Webpack bundles modules into one or more files.
 
 ## Install
 
-Add rollup as an [external dependency](#external_dependencies).
+Add webpack as an [external dependency](#external_dependencies).
 
 ## Use
 
@@ -48,8 +48,8 @@ module.exports = {
 
 ```bzl
 load("@better_rules_javascript//commonjs:rules.bzl", "cjs_root")
-load("@better_rules_javascript//javascript:rules.bzl", "js_library")
-load("@better_rules_javascript//rollup:rules.bzl", "configure_webpack", "webpack_bundle")
+load("@better_rules_javascript//javascript:rules.bzl", "js_file", "js_library")
+load("@better_rules_javascript//webpack:rules.bzl", "configure_webpack", "webpack_bundle")
 
 cjs_root(
   name = "root",
@@ -62,17 +62,16 @@ js_library(
     srcs = ["a.js", "b.js"],
 )
 
-js_library(
-    name = "rollup_config",
+js_file(
+    name = "webpack_config",
     root = ":root",
-    srcs = ["rollup.config.js"],
+    src = "webpack.config.js",
 )
 
 configure_webpack(
-    name = "rollup",
-    config = "rollup.config.cjs",
-    config_dep = ":rollup_config",
-    dep = "@npm//rollup:lib",
+    name = "webpack",
+    config = ":webpack_config",
+    dep = "@npm//webpack:lib",
 )
 
 webpack_bundle(

@@ -2,12 +2,12 @@ load("@bazel_skylib//lib:shell.bzl", "shell")
 load("@rules_format//format:providers.bzl", "FormatInfo")
 load("//commonjs:providers.bzl", "cjs_path")
 load("//commonjs:rules.bzl", "cjs_root")
-load("//javascript:providers.bzl", "JsInfo")
+load("//javascript:providers.bzl", "JsFile", "JsInfo")
 load("//nodejs:rules.bzl", "nodejs_binary")
 load("//typescript:rules.bzl", "ts_library", "tsconfig")
 load("//util:path.bzl", "runfile_path")
 
-def configure_eslint(name, dep, config_dep, config, plugins = [], visibility = None):
+def configure_eslint(name, dep, config, plugins = [], visibility = None):
     cjs_root(
         name = "%s.root" % name,
         package_name = "@better_rules_javascript/eslint-format",
@@ -17,7 +17,6 @@ def configure_eslint(name, dep, config_dep, config, plugins = [], visibility = N
 
     tsconfig(
         name = "%s.config" % name,
-        dep = "@better_rules_javascript//rules:tsconfig",
         root = ":root",
         src = "@better_rules_javascript//eslint/linter:tsconfig",
     )
@@ -45,14 +44,13 @@ def configure_eslint(name, dep, config_dep, config, plugins = [], visibility = N
         name = "%s.bin" % name,
         dep = ":%s.lib" % name,
         global_deps = plugins,
-        other_deps = [config_dep],
+        other_deps = [config],
         main = "main.js",
         visibility = ["//visibility:private"],
     )
 
     eslint(
         name = name,
-        config_dep = config_dep,
         config = config,
         bin = ":%s.bin" % name,
         visibility = visibility,
@@ -135,8 +133,10 @@ def _eslint_fn(ctx, name, src, out, bin, config):
 
 def _eslint_impl(ctx):
     bin = ctx.attr.bin[DefaultInfo]
+    config = ctx.attr.config[JsFile]
+    config_dep = ctx.attr.config[JsInfo]
 
-    config_path = "%s/%s" % (runfile_path(ctx, ctx.attr.config_dep[JsInfo].package), ctx.attr.config)
+    config_path = "%s/%s" % (runfile_path(ctx, config_dep.package), config.path)
 
     format_info = FormatInfo(
         fn = _eslint_fn,
@@ -159,14 +159,10 @@ eslint = rule(
             executable = True,
             cfg = "exec",
         ),
-        "config": attr.string(
-            doc = "Configuration file path",
+        "config": attr.label(
+            doc = "Configuration file",
             mandatory = True,
-        ),
-        "config_dep": attr.label(
-            cfg = "exec",
-            mandatory = True,
-            providers = [JsInfo],
+            providers = [[JsFile, JsInfo]],
         ),
     },
 )

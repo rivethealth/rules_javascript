@@ -5,19 +5,18 @@
 ## rollup
 
 <pre>
-rollup(<a href="#rollup-name">name</a>, <a href="#rollup-bin">bin</a>, <a href="#rollup-config">config</a>, <a href="#rollup-config_dep">config_dep</a>)
+rollup(<a href="#rollup-name">name</a>, <a href="#rollup-bin">bin</a>, <a href="#rollup-config">config</a>)
 </pre>
 
 Rollup tools
 
 **ATTRIBUTES**
 
-| Name                                     | Description                    | Type                                                               | Mandatory | Default |
-| :--------------------------------------- | :----------------------------- | :----------------------------------------------------------------- | :-------- | :------ |
-| <a id="rollup-name"></a>name             | A unique name for this target. | <a href="https://bazel.build/docs/build-ref.html#name">Name</a>    | required  |         |
-| <a id="rollup-bin"></a>bin               | Rollup executable              | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a> | required  |         |
-| <a id="rollup-config"></a>config         | -                              | String                                                             | required  |         |
-| <a id="rollup-config_dep"></a>config_dep | -                              | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a> | required  |         |
+| Name                             | Description                    | Type                                                               | Mandatory | Default |
+| :------------------------------- | :----------------------------- | :----------------------------------------------------------------- | :-------- | :------ |
+| <a id="rollup-name"></a>name     | A unique name for this target. | <a href="https://bazel.build/docs/build-ref.html#name">Name</a>    | required  |         |
+| <a id="rollup-bin"></a>bin       | Rollup executable              | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a> | required  |         |
+| <a id="rollup-config"></a>config | -                              | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a> | required  |         |
 
 <a id="#rollup_bundle"></a>
 
@@ -42,7 +41,7 @@ Rollup bundle
 ## configure_rollup
 
 <pre>
-configure_rollup(<a href="#configure_rollup-name">name</a>, <a href="#configure_rollup-dep">dep</a>, <a href="#configure_rollup-config_dep">config_dep</a>, <a href="#configure_rollup-config">config</a>, <a href="#configure_rollup-visibility">visibility</a>)
+configure_rollup(<a href="#configure_rollup-name">name</a>, <a href="#configure_rollup-dep">dep</a>, <a href="#configure_rollup-config">config</a>, <a href="#configure_rollup-visibility">visibility</a>)
 </pre>
 
 Set up rollup tools.
@@ -53,6 +52,5 @@ Set up rollup tools.
 | :------------------------------------------------- | :------------------------ | :---------------- |
 | <a id="configure_rollup-name"></a>name             | Name                      | none              |
 | <a id="configure_rollup-dep"></a>dep               | Rollup library            | none              |
-| <a id="configure_rollup-config_dep"></a>config_dep | Configuration dependency  | none              |
-| <a id="configure_rollup-config"></a>config         | Configuration path        | none              |
+| <a id="configure_rollup-config"></a>config         | Configuration             | none              |
 | <a id="configure_rollup-visibility"></a>visibility | <p align="center"> - </p> | <code>None</code> |

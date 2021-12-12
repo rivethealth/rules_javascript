@@ -1,6 +1,6 @@
 load("//commonjs:rules.bzl", "cjs_root")
 load("//eslint:rules.bzl", "configure_eslint")
-load("//javascript:rules.bzl", "js_library")
+load("//javascript:rules.bzl", "js_file")
 load("//nodejs:rules.bzl", "nodejs_binary")
 load("//prettier:rules.bzl", "configure_prettier")
 load("@rules_format//buildifier:rules.bzl", "buildifier")
@@ -19,16 +19,15 @@ format(
     prefix = "external/better_rules_javascript_files/files",
 )
 
-js_library(
+js_file(
     name = "prettier_config",
-    srcs = ["prettierrc.yml"],
+    src = "prettierrc.yml",
     root = ":root",
 )
 
 configure_prettier(
     name = "prettier",
-    config = "prettierrc.yml",
-    config_dep = ":prettier_config",
+    config = ":prettier_config",
     dep = "@better_rules_javascript_npm//prettier:lib",
 )
 
@@ -57,8 +56,7 @@ test_suite(
 
 configure_eslint(
     name = "eslint",
-    config = ".eslintrc.js",
-    config_dep = ":eslint_config",
+    config = ":eslint_config",
     dep = "@better_rules_javascript_npm//eslint:lib",
     plugins = [
         "@better_rules_javascript_npm//typescript:lib",
@@ -67,9 +65,9 @@ configure_eslint(
     ],
 )
 
-js_library(
+js_file(
     name = "eslint_config",
-    srcs = [".eslintrc.js"],
+    src = ".eslintrc.js",
     root = ":root",
 )
 

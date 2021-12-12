@@ -33,7 +33,7 @@ parser.add_argument("files", { nargs: "*", default: [] });
   const outDir = path.dirname(args.output);
   const relative = (path_: string) => path.relative(outDir, path_);
 
-  let tsconfig: any = {
+  const tsconfig: any = {
     compilerOptions: {
       declaration: true,
       declarationDir: relative(args.outDir),

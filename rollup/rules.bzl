@@ -1,15 +1,18 @@
 load("@bazel_skylib//lib:shell.bzl", "shell")
 load("//commonjs:providers.bzl", "cjs_path")
 load("//commonjs:rules.bzl", "gen_manifest")
-load("//javascript:providers.bzl", "JsInfo")
+load("//javascript:providers.bzl", "JsFile", "JsInfo")
 load("//nodejs:rules.bzl", "nodejs_binary")
 load("//util:path.bzl", "runfile_path")
 load(":providers.bzl", "RollupInfo")
 
 def _rollup_impl(ctx):
+    config = ctx.attr.config[JsFile]
+    config_dep = ctx.attr.config[JsInfo]
+
     rollup_info = RollupInfo(
         bin = ctx.attr.bin[DefaultInfo].files_to_run,
-        config_path = "%s/%s" % (runfile_path(ctx, ctx.attr.config_dep[JsInfo].package), ctx.attr.config),
+        config_path = "%s/%s" % (runfile_path(ctx, config_dep.package), config.path),
     )
 
     return [rollup_info]
@@ -22,40 +25,35 @@ rollup = rule(
             mandatory = True,
             cfg = "exec",
         ),
-        "config_dep": attr.label(
+        "config": attr.label(
             cfg = "exec",
             mandatory = True,
-            providers = [JsInfo],
-        ),
-        "config": attr.string(
-            mandatory = True,
+            providers = [[JsFile, JsInfo]],
         ),
     },
     doc = "Rollup tools",
     implementation = _rollup_impl,
 )
 
-def configure_rollup(name, dep, config_dep, config, visibility = None):
+def configure_rollup(name, dep, config, visibility = None):
     """Set up rollup tools.
 
     Args:
         name: Name
         dep: Rollup library
-        config_dep: Configuration dependency
-        config: Configuration path
+        config: Configuration
     """
 
     nodejs_binary(
         main = "dist/bin/rollup",
         name = "%s_bin" % name,
         dep = dep,
-        other_deps = [config_dep],
+        other_deps = [config],
         visibility = visibility,
     )
 
     rollup(
         name = name,
-        config_dep = config_dep,
         config = config,
         bin = "%s_bin" % name,
         visibility = visibility,

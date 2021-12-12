@@ -1,3 +1,10 @@
+JsFile = provider(
+    doc = "JavaScript file",
+    fields = {
+        "path": "Path",
+    },
+)
+
 JsInfo = provider(
     doc = "JavaScript",
     fields = {
