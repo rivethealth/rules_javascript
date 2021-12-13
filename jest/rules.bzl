@@ -51,12 +51,6 @@ def _jest_test_impl(ctx):
         is_executable = True,
     )
 
-    for dep in ctx.attr.data:
-        if DefaultInfo not in dep:
-            continue
-        if dep[DefaultInfo].default_runfiles != None:
-            files.append(dep[DefaultInfo].default_runfiles.files)
-
     default_info = DefaultInfo(
         executable = bin,
         runfiles = ctx.runfiles(
@@ -70,24 +64,27 @@ def _jest_test_impl(ctx):
 jest_test = rule(
     attrs = {
         "config": attr.label(
+            doc = "Jest config file.",
             mandatory = True,
             providers = [[JsFile, JsInfo]],
         ),
         "data": attr.label_list(
             allow_files = True,
-            providers = [DefaultInfo],
-            doc = "Runtime data",
+            doc = "Runtime data.",
         ),
         "deps": attr.label_list(
+            doc = "Test dependencies.",
             providers = [JsInfo],
         ),
         "env": attr.string_dict(
-            doc = "Environment variables",
+            doc = "Environment variables.",
         ),
         "jest": attr.label(
+            doc = "Jest dependency.",
             mandatory = True,
         ),
         "global_deps": attr.label_list(
+            doc = "Global dependencies.",
             providers = [JsInfo],
         ),
         "_runner": attr.label(

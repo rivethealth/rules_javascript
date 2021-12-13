@@ -1,0 +1,6 @@
+package(default_visibility = ["//visibility:public"])
+
+filegroup(
+    name = "babel_config",
+    srcs = ["babel.config.js"],  # jest requires in cwd
+)

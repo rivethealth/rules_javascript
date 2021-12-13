@@ -591,6 +591,34 @@ PACKAGES = [
     {
         "deps": [
             {
+                "dep": "@babel/helper-module-transforms@7.16.0",
+                "name": "@babel/helper-module-transforms",
+            },
+            {
+                "dep": "@babel/helper-plugin-utils@7.14.5",
+                "name": "@babel/helper-plugin-utils",
+            },
+            {
+                "dep": "@babel/helper-simple-access@7.16.0",
+                "name": "@babel/helper-simple-access",
+            },
+            {
+                "dep": "babel-plugin-dynamic-import-node@2.3.3",
+                "name": "babel-plugin-dynamic-import-node",
+            },
+            {
+                "dep": "@babel/core@7.16.0",
+                "name": "@babel/core",
+            },
+        ],
+        "extra_deps": {},
+        "id": "@babel/plugin-transform-modules-commonjs@7.13.8",
+        "name": "@babel/plugin-transform-modules-commonjs",
+        "url": "https://registry.npmjs.org/@babel/plugin-transform-modules-commonjs/-/plugin-transform-modules-commonjs-7.13.8.tgz",
+    },
+    {
+        "deps": [
+            {
                 "dep": "@babel/code-frame@7.16.0",
                 "name": "@babel/code-frame",
             },
@@ -3188,6 +3216,18 @@ PACKAGES = [
         "id": "babel-jest@27.4.4",
         "name": "babel-jest",
         "url": "https://registry.npmjs.org/babel-jest/-/babel-jest-27.4.4.tgz",
+    },
+    {
+        "deps": [
+            {
+                "dep": "object.assign@4.1.2",
+                "name": "object.assign",
+            },
+        ],
+        "extra_deps": {},
+        "id": "babel-plugin-dynamic-import-node@2.3.3",
+        "name": "babel-plugin-dynamic-import-node",
+        "url": "https://registry.npmjs.org/babel-plugin-dynamic-import-node/-/babel-plugin-dynamic-import-node-2.3.3.tgz",
     },
     {
         "deps": [
@@ -10591,6 +10631,10 @@ PACKAGES = [
 ]
 
 ROOTS = [
+    {
+        "dep": "@babel/plugin-transform-modules-commonjs@7.13.8",
+        "name": "@babel/plugin-transform-modules-commonjs",
+    },
     {
         "dep": "@rollup/plugin-commonjs@16.0.0",
         "name": "@rollup/plugin-commonjs",
