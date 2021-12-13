@@ -1,0 +1,6 @@
+{
+  "compilerOptions": {
+    "module": "commonjs"
+  },
+  "extends": "@better_rules_javascript/rules/tsconfig.common.json"
+}

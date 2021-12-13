@@ -7,8 +7,6 @@ import * as path from "path";
  * @filedescription Node.js fs implementation of Vfs
  */
 
-const { fs: fsConstants } = (<any>process).binding("fs");
-
 class LinkBigintStat implements fs.BigIntStats {
   constructor(private readonly entry: VfsNode) {}
 
@@ -230,9 +228,9 @@ class VfsDir implements fs.Dir {
 function dirent(name: string, entry: VfsNode): fs.Dirent {
   switch (entry.type) {
     case VfsNode.PATH:
-      return new (<any>fs.Dirent)(name, fsConstants.UV_DIRENT_DIR);
+      return new (<any>fs.Dirent)(name, (<any>fs.constants).UV_DIRENT_DIR);
     case VfsNode.SYMLINK:
-      return new (<any>fs.Dirent)(name, fsConstants.UV_DIRENT_LINK);
+      return new (<any>fs.Dirent)(name, (<any>fs.constants).UV_DIRENT_LINK);
   }
 }
 
@@ -525,7 +523,7 @@ function readdir(vfs: Vfs, delegate: typeof fs.readdir): typeof fs.readdir {
       options = {};
     } else if (typeof options === "string") {
       options = { encoding: options };
-    } else {
+    } else if (options == null) {
       options = {};
     }
     const resolved = vfs.resolve(filePath);
@@ -559,6 +557,26 @@ function readdir(vfs: Vfs, delegate: typeof fs.readdir): typeof fs.readdir {
         if (err) {
           return callback.apply(this, arguments);
         }
+        if (options.withFileTypes && resolved.hardenSymlinks) {
+          files = (<fs.Dirent[]>files).map((file) => {
+            if (file.isSymbolicLink()) {
+              try {
+                const stat = fs.statSync(`${filePath}/${file.name}`);
+                if (stat.isDirectory()) {
+                  return new (<any>fs.Dirent)(
+                    file.name,
+                    (<any>fs.constants).UV_DIRENT_DIR,
+                  );
+                }
+                return new (<any>fs.Dirent)(
+                  file.name,
+                  (<any>fs.constants).UV_DIRENT_FILE,
+                );
+              } catch {}
+            }
+            return file;
+          });
+        }
         callback(null, <fs.Dirent[] | Buffer[] | string[]>[...files, ...extra]);
       };
     }
@@ -574,7 +592,7 @@ function readdirSync(
     const filePath = stringPath(path);
     if (typeof options === "string") {
       options = { encoding: options };
-    } else {
+    } else if (options == null) {
       options = {};
     }
     const resolved = vfs.resolve(filePath);
@@ -599,7 +617,27 @@ function readdirSync(
     if (resolved && filePath !== resolved.path) {
       args[0] = resolved.path;
     }
-    const result = delegate.apply(this, args);
+    let result = delegate.apply(this, args);
+    if (options.withFileTypes && resolved.hardenSymlinks) {
+      result = (<fs.Dirent[]>result).map((file) => {
+        if (file.isSymbolicLink()) {
+          try {
+            const stat = fs.statSync(`${filePath}/${file.name}`);
+            if (stat.isDirectory()) {
+              return new (<any>fs.Dirent)(
+                file.name,
+                (<any>fs.constants).UV_DIRENT_DIR,
+              );
+            }
+            return new (<any>fs.Dirent)(
+              file.name,
+              (<any>fs.constants).UV_DIRENT_FILE,
+            );
+          } catch {}
+        }
+        return file;
+      });
+    }
     if (extra.length) {
       return [...result, ...extra];
     }
@@ -688,7 +726,7 @@ function realpath(vfs: Vfs, delegate: typeof fs.realpath): typeof fs.realpath {
     if (resolved && filePath != resolved.path) {
       args[0] = resolved.path;
     }
-    if (resolved.hardenSymlinks) {
+    if (resolved?.hardenSymlinks) {
       args[typeof args[1] === "function" ? 1 : 2] = function (err) {
         if (err) {
           return callback.apply(this, arguments);
@@ -702,7 +740,34 @@ function realpath(vfs: Vfs, delegate: typeof fs.realpath): typeof fs.realpath {
     }
     delegate.apply(this, args);
   }
-  realpath.native = delegate.native;
+  realpath.native = function (
+    path: fs.PathLike,
+    options: any,
+    callback?: Function,
+  ): void {
+    const filePath = stringPath(path);
+    if (typeof options === "function") {
+      callback = options;
+    }
+    const resolved = vfs.realpath(filePath);
+    const args = [...arguments];
+    if (resolved && filePath != resolved.path) {
+      args[0] = resolved.path;
+    }
+    if (resolved?.hardenSymlinks) {
+      args[typeof args[1] === "function" ? 1 : 2] = function (err) {
+        if (err) {
+          return callback.apply(this, arguments);
+        } else {
+          callback(
+            null,
+            options === "buffer" ? Buffer.from(resolved.path) : resolved.path,
+          );
+        }
+      };
+    }
+    delegate.native.apply(this, args);
+  };
   return <typeof fs.realpath>realpath;
 }
 
@@ -723,7 +788,22 @@ function realpathSync(
     }
     return result;
   }
-  realpathSync.native = delegate.native;
+  realpathSync.native = function (
+    path: fs.PathLike,
+    options: string,
+  ): Buffer | string {
+    const filePath = stringPath(path);
+    const resolved = vfs.realpath(filePath);
+    const args = [...arguments];
+    if (resolved && filePath != resolved.path) {
+      args[0] = resolved.path;
+    }
+    const result = delegate.native.apply(this, args);
+    if (resolved?.hardenSymlinks) {
+      return options === "buffer" ? Buffer.from(resolved.path) : resolved.path;
+    }
+    return result;
+  };
   return <typeof fs.realpathSync>realpathSync;
 }
 

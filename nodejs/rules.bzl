@@ -103,7 +103,7 @@ def _nodejs_binary_implementation(ctx):
     default_info = DefaultInfo(
         executable = bin,
         runfiles = ctx.runfiles(
-            files = [nodejs_toolchain.nodejs.bin, ctx.file._module_linker, package_manifest] + ctx.files._bash_runfiles + ctx.files.preload + ctx.files.data,
+            files = [nodejs_toolchain.nodejs.bin, ctx.file._module_linker, package_manifest] + ctx.files.preload + ctx.files.data,
             transitive_files = depset(transitive = files),
         ),
     )
@@ -134,10 +134,6 @@ nodejs_binary = rule(
         "preload": attr.label_list(
             allow_files = [".js"],
             doc = "Preload modules",
-        ),
-        "_bash_runfiles": attr.label(
-            allow_files = True,
-            default = "@bazel_tools//tools/bash/runfiles",
         ),
         "_runner": attr.label(
             allow_single_file = True,

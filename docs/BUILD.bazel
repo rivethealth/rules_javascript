@@ -5,6 +5,7 @@ pkg_tar(
     srcs = [
         "//commonjs/doc",
         "//javascript/doc",
+        "//jest/doc",
         "//nodejs/doc",
         "//npm/doc",
         "//prettier/doc",

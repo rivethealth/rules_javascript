@@ -11,6 +11,7 @@
     "doctoc": "~2.1.0",
     "enhanced-resolve": "~5.8.0",
     "eslint": "~8.3.0",
+    "jest": "~27.4.0",
     "long": "~4.0.0",
     "prettier": "~2.4.0",
     "protobufjs": "~6.11.2",

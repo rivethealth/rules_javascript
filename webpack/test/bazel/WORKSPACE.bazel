@@ -47,13 +47,6 @@ rules_proto_grpc_toolchains()
 
 rules_proto_grpc_repos()
 
-# Format
-
-local_repository(
-    name = "rules_format",
-    path = "../../rules_format",
-)
-
 # JavaScript
 
 local_repository(

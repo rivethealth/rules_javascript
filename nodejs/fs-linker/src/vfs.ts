@@ -166,7 +166,11 @@ export class VfsImpl implements Vfs {
         case VfsNode.PATH: {
           let result: string;
           if (node.path) {
-            result = `${prefix}${name}/ (${node.path})\n`;
+            result = `${prefix}${name}/ (${node.path})`;
+            if (node.hardenSymlinks) {
+              result += " nolinks";
+            }
+            result += "\n";
           } else {
             result = `${prefix}${name}/\n`;
           }

@@ -46,7 +46,17 @@ function addDep(root: VfsNode.Path, name: string, path: string) {
   });
 }
 
-export function createVfs(packageTree: PackageTree): VfsImpl {
+export function createVfs(
+  packageTree: PackageTree,
+  runfiles: boolean,
+): VfsImpl {
+  const resolve = (path_: string) =>
+    path.resolve(
+      runfiles
+        ? `${process.env.RUNFILES_DIR}/${process.env.BAZEL_WORKSPACE}/${path_}`
+        : path_,
+    );
+
   const root: VfsNode = {
     type: VfsNode.PATH,
     hardenSymlinks: false,
@@ -55,7 +65,7 @@ export function createVfs(packageTree: PackageTree): VfsImpl {
   };
 
   for (const [id, package_] of packageTree.entries()) {
-    const packageNode = addPackageNode(root, path.resolve(package_.path));
+    const packageNode = addPackageNode(root, resolve(package_.path));
     const nodeModules: VfsNode.Path = {
       type: VfsNode.PATH,
       hardenSymlinks: false,
@@ -65,7 +75,7 @@ export function createVfs(packageTree: PackageTree): VfsImpl {
     packageNode.extraChildren.set("node_modules", nodeModules);
     for (const [name, dep] of package_.deps) {
       try {
-        addDep(nodeModules, name, path.resolve(packageTree.get(dep).path));
+        addDep(nodeModules, name, resolve(packageTree.get(dep).path));
       } catch (e) {
         if (!(e instanceof DependencyConflictError)) {
           throw e;

@@ -63,7 +63,7 @@ class JsWorker {
       PackageTree.json(),
       fs.readFileSync(manifest, "utf8"),
     );
-    const vfs = createVfs(packageTree);
+    const vfs = createVfs(packageTree, false);
     this.vfs.delegate = vfs;
   }
 

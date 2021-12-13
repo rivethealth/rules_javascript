@@ -1,0 +1,11 @@
+load("//docs:rules.bzl", "stardoc")
+
+package(default_visibility = ["//visibility:public"])
+
+stardoc(
+    "doc",
+    "//jest:bzl",
+    [
+        "//jest:rules.bzl",
+    ],
+)
