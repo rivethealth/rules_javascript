@@ -55,12 +55,15 @@ def create_entries(ctx, actions, srcs, prefix, strip_prefix):
     files = []
     for src in srcs:
         path = runfile_path(ctx, src)
-        if strip_prefix:
-            if not path.startswith(strip_prefix + "/"):
-                fail("Source %s does not have prefix %s" % (path, strip_prefix))
-            path = path[len(strip_prefix + "/"):]
-        if prefix:
-            path = prefix + "/" + path
+        if path == strip_prefix:
+            path = prefix
+        else:
+            if strip_prefix:
+                if not path.startswith(strip_prefix + "/"):
+                    fail("Source %s does not have prefix %s" % (path, strip_prefix))
+                path = path[len(strip_prefix + "/"):]
+            if prefix:
+                path = prefix + "/" + path
         file = actions.declare_file(path)
         actions.symlink(
             output = file,

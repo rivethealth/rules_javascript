@@ -18,6 +18,7 @@ def configure_prettier(name, dep, config, plugins = [], visibility = None):
         root = ":root",
         src = "@better_rules_javascript//prettier/format:tsconfig",
         dep = "@better_rules_javascript//rules:tsconfig",
+        path = "tsconfig.json",
     )
 
     ts_library(
