@@ -115,10 +115,10 @@ e.readdir=function(t,e){return function(n,r,o){const s=c(n);"function"==typeof r
 encoding:r}:null==r&&(r={});const a=t.resolve(s);let l=[]
 ;if(a&&a.extraChildren.size&&(l=r.withFileTypes?[...a.extraChildren.entries()].map((([t,e])=>u(t,e))):"buffer"===r.encoding?[...a.extraChildren.keys()].map((t=>Buffer.from(t))):[...a.extraChildren.keys()]),
 a&&void 0===a.path)return void setImmediate((()=>o(null,l)));const h=[...arguments];return a&&s!==a.path&&(h[0]=a.path),
-l.length&&(h["function"==typeof h[1]?1:2]=function(t,e){if(t)return o.apply(this,arguments)
+h["function"==typeof h[1]?1:2]=function(t,e){if(t)return o.apply(this,arguments)
 ;r.withFileTypes&&a.hardenSymlinks&&(e=e.map((t=>{if(t.isSymbolicLink())try{
 return i.default.statSync(`${s}/${t.name}`).isDirectory()?new i.default.Dirent(t.name,i.default.constants.UV_DIRENT_DIR):new i.default.Dirent(t.name,i.default.constants.UV_DIRENT_FILE)
-}catch{}return t}))),o(null,[...e,...l])}),e.apply(this,h)}}(t,e.readdir),e.readdirSync=function(t,e){
+}catch{}return t}))),o(null,[...e,...l])},e.apply(this,h)}}(t,e.readdir),e.readdirSync=function(t,e){
 return function(n,r){const o=c(n);"string"==typeof r?r={encoding:r}:null==r&&(r={});const s=t.resolve(o);let a=[]
 ;if(s&&s.extraChildren.size&&(a=r.withFileTypes?[...s.extraChildren.entries()].map((([t,e])=>u(t,e))):"buffer"===r.encoding?[...s.extraChildren.keys()].map((t=>Buffer.from(t))):[...s.extraChildren.keys()]),
 s&&void 0===s.path)return a;const l=[...arguments];s&&o!==s.path&&(l[0]=s.path);let h=e.apply(this,l)

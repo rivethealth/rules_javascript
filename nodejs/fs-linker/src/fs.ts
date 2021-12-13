@@ -549,37 +549,35 @@ function readdir(vfs: Vfs, delegate: typeof fs.readdir): typeof fs.readdir {
     if (resolved && filePath !== resolved.path) {
       args[0] = resolved.path;
     }
-    if (extra.length) {
-      args[typeof args[1] === "function" ? 1 : 2] = function (
-        err: NodeJS.ErrnoException | null,
-        files?: fs.Dirent[] | Buffer[] | string[],
-      ) {
-        if (err) {
-          return callback.apply(this, arguments);
-        }
-        if (options.withFileTypes && resolved.hardenSymlinks) {
-          files = (<fs.Dirent[]>files).map((file) => {
-            if (file.isSymbolicLink()) {
-              try {
-                const stat = fs.statSync(`${filePath}/${file.name}`);
-                if (stat.isDirectory()) {
-                  return new (<any>fs.Dirent)(
-                    file.name,
-                    (<any>fs.constants).UV_DIRENT_DIR,
-                  );
-                }
+    args[typeof args[1] === "function" ? 1 : 2] = function (
+      err: NodeJS.ErrnoException | null,
+      files?: fs.Dirent[] | Buffer[] | string[],
+    ) {
+      if (err) {
+        return callback.apply(this, arguments);
+      }
+      if (options.withFileTypes && resolved.hardenSymlinks) {
+        files = (<fs.Dirent[]>files).map((file) => {
+          if (file.isSymbolicLink()) {
+            try {
+              const stat = fs.statSync(`${filePath}/${file.name}`);
+              if (stat.isDirectory()) {
                 return new (<any>fs.Dirent)(
                   file.name,
-                  (<any>fs.constants).UV_DIRENT_FILE,
+                  (<any>fs.constants).UV_DIRENT_DIR,
                 );
-              } catch {}
-            }
-            return file;
-          });
-        }
-        callback(null, <fs.Dirent[] | Buffer[] | string[]>[...files, ...extra]);
-      };
-    }
+              }
+              return new (<any>fs.Dirent)(
+                file.name,
+                (<any>fs.constants).UV_DIRENT_FILE,
+              );
+            } catch {}
+          }
+          return file;
+        });
+      }
+      callback(null, <fs.Dirent[] | Buffer[] | string[]>[...files, ...extra]);
+    };
     return delegate.apply(this, args);
   };
 }
