@@ -2,33 +2,20 @@ load("@better_rules_javascript//commonjs:rules.bzl", "cjs_root")
 load("@better_rules_javascript//typescript:rules.bzl", "ts_library", "tsconfig")
 
 cjs_root(
-    name = "root_lib",
-    package_name = "example",
-)
-
-cjs_root(
-    name = "root_nolib",
+    name = "root",
     package_name = "example",
 )
 
 tsconfig(
     name = "config",
     src = "tsconfig.json",
-    root = ":root_lib",
+    root = ":root",
 )
 
 ts_library(
     name = "lib",
-    srcs = ["example.ts"],
+    srcs = ["example.json"],
     compiler = "//:ts",
     config = ":config",
-    root = ":root_lib",
-)
-
-ts_library(
-    name = "nolib",
-    srcs = ["example.ts"],
-    compiler = "//:ts_nolib",
-    config = ":config",
-    root = ":root_nolib",
+    root = ":root",
 )

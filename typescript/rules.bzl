@@ -38,7 +38,10 @@ ts_simple_compiler = rule(
 )
 
 def declaration_path(input):
-    return input.replace(".ts", ".d.ts")
+    if input.endswith(".js"):
+        return input.replace(".js", ".d.ts")
+    if input.endswith(".ts"):
+        return input.replace(".ts", ".d.ts")
 
 def compiled_path(input):
     return input.replace(".ts", ".js")
@@ -87,10 +90,14 @@ def _ts_simple_library_impl(ctx):
         if not path.endswith(".d.ts"):
             declaration = ctx.actions.declare_file(declaration_path(path))
             declarations.append(declaration)
+        if path.endswith(".js") or path.endswith(".ts"):
             js_ = ctx.actions.declare_file(compiled_path(path))
             js.append(js_)
             map = ctx.actions.declare_file(map_path(compiled_path(path)))
             maps.append(map)
+        else:
+            js_ = ctx.actions.declare_file(path)
+            js.append(js_)
 
     transitive_descriptors = depset(
         cjs_info.descriptors,
@@ -228,7 +235,7 @@ ts_simple_library = rule(
     implementation = _ts_simple_library_impl,
     attrs = {
         "srcs": attr.label_list(
-            allow_files = [".ts"],
+            allow_files = [".js", ".json", ".ts"],
             doc = "TypeScript sources",
             mandatory = True,
         ),
@@ -567,33 +574,40 @@ def _ts_library_impl(ctx):
         )
 
         if not path.endswith(".d.ts"):
-            declaration = ctx.actions.declare_file(declaration_path(path))
-            declarations.append(declaration)
             js_ = ctx.actions.declare_file(compiled_path(path))
             js.append(js_)
-            map = ctx.actions.declare_file(map_path(compiled_path(path)))
-            maps.append(map)
 
-            args = ctx.actions.args()
-            args.add("--config", transpile_tsconfig)
-            args.add("--manifest", package_manifest)
-            args.add("--js", js_)
-            args.add("--map", map)
-            args.add(src)
-            args.set_param_file_format("multiline")
-            args.use_param_file("@%s", use_always = True)
-            ctx.actions.run(
-                arguments = [args],
-                executable = compiler.transpile_bin.files_to_run.executable,
-                execution_requirements = {"supports-workers": "1"},
-                inputs = depset(
-                    [src, transpile_tsconfig, package_manifest],
-                    transitive = ([tsconfig_info.transitive_configs, tsconfig_info.transitive_descriptors] if tsconfig_info else []),
-                ),
-                mnemonic = "TypeScriptTranspile",
-                outputs = [js_, map],
-                tools = [compiler.transpile_bin.files_to_run],
-            )
+            if path.endswith(".js") or path.endswith(".ts"):
+                declaration = ctx.actions.declare_file(declaration_path(path))
+                declarations.append(declaration)
+                map = ctx.actions.declare_file(map_path(compiled_path(path)))
+                maps.append(map)
+                args = ctx.actions.args()
+                args.add("--config", transpile_tsconfig)
+                args.add("--manifest", package_manifest)
+                args.add("--js", js_)
+                args.add("--map", map)
+                args.add(src)
+                args.set_param_file_format("multiline")
+                args.use_param_file("@%s", use_always = True)
+                ctx.actions.run(
+                    arguments = [args],
+                    executable = compiler.transpile_bin.files_to_run.executable,
+                    execution_requirements = {"supports-workers": "1"},
+                    inputs = depset(
+                        [src, transpile_tsconfig, package_manifest],
+                        transitive = ([tsconfig_info.transitive_configs, tsconfig_info.transitive_descriptors] if tsconfig_info else []),
+                    ),
+                    mnemonic = "TypeScriptTranspile",
+                    outputs = [js_, map],
+                    tools = [compiler.transpile_bin.files_to_run],
+                )
+            else:
+                ctx.actions.symlink(
+                    output = js_,
+                    target_file = src,
+                    progress_message = "Copying file to %{output}",
+                )
 
     # create tsconfig
     tsconfig = ctx.actions.declare_file("%s/tsconfig.json" % ctx.attr.name)
@@ -619,21 +633,22 @@ def _ts_library_impl(ctx):
     )
 
     # compile
-    ctx.actions.run(
-        arguments = ["-p", tsconfig.path],
-        env = {
-            "NODE_OPTIONS_APPEND": "-r ./%s" % ctx.file._fs_linker.path,
-            "NODE_FS_PACKAGE_MANIFEST": package_manifest.path,
-        },
-        executable = compiler.bin.files_to_run.executable,
-        inputs = depset(
-            [package_manifest, ctx.file._fs_linker, tsconfig] + ts,
-            transitive = [transitive_descriptors] + [ts_info.transitive_declarations for ts_info in ts_deps] + ([tsconfig_info.transitive_configs, tsconfig_info.transitive_descriptors] if tsconfig_info else []),
-        ),
-        mnemonic = "TypeScriptCompile",
-        outputs = declarations,
-        tools = [compiler.bin.files_to_run],
-    )
+    if declarations:
+        ctx.actions.run(
+            arguments = ["-p", tsconfig.path],
+            env = {
+                "NODE_OPTIONS_APPEND": "-r ./%s" % ctx.file._fs_linker.path,
+                "NODE_FS_PACKAGE_MANIFEST": package_manifest.path,
+            },
+            executable = compiler.bin.files_to_run.executable,
+            inputs = depset(
+                [package_manifest, ctx.file._fs_linker, tsconfig] + ts,
+                transitive = [transitive_descriptors] + [ts_info.transitive_declarations for ts_info in ts_deps] + ([tsconfig_info.transitive_configs, tsconfig_info.transitive_descriptors] if tsconfig_info else []),
+            ),
+            mnemonic = "TypeScriptCompile",
+            outputs = declarations,
+            tools = [compiler.bin.files_to_run],
+        )
 
     transitive_declarations = depset(
         declarations,
@@ -725,7 +740,7 @@ ts_library = rule(
             providers = [[TsInfo]],
         ),
         "srcs": attr.label_list(
-            allow_files = [".ts"],
+            allow_files = [".js", ".json", ".ts"],
             doc = "TypeScript sources",
             mandatory = True,
         ),
