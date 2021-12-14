@@ -97,6 +97,7 @@ def _ts_simple_library_impl(ctx):
             maps.append(map)
         else:
             js_ = ctx.actions.declare_file(path)
+            declarations.append(js_)
             js.append(js_)
 
     transitive_descriptors = depset(
@@ -651,7 +652,7 @@ def _ts_library_impl(ctx):
         )
 
     transitive_declarations = depset(
-        declarations,
+        declarations + [js_ for js_ in js if js_.path.endswith(".json")],
         transitive = [ts_info.transitive_declarations for ts_info in ts_deps],
     )
 
