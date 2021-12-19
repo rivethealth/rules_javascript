@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "@babel/plugin-transform-modules-commonjs": "~7.13.0",
+    "@jest/types": "~27.4.0",
     "@rollup/plugin-commonjs": "~16.0.0",
     "@rollup/plugin-node-resolve": "13.0.4",
     "@types/semver": "~5.5.0",
@@ -13,6 +14,7 @@
     "enhanced-resolve": "~5.8.0",
     "eslint": "~8.3.0",
     "jest": "~27.4.0",
+    "jest-junit": "~13.0.0",
     "long": "~4.0.0",
     "prettier": "~2.4.0",
     "protobufjs": "~6.11.2",

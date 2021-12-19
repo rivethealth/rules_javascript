@@ -25,6 +25,7 @@ BAZEL_WORKSPACE=%{workspace} \
   --preserve-symlinks-main \
   "$RUNFILES_DIR"/%{main_module} \
   --config="$RUNFILES_DIR"/%{config} \
+  --no-cache \
   --no-watchman \
   --runInBand \
   "$@"

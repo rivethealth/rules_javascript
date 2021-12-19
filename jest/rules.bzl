@@ -34,12 +34,22 @@ def _jest_test_impl(ctx):
 
     main_module = "%s/bin/jest.js" % (runfile_path(ctx, js_info.package))
 
+    config_file = ctx.actions.declare_file("%s/jestconfig.js" % ctx.attr.name)
+    ctx.actions.expand_template(
+        template = ctx.file._config,
+        output = config_file,
+        substitutions = {
+            '"%{config}"': json.encode("%s/%s" % (runfile_path(ctx, config_dep.package), config.path)),
+            '"%{roots}"': json.encode(json.encode([runfile_path(ctx, dep[JsInfo].package) for dep in ctx.attr.deps])),
+        },
+    )
+
     bin = ctx.actions.declare_file("%s/bin" % ctx.label.name)
     ctx.actions.expand_template(
         template = ctx.file._runner,
         output = bin,
         substitutions = {
-            "%{config}": shell.quote("%s/%s" % (runfile_path(ctx, config_dep.package), config.path)),
+            "%{config}": runfile_path(ctx, config_file),
             "%{env}": " ".join(["%s=%s" % (name, shell.quote(value)) for name, value in env.items()]),
             "%{fs_linker}": shell.quote(runfile_path(ctx, ctx.file._fs_linker)),
             "%{main_module}": shell.quote(main_module),
@@ -54,7 +64,7 @@ def _jest_test_impl(ctx):
     default_info = DefaultInfo(
         executable = bin,
         runfiles = ctx.runfiles(
-            files = [nodejs_toolchain.nodejs.bin, ctx.file._fs_linker, ctx.file._module_linker, package_manifest] + ctx.files.data,
+            files = [config_file, nodejs_toolchain.nodejs.bin, ctx.file._fs_linker, ctx.file._module_linker, package_manifest] + ctx.files.data,
             transitive_files = depset(transitive = files),
         ),
     )
@@ -86,6 +96,10 @@ jest_test = rule(
         "global_deps": attr.label_list(
             doc = "Global dependencies.",
             providers = [JsInfo],
+        ),
+        "_config": attr.label(
+            allow_single_file = [".js"],
+            default = "//jest/config:bundle",
         ),
         "_runner": attr.label(
             allow_single_file = True,

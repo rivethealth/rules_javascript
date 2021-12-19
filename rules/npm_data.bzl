@@ -6544,6 +6544,30 @@ PACKAGES = [
     {
         "deps": [
             {
+                "dep": "mkdirp@1.0.4",
+                "name": "mkdirp",
+            },
+            {
+                "dep": "strip-ansi@6.0.1",
+                "name": "strip-ansi",
+            },
+            {
+                "dep": "uuid@8.3.2",
+                "name": "uuid",
+            },
+            {
+                "dep": "xml@1.0.1",
+                "name": "xml",
+            },
+        ],
+        "extra_deps": {},
+        "id": "jest-junit@13.0.0",
+        "name": "jest-junit",
+        "url": "https://registry.npmjs.org/jest-junit/-/jest-junit-13.0.0.tgz",
+    },
+    {
+        "deps": [
+            {
                 "dep": "jest-get-type@27.4.0",
                 "name": "jest-get-type",
             },
@@ -10076,6 +10100,13 @@ PACKAGES = [
     {
         "deps": [],
         "extra_deps": {},
+        "id": "uuid@8.3.2",
+        "name": "uuid",
+        "url": "https://registry.npmjs.org/uuid/-/uuid-8.3.2.tgz",
+    },
+    {
+        "deps": [],
+        "extra_deps": {},
         "id": "v8-compile-cache@2.3.0",
         "name": "v8-compile-cache",
         "url": "https://registry.npmjs.org/v8-compile-cache/-/v8-compile-cache-2.3.0.tgz",
@@ -10546,6 +10577,13 @@ PACKAGES = [
     {
         "deps": [],
         "extra_deps": {},
+        "id": "xml@1.0.1",
+        "name": "xml",
+        "url": "https://registry.npmjs.org/xml/-/xml-1.0.1.tgz",
+    },
+    {
+        "deps": [],
+        "extra_deps": {},
         "id": "xmlchars@2.2.0",
         "name": "xmlchars",
         "url": "https://registry.npmjs.org/xmlchars/-/xmlchars-2.2.0.tgz",
@@ -10636,6 +10674,10 @@ ROOTS = [
         "name": "@babel/plugin-transform-modules-commonjs",
     },
     {
+        "dep": "@jest/types@27.4.2",
+        "name": "@jest/types",
+    },
+    {
         "dep": "@rollup/plugin-commonjs@16.0.0",
         "name": "@rollup/plugin-commonjs",
     },
@@ -10710,6 +10752,10 @@ ROOTS = [
     {
         "dep": "jest@27.4.4",
         "name": "jest",
+    },
+    {
+        "dep": "jest-junit@13.0.0",
+        "name": "jest-junit",
     },
     {
         "dep": "long@4.0.0",
