@@ -1,6 +1,6 @@
 load("@bazel_skylib//lib:paths.bzl", "paths")
 load("@better_rules_javascript//commonjs:providers.bzl", "CjsInfo", "create_dep", "create_global", "create_package")
-load("@better_rules_javascript//commonjs:rules.bzl", "cjs_root", "create_entries", "default_strip_prefix", "gen_manifest", "output_prefix")
+load("@better_rules_javascript//commonjs:rules.bzl", "cjs_root", "create_entries", "default_strip_prefix", "gen_manifest", "output_prefix", "package_path")
 load("@better_rules_javascript//nodejs:rules.bzl", "nodejs_binary")
 load("@better_rules_javascript//javascript:providers.bzl", "JsInfo")
 load("@better_rules_javascript//util:path.bzl", "output", "runfile_path")
@@ -143,7 +143,7 @@ def _ts_simple_library_impl(ctx):
             transitive = [transitive_deps],
         ),
         globals = [],
-        runfiles = False,
+        package_path = package_path,
     )
 
     args = ctx.actions.args()
@@ -522,7 +522,7 @@ def _ts_library_impl(ctx):
             transitive = [transitive_deps] + ([tsconfig_info.transitive_deps] if tsconfig_info else []),
         ),
         globals = [create_global(id = dep[TsInfo].package.id, name = dep[TsInfo].name) for dep in ctx.attr.global_deps if TsInfo in dep],
-        runfiles = False,
+        package_path = package_path,
     )
 
     transpile_tsconfig = ctx.actions.declare_file("%s/js-tsconfig.json" % ctx.attr.name)

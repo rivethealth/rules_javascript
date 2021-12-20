@@ -1,6 +1,6 @@
 load("@bazel_skylib//lib:shell.bzl", "shell")
 load("//commonjs:providers.bzl", "create_global")
-load("//commonjs:rules.bzl", "gen_manifest")
+load("//commonjs:rules.bzl", "gen_manifest", "package_short_path")
 load("//javascript:providers.bzl", "JsInfo")
 load("//util:path.bzl", "runfile_path")
 
@@ -69,7 +69,7 @@ def _nodejs_binary_implementation(ctx):
         packages = depset(transitive = [dep.transitive_packages for dep in js_deps]),
         deps = depset(transitive = [dep.transitive_deps for dep in js_deps]),
         globals = [create_global(id = dep.package.id, name = dep.name) for dep in js_globals],
-        runfiles = True,
+        package_path = package_short_path,
     )
 
     main_module = "%s/%s" % (runfile_path(ctx, js_info.package), ctx.attr.main)

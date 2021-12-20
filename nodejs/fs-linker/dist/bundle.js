@@ -76,7 +76,7 @@ if(void 0!==this.delegate&&void 0===this.extraIterator){const t=this.delegate.re
 case h.VfsNode.PATH:return new i.default.Dirent(t,i.default.constants.UV_DIRENT_DIR);case h.VfsNode.SYMLINK:
 return new i.default.Dirent(t,i.default.constants.UV_DIRENT_LINK)}}function c(t){
 if(t instanceof Buffer&&(t=t.toString()),t instanceof o.default.URL){
-if("file:"!==t.protocol)throw new Error(`Invalid protocol: ${t.protocol}`);t=o.default.fileURLToPath(t)}
+if("file:"!==t.protocol)throw new Error(`Invalid protocol: ${t.protocol}`);t=(0,o.default.fileURLToPath)(t)}
 return s.default.resolve(t)}function l(t,e,n){return function(){const r=[...arguments];for(const e of n){
 const n=c(r[e]),i=t.resolve(n);void 0!==i.path&&n!==i.path&&(r[e]=i.path)}return e.apply(this,r)}}function f(t,e){
 return function(o,s,a){const u=c(o),l=t.entry(u);if("function"==typeof s&&(a=s,s={}),
@@ -151,18 +151,19 @@ e.unlink=function(t,e){return l(t,e,[0])}(t,e.unlink),e.unlinkSync=function(t,e)
 e.utimes=function(t,e){return l(t,e,[0])}(t,e.utimes),e.utimesSync=function(t,e){return l(t,e,[0])}(t,e.unlinkSync),
 e.writeFile=function(t,e){return l(t,e,[0])}(t,e.writeFile),e.writeFileSync=function(t,e){return l(t,e,[0])
 }(t,e.writeFileSync)}})),p=u((function(t,e){Object.defineProperty(e,"__esModule",{value:!0}),e.patchFsPromises=void 0,
-e.patchFsPromises=function(t,e){e.access=function(t,e){return f.replaceArguments(t,e,[0])}(t,i.default.promises.access),
-e.appendFile=function(t,e){return f.replaceArguments(t,e,[0])}(t,i.default.promises.appendFile),e.chmod=function(t,e){
-return f.replaceArguments(t,e,[0])}(t,e.chmod),e.chown=function(t,e){return f.replaceArguments(t,e,[0])}(t,e.chown),
-e.copyFile=function(t,e){return f.replaceArguments(t,e,[0,1])}(t,e.copyFile),e.cp=function(t,e){
-return f.replaceArguments(t,e,[0,1])}(t,e.cp),e.lutimes=function(t,e){return f.replaceArguments(t,e,[0])}(t,e.lutimes)}
-})),d=u((function(t,e){Object.defineProperty(e,"__esModule",{value:!0}),e.createVfs=void 0;class n extends Error{}
-function r(t,e){const n=e.split("/").slice(1);for(let e=0;e<n.length;e++){let r=t.extraChildren.get(n[e]);r||(r={
-type:h.VfsNode.PATH,hardenSymlinks:!1,extraChildren:new Map,path:"/"+n.slice(0,e+1).join("/")},
-t.extraChildren.set(n[e],r)),t=r}return t.hardenSymlinks=!0,t}function i(t,e,r){const i=e.split("/")
-;for(let e=0;e<i.length-1;e++){let r=t.extraChildren.get(i[e]);if(r){if(r.type!==h.VfsNode.PATH)throw new n}else r={
-type:h.VfsNode.PATH,hardenSymlinks:!1,extraChildren:new Map,path:void 0},t.extraChildren.set(i[e],r);t=r}
-t.extraChildren.set(i[i.length-1],{type:h.VfsNode.SYMLINK,path:r})}e.createVfs=function(t,e){
+e.patchFsPromises=function(t,e){e.access=function(t,e){return(0,f.replaceArguments)(t,e,[0])
+}(t,i.default.promises.access),e.appendFile=function(t,e){return(0,f.replaceArguments)(t,e,[0])
+}(t,i.default.promises.appendFile),e.chmod=function(t,e){return(0,f.replaceArguments)(t,e,[0])}(t,e.chmod),
+e.chown=function(t,e){return(0,f.replaceArguments)(t,e,[0])}(t,e.chown),e.copyFile=function(t,e){return(0,
+f.replaceArguments)(t,e,[0,1])}(t,e.copyFile),e.cp=function(t,e){return(0,f.replaceArguments)(t,e,[0,1])}(t,e.cp),
+e.lutimes=function(t,e){return(0,f.replaceArguments)(t,e,[0])}(t,e.lutimes)}})),d=u((function(t,e){
+Object.defineProperty(e,"__esModule",{value:!0}),e.createVfs=void 0;class n extends Error{}function r(t,e){
+const n=e.split("/").slice(1);for(let e=0;e<n.length;e++){let r=t.extraChildren.get(n[e]);r||(r={type:h.VfsNode.PATH,
+hardenSymlinks:!1,extraChildren:new Map,path:"/"+n.slice(0,e+1).join("/")},t.extraChildren.set(n[e],r)),t=r}
+return t.hardenSymlinks=!0,t}function i(t,e,r){const i=e.split("/");for(let e=0;e<i.length-1;e++){
+let r=t.extraChildren.get(i[e]);if(r){if(r.type!==h.VfsNode.PATH)throw new n}else r={type:h.VfsNode.PATH,
+hardenSymlinks:!1,extraChildren:new Map,path:void 0},t.extraChildren.set(i[e],r);t=r}t.extraChildren.set(i[i.length-1],{
+type:h.VfsNode.SYMLINK,path:r})}e.createVfs=function(t,e){
 const o=t=>s.default.resolve(e?`${process.env.RUNFILES_DIR}/${process.env.BAZEL_WORKSPACE}/${t}`:t),a={
 type:h.VfsNode.PATH,hardenSymlinks:!1,extraChildren:new Map,path:"/"};for(const[e,s]of t.entries()){
 const u=r(a,o(s.path)),c={type:h.VfsNode.PATH,hardenSymlinks:!1,extraChildren:new Map,path:void 0}
@@ -170,6 +171,7 @@ const u=r(a,o(s.path)),c={type:h.VfsNode.PATH,hardenSymlinks:!1,extraChildren:ne
 if(!(t instanceof n))throw t;throw new Error(`Dependency "${r}" of "${e}" conflicts with another`)}}
 return new h.VfsImpl(a)}})),y=u((function(t,e){Object.defineProperty(e,"__esModule",{value:!0})
 ;const n=process.env.NODE_FS_PACKAGE_MANIFEST;if(!n)throw new Error("NODE_FS_PACKAGE_MANIFEST is not set")
-;const r=c.JsonFormat.parse(l.PackageTree.json(),i.default.readFileSync(n,"utf8")),o=d.createVfs(r,"true"===process.env.NODE_FS_RUNFILES)
-;"true"===process.env.NODE_FS_TRACE&&process.stderr.write(o.print()),f.patchFs(o,i.default),
-p.patchFsPromises(o,i.default.promises)})),m=a(y);module.exports=m;
+;const r=c.JsonFormat.parse(l.PackageTree.json(),i.default.readFileSync(n,"utf8")),o=(0,
+d.createVfs)(r,"true"===process.env.NODE_FS_RUNFILES)
+;"true"===process.env.NODE_FS_TRACE&&process.stderr.write(o.print()),(0,f.patchFs)(o,i.default),(0,
+p.patchFsPromises)(o,i.default.promises)})),m=a(y);module.exports=m;

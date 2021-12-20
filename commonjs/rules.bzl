@@ -17,28 +17,26 @@ def _global(dep):
     )
     return json.encode(data)
 
-def _package_arg(package):
+def _package_arg(package, package_path):
     data = struct(
         id = package.id,
-        path = package.path,
+        path = package_path(package),
         label = str(package.label),
     )
     return json.encode(data)
 
-def _runfile_package_arg(package):
-    data = struct(
-        id = package.id,
-        path = package.short_path,
-        label = str(package.label),
-    )
-    return json.encode(data)
+def package_path(package):
+    return package.path
 
-def gen_manifest(actions, manifest_bin, manifest, packages, deps, globals, runfiles):
+def package_short_path(package):
+    return package.short_path
+
+def gen_manifest(actions, manifest_bin, manifest, packages, deps, globals, package_path):
+    def package_arg(package):
+        return _package_arg(package, package_path)
+
     args = actions.args()
-    if runfiles:
-        args.add_all(packages, before_each = "--package", map_each = _runfile_package_arg)
-    else:
-        args.add_all(packages, before_each = "--package", map_each = _package_arg)
+    args.add_all(packages, before_each = "--package", map_each = package_arg, allow_closure = True)
     args.add_all(deps, before_each = "--dep", map_each = _dep_arg)
     args.add_all(globals, before_each = "--global", map_each = _global)
     args.add(manifest)

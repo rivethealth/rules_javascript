@@ -1,6 +1,6 @@
 load("@bazel_skylib//lib:shell.bzl", "shell")
 load("//commonjs:providers.bzl", "create_global")
-load("//commonjs:rules.bzl", "gen_manifest")
+load("//commonjs:rules.bzl", "gen_manifest", "package_short_path")
 load("//javascript:providers.bzl", "JsFile", "JsInfo")
 load("//util:path.bzl", "runfile_path")
 
@@ -29,7 +29,7 @@ def _jest_test_impl(ctx):
         manifest = package_manifest,
         manifest_bin = manifest_bin,
         packages = depset(transitive = [dep.transitive_packages for dep in js_deps]),
-        runfiles = True,
+        package_path = package_short_path,
     )
 
     main_module = "%s/bin/jest.js" % (runfile_path(ctx, js_info.package))

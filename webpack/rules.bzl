@@ -1,6 +1,6 @@
 load("@bazel_skylib//lib:shell.bzl", "shell")
 load("//commonjs:providers.bzl", "cjs_path")
-load("//commonjs:rules.bzl", "gen_manifest")
+load("//commonjs:rules.bzl", "gen_manifest", "package_path")
 load("//javascript:providers.bzl", "JsFile", "JsInfo")
 load("//nodejs:rules.bzl", "nodejs_binary")
 load("//util:path.bzl", "runfile_path")
@@ -72,7 +72,7 @@ def _webpack_bundle_impl(ctx):
         manifest = package_manifest,
         manifest_bin = ctx.attr._manifest[DefaultInfo],
         packages = dep.transitive_packages,
-        runfiles = False,
+        package_path = package_path,
     )
 
     bundle = ctx.actions.declare_file("%s/bundle.js" % ctx.label.name)
