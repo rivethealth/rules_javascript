@@ -1,10 +1,10 @@
 import * as fs from "fs";
 import {
   Input,
-  WorkRequest,
   WorkResponse,
-} from "@bazel_tools/src/main/protobuf/worker_protocol";
-import { readFromStream } from "./protobuf";
+  WorkRequest,
+} from "./protocol";
+import { readLines } from "./stream";
 
 class CliError extends Error {}
 
@@ -32,8 +32,9 @@ async function runWorker(worker: Worker) {
   let abort: AbortController | undefined;
   process.on("SIGINT", () => abort?.abort());
   process.on("SIGTERM", () => abort?.abort());
-  for await (const message of readFromStream(process.stdin, WorkRequest)) {
-    if (message.requestId) {
+  for await (const line of readLines(process.stdin)) {
+    const message: WorkRequest = JSON.parse(Buffer.from(line).toString());
+    if (message.request_id) {
       throw new Error("Does not support multiplexed requests");
     }
     if (abort) {
@@ -49,15 +50,16 @@ async function runWorker(worker: Worker) {
       worker(message.arguments, message.inputs, abort.signal).then(
         ({ exitCode, output }) => {
           const response: WorkResponse = {
-            exitCode,
+            exit_code: exitCode,
             output,
-            requestId: 0,
-            wasCancelled: abort.signal.aborted,
+            request_id: 0,
+            was_cancelled: abort.signal.aborted,
           };
-          const buffer = WorkResponse.encode(response).ldelim().finish();
+          const buffer = Buffer.from(JSON.stringify(response));
           process.stdout.write(buffer);
+          process.stdout.write("\n");
           abort = undefined;
-          // global.gc();
+          global.gc();
         },
         (e) => {
           console.error(e.stack);

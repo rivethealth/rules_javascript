@@ -71,6 +71,7 @@ def _prettier_fn(ctx, name, src, out, bin, config):
         tools = [bin],
         execution_requirements = {
             "supports-workers": "1",
+            "requires-worker-protocol": "json",
         },
     )
 

@@ -594,7 +594,7 @@ def _ts_library_impl(ctx):
                 ctx.actions.run(
                     arguments = [args],
                     executable = compiler.transpile_bin.files_to_run.executable,
-                    execution_requirements = {"supports-workers": "1"},
+                    execution_requirements = {"supports-workers": "1", "requires-worker-protocol": "json"},
                     inputs = depset(
                         [src, transpile_tsconfig, package_manifest],
                         transitive = ([tsconfig_info.transitive_configs, tsconfig_info.transitive_descriptors] if tsconfig_info else []),

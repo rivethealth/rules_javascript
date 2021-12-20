@@ -1,4 +1,3 @@
-load("@better_rules_javascript//ts-proto:rules.bzl", "ts_proto_export")
 load("@better_rules_javascript//typescript:rules.bzl", "ts_simple_library")
 load("//commonjs:rules.bzl", "cjs_root")
 
@@ -8,12 +7,6 @@ cjs_root(
     name = "root",
     package_name = "@better_rules_javascript/worker",
     descriptors = ["package.json"],
-)
-
-ts_proto_export(
-    name = "worker_proto_lib",
-    dep = "@bazel_tools//src/main/protobuf:worker_protocol_proto",
-    lib = "//worker/proto:libs",
 )
 
 ts_simple_library(
@@ -34,7 +27,6 @@ ts_simple_library(
     root = ":root",
     strip_prefix = "better_rules_javascript/worker/lib/src",
     deps = [
-        ":worker_proto_lib",
         "@better_rules_javascript_npm//@types/node:lib",
         "@better_rules_javascript_npm//protobufjs:lib",
     ],
