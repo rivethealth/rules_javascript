@@ -1,7 +1,6 @@
 load("@bazel_skylib//lib:shell.bzl", "shell")
-load("//commonjs:providers.bzl", "create_dep", "create_global", "create_package")
-load("//commonjs:rules.bzl", "gen_manifest")
-load("//nodejs:rules.bzl", "NODE_MODULES_PREFIX", "node_modules_links", "package_path_name")
+load("//commonjs:providers.bzl", "create_dep", "create_global", "create_package", "gen_manifest")
+load("//nodejs:providers.bzl", "NODE_MODULES_PREFIX", "node_modules_links", "package_path_name")
 load("//javascript:providers.bzl", "JsFile", "JsInfo")
 load("//util:path.bzl", "output", "runfile_path")
 

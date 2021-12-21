@@ -1,5 +1,4 @@
-load("//commonjs:providers.bzl", "CjsInfo", "create_dep")
-load("//commonjs:rules.bzl", "create_entries", "default_strip_prefix", "output_prefix")
+load("//commonjs:providers.bzl", "CjsInfo", "create_dep", "create_entries", "default_strip_prefix", "output_prefix")
 load("//util:path.bzl", "runfile_path")
 load(":providers.bzl", "JsFile", "JsInfo")
 

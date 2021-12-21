@@ -107,7 +107,7 @@ http_archive(
 
 # Skylib
 
-SKYLIB_VERSION = "16de038c484145363340eeaf0e97a0c9889a931b"
+SKYLIB_VERSION = "6e30a77347071ab22ce346b6d20cf8912919f644"
 
 http_archive(
     name = "bazel_skylib",

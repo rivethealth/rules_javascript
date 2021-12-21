@@ -33,20 +33,6 @@ CommonJS-style package
 | <a id="CjsInfo-package"></a>package         | Package struct   |
 | <a id="CjsInfo-name"></a>name               | Name             |
 
-<a id="#cjs_path"></a>
-
-## cjs_path
-
-<pre>
-cjs_path(<a href="#cjs_path-id">id</a>)
-</pre>
-
-**PARAMETERS**
-
-| Name                       | Description               | Default Value |
-| :------------------------- | :------------------------ | :------------ |
-| <a id="cjs_path-id"></a>id | <p align="center"> - </p> | none          |
-
 <a id="#create_dep"></a>
 
 ## create_dep
@@ -65,6 +51,24 @@ Create link for CommonJs package.
 | <a id="create_dep-name"></a>name   | Name                  | none          |
 | <a id="create_dep-dep"></a>dep     | Dependency package ID | none          |
 | <a id="create_dep-label"></a>label | Source label          | none          |
+
+<a id="#create_entries"></a>
+
+## create_entries
+
+<pre>
+create_entries(<a href="#create_entries-ctx">ctx</a>, <a href="#create_entries-actions">actions</a>, <a href="#create_entries-srcs">srcs</a>, <a href="#create_entries-prefix">prefix</a>, <a href="#create_entries-strip_prefix">strip_prefix</a>)
+</pre>
+
+**PARAMETERS**
+
+| Name                                                 | Description               | Default Value |
+| :--------------------------------------------------- | :------------------------ | :------------ |
+| <a id="create_entries-ctx"></a>ctx                   | <p align="center"> - </p> | none          |
+| <a id="create_entries-actions"></a>actions           | <p align="center"> - </p> | none          |
+| <a id="create_entries-srcs"></a>srcs                 | <p align="center"> - </p> | none          |
+| <a id="create_entries-prefix"></a>prefix             | <p align="center"> - </p> | none          |
+| <a id="create_entries-strip_prefix"></a>strip_prefix | <p align="center"> - </p> | none          |
 
 <a id="#create_global"></a>
 
@@ -99,3 +103,67 @@ Create package struct.
 | <a id="create_package-path"></a>path             | Part to directory       | none          |
 | <a id="create_package-short_path"></a>short_path | Short path to directory | none          |
 | <a id="create_package-label"></a>label           | Source label            | none          |
+
+<a id="#default_strip_prefix"></a>
+
+## default_strip_prefix
+
+<pre>
+default_strip_prefix(<a href="#default_strip_prefix-ctx">ctx</a>)
+</pre>
+
+**PARAMETERS**
+
+| Name                                     | Description               | Default Value |
+| :--------------------------------------- | :------------------------ | :------------ |
+| <a id="default_strip_prefix-ctx"></a>ctx | <p align="center"> - </p> | none          |
+
+<a id="#gen_manifest"></a>
+
+## gen_manifest
+
+<pre>
+gen_manifest(<a href="#gen_manifest-actions">actions</a>, <a href="#gen_manifest-manifest_bin">manifest_bin</a>, <a href="#gen_manifest-manifest">manifest</a>, <a href="#gen_manifest-packages">packages</a>, <a href="#gen_manifest-deps">deps</a>, <a href="#gen_manifest-globals">globals</a>, <a href="#gen_manifest-package_path">package_path</a>)
+</pre>
+
+**PARAMETERS**
+
+| Name                                               | Description               | Default Value |
+| :------------------------------------------------- | :------------------------ | :------------ |
+| <a id="gen_manifest-actions"></a>actions           | <p align="center"> - </p> | none          |
+| <a id="gen_manifest-manifest_bin"></a>manifest_bin | <p align="center"> - </p> | none          |
+| <a id="gen_manifest-manifest"></a>manifest         | <p align="center"> - </p> | none          |
+| <a id="gen_manifest-packages"></a>packages         | <p align="center"> - </p> | none          |
+| <a id="gen_manifest-deps"></a>deps                 | <p align="center"> - </p> | none          |
+| <a id="gen_manifest-globals"></a>globals           | <p align="center"> - </p> | none          |
+| <a id="gen_manifest-package_path"></a>package_path | <p align="center"> - </p> | none          |
+
+<a id="#output_prefix"></a>
+
+## output_prefix
+
+<pre>
+output_prefix(<a href="#output_prefix-path">path</a>, <a href="#output_prefix-label">label</a>, <a href="#output_prefix-actions">actions</a>)
+</pre>
+
+**PARAMETERS**
+
+| Name                                      | Description               | Default Value |
+| :---------------------------------------- | :------------------------ | :------------ |
+| <a id="output_prefix-path"></a>path       | <p align="center"> - </p> | none          |
+| <a id="output_prefix-label"></a>label     | <p align="center"> - </p> | none          |
+| <a id="output_prefix-actions"></a>actions | <p align="center"> - </p> | none          |
+
+<a id="#package_path"></a>
+
+## package_path
+
+<pre>
+package_path(<a href="#package_path-package">package</a>)
+</pre>
+
+**PARAMETERS**
+
+| Name                                     | Description               | Default Value |
+| :--------------------------------------- | :------------------------ | :------------ |
+| <a id="package_path-package"></a>package | <p align="center"> - </p> | none          |

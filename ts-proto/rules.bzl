@@ -1,5 +1,4 @@
-load("@better_rules_javascript//commonjs:providers.bzl", "CjsInfo", "create_dep")
-load("@better_rules_javascript//commonjs:rules.bzl", "output_prefix")
+load("@better_rules_javascript//commonjs:providers.bzl", "CjsInfo", "create_dep", "output_prefix")
 load("@better_rules_javascript//javascript:providers.bzl", "JsInfo")
 load("@better_rules_javascript//nodejs:rules.bzl", "nodejs_binary")
 load("@better_rules_javascript//util:path.bzl", "runfile_path")

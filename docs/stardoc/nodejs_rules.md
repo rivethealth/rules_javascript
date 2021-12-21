@@ -34,7 +34,7 @@ Node.js binary
 nodejs_simple_binary(<a href="#nodejs_simple_binary-name">name</a>, <a href="#nodejs_simple_binary-src">src</a>)
 </pre>
 
-Node.js executable, from a single bundled file
+Node.js executable, from a single file.
 
 **ATTRIBUTES**
 

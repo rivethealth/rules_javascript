@@ -43,5 +43,5 @@ return l.JsonFormat.map(l.JsonFormat.string(),r.json())}}));const p=process.env.
 t._resolveFilename=function(e,t){return function(r,n,o,s){
 if(i.default.builtinModules.includes(r)||!n||"internal"===n.path||"."==r||".."==r||r.startsWith("./")||r.startsWith("../")||r.startsWith("/"))return t.apply(this,arguments)
 ;const a=r=e.resolve(n.path,r),[u,c]=a.package.split("/node_modules/",2);r=c,a.inner&&(r=`${r}/${a.inner}`)
-;const f=new i.default(`${u}/_`,n);return f.filename=n.filename,f.paths=[`${u}/node_modules`],t.call(this,r,f,o,s)}
+;const f=new i.default(`${u}/_`,n);return f.filename=f.id,f.paths=[`${u}/node_modules`],t.call(this,r,f,o,s)}
 }(e,t._resolveFilename)}(f.Resolver.create(d,!0),require("module"));

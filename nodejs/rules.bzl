@@ -1,10 +1,8 @@
 load("@bazel_skylib//lib:shell.bzl", "shell")
-load("//commonjs:providers.bzl", "create_global")
-load("//commonjs:rules.bzl", "gen_manifest")
+load("//commonjs:providers.bzl", "create_global", "gen_manifest")
 load("//javascript:providers.bzl", "JsInfo")
 load("//util:path.bzl", "output", "runfile_path")
-
-NODE_MODULES_PREFIX = "_nodejs/node_modules"
+load(":providers.bzl", "NODE_MODULES_PREFIX", "node_modules_links", "package_path_name")
 
 def _nodejs_simple_binary_implementation(ctx):
     nodejs_toolchain = ctx.toolchains["@better_rules_javascript//nodejs:toolchain_type"]
@@ -38,46 +36,11 @@ nodejs_simple_binary = rule(
             default = "//nodejs:simple_runner.sh.tpl",
         ),
     },
-    doc = "Node.js executable, from a single bundled file",
+    doc = "Node.js executable, from a single file.",
     executable = True,
     implementation = _nodejs_simple_binary_implementation,
     toolchains = ["@better_rules_javascript//nodejs:toolchain_type"],
 )
-
-def package_path_name(id):
-    return id.replace("@", "").replace(":", "_").replace("/", "_")
-
-def node_modules_links(packages, files):
-    result = {}
-    packages_dict = {package.short_path: package for package in packages}
-    for file in files:
-        parts = file.short_path.split("/")
-        found = False
-        for i in range(1, len(parts)):
-            root = "/".join(parts[:i])
-            if root in packages_dict:
-                package = packages_dict[root]
-                path = "%s/%s/%s" % (NODE_MODULES_PREFIX, package_path_name(package.id), "/".join(parts[i:]))
-                result[path] = file
-                found = True
-                break
-        if not found:
-            fail("No packages found for file %s" % file.short_path)
-    return result
-
-def gen_links(actions, prefix, packages):
-    links = []
-
-    for package in packages.to_list():
-        link = actions.declare_symlink("%s/%s" % (prefix, package_path_name(package.id)))
-        actions.run(
-            executable = "ln",
-            arguments = ["-rs", package.path, link.path],
-            outputs = [link],
-        )
-        links.append(link)
-
-    return links
 
 def _nodejs_binary_implementation(ctx):
     env = ctx.attr.env

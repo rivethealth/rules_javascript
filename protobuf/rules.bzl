@@ -1,5 +1,4 @@
-load("@better_rules_javascript//commonjs:rules.bzl", "output_prefix")
-load("@better_rules_javascript//commonjs:providers.bzl", "create_dep")
+load("@better_rules_javascript//commonjs:providers.bzl", "create_dep", "output_prefix")
 load("//commonjs:providers.bzl", "CjsInfo")
 load("//javascript:providers.bzl", "JsInfo")
 load(":aspects.bzl", "js_proto_aspect")

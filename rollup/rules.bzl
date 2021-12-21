@@ -1,8 +1,8 @@
 load("@bazel_skylib//lib:shell.bzl", "shell")
-load("//commonjs:providers.bzl", "cjs_path")
-load("//commonjs:rules.bzl", "gen_manifest", "package_path")
+load("//commonjs:providers.bzl", "gen_manifest", "package_path")
 load("//javascript:providers.bzl", "JsFile", "JsInfo")
-load("//nodejs:rules.bzl", "NODE_MODULES_PREFIX", "nodejs_binary", "package_path_name")
+load("//nodejs:rules.bzl", "nodejs_binary")
+load("//nodejs:providers.bzl", "NODE_MODULES_PREFIX", "package_path_name")
 load("//util:path.bzl", "runfile_path")
 load(":providers.bzl", "RollupInfo")
 

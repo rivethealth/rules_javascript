@@ -1,4 +1,4 @@
-load("@better_rules_javascript//commonjs:rules.bzl", "output_prefix")
+load("@better_rules_javascript//commonjs:providers.bzl", "output_prefix")
 load("@rules_proto//proto:defs.bzl", "ProtoInfo")
 load("//commonjs:providers.bzl", "CjsInfo", "create_dep", "create_package")
 load("//javascript:providers.bzl", "JsInfo")

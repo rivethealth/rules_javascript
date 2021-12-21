@@ -1,9 +1,9 @@
 load("@bazel_skylib//lib:shell.bzl", "shell")
 load("@rules_format//format:providers.bzl", "FormatInfo")
-load("//commonjs:providers.bzl", "cjs_path")
 load("//commonjs:rules.bzl", "cjs_root")
 load("//javascript:providers.bzl", "JsFile", "JsInfo")
-load("//nodejs:rules.bzl", "NODE_MODULES_PREFIX", "nodejs_binary", "package_path_name")
+load("//nodejs:rules.bzl", "nodejs_binary")
+load("//nodejs:providers.bzl", "NODE_MODULES_PREFIX", "package_path_name")
 load("//typescript:rules.bzl", "ts_library", "tsconfig")
 load("//util:path.bzl", "runfile_path")
 

@@ -21,4 +21,4 @@ packages="$(
     | sed 's/,$//' \
 )"
 
-sed -e "s/%{deleted_packages}/$(escape_pattern "$packages")/g" .bazelrc.template > .bazelrc
+sed -e "s/%{deleted_packages}/$(escape_pattern "$packages")/g" deleted.bazelrc.template > .deleted.bazelrc

@@ -1,5 +1,4 @@
-load("@better_rules_javascript//commonjs:providers.bzl", "CjsInfo", "create_dep", "create_package")
-load("@better_rules_javascript//commonjs:rules.bzl", "gen_manifest", "package_path")
+load("@better_rules_javascript//commonjs:providers.bzl", "CjsInfo", "create_dep", "create_package", "gen_manifest", "package_path")
 load("@better_rules_javascript//javascript:providers.bzl", "JsInfo")
 load("@better_rules_javascript//util:path.bzl", "output")
 load("@rules_proto//proto:defs.bzl", "ProtoInfo")

@@ -1,6 +1,6 @@
 load("@bazel_skylib//lib:paths.bzl", "paths")
-load("@better_rules_javascript//commonjs:providers.bzl", "CjsInfo", "create_dep", "create_global", "create_package")
-load("@better_rules_javascript//commonjs:rules.bzl", "cjs_root", "create_entries", "default_strip_prefix", "gen_manifest", "output_prefix", "package_path")
+load("@better_rules_javascript//commonjs:providers.bzl", "CjsInfo", "create_dep", "create_entries", "create_global", "create_package", "default_strip_prefix", "gen_manifest", "output_prefix", "package_path")
+load("@better_rules_javascript//commonjs:rules.bzl", "cjs_root")
 load("@better_rules_javascript//nodejs:rules.bzl", "nodejs_binary")
 load("@better_rules_javascript//javascript:providers.bzl", "JsInfo")
 load("@better_rules_javascript//util:path.bzl", "output", "runfile_path")
