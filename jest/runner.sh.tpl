@@ -12,8 +12,7 @@ if [ -z "${RUNFILES_DIR:-}" ]; then
   fi
 fi
 
-BAZEL_WORKSPACE=%{workspace} \
-  NODE_PACKAGE_MANIFEST="$RUNFILES_DIR"/%{package_manifest} \
+NODE_PACKAGE_MANIFEST="$RUNFILES_DIR"/%{package_manifest} \
   NODE_FS_PACKAGE_MANIFEST="$RUNFILES_DIR"/%{package_manifest} \
   NODE_FS_RUNFILES=true \
   %{env} \

@@ -3,7 +3,7 @@ load("@rules_format//format:providers.bzl", "FormatInfo")
 load("//commonjs:providers.bzl", "cjs_path")
 load("//commonjs:rules.bzl", "cjs_root")
 load("//javascript:providers.bzl", "JsFile", "JsInfo")
-load("//nodejs:rules.bzl", "nodejs_binary")
+load("//nodejs:rules.bzl", "NODE_MODULES_PREFIX", "nodejs_binary", "package_path_name")
 load("//typescript:rules.bzl", "ts_library", "tsconfig")
 load("//util:path.bzl", "runfile_path")
 
@@ -58,61 +58,6 @@ def configure_eslint(name, dep, config, plugins = [], visibility = None):
         visibility = visibility,
     )
 
-def _eslint_linter_impl(ctx):
-    eslint_bin = ctx.attr.bin[DefaultInfo]
-    config_js_info = ctx.attr.config[JsInfo]
-    config_path = "bazel-nodejs/%s/%s" % (cjs_path(config_js_info.root), ctx.attr.config_path)
-
-    bin = ctx.actions.declare_file("%s/bin" % ctx.label.name)
-
-    ctx.actions.expand_template(
-        template = ctx.file._runner,
-        output = bin,
-        substitutions = {
-            "%{bin}": shell.quote(runfile_path(ctx, eslint_bin.files_to_run.executable)),
-            "%{config}": shell.quote(config_path),
-        },
-        is_executable = True,
-    )
-
-    default_info = DefaultInfo(
-        executable = bin,
-        runfiles = ctx.runfiles(files = ctx.files._bash_runfiles, transitive_files = depset(transitive = [
-            config_js_info.js_entry_set.transitive_files,
-            config_js_info.transitive_descriptors,
-            eslint_bin.default_runfiles.files,
-        ])),
-    )
-
-    return [default_info]
-
-eslint_linter = rule(
-    attrs = {
-        "bin": attr.label(
-            mandatory = True,
-            executable = True,
-            cfg = "exec",
-        ),
-        "config": attr.label(
-            providers = [JsInfo],
-            mandatory = True,
-        ),
-        "config_path": attr.string(
-            mandatory = True,
-        ),
-        "_bash_runfiles": attr.label(
-            allow_files = True,
-            default = "@bazel_tools//tools/bash/runfiles",
-        ),
-        "_runner": attr.label(
-            allow_single_file = True,
-            default = "@better_rules_javascript//eslint:runner.sh.tpl",
-        ),
-    },
-    executable = True,
-    implementation = _eslint_linter_impl,
-)
-
 def _eslint_fn(ctx, name, src, out, bin, config):
     args = ctx.actions.args()
     args.add(src)
@@ -138,13 +83,13 @@ def _eslint_impl(ctx):
     config = ctx.attr.config[JsFile]
     config_dep = ctx.attr.config[JsInfo]
 
-    config_path = "%s/%s" % (runfile_path(ctx, config_dep.package), config.path)
+    config_path = "%s/%s" % (package_path_name(config_dep.package.id), config.path)
 
     format_info = FormatInfo(
         fn = _eslint_fn,
         args = [
             bin.files_to_run,
-            "./%s.runfiles/%s" % (bin.files_to_run.executable.path, config_path),
+            "./%s.runfiles/%s/%s" % (bin.files_to_run.executable.path, NODE_MODULES_PREFIX, config_path),
         ],
     )
 

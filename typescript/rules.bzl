@@ -64,7 +64,7 @@ def _ts_simple_library_impl(ctx):
     js = []
     maps = []
     for src in ctx.files.srcs:
-        path = runfile_path(ctx, src)
+        path = runfile_path(ctx.workspace_name, src)
         if ctx.attr.strip_prefix:
             if not path.startswith(ctx.attr.strip_prefix + "/"):
                 fail("Source %s does not have prefix %s" % (path, ctx.attr.strip_prefix))
@@ -391,7 +391,7 @@ def _tsconfig_impl(ctx):
     deps = [ctx.attr.dep[TsconfigInfo]] if ctx.attr.dep else []
     prefix = output_prefix(cjs_info.package.path, ctx.label, ctx.actions)
     if ctx.attr.path:
-        strip_prefix = runfile_path(ctx, ctx.file.src)
+        strip_prefix = runfile_path(ctx.workspace_name, ctx.file.src)
         prefix = "%s/%s" % (prefix, ctx.attr.path) if prefix else ctx.attr.path
     else:
         strip_prefix = default_strip_prefix(ctx)
@@ -550,7 +550,7 @@ def _ts_library_impl(ctx):
     ts = []
     maps = []
     for src in ctx.files.srcs:
-        path = runfile_path(ctx, src)
+        path = runfile_path(ctx.workspace_name, src)
         if strip_prefix:
             if not path.startswith(strip_prefix + "/"):
                 fail("Source %s does not have prefix %s" % (path, strip_prefix))

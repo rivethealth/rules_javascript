@@ -2,6 +2,94 @@ PACKAGES = [
     {
         "deps": [
             {
+                "dep": "@babel/core@7.16.5",
+                "name": "@babel/core",
+            },
+            {
+                "dep": "canonical-path@1.0.0",
+                "name": "canonical-path",
+            },
+            {
+                "dep": "chokidar@3.5.2",
+                "name": "chokidar",
+            },
+            {
+                "dep": "convert-source-map@1.8.0",
+                "name": "convert-source-map",
+            },
+            {
+                "dep": "dependency-graph@0.11.0",
+                "name": "dependency-graph",
+            },
+            {
+                "dep": "magic-string@0.25.7",
+                "name": "magic-string",
+            },
+            {
+                "dep": "reflect-metadata@0.1.13",
+                "name": "reflect-metadata",
+            },
+            {
+                "dep": "semver@7.3.5",
+                "name": "semver",
+            },
+            {
+                "dep": "sourcemap-codec@1.4.8",
+                "name": "sourcemap-codec",
+            },
+            {
+                "dep": "tslib@2.3.1",
+                "name": "tslib",
+            },
+            {
+                "dep": "yargs@17.3.0",
+                "name": "yargs",
+            },
+            {
+                "dep": "@angular/compiler@13.1.1",
+                "name": "@angular/compiler",
+            },
+            {
+                "dep": "typescript@4.5.4",
+                "name": "typescript",
+            },
+        ],
+        "extra_deps": {},
+        "id": "@angular/compiler-cli@13.1.1",
+        "name": "@angular/compiler-cli",
+        "url": "https://registry.npmjs.org/@angular/compiler-cli/-/compiler-cli-13.1.1.tgz",
+    },
+    {
+        "deps": [
+            {
+                "dep": "tslib@2.3.1",
+                "name": "tslib",
+            },
+        ],
+        "extra_deps": {},
+        "id": "@angular/compiler@13.1.1",
+        "name": "@angular/compiler",
+        "url": "https://registry.npmjs.org/@angular/compiler/-/compiler-13.1.1.tgz",
+    },
+    {
+        "deps": [
+            {
+                "dep": "tslib@2.3.1",
+                "name": "tslib",
+            },
+            {
+                "dep": "rxjs@7.4.0",
+                "name": "rxjs",
+            },
+        ],
+        "extra_deps": {},
+        "id": "@angular/core@13.1.1",
+        "name": "@angular/core",
+        "url": "https://registry.npmjs.org/@angular/core/-/core-13.1.1.tgz",
+    },
+    {
+        "deps": [
+            {
                 "dep": "grapheme-splitter@1.0.4",
                 "name": "grapheme-splitter",
             },
@@ -39,10 +127,6 @@ PACKAGES = [
             {
                 "dep": "@babel/generator@7.16.0",
                 "name": "@babel/generator",
-            },
-            {
-                "dep": "@babel/helper-compilation-targets@7.16.3",
-                "name": "@babel/helper-compilation-targets",
             },
             {
                 "dep": "@babel/helper-module-transforms@7.16.0",
@@ -93,10 +177,80 @@ PACKAGES = [
                 "name": "source-map",
             },
         ],
-        "extra_deps": {},
+        "extra_deps": {
+            "@babel/helper-compilation-targets": "@babel/helper-compilation-targets@7.16.3",
+        },
         "id": "@babel/core@7.16.0",
         "name": "@babel/core",
         "url": "https://registry.npmjs.org/@babel/core/-/core-7.16.0.tgz",
+    },
+    {
+        "deps": [
+            {
+                "dep": "@babel/code-frame@7.16.0",
+                "name": "@babel/code-frame",
+            },
+            {
+                "dep": "@babel/generator@7.16.5",
+                "name": "@babel/generator",
+            },
+            {
+                "dep": "@babel/helper-compilation-targets@7.16.3",
+                "name": "@babel/helper-compilation-targets",
+            },
+            {
+                "dep": "@babel/helper-module-transforms@7.16.5",
+                "name": "@babel/helper-module-transforms",
+            },
+            {
+                "dep": "@babel/helpers@7.16.5",
+                "name": "@babel/helpers",
+            },
+            {
+                "dep": "@babel/parser@7.16.6",
+                "name": "@babel/parser",
+            },
+            {
+                "dep": "@babel/template@7.16.0",
+                "name": "@babel/template",
+            },
+            {
+                "dep": "@babel/traverse@7.16.5",
+                "name": "@babel/traverse",
+            },
+            {
+                "dep": "@babel/types@7.16.0",
+                "name": "@babel/types",
+            },
+            {
+                "dep": "convert-source-map@1.8.0",
+                "name": "convert-source-map",
+            },
+            {
+                "dep": "debug@4.3.3",
+                "name": "debug",
+            },
+            {
+                "dep": "gensync@1.0.0-beta.2",
+                "name": "gensync",
+            },
+            {
+                "dep": "json5@2.2.0",
+                "name": "json5",
+            },
+            {
+                "dep": "semver@6.3.0",
+                "name": "semver",
+            },
+            {
+                "dep": "source-map@0.5.7",
+                "name": "source-map",
+            },
+        ],
+        "extra_deps": {},
+        "id": "@babel/core@7.16.5",
+        "name": "@babel/core",
+        "url": "https://registry.npmjs.org/@babel/core/-/core-7.16.5.tgz",
     },
     {
         "deps": [
@@ -121,6 +275,26 @@ PACKAGES = [
     {
         "deps": [
             {
+                "dep": "@babel/types@7.16.0",
+                "name": "@babel/types",
+            },
+            {
+                "dep": "jsesc@2.5.2",
+                "name": "jsesc",
+            },
+            {
+                "dep": "source-map@0.5.7",
+                "name": "source-map",
+            },
+        ],
+        "extra_deps": {},
+        "id": "@babel/generator@7.16.5",
+        "name": "@babel/generator",
+        "url": "https://registry.npmjs.org/@babel/generator/-/generator-7.16.5.tgz",
+    },
+    {
+        "deps": [
+            {
                 "dep": "@babel/compat-data@7.16.4",
                 "name": "@babel/compat-data",
             },
@@ -136,13 +310,27 @@ PACKAGES = [
                 "dep": "semver@6.3.0",
                 "name": "semver",
             },
+            {
+                "dep": "@babel/core@7.16.0",
+                "name": "@babel/core",
+            },
         ],
-        "extra_deps": {
-            "@babel/core": "@babel/core@7.16.0",
-        },
+        "extra_deps": {},
         "id": "@babel/helper-compilation-targets@7.16.3",
         "name": "@babel/helper-compilation-targets",
         "url": "https://registry.npmjs.org/@babel/helper-compilation-targets/-/helper-compilation-targets-7.16.3.tgz",
+    },
+    {
+        "deps": [
+            {
+                "dep": "@babel/types@7.16.0",
+                "name": "@babel/types",
+            },
+        ],
+        "extra_deps": {},
+        "id": "@babel/helper-environment-visitor@7.16.5",
+        "name": "@babel/helper-environment-visitor",
+        "url": "https://registry.npmjs.org/@babel/helper-environment-visitor/-/helper-environment-visitor-7.16.5.tgz",
     },
     {
         "deps": [
@@ -255,6 +443,46 @@ PACKAGES = [
     {
         "deps": [
             {
+                "dep": "@babel/helper-environment-visitor@7.16.5",
+                "name": "@babel/helper-environment-visitor",
+            },
+            {
+                "dep": "@babel/helper-module-imports@7.16.0",
+                "name": "@babel/helper-module-imports",
+            },
+            {
+                "dep": "@babel/helper-simple-access@7.16.0",
+                "name": "@babel/helper-simple-access",
+            },
+            {
+                "dep": "@babel/helper-split-export-declaration@7.16.0",
+                "name": "@babel/helper-split-export-declaration",
+            },
+            {
+                "dep": "@babel/helper-validator-identifier@7.15.7",
+                "name": "@babel/helper-validator-identifier",
+            },
+            {
+                "dep": "@babel/template@7.16.0",
+                "name": "@babel/template",
+            },
+            {
+                "dep": "@babel/traverse@7.16.5",
+                "name": "@babel/traverse",
+            },
+            {
+                "dep": "@babel/types@7.16.0",
+                "name": "@babel/types",
+            },
+        ],
+        "extra_deps": {},
+        "id": "@babel/helper-module-transforms@7.16.5",
+        "name": "@babel/helper-module-transforms",
+        "url": "https://registry.npmjs.org/@babel/helper-module-transforms/-/helper-module-transforms-7.16.5.tgz",
+    },
+    {
+        "deps": [
+            {
                 "dep": "@babel/types@7.16.0",
                 "name": "@babel/types",
             },
@@ -356,6 +584,26 @@ PACKAGES = [
     {
         "deps": [
             {
+                "dep": "@babel/template@7.16.0",
+                "name": "@babel/template",
+            },
+            {
+                "dep": "@babel/traverse@7.16.5",
+                "name": "@babel/traverse",
+            },
+            {
+                "dep": "@babel/types@7.16.0",
+                "name": "@babel/types",
+            },
+        ],
+        "extra_deps": {},
+        "id": "@babel/helpers@7.16.5",
+        "name": "@babel/helpers",
+        "url": "https://registry.npmjs.org/@babel/helpers/-/helpers-7.16.5.tgz",
+    },
+    {
+        "deps": [
+            {
                 "dep": "@babel/helper-validator-identifier@7.15.7",
                 "name": "@babel/helper-validator-identifier",
             },
@@ -379,6 +627,13 @@ PACKAGES = [
         "id": "@babel/parser@7.16.4",
         "name": "@babel/parser",
         "url": "https://registry.npmjs.org/@babel/parser/-/parser-7.16.4.tgz",
+    },
+    {
+        "deps": [],
+        "extra_deps": {},
+        "id": "@babel/parser@7.16.6",
+        "name": "@babel/parser",
+        "url": "https://registry.npmjs.org/@babel/parser/-/parser-7.16.6.tgz",
     },
     {
         "deps": [
@@ -679,6 +934,54 @@ PACKAGES = [
         "id": "@babel/traverse@7.16.3",
         "name": "@babel/traverse",
         "url": "https://registry.npmjs.org/@babel/traverse/-/traverse-7.16.3.tgz",
+    },
+    {
+        "deps": [
+            {
+                "dep": "@babel/code-frame@7.16.0",
+                "name": "@babel/code-frame",
+            },
+            {
+                "dep": "@babel/generator@7.16.5",
+                "name": "@babel/generator",
+            },
+            {
+                "dep": "@babel/helper-environment-visitor@7.16.5",
+                "name": "@babel/helper-environment-visitor",
+            },
+            {
+                "dep": "@babel/helper-function-name@7.16.0",
+                "name": "@babel/helper-function-name",
+            },
+            {
+                "dep": "@babel/helper-hoist-variables@7.16.0",
+                "name": "@babel/helper-hoist-variables",
+            },
+            {
+                "dep": "@babel/helper-split-export-declaration@7.16.0",
+                "name": "@babel/helper-split-export-declaration",
+            },
+            {
+                "dep": "@babel/parser@7.16.6",
+                "name": "@babel/parser",
+            },
+            {
+                "dep": "@babel/types@7.16.0",
+                "name": "@babel/types",
+            },
+            {
+                "dep": "debug@4.3.3",
+                "name": "debug",
+            },
+            {
+                "dep": "globals@11.12.0",
+                "name": "globals",
+            },
+        ],
+        "extra_deps": {},
+        "id": "@babel/traverse@7.16.5",
+        "name": "@babel/traverse",
+        "url": "https://registry.npmjs.org/@babel/traverse/-/traverse-7.16.5.tgz",
     },
     {
         "deps": [
@@ -3378,6 +3681,13 @@ PACKAGES = [
     {
         "deps": [],
         "extra_deps": {},
+        "id": "binary-extensions@2.2.0",
+        "name": "binary-extensions",
+        "url": "https://registry.npmjs.org/binary-extensions/-/binary-extensions-2.2.0.tgz",
+    },
+    {
+        "deps": [],
+        "extra_deps": {},
         "id": "boundary@1.0.1",
         "name": "boundary",
         "url": "https://registry.npmjs.org/boundary/-/boundary-1.0.1.tgz",
@@ -3639,6 +3949,13 @@ PACKAGES = [
         "url": "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001284.tgz",
     },
     {
+        "deps": [],
+        "extra_deps": {},
+        "id": "canonical-path@1.0.0",
+        "name": "canonical-path",
+        "url": "https://registry.npmjs.org/canonical-path/-/canonical-path-1.0.0.tgz",
+    },
+    {
         "deps": [
             {
                 "dep": "ansi-styles@3.2.1",
@@ -3737,6 +4054,46 @@ PACKAGES = [
         "id": "chevrotain@9.1.0",
         "name": "chevrotain",
         "url": "https://registry.npmjs.org/chevrotain/-/chevrotain-9.1.0.tgz",
+    },
+    {
+        "deps": [
+            {
+                "dep": "anymatch@3.1.2",
+                "name": "anymatch",
+            },
+            {
+                "dep": "braces@3.0.2",
+                "name": "braces",
+            },
+            {
+                "dep": "fsevents@2.3.2",
+                "name": "fsevents",
+            },
+            {
+                "dep": "glob-parent@5.1.2",
+                "name": "glob-parent",
+            },
+            {
+                "dep": "is-binary-path@2.1.0",
+                "name": "is-binary-path",
+            },
+            {
+                "dep": "is-glob@4.0.3",
+                "name": "is-glob",
+            },
+            {
+                "dep": "normalize-path@3.0.0",
+                "name": "normalize-path",
+            },
+            {
+                "dep": "readdirp@3.6.0",
+                "name": "readdirp",
+            },
+        ],
+        "extra_deps": {},
+        "id": "chokidar@3.5.2",
+        "name": "chokidar",
+        "url": "https://registry.npmjs.org/chokidar/-/chokidar-3.5.2.tgz",
     },
     {
         "deps": [],
@@ -4133,6 +4490,13 @@ PACKAGES = [
         "id": "depd@1.1.2",
         "name": "depd",
         "url": "https://registry.npmjs.org/depd/-/depd-1.1.2.tgz",
+    },
+    {
+        "deps": [],
+        "extra_deps": {},
+        "id": "dependency-graph@0.11.0",
+        "name": "dependency-graph",
+        "url": "https://registry.npmjs.org/dependency-graph/-/dependency-graph-0.11.0.tgz",
     },
     {
         "deps": [],
@@ -5711,6 +6075,18 @@ PACKAGES = [
         "url": "https://registry.npmjs.org/is-alphanumerical/-/is-alphanumerical-1.0.4.tgz",
     },
     {
+        "deps": [
+            {
+                "dep": "binary-extensions@2.2.0",
+                "name": "binary-extensions",
+            },
+        ],
+        "extra_deps": {},
+        "id": "is-binary-path@2.1.0",
+        "name": "is-binary-path",
+        "url": "https://registry.npmjs.org/is-binary-path/-/is-binary-path-2.1.0.tgz",
+    },
+    {
         "deps": [],
         "extra_deps": {},
         "id": "is-buffer@1.1.6",
@@ -6460,6 +6836,66 @@ PACKAGES = [
         "id": "jest-haste-map@27.4.4",
         "name": "jest-haste-map",
         "url": "https://registry.npmjs.org/jest-haste-map/-/jest-haste-map-27.4.4.tgz",
+    },
+    {
+        "deps": [
+            {
+                "dep": "@jest/types@27.4.2",
+                "name": "@jest/types",
+            },
+            {
+                "dep": "@types/graceful-fs@4.1.5",
+                "name": "@types/graceful-fs",
+            },
+            {
+                "dep": "@types/node@16.11.11",
+                "name": "@types/node",
+            },
+            {
+                "dep": "anymatch@3.1.2",
+                "name": "anymatch",
+            },
+            {
+                "dep": "fb-watchman@2.0.1",
+                "name": "fb-watchman",
+            },
+            {
+                "dep": "fsevents@2.3.2",
+                "name": "fsevents",
+            },
+            {
+                "dep": "graceful-fs@4.2.8",
+                "name": "graceful-fs",
+            },
+            {
+                "dep": "jest-regex-util@27.4.0",
+                "name": "jest-regex-util",
+            },
+            {
+                "dep": "jest-serializer@27.4.0",
+                "name": "jest-serializer",
+            },
+            {
+                "dep": "jest-util@27.4.2",
+                "name": "jest-util",
+            },
+            {
+                "dep": "jest-worker@27.4.5",
+                "name": "jest-worker",
+            },
+            {
+                "dep": "micromatch@4.0.4",
+                "name": "micromatch",
+            },
+            {
+                "dep": "walker@1.0.8",
+                "name": "walker",
+            },
+        ],
+        "extra_deps": {},
+        "id": "jest-haste-map@27.4.5",
+        "name": "jest-haste-map",
+        "url": "https://registry.npmjs.org/jest-haste-map/-/jest-haste-map-27.4.5.tgz",
     },
     {
         "deps": [
@@ -7236,6 +7672,26 @@ PACKAGES = [
         "id": "jest-worker@27.4.4",
         "name": "jest-worker",
         "url": "https://registry.npmjs.org/jest-worker/-/jest-worker-27.4.4.tgz",
+    },
+    {
+        "deps": [
+            {
+                "dep": "@types/node@16.11.11",
+                "name": "@types/node",
+            },
+            {
+                "dep": "merge-stream@2.0.0",
+                "name": "merge-stream",
+            },
+            {
+                "dep": "supports-color@8.1.1",
+                "name": "supports-color",
+            },
+        ],
+        "extra_deps": {},
+        "id": "jest-worker@27.4.5",
+        "name": "jest-worker",
+        "url": "https://registry.npmjs.org/jest-worker/-/jest-worker-27.4.5.tgz",
     },
     {
         "deps": [
@@ -8752,6 +9208,18 @@ PACKAGES = [
     {
         "deps": [
             {
+                "dep": "picomatch@2.3.0",
+                "name": "picomatch",
+            },
+        ],
+        "extra_deps": {},
+        "id": "readdirp@3.6.0",
+        "name": "readdirp",
+        "url": "https://registry.npmjs.org/readdirp/-/readdirp-3.6.0.tgz",
+    },
+    {
+        "deps": [
+            {
                 "dep": "resolve@1.20.0",
                 "name": "resolve",
             },
@@ -8760,6 +9228,13 @@ PACKAGES = [
         "id": "rechoir@0.7.1",
         "name": "rechoir",
         "url": "https://registry.npmjs.org/rechoir/-/rechoir-0.7.1.tgz",
+    },
+    {
+        "deps": [],
+        "extra_deps": {},
+        "id": "reflect-metadata@0.1.13",
+        "name": "reflect-metadata",
+        "url": "https://registry.npmjs.org/reflect-metadata/-/reflect-metadata-0.1.13.tgz",
     },
     {
         "deps": [],
@@ -9039,6 +9514,18 @@ PACKAGES = [
         "id": "run-parallel@1.2.0",
         "name": "run-parallel",
         "url": "https://registry.npmjs.org/run-parallel/-/run-parallel-1.2.0.tgz",
+    },
+    {
+        "deps": [
+            {
+                "dep": "tslib@2.1.0",
+                "name": "tslib",
+            },
+        ],
+        "extra_deps": {},
+        "id": "rxjs@7.4.0",
+        "name": "rxjs",
+        "url": "https://registry.npmjs.org/rxjs/-/rxjs-7.4.0.tgz",
     },
     {
         "deps": [],
@@ -9837,9 +10324,23 @@ PACKAGES = [
     {
         "deps": [],
         "extra_deps": {},
+        "id": "tslib@2.3.1",
+        "name": "tslib",
+        "url": "https://registry.npmjs.org/tslib/-/tslib-2.3.1.tgz",
+    },
+    {
+        "deps": [],
+        "extra_deps": {},
         "id": "tslib@2.0.3",
         "name": "tslib",
         "url": "https://registry.npmjs.org/tslib/-/tslib-2.0.3.tgz",
+    },
+    {
+        "deps": [],
+        "extra_deps": {},
+        "id": "tslib@2.1.0",
+        "name": "tslib",
+        "url": "https://registry.npmjs.org/tslib/-/tslib-2.1.0.tgz",
     },
     {
         "deps": [
@@ -9848,7 +10349,7 @@ PACKAGES = [
                 "name": "tslib",
             },
             {
-                "dep": "typescript@4.0.8",
+                "dep": "typescript@4.5.4",
                 "name": "typescript",
             },
         ],
@@ -9931,9 +10432,9 @@ PACKAGES = [
     {
         "deps": [],
         "extra_deps": {},
-        "id": "typescript@4.0.8",
+        "id": "typescript@4.5.4",
         "name": "typescript",
-        "url": "https://registry.npmjs.org/typescript/-/typescript-4.0.8.tgz",
+        "url": "https://registry.npmjs.org/typescript/-/typescript-4.5.4.tgz",
     },
     {
         "deps": [],
@@ -10624,6 +11125,13 @@ PACKAGES = [
         "url": "https://registry.npmjs.org/yargs-parser/-/yargs-parser-20.2.9.tgz",
     },
     {
+        "deps": [],
+        "extra_deps": {},
+        "id": "yargs-parser@21.0.0",
+        "name": "yargs-parser",
+        "url": "https://registry.npmjs.org/yargs-parser/-/yargs-parser-21.0.0.tgz",
+    },
+    {
         "deps": [
             {
                 "dep": "cliui@7.0.4",
@@ -10660,6 +11168,42 @@ PACKAGES = [
         "url": "https://registry.npmjs.org/yargs/-/yargs-16.2.0.tgz",
     },
     {
+        "deps": [
+            {
+                "dep": "cliui@7.0.4",
+                "name": "cliui",
+            },
+            {
+                "dep": "escalade@3.1.1",
+                "name": "escalade",
+            },
+            {
+                "dep": "get-caller-file@2.0.5",
+                "name": "get-caller-file",
+            },
+            {
+                "dep": "require-directory@2.1.1",
+                "name": "require-directory",
+            },
+            {
+                "dep": "string-width@4.2.3",
+                "name": "string-width",
+            },
+            {
+                "dep": "y18n@5.0.8",
+                "name": "y18n",
+            },
+            {
+                "dep": "yargs-parser@21.0.0",
+                "name": "yargs-parser",
+            },
+        ],
+        "extra_deps": {},
+        "id": "yargs@17.3.0",
+        "name": "yargs",
+        "url": "https://registry.npmjs.org/yargs/-/yargs-17.3.0.tgz",
+    },
+    {
         "deps": [],
         "extra_deps": {},
         "id": "yarn@1.22.17",
@@ -10669,6 +11213,18 @@ PACKAGES = [
 ]
 
 ROOTS = [
+    {
+        "dep": "@angular/compiler@13.1.1",
+        "name": "@angular/compiler",
+    },
+    {
+        "dep": "@angular/compiler-cli@13.1.1",
+        "name": "@angular/compiler-cli",
+    },
+    {
+        "dep": "@angular/core@13.1.1",
+        "name": "@angular/core",
+    },
     {
         "dep": "@babel/plugin-transform-modules-commonjs@7.13.8",
         "name": "@babel/plugin-transform-modules-commonjs",
@@ -10754,6 +11310,10 @@ ROOTS = [
         "name": "jest",
     },
     {
+        "dep": "jest-haste-map@27.4.5",
+        "name": "jest-haste-map",
+    },
+    {
         "dep": "jest-junit@13.0.0",
         "name": "jest-junit",
     },
@@ -10768,6 +11328,10 @@ ROOTS = [
     {
         "dep": "protobufjs@6.11.2",
         "name": "protobufjs",
+    },
+    {
+        "dep": "reflect-metadata@0.1.13",
+        "name": "reflect-metadata",
     },
     {
         "dep": "rollup@2.58.3",
@@ -10786,6 +11350,10 @@ ROOTS = [
         "name": "rollup-plugin-terser",
     },
     {
+        "dep": "rxjs@7.4.0",
+        "name": "rxjs",
+    },
+    {
         "dep": "semver@7.3.5",
         "name": "semver",
     },
@@ -10798,7 +11366,7 @@ ROOTS = [
         "name": "tslib",
     },
     {
-        "dep": "typescript@4.0.8",
+        "dep": "typescript@4.5.4",
         "name": "typescript",
     },
     {

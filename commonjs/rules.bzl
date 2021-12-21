@@ -28,9 +28,6 @@ def _package_arg(package, package_path):
 def package_path(package):
     return package.path
 
-def package_short_path(package):
-    return package.short_path
-
 def gen_manifest(actions, manifest_bin, manifest, packages, deps, globals, package_path):
     def package_arg(package):
         return _package_arg(package, package_path)
@@ -52,7 +49,7 @@ def gen_manifest(actions, manifest_bin, manifest, packages, deps, globals, packa
 def create_entries(ctx, actions, srcs, prefix, strip_prefix):
     files = []
     for src in srcs:
-        path = runfile_path(ctx, src)
+        path = runfile_path(ctx.workspace_name, src)
         if path == strip_prefix:
             path = prefix
         else:

@@ -164,13 +164,13 @@ return t.hardenSymlinks=!0,t}function i(t,e,r){const i=e.split("/");for(let e=0;
 let r=t.extraChildren.get(i[e]);if(r){if(r.type!==h.VfsNode.PATH)throw new n}else r={type:h.VfsNode.PATH,
 hardenSymlinks:!1,extraChildren:new Map,path:void 0},t.extraChildren.set(i[e],r);t=r}t.extraChildren.set(i[i.length-1],{
 type:h.VfsNode.SYMLINK,path:r})}e.createVfs=function(t,e){
-const o=t=>s.default.resolve(e?`${process.env.RUNFILES_DIR}/${process.env.BAZEL_WORKSPACE}/${t}`:t),a={
-type:h.VfsNode.PATH,hardenSymlinks:!1,extraChildren:new Map,path:"/"};for(const[e,s]of t.entries()){
-const u=r(a,o(s.path)),c={type:h.VfsNode.PATH,hardenSymlinks:!1,extraChildren:new Map,path:void 0}
-;u.extraChildren.set("node_modules",c);for(const[r,a]of s.deps)try{i(c,r,o(t.get(a).path))}catch(t){
-if(!(t instanceof n))throw t;throw new Error(`Dependency "${r}" of "${e}" conflicts with another`)}}
-return new h.VfsImpl(a)}})),y=u((function(t,e){Object.defineProperty(e,"__esModule",{value:!0})
-;const n=process.env.NODE_FS_PACKAGE_MANIFEST;if(!n)throw new Error("NODE_FS_PACKAGE_MANIFEST is not set")
+const o=t=>s.default.resolve(e?`${process.env.RUNFILES_DIR}/${t}`:t),a={type:h.VfsNode.PATH,hardenSymlinks:!1,
+extraChildren:new Map,path:"/"};for(const[e,s]of t.entries()){const u=r(a,o(s.path)),c={type:h.VfsNode.PATH,
+hardenSymlinks:!1,extraChildren:new Map,path:void 0};u.extraChildren.set("node_modules",c);for(const[r,a]of s.deps)try{
+i(c,r,o(t.get(a).path))}catch(t){if(!(t instanceof n))throw t
+;throw new Error(`Dependency "${r}" of "${e}" conflicts with another`)}}return new h.VfsImpl(a)}})),y=u((function(t,e){
+Object.defineProperty(e,"__esModule",{value:!0});const n=process.env.NODE_FS_PACKAGE_MANIFEST
+;if(!n)throw new Error("NODE_FS_PACKAGE_MANIFEST is not set")
 ;const r=c.JsonFormat.parse(l.PackageTree.json(),i.default.readFileSync(n,"utf8")),o=(0,
 d.createVfs)(r,"true"===process.env.NODE_FS_RUNFILES)
 ;"true"===process.env.NODE_FS_TRACE&&process.stderr.write(o.print()),(0,f.patchFs)(o,i.default),(0,

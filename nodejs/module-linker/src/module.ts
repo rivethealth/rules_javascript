@@ -22,20 +22,17 @@ function resolveFilename(resolver: Resolver, delegate: Function): Function {
     }
 
     const resolved = (request = resolver.resolve(parent.path, request));
-    let newRequest = resolved.package.split("/").slice(-1)[0];
+    const [base, packageName] = resolved.package.split("/node_modules/", 2);
+    request = packageName;
     if (resolved.inner) {
-      newRequest = `${newRequest}/${resolved.inner}`;
+      request = `${request}/${resolved.inner}`;
     }
 
-    const resolvedLookupPaths = (<any>Module)._resolveLookupPaths;
-    (<any>Module)._resolveLookupPaths = () => [
-      resolved.package.split("/").slice(0, -1).join("/"),
-    ];
-    try {
-      return delegate.call(this, newRequest, parent, isMain, options);
-    } finally {
-      (<any>Module)._resolveLookupPaths = resolvedLookupPaths;
-    }
+    const newParent = new Module(`${base}/_`, parent);
+    newParent.filename = newParent.id;
+    newParent.paths = [`${base}/node_modules`];
+
+    return delegate.call(this, request, newParent, isMain, options);
   };
 }
 export function patchModule(resolver: Resolver, delegate: typeof Module) {

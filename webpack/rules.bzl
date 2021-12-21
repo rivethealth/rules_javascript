@@ -12,7 +12,7 @@ def _webpack_impl(ctx):
 
     webpack_info = WebpackInfo(
         bin = ctx.attr.bin[DefaultInfo].files_to_run,
-        config_path = "%s/%s" % (runfile_path(ctx, config_dep.package), config.path),
+        config_path = "%s/%s" % (runfile_path(ctx.workspace_name, config_dep.package), config.path),
     )
 
     return [webpack_info]

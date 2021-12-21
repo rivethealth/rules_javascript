@@ -12,6 +12,7 @@ export class Configuration {
       config.haste = {};
     }
 
+    config.haste.hasteMapModulePath = path.join(__dirname, "./haste-map.js");
     config.haste.forceNodeFilesystemAPI = true;
   }
 
@@ -66,6 +67,8 @@ export class Configuration {
     config.testRegex = filePaths
       .filter((_, i) => i % totalShards === shardIndex)
       .map((path) => `${escapeRegex(path)}$`);
+
+    config.testPathIgnorePatterns = [];
 
     if (process.env.TEST_SHARD_STATUS_FILE) {
       touch(process.env.TEST_SHARD_STATUS_FILE);

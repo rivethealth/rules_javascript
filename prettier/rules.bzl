@@ -1,7 +1,7 @@
 load("@rules_format//format:providers.bzl", "FormatInfo")
 load("//commonjs:rules.bzl", "cjs_root")
 load("//javascript:providers.bzl", "JsFile", "JsInfo")
-load("//nodejs:rules.bzl", "nodejs_binary")
+load("//nodejs:rules.bzl", "NODE_MODULES_PREFIX", "nodejs_binary", "package_path_name")
 load("//typescript:rules.bzl", "ts_library", "tsconfig")
 load("//util:path.bzl", "runfile_path")
 
@@ -79,13 +79,13 @@ def _prettier_impl(ctx):
     config = ctx.attr.config[JsFile]
     config_dep = ctx.attr.config[JsInfo]
 
-    config_path = "%s/%s" % (runfile_path(ctx, config_dep.package), config.path)
+    config_path = "%s/%s" % (package_path_name(config_dep.package.id), config.path)
 
     format_info = FormatInfo(
         fn = _prettier_fn,
         args = [
             bin.files_to_run,
-            "./%s.runfiles/%s" % (bin.files_to_run.executable.path, config_path),
+            "./%s.runfiles/%s/%s" % (bin.files_to_run.executable.path, NODE_MODULES_PREFIX, config_path),
         ],
     )
 

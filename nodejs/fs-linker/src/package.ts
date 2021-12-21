@@ -51,11 +51,7 @@ export function createVfs(
   runfiles: boolean,
 ): VfsImpl {
   const resolve = (path_: string) =>
-    path.resolve(
-      runfiles
-        ? `${process.env.RUNFILES_DIR}/${process.env.BAZEL_WORKSPACE}/${path_}`
-        : path_,
-    );
+    path.resolve(runfiles ? `${process.env.RUNFILES_DIR}/${path_}` : path_);
 
   const root: VfsNode = {
     type: VfsNode.PATH,

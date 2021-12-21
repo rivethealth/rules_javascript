@@ -2,7 +2,7 @@ load("@bazel_skylib//lib:shell.bzl", "shell")
 load("//commonjs:providers.bzl", "cjs_path")
 load("//commonjs:rules.bzl", "gen_manifest", "package_path")
 load("//javascript:providers.bzl", "JsFile", "JsInfo")
-load("//nodejs:rules.bzl", "nodejs_binary")
+load("//nodejs:rules.bzl", "NODE_MODULES_PREFIX", "nodejs_binary", "package_path_name")
 load("//util:path.bzl", "runfile_path")
 load(":providers.bzl", "RollupInfo")
 
@@ -12,7 +12,7 @@ def _rollup_impl(ctx):
 
     rollup_info = RollupInfo(
         bin = ctx.attr.bin[DefaultInfo].files_to_run,
-        config_path = "%s/%s" % (runfile_path(ctx, config_dep.package), config.path),
+        config_path = "%s/%s" % (package_path_name(config_dep.package.id), config.path),
     )
 
     return [rollup_info]
@@ -78,7 +78,7 @@ def _rollup_bundle_impl(ctx):
 
     args = []
     args.append("--config")
-    args.append("./%s.runfiles/%s" % (rollup.bin.executable.path, rollup.config_path))
+    args.append("./%s.runfiles/%s/%s" % (rollup.bin.executable.path, NODE_MODULES_PREFIX, rollup.config_path))
 
     ctx.actions.run(
         env = {

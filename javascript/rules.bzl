@@ -9,7 +9,7 @@ def _js_file_impl(ctx):
 
     prefix = output_prefix(cjs_info.package.path, ctx.label, ctx.actions)
     if ctx.attr.path:
-        strip_prefix = runfile_path(ctx, ctx.file.src)
+        strip_prefix = runfile_path(ctx.workspace_name, ctx.file.src)
         prefix = "%s/%s" % (prefix, ctx.attr.path) if prefix else ctx.attr.path
     else:
         strip_prefix = default_strip_prefix(ctx)

@@ -7,6 +7,11 @@ filegroup(
     srcs = ["runner.sh.tpl"],
 )
 
+filegroup(
+    name = "haste_map",
+    srcs = ["haste-map.js"],
+)
+
 bzl_library(
     name = "bzl",
     srcs = glob(["**/*.bzl"]),

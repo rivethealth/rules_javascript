@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "module": "es2015",
     "moduleResolution": "node"
   },
   "extends": "@better_rules_javascript/rules/tsconfig.common.json"

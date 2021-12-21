@@ -42,6 +42,7 @@ ts_library(
     deps = [
         "@better_rules_javascript_npm//@jest/types:lib",
         "@better_rules_javascript_npm//@types/node:lib",
+        "@better_rules_javascript_npm//jest-haste-map:lib",
     ],
 )
 
