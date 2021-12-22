@@ -67,7 +67,8 @@ Instead of attempting to use files in their existing locations, move the files
 to their package structure, and create node_modules symlinks.
 
 Creating arbitrary symlinks requires `--experimental_allow_unresolved_symlinks`
-and has outstanding bugs https://github.com/bazelbuild/bazel/issues/10298 .
+and has outstanding bugs
+[bazelbuild/bazel#10298](https://github.com/bazelbuild/bazel/issues/10298).
 
 Symlinks must be created for the entire package. Assuming a package can consist
 of multiple rules (e.g. TypeScript library plus TypeScript tests), that involves
@@ -90,7 +91,7 @@ solves this issue, however it is sometimes unavailable (Windows) or unused
 
 ### Yarn PnP
 
-Plug'n'Play is a package resolution API. To be precise, tt does not itself
+Plug'n'Play is a package resolution API. To be precise, it does not itself
 resolve module, but rather resolves "packages" to directories. It has broad
 support, natively or via tool plugins. With this approach, rules would arrange
 files with their package structure, and use PnP to describe the relationships
@@ -127,7 +128,7 @@ This is platform specific and difficult.
 ### Monkey-patching (current approach)
 
 Shim the `fs` module (or `process.binding('fs')`). However, a lot of Node.js
-internals are
+module loading internals are
 [deliberately](https://github.com/nodejs/node/pull/39513#pullrequestreview-714334718)
 written in such a way they cannot be monkey-patched.
 
@@ -147,7 +148,8 @@ related to which other ones.
 
 This is an approach similar to Yarn PnP, though it does not use PnP.
 
-For Node.js, better_rules_javascript overrides Module.\_resolveFilename
-(shimming `fs` module isn't possible because Node.js uses internal functions).
-For other tools, better_rules_javascript shims the fs module and synthesizes a
-node_module directory with symlinks.
+- Node.js CommonJS: Override Module.\_resolveFilename
+- Node.js ES: Use the experimental
+  [ESM loader hooks](https://nodejs.org/api/esm.html#loaders)
+- Other Node.js-based tools: shims the `fs` module, synthesizing a node_modules
+  directory with symlinks and dereferencing other symlinks.
