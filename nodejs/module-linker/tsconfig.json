@@ -3,5 +3,5 @@
     "esModuleInterop": true,
     "moduleResolution": "node"
   },
-  "extends": "@better_rules_javascript/rules/tsconfig.common.json"
+  "extends": "@better-rules-javascript/rules/tsconfig.common.json"
 }

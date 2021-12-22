@@ -7,6 +7,7 @@ DIRS = ["files/"] + [
         exclude_directories = 0,
     )
     if file != "files/node_modules" and
+       file != "files/.node_modules" and
        file != "files/.git" and
        file != "files/.bazel_cache" and
        not file.startswith("files/bazel-")

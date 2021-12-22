@@ -15,6 +15,26 @@ CjsDescriptorInfo(<a href="#CjsDescriptorInfo-descriptors">descriptors</a>, <a h
 | <a id="CjsDescriptorInfo-descriptors"></a>descriptors | List of files |
 | <a id="CjsDescriptorInfo-path"></a>path               | Root path     |
 
+<a id="#CjsEntries"></a>
+
+## CjsEntries
+
+<pre>
+CjsEntries(<a href="#CjsEntries-name">name</a>, <a href="#CjsEntries-package">package</a>, <a href="#CjsEntries-transitive_packages">transitive_packages</a>, <a href="#CjsEntries-transitive_deps">transitive_deps</a>, <a href="#CjsEntries-transitive_files">transitive_files</a>)
+</pre>
+
+CommonJS entries
+
+**FIELDS**
+
+| Name                                                           | Description |
+| :------------------------------------------------------------- | :---------- |
+| <a id="CjsEntries-name"></a>name                               | Name        |
+| <a id="CjsEntries-package"></a>package                         | Package     |
+| <a id="CjsEntries-transitive_packages"></a>transitive_packages | Packages    |
+| <a id="CjsEntries-transitive_deps"></a>transitive_deps         | Deps        |
+| <a id="CjsEntries-transitive_files"></a>transitive_files       | Files       |
+
 <a id="#CjsInfo"></a>
 
 ## CjsInfo

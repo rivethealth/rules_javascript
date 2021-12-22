@@ -9,7 +9,7 @@ load("//util:path.bzl", "runfile_path")
 def configure_prettier(name, dep, config, plugins = [], visibility = None):
     cjs_root(
         name = "%s.root" % name,
-        package_name = "@better_rules_javascript/prettier-format",
+        package_name = "@better-rules-javascript/prettier-format",
         descriptors = ["@better_rules_javascript//prettier/format:descriptors"],
         strip_prefix = "better_rules_javascript/prettier/format",
     )

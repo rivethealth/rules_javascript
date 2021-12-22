@@ -1,5 +1,20 @@
 <!-- Generated with Stardoc: http://skydoc.bazel.build -->
 
+<a id="#nodejs_archive"></a>
+
+## nodejs_archive
+
+<pre>
+nodejs_archive(<a href="#nodejs_archive-name">name</a>, <a href="#nodejs_archive-deps">deps</a>)
+</pre>
+
+**ATTRIBUTES**
+
+| Name                                 | Description                    | Type                                                                        | Mandatory | Default |
+| :----------------------------------- | :----------------------------- | :-------------------------------------------------------------------------- | :-------- | :------ |
+| <a id="nodejs_archive-name"></a>name | A unique name for this target. | <a href="https://bazel.build/docs/build-ref.html#name">Name</a>             | required  |         |
+| <a id="nodejs_archive-deps"></a>deps | -                              | <a href="https://bazel.build/docs/build-ref.html#labels">List of labels</a> | optional  | []      |
+
 <a id="#nodejs_binary"></a>
 
 ## nodejs_binary

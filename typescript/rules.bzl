@@ -1,5 +1,5 @@
 load("@bazel_skylib//lib:paths.bzl", "paths")
-load("@better_rules_javascript//commonjs:providers.bzl", "CjsInfo", "create_dep", "create_entries", "create_global", "create_package", "default_strip_prefix", "gen_manifest", "output_prefix", "package_path")
+load("@better_rules_javascript//commonjs:providers.bzl", "CjsEntries", "CjsInfo", "create_dep", "create_entries", "create_global", "create_package", "default_strip_prefix", "gen_manifest", "output_prefix", "package_path")
 load("@better_rules_javascript//commonjs:rules.bzl", "cjs_root")
 load("@better_rules_javascript//nodejs:rules.bzl", "nodejs_binary")
 load("@better_rules_javascript//javascript:providers.bzl", "JsInfo")
@@ -287,7 +287,7 @@ def configure_ts_compiler(name, ts, tslib = None, visibility = None):
 
     cjs_root(
         name = "%s.root" % name,
-        package_name = "@better_rules_javascript/typescript",
+        package_name = "@better-rules-javascript/typescript",
         descriptors = ["@better_rules_javascript//typescript/js-compiler:descriptors"],
         strip_prefix = "better_rules_javascript/typescript/js-compiler",
         visibility = ["//visibility:private"],
@@ -666,11 +666,11 @@ def _ts_library_impl(ctx):
         transitive_packages = transitive_packages,
     )
 
-    transitive_descriptors = depset(
+    js_transitive_descriptors = depset(
         cjs_info.descriptors,
         transitive = [js_info.transitive_descriptors for js_info in js_deps],
     )
-    transitive_deps = depset(
+    js_transitive_deps = depset(
         [
             create_dep(id = cjs_info.package.id, dep = dep[JsInfo].package.id, name = dep[JsInfo].name, label = dep.label)
             for dep in ctx.attr.deps
@@ -688,7 +688,7 @@ def _ts_library_impl(ctx):
         ] if compiler.runtime else []),
         transitive = [js_info.transitive_deps for js_info in js_deps],
     )
-    transitive_packages = depset(
+    js_transitive_packages = depset(
         [cjs_info.package],
         transitive =
             [js_info.transitive_packages for js_info in js_deps],
@@ -705,17 +705,28 @@ def _ts_library_impl(ctx):
     js_info = JsInfo(
         name = cjs_info.name,
         package = cjs_info.package,
-        transitive_deps = transitive_deps,
-        transitive_descriptors = transitive_descriptors,
+        transitive_deps = js_transitive_deps,
+        transitive_descriptors = js_transitive_descriptors,
         transitive_js = transitive_js,
-        transitive_packages = transitive_packages,
+        transitive_packages = js_transitive_packages,
         transitive_srcs = transitive_srcs,
     )
 
     default_info = DefaultInfo(
         files = depset(declarations + js),
     )
-    return [default_info, js_info, ts_info]
+
+    cjs_entries = CjsEntries(
+        name = cjs_info.name,
+        package = cjs_info.package,
+        transitive_packages = depset(transitive = [transitive_packages, js_transitive_packages]),
+        transitive_deps = depset(transitive = [transitive_deps, js_transitive_deps]),
+        transitive_files = depset(
+            transitive = [transitive_descriptors, js_transitive_descriptors, transitive_declarations, transitive_js, transitive_srcs],
+        ),
+    )
+
+    return [cjs_entries, default_info, js_info, ts_info]
 
 ts_library = rule(
     implementation = _ts_library_impl,
@@ -834,11 +845,11 @@ def _ts_import_impl(ctx):
         [],
         transitive = [js_info.transitive_js for js_info in js_deps],
     )
-    transitive_descriptors = depset(
+    js_transitive_descriptors = depset(
         cjs_info.descriptors,
         transitive = [js_info.transitive_descriptors for js_info in js_deps],
     )
-    transitive_deps = depset(
+    js_transitive_deps = depset(
         [
             create_dep(id = cjs_info.package.id, dep = dep[JsInfo].package.id, label = dep.label, name = dep[JsInfo].name)
             for dep in ctx.attr.deps
@@ -854,7 +865,7 @@ def _ts_import_impl(ctx):
         ],
         transitive = [js_info.transitive_deps for js_info in js_deps],
     )
-    transitive_packages = depset(
+    js_transitive_packages = depset(
         [cjs_info.package],
         transitive = [js_info.transitive_packages for js_info in js_deps],
     )
@@ -862,14 +873,24 @@ def _ts_import_impl(ctx):
     js_info = JsInfo(
         name = cjs_info.name,
         package = cjs_info.package,
-        transitive_deps = transitive_deps,
-        transitive_descriptors = transitive_descriptors,
+        transitive_deps = js_transitive_deps,
+        transitive_descriptors = js_transitive_descriptors,
         transitive_js = transitive_js,
-        transitive_packages = transitive_packages,
+        transitive_packages = js_transitive_packages,
         transitive_srcs = transitive_srcs,
     )
 
-    return [js_info, ts_info]
+    cjs_entries = CjsEntries(
+        name = cjs_info.name,
+        package = cjs_info.package,
+        transitive_packages = depset(transitive = [transitive_packages, js_transitive_packages]),
+        transitive_deps = depset(transitive = [transitive_deps, js_transitive_deps]),
+        transitive_files = depset(
+            transitive = [transitive_descriptors, js_transitive_descriptors, transitive_declarations, transitive_js, transitive_srcs],
+        ),
+    )
+
+    return [cjs_entries, js_info, ts_info]
 
 ts_import = rule(
     implementation = _ts_import_impl,

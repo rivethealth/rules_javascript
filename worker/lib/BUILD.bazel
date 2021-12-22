@@ -6,7 +6,7 @@ package(default_visibility = ["//visibility:public"])
 
 cjs_root(
     name = "root",
-    package_name = "@better_rules_javascript/worker",
+    package_name = "@better-rules-javascript/worker",
     descriptors = ["package.json"],
 )
 

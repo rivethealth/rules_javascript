@@ -91,10 +91,8 @@ For convenience, the yarn executable is available as
 
 ## IDE
 
-IDEs require packages installed in `node_modules`.
-
-These package may be installed separately with a usual package manager install,
-or you may use Bazel (comming soon).
+To make these accessible to the IDE in `node_modules`, see
+[Node.js docs](nodejs.md).
 
 ## Limitations
 

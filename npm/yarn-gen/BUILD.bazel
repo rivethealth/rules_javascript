@@ -4,7 +4,7 @@ load("//typescript:rules.bzl", "ts_library", "tsconfig")
 
 cjs_root(
     name = "root",
-    package_name = "@better_rules_javascript/yarn-gen",
+    package_name = "@better-rules-javascript/yarn-gen",
     descriptors = ["package.json"],
 )
 

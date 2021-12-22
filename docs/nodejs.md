@@ -6,6 +6,7 @@ Node.js is most common execution environment outside a web browser.
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
 - [Example](#example)
+- [IDEs](#ides)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -54,4 +55,36 @@ Then
 ```txt
 $ bazel run //:bin
 Hello world
+```
+
+## IDEs
+
+IDEs use `node_modules`. To install external dependencies there, create a tar
+with `nodejs_archive`.
+
+```bzl
+load("@better_rules_javascript//nodejs:rules.bzl", "nodejs_archive")
+
+nodejs_archive(
+  name = "archive",
+  deps = [
+    "@npm/example:lib"
+  ],
+)
+```
+
+Then run
+
+```sh
+bazel build :archive
+tar xf bazel-bin/archive/modules.tar -C .node_modules
+ln -s .node_modules/_ node_modules
+mkdir -p node_modules/@better-rules-javascript
+```
+
+To link local dependencies, run
+
+```sh
+ln -rs foo node_modules/@example/foo
+ln -rs bar node_modules/@example/bar
 ```

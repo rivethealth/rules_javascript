@@ -2308,6 +2308,18 @@ PACKAGES = [
         "url": "https://registry.npmjs.org/@types/stack-utils/-/stack-utils-2.0.1.tgz",
     },
     {
+        "deps": [
+            {
+                "dep": "@types/node@16.11.11",
+                "name": "@types/node",
+            },
+        ],
+        "extra_deps": {},
+        "id": "@types/tar-stream@2.2.2",
+        "name": "@types/tar-stream",
+        "url": "https://registry.npmjs.org/@types/tar-stream/-/tar-stream-2.2.2.tgz",
+    },
+    {
         "deps": [],
         "extra_deps": {},
         "id": "@types/treeify@1.0.0",
@@ -3681,9 +3693,36 @@ PACKAGES = [
     {
         "deps": [],
         "extra_deps": {},
+        "id": "base64-js@1.5.1",
+        "name": "base64-js",
+        "url": "https://registry.npmjs.org/base64-js/-/base64-js-1.5.1.tgz",
+    },
+    {
+        "deps": [],
+        "extra_deps": {},
         "id": "binary-extensions@2.2.0",
         "name": "binary-extensions",
         "url": "https://registry.npmjs.org/binary-extensions/-/binary-extensions-2.2.0.tgz",
+    },
+    {
+        "deps": [
+            {
+                "dep": "buffer@5.7.1",
+                "name": "buffer",
+            },
+            {
+                "dep": "inherits@2.0.4",
+                "name": "inherits",
+            },
+            {
+                "dep": "readable-stream@3.6.0",
+                "name": "readable-stream",
+            },
+        ],
+        "extra_deps": {},
+        "id": "bl@4.1.0",
+        "name": "bl",
+        "url": "https://registry.npmjs.org/bl/-/bl-4.1.0.tgz",
     },
     {
         "deps": [],
@@ -3773,6 +3812,22 @@ PACKAGES = [
         "id": "buffer-from@1.1.2",
         "name": "buffer-from",
         "url": "https://registry.npmjs.org/buffer-from/-/buffer-from-1.1.2.tgz",
+    },
+    {
+        "deps": [
+            {
+                "dep": "base64-js@1.5.1",
+                "name": "base64-js",
+            },
+            {
+                "dep": "ieee754@1.2.1",
+                "name": "ieee754",
+            },
+        ],
+        "extra_deps": {},
+        "id": "buffer@5.7.1",
+        "name": "buffer",
+        "url": "https://registry.npmjs.org/buffer/-/buffer-5.7.1.tgz",
     },
     {
         "deps": [],
@@ -5434,6 +5489,13 @@ PACKAGES = [
         "url": "https://registry.npmjs.org/format/-/format-0.2.2.tgz",
     },
     {
+        "deps": [],
+        "extra_deps": {},
+        "id": "fs-constants@1.0.0",
+        "name": "fs-constants",
+        "url": "https://registry.npmjs.org/fs-constants/-/fs-constants-1.0.0.tgz",
+    },
+    {
         "deps": [
             {
                 "dep": "minipass@3.1.5",
@@ -5946,6 +6008,13 @@ PACKAGES = [
         "id": "iconv-lite@0.6.3",
         "name": "iconv-lite",
         "url": "https://registry.npmjs.org/iconv-lite/-/iconv-lite-0.6.3.tgz",
+    },
+    {
+        "deps": [],
+        "extra_deps": {},
+        "id": "ieee754@1.2.1",
+        "name": "ieee754",
+        "url": "https://registry.npmjs.org/ieee754/-/ieee754-1.2.1.tgz",
     },
     {
         "deps": [],
@@ -9948,6 +10017,34 @@ PACKAGES = [
     {
         "deps": [
             {
+                "dep": "bl@4.1.0",
+                "name": "bl",
+            },
+            {
+                "dep": "end-of-stream@1.4.4",
+                "name": "end-of-stream",
+            },
+            {
+                "dep": "fs-constants@1.0.0",
+                "name": "fs-constants",
+            },
+            {
+                "dep": "inherits@2.0.4",
+                "name": "inherits",
+            },
+            {
+                "dep": "readable-stream@3.6.0",
+                "name": "readable-stream",
+            },
+        ],
+        "extra_deps": {},
+        "id": "tar-stream@2.2.0",
+        "name": "tar-stream",
+        "url": "https://registry.npmjs.org/tar-stream/-/tar-stream-2.2.0.tgz",
+    },
+    {
+        "deps": [
+            {
                 "dep": "chownr@2.0.0",
                 "name": "chownr",
             },
@@ -11206,6 +11303,10 @@ ROOTS = [
         "name": "@types/semver",
     },
     {
+        "dep": "@types/tar-stream@2.2.2",
+        "name": "@types/tar-stream",
+    },
+    {
         "dep": "@types/yaml@1.9.7",
         "name": "@types/yaml",
     },
@@ -11292,6 +11393,10 @@ ROOTS = [
     {
         "dep": "semver@7.3.5",
         "name": "semver",
+    },
+    {
+        "dep": "tar-stream@2.2.0",
+        "name": "tar-stream",
     },
     {
         "dep": "ts-proto@1.83.3",

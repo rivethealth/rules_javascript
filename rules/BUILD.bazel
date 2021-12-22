@@ -16,7 +16,7 @@ bzl_library(
 
 cjs_root(
     name = "root",
-    package_name = "@better_rules_javascript/rules",
+    package_name = "@better-rules-javascript/rules",
     descriptors = ["package.json"],
 )
 

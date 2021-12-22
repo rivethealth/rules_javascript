@@ -1,7 +1,7 @@
 load("//commonjs:rules.bzl", "cjs_root")
 load("//eslint:rules.bzl", "configure_eslint")
 load("//javascript:rules.bzl", "js_file")
-load("//nodejs:rules.bzl", "nodejs_binary")
+load("//nodejs:rules.bzl", "nodejs_archive", "nodejs_binary")
 load("//prettier:rules.bzl", "configure_prettier")
 load("@rules_format//buildifier:rules.bzl", "buildifier")
 load("@rules_format//format:rules.bzl", "format")
@@ -80,6 +80,56 @@ format(
 
 cjs_root(
     name = "root",
-    package_name = "@better_rules_javascript/root",
+    package_name = "@better-rules-javascript/root",
     descriptors = ["package.json"],
+)
+
+nodejs_archive(
+    name = "archive",
+    deps = [
+        "//worker/lib:worker_proto_lib",
+        "@better_rules_javascript_npm//@angular/compiler:lib",
+        "@better_rules_javascript_npm//@angular/compiler-cli:lib",
+        "@better_rules_javascript_npm//@angular/core:lib",
+        "@better_rules_javascript_npm//@babel/plugin-transform-modules-commonjs:lib",
+        "@better_rules_javascript_npm//@jest/types:lib",
+        "@better_rules_javascript_npm//@rollup/plugin-commonjs:lib",
+        "@better_rules_javascript_npm//@rollup/plugin-node-resolve:lib",
+        "@better_rules_javascript_npm//@types/argparse:lib",
+        "@better_rules_javascript_npm//@types/eslint:lib",
+        "@better_rules_javascript_npm//@types/long:lib",
+        "@better_rules_javascript_npm//@types/node:lib",
+        "@better_rules_javascript_npm//@types/prettier:lib",
+        "@better_rules_javascript_npm//@types/semver:lib",
+        "@better_rules_javascript_npm//@types/tar-stream:lib",
+        "@better_rules_javascript_npm//@types/yaml:lib",
+        "@better_rules_javascript_npm//@typescript-eslint/eslint-plugin:lib",
+        "@better_rules_javascript_npm//@typescript-eslint/parser:lib",
+        "@better_rules_javascript_npm//@yarnpkg/cli-dist:lib",
+        "@better_rules_javascript_npm//@yarnpkg/core:lib",
+        "@better_rules_javascript_npm//argparse:lib",
+        "@better_rules_javascript_npm//doctoc:lib",
+        "@better_rules_javascript_npm//enhanced-resolve:lib",
+        "@better_rules_javascript_npm//eslint:lib",
+        "@better_rules_javascript_npm//jest:lib",
+        "@better_rules_javascript_npm//jest-haste-map:lib",
+        "@better_rules_javascript_npm//jest-junit:lib",
+        "@better_rules_javascript_npm//long:lib",
+        "@better_rules_javascript_npm//prettier:lib",
+        "@better_rules_javascript_npm//protobufjs:lib",
+        "@better_rules_javascript_npm//reflect-metadata:lib",
+        "@better_rules_javascript_npm//rollup:lib",
+        "@better_rules_javascript_npm//rollup-plugin-hypothetical:lib",
+        "@better_rules_javascript_npm//rollup-plugin-ignore:lib",
+        "@better_rules_javascript_npm//rxjs:lib",
+        "@better_rules_javascript_npm//semver:lib",
+        "@better_rules_javascript_npm//tar-stream:lib",
+        "@better_rules_javascript_npm//ts-proto:lib",
+        "@better_rules_javascript_npm//tslib:lib",
+        "@better_rules_javascript_npm//typescript:lib",
+        "@better_rules_javascript_npm//webpack:lib",
+        "@better_rules_javascript_npm//webpack-cli:lib",
+        "@better_rules_javascript_npm//yaml:lib",
+        "@better_rules_javascript_npm//yarn:lib",
+    ],
 )

@@ -14,7 +14,7 @@ rollup_bundle(
 
 cjs_root(
     name = "root",
-    package_name = "@better_rules_javascript/jest-config",
+    package_name = "@better-rules-javascript/jest-config",
 )
 
 js_file(

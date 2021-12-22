@@ -1,4 +1,4 @@
-load("//commonjs:providers.bzl", "CjsInfo", "create_dep", "create_entries", "default_strip_prefix", "output_prefix")
+load("//commonjs:providers.bzl", "CjsEntries", "CjsInfo", "create_dep", "create_entries", "default_strip_prefix", "output_prefix")
 load("//util:path.bzl", "runfile_path")
 load(":providers.bzl", "JsFile", "JsInfo")
 
@@ -72,7 +72,17 @@ def _js_file_impl(ctx):
         transitive_srcs = transitive_srcs,
     )
 
-    return [js_file, js_info]
+    cjs_entries = CjsEntries(
+        name = cjs_info.name,
+        package = cjs_info.package,
+        transitive_packages = transitive_packages,
+        transitive_deps = transitive_deps,
+        transitive_files = depset(
+            transitive = [transitive_js, transitive_srcs],
+        ),
+    )
+
+    return [cjs_entries, js_file, js_info]
 
 js_file = rule(
     attrs = {
@@ -126,6 +136,7 @@ js_export_file = rule(
 )
 
 def _js_import_impl(ctx):
+    cjs_entries = ctx.attr.dep[JsInfo].cjs_entries
     js_info = ctx.attr.dep[JsInfo]
 
     js_info = JsInfo(
@@ -138,13 +149,13 @@ def _js_import_impl(ctx):
         transitive_srcs = js_info.transitive_srcs,
     )
 
-    return [js_info]
+    return [cjs_entries, js_info]
 
 js_import = rule(
     attrs = {
         "dep": attr.label(
             mandatory = True,
-            providers = [JsInfo],
+            providers = [CjsEntries, JsInfo],
         ),
         "package_name": attr.string(
             doc = "Package alias",
@@ -218,7 +229,17 @@ def _js_library_impl(ctx):
         transitive_srcs = transitive_srcs,
     )
 
-    return [js_info]
+    cjs_entries = CjsEntries(
+        name = cjs_info.name,
+        package = cjs_info.package,
+        transitive_packages = transitive_packages,
+        transitive_deps = transitive_deps,
+        transitive_files = depset(
+            transitive = [transitive_js, transitive_srcs],
+        ),
+    )
+
+    return [cjs_entries, js_info]
 
 js_library = rule(
     attrs = {

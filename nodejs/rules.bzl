@@ -1,5 +1,5 @@
 load("@bazel_skylib//lib:shell.bzl", "shell")
-load("//commonjs:providers.bzl", "create_global", "gen_manifest")
+load("//commonjs:providers.bzl", "CjsEntries", "create_dep", "create_global", "create_package", "gen_manifest", "package_path")
 load("//javascript:providers.bzl", "JsInfo")
 load("//util:path.bzl", "output", "runfile_path")
 load(":providers.bzl", "NODE_MODULES_PREFIX", "node_modules_links", "package_path_name")
@@ -174,4 +174,85 @@ nodejs_binary = rule(
     executable = True,
     implementation = _nodejs_binary_implementation,
     toolchains = ["@better_rules_javascript//nodejs:toolchain_type"],
+)
+
+def _nodejs_archive_impl(ctx):
+    archive_linker = ctx.attr._archive_linker[DefaultInfo]
+    manifest = ctx.attr._manifest[DefaultInfo]
+    deps = [dep[CjsEntries] for dep in ctx.attr.deps]
+
+    package = create_package(
+        id = "_",
+        path = "_",
+        short_path = "_",
+        label = ctx.label,
+    )
+
+    package_deps = [
+        create_dep(id = "_", dep = dep[CjsEntries].package.id, name = dep[CjsEntries].name, label = dep.label)
+        for dep in ctx.attr.deps
+    ]
+
+    transitive_deps = depset(
+        package_deps,
+        transitive = [cjs_entries.transitive_deps for cjs_entries in deps],
+    )
+    transitive_files = depset(
+        transitive = [cjs_entries.transitive_files for cjs_entries in deps],
+    )
+    transitive_packages = depset(
+        [package],
+        transitive = [cjs_entries.transitive_packages for cjs_entries in deps],
+    )
+
+    package_manifest = ctx.actions.declare_file("%s/packages.json" % ctx.label.name)
+    gen_manifest(
+        actions = ctx.actions,
+        manifest_bin = manifest,
+        manifest = package_manifest,
+        packages = transitive_packages,
+        deps = transitive_deps,
+        globals = [],
+        package_path = package_path,
+    )
+
+    archive = ctx.actions.declare_file("%s/modules.tar" % ctx.attr.name)
+
+    args = ctx.actions.args()
+    args.use_param_file("@%s")
+    args.set_param_file_format("multiline")
+    args.add("--manifest", package_manifest)
+    args.add("--root", "_")
+    args.add("--output", archive)
+    args.add_all(transitive_files)
+
+    ctx.actions.run(
+        arguments = [args],
+        inputs = depset([package_manifest], transitive = [transitive_files]),
+        outputs = [archive],
+        executable = archive_linker.files_to_run.executable,
+        tools = [archive_linker.files_to_run],
+    )
+
+    default_info = DefaultInfo(files = depset([archive]))
+
+    return [default_info]
+
+nodejs_archive = rule(
+    attrs = {
+        "deps": attr.label_list(
+            providers = [CjsEntries],
+        ),
+        "_archive_linker": attr.label(
+            cfg = "exec",
+            executable = True,
+            default = "//nodejs/archive-linker:bin",
+        ),
+        "_manifest": attr.label(
+            cfg = "exec",
+            executable = True,
+            default = "//commonjs/manifest:bin",
+        ),
+    },
+    implementation = _nodejs_archive_impl,
 )

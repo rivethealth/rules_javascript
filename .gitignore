@@ -1,6 +1,7 @@
 *.log
 bazel-*
 
+.node_modules
 node_modules
 .bazel_cache
 .yarn

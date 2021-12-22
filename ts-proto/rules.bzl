@@ -1,4 +1,4 @@
-load("@better_rules_javascript//commonjs:providers.bzl", "CjsInfo", "create_dep", "output_prefix")
+load("@better_rules_javascript//commonjs:providers.bzl", "CjsEntries", "CjsInfo", "create_dep", "output_prefix")
 load("@better_rules_javascript//javascript:providers.bzl", "JsInfo")
 load("@better_rules_javascript//nodejs:rules.bzl", "nodejs_binary")
 load("@better_rules_javascript//util:path.bzl", "runfile_path")
@@ -202,7 +202,17 @@ def _ts_proto_export_impl(ctx):
     js_info = ts_protos_info.js[dep]
     ts_info = ts_protos_info.ts[dep]
 
-    return [js_info, ts_info]
+    cjs_entries = CjsEntries(
+        name = ts_info.name,
+        package = ts_info.package,
+        transitive_packages = depset(transitive = [js_info.transitive_packages, ts_info.transitive_packages]),
+        transitive_deps = depset(transitive = [js_info.transitive_deps, ts_info.transitive_deps]),
+        transitive_files = depset(
+            transitive = [js_info.transitive_descriptors, ts_info.transitive_descriptors, ts_info.transitive_declarations, js_info.transitive_js, js_info.transitive_srcs],
+        ),
+    )
+
+    return [cjs_entries, js_info, ts_info]
 
 ts_proto_export = rule(
     doc = "TypeScript protobuf library",

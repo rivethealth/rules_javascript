@@ -17,6 +17,17 @@ CjsInfo = provider(
     },
 )
 
+CjsEntries = provider(
+    doc = "CommonJS entries",
+    fields = {
+        "name": "Name",
+        "package": "Package",
+        "transitive_packages": "Packages",
+        "transitive_deps": "Deps",
+        "transitive_files": "Files",
+    },
+)
+
 def create_package(id, path, short_path, label):
     """Create package struct.
 

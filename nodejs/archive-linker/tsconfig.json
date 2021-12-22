@@ -1,6 +1,8 @@
 {
   "compilerOptions": {
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "module": "commonjs"
   },
   "extends": "@better-rules-javascript/rules/tsconfig.common.json"
 }

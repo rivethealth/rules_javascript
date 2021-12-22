@@ -1,5 +1,5 @@
 load("//util:path.bzl", "output")
-load(":providers.bzl", "CjsInfo", "create_entries", "create_package", "default_strip_prefix")
+load(":providers.bzl", "CjsEntries", "CjsInfo", "create_entries", "create_package", "default_strip_prefix")
 
 def _default_package_name(ctx):
     workspace = "@%s" % (ctx.label.workspace_name or ctx.workspace_name)
@@ -52,7 +52,15 @@ def _cjs_root_impl(ctx):
         name = name,
     )
 
-    return [cjs_info]
+    cjs_entries = CjsEntries(
+        name = name,
+        package = package,
+        transitive_files = depset(descriptors),
+        transitive_packages = depset([package]),
+        transitive_deps = depset([]),
+    )
+
+    return [cjs_entries, cjs_info]
 
 cjs_root = rule(
     doc = "CommonJS-style root",

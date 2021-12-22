@@ -5,7 +5,7 @@ load("//:rules.bzl", "js_proto_library")
 
 cjs_root(
     name = "root",
-    package_name = "@better_rules_javascript/protobuf-basic",
+    package_name = "@better-rules-javascript/protobuf-basic",
     descriptors = ["package.json"],
 )
 

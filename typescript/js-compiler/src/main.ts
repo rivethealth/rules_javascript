@@ -4,7 +4,7 @@ import { patchFs } from "@better-rules-javascript/nodejs-fs-linker/fs";
 import { patchFsPromises } from "@better-rules-javascript/nodejs-fs-linker/fs-promises";
 import { createVfs } from "@better-rules-javascript/nodejs-fs-linker/package";
 import { WrapperVfs } from "@better-rules-javascript/nodejs-fs-linker/vfs";
-import { run } from "@better_rules_javascript/worker";
+import { run } from "@better-rules-javascript/worker";
 import { ArgumentParser } from "argparse";
 import * as fs from "fs";
 import * as path from "path";

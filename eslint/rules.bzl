@@ -10,7 +10,7 @@ load("//util:path.bzl", "runfile_path")
 def configure_eslint(name, dep, config, plugins = [], visibility = None):
     cjs_root(
         name = "%s.root" % name,
-        package_name = "@better_rules_javascript/eslint-format",
+        package_name = "@better-rules-javascript/eslint-format",
         descriptors = ["@better_rules_javascript//eslint/linter:descriptors"],
         strip_prefix = "better_rules_javascript/eslint/linter",
     )
