@@ -32,7 +32,6 @@ ts_simple_library(
         "es2019",
     ],
     root = ":root",
-    strip_prefix = "better_rules_javascript/worker/lib/src",
     deps = [
         ":worker_proto_lib",
         "@better_rules_javascript_npm//@types/node:lib",

@@ -1,1 +1,16 @@
-{}
+{
+  "exports": {
+    ".": "./src/index.js",
+    "./*": "./src/*.js"
+  },
+  "typesVersions": {
+    "*": {
+      "*": [
+        "src/*"
+      ],
+      "src/*": [
+        "src/*"
+      ]
+    }
+  }
+}

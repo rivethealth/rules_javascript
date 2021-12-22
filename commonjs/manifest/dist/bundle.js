@@ -161,7 +161,7 @@ class StringJsonFormat {
 
 });
 
-var root = createCommonjsModule(function (module, exports) {
+var src = createCommonjsModule(function (module, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PackageTree = exports.Package = void 0;
 
@@ -4456,7 +4456,7 @@ async function main() {
             deps: new Map([...package_.deps.entries()].map(([name, dep]) => [name, dep.id])),
         },
     ]));
-    await fs__namespace.promises.writeFile(args.output, json.JsonFormat.stringify(root.PackageTree.json(), tree));
+    await fs__namespace.promises.writeFile(args.output, json.JsonFormat.stringify(src.PackageTree.json(), tree));
 }
 main().catch((e) => {
     console.error(e.stack);

@@ -25,7 +25,7 @@ def configure_prettier(name, dep, config, plugins = [], visibility = None):
     ts_library(
         name = "%s.lib" % name,
         srcs = ["@better_rules_javascript//prettier/format:src"],
-        strip_prefix = "better_rules_javascript/prettier/format/src",
+        strip_prefix = "better_rules_javascript/prettier/format",
         compiler = "@better_rules_javascript//rules:tsc",
         config = ":%s.config" % name,
         deps = [
@@ -40,7 +40,7 @@ def configure_prettier(name, dep, config, plugins = [], visibility = None):
     )
 
     nodejs_binary(
-        main = "index.js",
+        main = "src/index.js",
         name = "%s.bin" % name,
         dep = "%s.lib" % name,
         global_deps = plugins,

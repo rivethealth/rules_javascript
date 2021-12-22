@@ -210,7 +210,7 @@ class StringJsonFormat {
     }
 }
 
-});var root = createCommonjsModule(function (module, exports) {
+});var src = createCommonjsModule(function (module, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PackageTree = exports.Package = void 0;
 
@@ -264,6 +264,6 @@ function patchModule(resolver, delegate) {
 if (!manifestPath) {
     throw new Error("NODE_PACKAGE_MANIFEST is not set");
 }
-const packageTree = json.JsonFormat.parse(root.PackageTree.json(), fs__namespace.readFileSync(manifestPath, "utf8"));
+const packageTree = json.JsonFormat.parse(src.PackageTree.json(), fs__namespace.readFileSync(manifestPath, "utf8"));
 const resolver = resolve.Resolver.create(packageTree, true);
 patchModule(resolver, require("module"));

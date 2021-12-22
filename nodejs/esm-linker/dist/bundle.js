@@ -210,7 +210,7 @@ class StringJsonFormat {
     }
 }
 
-});var root = createCommonjsModule(function (module, exports) {
+});var src = createCommonjsModule(function (module, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PackageTree = exports.Package = void 0;
 
@@ -238,7 +238,7 @@ exports.Package = Package;
 if (!manifestPath) {
     throw new Error("NODE_PACKAGE_MANIFEST is not set");
 }
-const packageTree = json.JsonFormat.parse(root.PackageTree.json(), fs__namespace.readFileSync(manifestPath, "utf8"));
+const packageTree = json.JsonFormat.parse(src.PackageTree.json(), fs__namespace.readFileSync(manifestPath, "utf8"));
 const resolver = resolve$1.Resolver.create(packageTree, true);
 function resolve(specifier, context, defaultResolve) {
     if (!context.parentURL && path__namespace.extname(specifier) == "") {

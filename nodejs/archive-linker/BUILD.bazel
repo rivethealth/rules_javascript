@@ -11,7 +11,6 @@ ts_library(
     compiler = "//rules:tsc",
     config = ":tsconfig",
     root = ":root",
-    strip_prefix = "better_rules_javascript/nodejs/archive-linker/src",
     deps = [
         "//commonjs/package:lib",
         "@better_rules_javascript_npm//@types/argparse:lib",
@@ -38,5 +37,5 @@ tsconfig(
 nodejs_binary(
     name = "bin",
     dep = ":lib",
-    main = "main.js",
+    main = "src/main.js",
 )

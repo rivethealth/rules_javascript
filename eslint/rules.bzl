@@ -26,7 +26,7 @@ def configure_eslint(name, dep, config, plugins = [], visibility = None):
     ts_library(
         name = "%s.lib" % name,
         srcs = ["@better_rules_javascript//eslint/linter:src"],
-        strip_prefix = "better_rules_javascript/eslint/linter/src",
+        strip_prefix = "better_rules_javascript/eslint/linter",
         compiler = "@better_rules_javascript//rules:tsc",
         config = ":%s.config" % name,
         deps = [
@@ -47,7 +47,7 @@ def configure_eslint(name, dep, config, plugins = [], visibility = None):
         dep = ":%s.lib" % name,
         global_deps = plugins,
         other_deps = [config],
-        main = "main.js",
+        main = "src/main.js",
         visibility = ["//visibility:private"],
     )
 

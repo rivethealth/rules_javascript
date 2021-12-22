@@ -24,7 +24,6 @@ ts_library(
         "@better_rules_javascript_npm//@types/node:lib",
     ],
     root = ":root",
-    strip_prefix = "better_rules_javascript/npm/yarn-gen/src",
     deps = [
         "@better_rules_javascript_npm//@types/argparse:lib",
         "@better_rules_javascript_npm//@types/semver:lib",
@@ -42,5 +41,5 @@ nodejs_binary(
     env = {
         "_YARN_BIN": "better_rules_javascript/npm/yarn/bin",
     },
-    main = "main.js",
+    main = "src/main.js",
 )

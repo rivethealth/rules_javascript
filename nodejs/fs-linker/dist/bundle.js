@@ -144,7 +144,7 @@ class StringJsonFormat {
 
 });
 
-var root$1 = createCommonjsModule(function (module, exports) {
+var src$1 = createCommonjsModule(function (module, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PackageTree = exports.Package = void 0;
 
@@ -1280,7 +1280,7 @@ exports.createVfs = createVfs;
 
 });
 
-var root = createCommonjsModule(function (module, exports) {
+var src = createCommonjsModule(function (module, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
 
 
@@ -1292,7 +1292,7 @@ const manifestPath = process.env.NODE_FS_PACKAGE_MANIFEST;
 if (!manifestPath) {
     throw new Error("NODE_FS_PACKAGE_MANIFEST is not set");
 }
-const packageTree = json.JsonFormat.parse(root$1.PackageTree.json(), fs__default["default"].readFileSync(manifestPath, "utf8"));
+const packageTree = json.JsonFormat.parse(src$1.PackageTree.json(), fs__default["default"].readFileSync(manifestPath, "utf8"));
 const vfs = (0, _package.createVfs)(packageTree, process.env.NODE_FS_RUNFILES === "true");
 if (process.env.NODE_FS_TRACE === "true") {
     process.stderr.write(vfs.print());
@@ -1302,6 +1302,6 @@ if (process.env.NODE_FS_TRACE === "true") {
 
 });
 
-var index = /*@__PURE__*/getDefaultExportFromCjs(root);
+var index = /*@__PURE__*/getDefaultExportFromCjs(src);
 
 module.exports = index;

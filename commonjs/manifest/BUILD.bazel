@@ -35,7 +35,6 @@ ts_library(
     compiler = "//rules:tsc",
     config = ":tsconfig",
     root = ":root",
-    strip_prefix = "better_rules_javascript/commonjs/manifest/src",
     deps = [
         "//commonjs/package:lib",
         "@better_rules_javascript_npm//@types/argparse:lib",

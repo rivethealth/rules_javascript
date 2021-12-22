@@ -22,7 +22,6 @@ ts_library(
     compiler = "//rules:tsc",
     config = ":tsconfig",
     root = ":root",
-    strip_prefix = "better_rules_javascript/nodejs/module-linker/src",
     deps = [
         "//commonjs/package:lib",
         "@better_rules_javascript_npm//@types/node:lib",

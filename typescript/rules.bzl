@@ -56,6 +56,7 @@ def _ts_simple_library_impl(ctx):
     compiler = ctx.attr.compiler[SimpleTsCompilerInfo]
     output_ = output(ctx.label, ctx.actions)
     prefix = output_prefix(cjs_info.package.path, ctx.label, ctx.actions)
+    strip_prefix = ctx.attr.strip_prefix or default_strip_prefix(ctx)
     if ctx.attr.prefix:
         prefix = "%s/%s" % (prefix, ctx.attr.prefix)
 
@@ -65,10 +66,10 @@ def _ts_simple_library_impl(ctx):
     maps = []
     for src in ctx.files.srcs:
         path = runfile_path(ctx.workspace_name, src)
-        if ctx.attr.strip_prefix:
-            if not path.startswith(ctx.attr.strip_prefix + "/"):
-                fail("Source %s does not have prefix %s" % (path, ctx.attr.strip_prefix))
-            path = path[len(ctx.attr.strip_prefix + "/"):]
+        if strip_prefix:
+            if not path.startswith(strip_prefix + "/"):
+                fail("Source %s does not have prefix %s" % (path, strip_prefix))
+            path = path[len(strip_prefix + "/"):]
         path2 = path if not ctx.attr.prefix else ctx.attr.prefix + "/" + path
         if prefix:
             path = "%s/%s" % (prefix, path)
@@ -299,7 +300,7 @@ def configure_ts_compiler(name, ts, tslib = None, visibility = None):
         compiler = "@better_rules_javascript//rules:simple_tsc",
         root = ":%s.root" % name,
         compiler_options = ["--esModuleInterop", "--lib", "dom,es2019", "--module", "commonjs", "--target", "es2019", "--types", "node"],
-        strip_prefix = "better_rules_javascript/typescript/js-compiler/src",
+        strip_prefix = "better_rules_javascript/typescript/js-compiler",
         deps = [
             ts,
             "@better_rules_javascript//commonjs/package:lib",
@@ -318,7 +319,7 @@ def configure_ts_compiler(name, ts, tslib = None, visibility = None):
         compiler = "@better_rules_javascript//rules:simple_tsc",
         root = ":%s.root" % name,
         compiler_options = ["--esModuleInterop", "--lib", "dom,es2019", "--types", "node"],
-        strip_prefix = "better_rules_javascript/typescript/dts-compiler/src",
+        strip_prefix = "better_rules_javascript/typescript/dts-compiler",
         deps = [
             ts,
             "@better_rules_javascript_npm//argparse:lib",
@@ -337,14 +338,14 @@ def configure_ts_compiler(name, ts, tslib = None, visibility = None):
     )
 
     nodejs_binary(
-        main = "main.js",
+        main = "src/main.js",
         name = "%s.js_bin" % name,
         dep = ":%s.js_lib" % name,
         visibility = ["//visibility:private"],
     )
 
     nodejs_binary(
-        main = "main.js",
+        main = "src/main.js",
         name = "%s.dts_bin" % name,
         dep = ":%s.dts_lib" % name,
         visibility = ["//visibility:private"],
