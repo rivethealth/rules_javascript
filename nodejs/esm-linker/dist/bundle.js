@@ -1,4 +1,4 @@
-'use strict';var path=require('path'),fs=require('fs'),Module=require('module');function _interopDefaultLegacy(e){return e&&typeof e==='object'&&'default'in e?e:{'default':e}}function _interopNamespace(e){if(e&&e.__esModule)return e;var n=Object.create(null);if(e){Object.keys(e).forEach(function(k){if(k!=='default'){var d=Object.getOwnPropertyDescriptor(e,k);Object.defineProperty(n,k,d.get?d:{enumerable:true,get:function(){return e[k]}});}})}n["default"]=e;return Object.freeze(n)}var path__default=/*#__PURE__*/_interopDefaultLegacy(path);var fs__namespace=/*#__PURE__*/_interopNamespace(fs);var Module__default=/*#__PURE__*/_interopDefaultLegacy(Module);function createCommonjsModule(fn, basedir, module) {
+'use strict';Object.defineProperty(exports,'__esModule',{value:true});var path=require('path'),Module=require('module'),fs=require('fs'),url=require('url');function _interopDefaultLegacy(e){return e&&typeof e==='object'&&'default'in e?e:{'default':e}}function _interopNamespace(e){if(e&&e.__esModule)return e;var n=Object.create(null);if(e){Object.keys(e).forEach(function(k){if(k!=='default'){var d=Object.getOwnPropertyDescriptor(e,k);Object.defineProperty(n,k,d.get?d:{enumerable:true,get:function(){return e[k]}});}})}n["default"]=e;return Object.freeze(n)}var path__default=/*#__PURE__*/_interopDefaultLegacy(path);var path__namespace=/*#__PURE__*/_interopNamespace(path);var Module__default=/*#__PURE__*/_interopDefaultLegacy(Module);var fs__namespace=/*#__PURE__*/_interopNamespace(fs);var url__namespace=/*#__PURE__*/_interopNamespace(url);function createCommonjsModule(fn, basedir, module) {
 	return module = {
 		path: basedir,
 		exports: {},
@@ -45,7 +45,7 @@ class Trie {
 }
 exports.Trie = Trie;
 
-});var resolve = createCommonjsModule(function (module, exports) {
+});var resolve$1 = createCommonjsModule(function (module, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Resolver = void 0;
 
@@ -234,36 +234,31 @@ exports.Package = Package;
     PackageTree.json = json$1;
 })(exports.PackageTree || (exports.PackageTree = {}));
 
-});function resolveFilename(resolver, delegate) {
-    return function (request, parent, isMain, options) {
-        if (Module__default["default"].builtinModules.includes(request) ||
-            !parent ||
-            parent.path === "internal" ||
-            request == "." ||
-            request == ".." ||
-            request.startsWith("./") ||
-            request.startsWith("../") ||
-            request.startsWith("/")) {
-            return delegate.apply(this, arguments);
-        }
-        const resolved = resolver.resolve(parent.path, request);
-        const [base, packageName] = resolved.package.split("/node_modules/", 2);
-        request = packageName;
-        if (resolved.inner) {
-            request = `${request}/${resolved.inner}`;
-        }
-        const newParent = new Module__default["default"](`${base}/_`, parent);
-        newParent.filename = newParent.id;
-        newParent.paths = [`${base}/node_modules`];
-        return delegate.call(this, request, newParent, isMain, options);
-    };
-}
-function patchModule(resolver, delegate) {
-    delegate._resolveFilename = resolveFilename(resolver, delegate._resolveFilename);
-}const manifestPath = process.env.NODE_PACKAGE_MANIFEST;
+});const manifestPath = process.env.NODE_PACKAGE_MANIFEST;
 if (!manifestPath) {
     throw new Error("NODE_PACKAGE_MANIFEST is not set");
 }
 const packageTree = json.JsonFormat.parse(root.PackageTree.json(), fs__namespace.readFileSync(manifestPath, "utf8"));
-const resolver = resolve.Resolver.create(packageTree, true);
-patchModule(resolver, require("module"));
+const resolver = resolve$1.Resolver.create(packageTree, true);
+function resolve(specifier, context, defaultResolve) {
+    if (!context.parentURL && path__namespace.extname(specifier) == "") {
+        return { format: "commonjs", url: specifier };
+    }
+    const parent = context.parentURL !== undefined ? new URL(context.parentURL) : undefined;
+    if (Module__default["default"].builtinModules.includes(specifier) ||
+        (parent === null || parent === void 0 ? void 0 : parent.protocol) !== "file:" ||
+        specifier == "." ||
+        specifier == ".." ||
+        specifier.startsWith("./") ||
+        specifier.startsWith("../") ||
+        specifier.startsWith("/")) {
+        return defaultResolve(specifier, context, defaultResolve);
+    }
+    const resolved = resolver.resolve(parent.pathname, specifier);
+    const [base, packageName] = resolved.package.split("/node_modules/", 2);
+    specifier = packageName;
+    if (resolved.inner) {
+        specifier = `${specifier}/${resolved.inner}`;
+    }
+    return defaultResolve(specifier, { ...context, parentURL: url__namespace.pathToFileURL(`${base}/_`) }, defaultResolve);
+}exports.resolve=resolve;

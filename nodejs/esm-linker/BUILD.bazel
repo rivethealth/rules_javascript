@@ -22,7 +22,7 @@ ts_library(
     compiler = "//rules:tsc",
     config = ":tsconfig",
     root = ":root",
-    strip_prefix = "better_rules_javascript/nodejs/module-linker/src",
+    strip_prefix = "better_rules_javascript/nodejs/esm-linker/src",
     deps = [
         "//commonjs/package:lib",
         "@better_rules_javascript_npm//@types/node:lib",
@@ -47,7 +47,7 @@ js_file(
 
 cjs_root(
     name = "root",
-    package_name = "@better-rules-javascript/nodejs-module-linker",
+    package_name = "@better-rules-javascript/nodejs-esm-linker",
     descriptors = ["package.json"],
 )
 

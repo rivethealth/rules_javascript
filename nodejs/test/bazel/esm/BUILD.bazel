@@ -1,0 +1,34 @@
+load("@better_rules_javascript//commonjs:rules.bzl", "cjs_root")
+load("@better_rules_javascript//javascript:rules.bzl", "js_library")
+load("@better_rules_javascript//nodejs:rules.bzl", "nodejs_binary")
+
+cjs_root(
+    name = "main_root",
+    package_name = "@better-rules-javascript-test/esm-main",
+    descriptors = ["package.json"],
+)
+
+cjs_root(
+    name = "lib_root",
+    package_name = "@better-rules-javascript-test/esm-lib",
+    descriptors = ["package.json"],
+)
+
+js_library(
+    name = "lib",
+    srcs = ["lib.js"],
+    root = ":lib_root",
+)
+
+js_library(
+    name = "main",
+    srcs = ["main.js"],
+    root = ":main_root",
+    deps = [":lib"],
+)
+
+nodejs_binary(
+    name = "bin",
+    dep = ":main",
+    main = "main.js",
+)

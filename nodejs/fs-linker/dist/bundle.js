@@ -1,177 +1,1307 @@
-"use strict";var t=require("fs"),e=require("url"),n=require("path");function r(t){
-return t&&"object"==typeof t&&"default"in t?t:{default:t}}var i=r(t),o=r(e),s=r(n);function a(t){
-return t&&t.__esModule&&Object.prototype.hasOwnProperty.call(t,"default")?t.default:t}function u(t,e,n){return t(n={
-path:e,exports:{},require:function(t,e){return function(){
-throw new Error("Dynamic requires are not currently supported by @rollup/plugin-commonjs")}(null==e&&n.path)}
-},n.exports),n.exports}var c=u((function(t,e){var n;Object.defineProperty(e,"__esModule",{value:!0}),
-e.JsonFormat=void 0,(n=e.JsonFormat||(e.JsonFormat={})).parse=function(t,e){return t.fromJson(JSON.parse(e))},
-n.stringify=function(t,e){return JSON.stringify(t.toJson(e))},function(t){t.array=function(t){return new r(t)},
-t.map=function(t,e){return new o(t,e)},t.object=function(t){return new i(t)},t.defer=function(t){return{
-fromJson:e=>t().fromJson(e),toJson:e=>t().toJson(e)}},t.set=function(t){return new s(t)},t.string=function(){
-return new a}}(e.JsonFormat||(e.JsonFormat={}));class r{constructor(t){this.elementFormat=t}fromJson(t){
-return t.map((t=>this.elementFormat.fromJson(t)))}toJson(t){return t.map((t=>this.elementFormat.toJson(t)))}}class i{
-constructor(t){this.format=t}fromJson(t){const e={};for(const n in this.format)e[n]=this.format[n].fromJson(t[n])
-;return e}toJson(t){const e={};for(const n in this.format)e[n]=this.format[n].toJson(t[n]);return e}}class o{
-constructor(t,e){this.keyFormat=t,this.valueFormat=e}fromJson(t){
-return new Map(t.map((({key:t,value:e})=>[this.keyFormat.fromJson(t),this.valueFormat.fromJson(e)])))}toJson(t){
-return[...t.entries()].map((([t,e])=>({key:this.keyFormat.toJson(t),value:this.valueFormat.toJson(e)})))}}class s{
-constructor(t){this.format=t}fromJson(t){return new Set(t.map((t=>this.format.fromJson(t))))}toJson(t){
-return[...t].map((t=>this.format.toJson(t)))}}class a{fromJson(t){return t}toJson(t){return t}}})),l=u((function(t,e){
-Object.defineProperty(e,"__esModule",{value:!0}),e.PackageTree=e.Package=void 0;class n{}e.Package=n,function(t){
-t.json=function(){return c.JsonFormat.object({id:c.JsonFormat.string(),
-deps:c.JsonFormat.map(c.JsonFormat.string(),c.JsonFormat.string()),path:c.JsonFormat.string()})}
-}(n=e.Package||(e.Package={})),(e.PackageTree||(e.PackageTree={})).json=function(){
-return c.JsonFormat.map(c.JsonFormat.string(),n.json())}})),h=u((function(t,e){var n
-;Object.defineProperty(e,"__esModule",{value:!0}),e.WrapperVfs=e.NoopVfs=e.VfsImpl=e.VfsNode=void 0,function(t){
-t.PATH=Symbol("PATH"),t.SYMLINK=Symbol("SYMLINK")}(n=e.VfsNode||(e.VfsNode={}));e.VfsImpl=class{constructor(t){
-this.root=t}entry(t){t:for(;;){if(!t.startsWith("/"))throw new Error("Path must be absolute")
-;const e=t.split("/").slice(1);let r,i=this.root;for(r=0;r<e.length;r++){if(i.type===n.SYMLINK){
-t=[i.path,...e.slice(r)].join("/");continue t}const o=i.extraChildren.get(e[r]);if(!o)break;i=o}if(r<e.length){
-if(void 0===i.path)return;return{type:n.PATH,extraChildren:new Map,hardenSymlinks:i.hardenSymlinks,
-path:[i.path,...e.slice(r)].join("/")}}return i}}realpath(t){t:for(;;){
-if(!t.startsWith("/"))throw new Error("Path must be absolute");const e=t.split("/").slice(1);let r,i=this.root
-;for(r=0;r<e.length;r++){if(i.type===n.SYMLINK){t=[i.path,...e.slice(r)].join("/");continue t}
-const o=i.extraChildren.get(e[r]);if(!o)break;i=o}if(i.type!==n.SYMLINK){if(r<e.length){if(void 0===i.path)return
-;return{hardenSymlinks:i.hardenSymlinks,path:[i.path,...e.slice(r)].join("/")}}return{hardenSymlinks:i.hardenSymlinks,
-path:"/"+e.join("/")}}t=[i.path,...e.slice(r)].join("/")}}resolve(t){t:for(;;){
-if(!t.startsWith("/"))throw new Error("Path must be absolute");const e=t.split("/").slice(1);let r,i=this.root
-;for(r=0;r<e.length;r++){if(i.type===n.SYMLINK){t=[i.path,...e.slice(r)].join("/");continue t}
-const o=i.extraChildren.get(e[r]);if(!o)break;i=o}if(i.type!==n.SYMLINK){if(r<e.length){if(void 0===i.path)return
-;return{type:n.PATH,extraChildren:new Map,hardenSymlinks:i.hardenSymlinks,path:[i.path,...e.slice(r)].join("/")}}
-return i}t=[i.path,...e.slice(r)].join("/")}}print(){return function t(e,r,i){switch(r.type){case n.PATH:{let n
-;r.path?(n=`${i}${e}/ (${r.path})`,r.hardenSymlinks&&(n+=" nolinks"),n+="\n"):n=`${i}${e}/\n`
-;for(const[e,o]of r.extraChildren.entries())n+=t(e,o,i+"  ");return n}case n.SYMLINK:return`${i}${e} -> ${r.path}\n`}
-}("",this.root,"")}};class r{entry(t){return{type:n.PATH,extraChildren:new Map,hardenSymlinks:!1,path:t}}realpath(t){
-return{hardenSymlinks:!1,path:t}}resolve(t){return{type:n.PATH,extraChildren:new Map,hardenSymlinks:!1,path:t}}}
-e.NoopVfs=r;e.WrapperVfs=class{constructor(){this.delegate=new r}entry(t){return this.delegate.entry(t)}realpath(t){
-return this.delegate.realpath(t)}resolve(t){return this.delegate.resolve(t)}}})),f=u((function(t,e){
-Object.defineProperty(e,"__esModule",{value:!0}),e.patchFs=e.replaceArguments=e.stringPath=void 0;class n{
-constructor(t){this.entry=t,this.atime=new Date(0),this.atimeMs=0n,this.atimeNs=0n,this.birthtime=new Date(0),
-this.birthtimeMs=0n,this.birthtimeNs=0n,this.blksize=1024n,this.blocks=1n,this.ctime=new Date(0),this.ctimeMs=0n,
-this.ctimeNs=0n,this.dev=0n,this.gid=0n,this.ino=0n,this.mode=493n,this.mtime=new Date(0),this.mtimeMs=0n,
-this.mtimeNs=0n,this.nlink=1n,this.rdev=0n,this.size=1024n,this.uid=0n}isFile(){return!1}isDirectory(){
-return this.entry.type===h.VfsNode.PATH}isBlockDevice(){return!1}isCharacterDevice(){return!1}isSymbolicLink(){
-return this.entry.type===h.VfsNode.PATH}isFIFO(){return!1}isSocket(){return!1}}class r{constructor(t){this.entry=t,
-this.atime=new Date(0),this.atimeMs=0,this.birthtime=new Date(0),this.birthtimeMs=0,this.blksize=1024,this.blocks=1,
-this.ctime=new Date(0),this.ctimeMs=0,this.dev=0,this.gid=0,this.ino=0,this.mode=493,this.mtime=new Date(0),
-this.mtimeMs=0,this.nlink=1,this.rdev=0,this.size=1024,this.uid=0}isFile(){return!1}isDirectory(){
-return this.entry.type===h.VfsNode.PATH}isBlockDevice(){return!1}isCharacterDevice(){return!1}isSymbolicLink(){
-return this.entry.type===h.VfsNode.SYMLINK}isFIFO(){return!1}isSocket(){return!1}}class a{constructor(t,e){this.dir=t,
-this.delegate=e,this.extraIterator=void 0}[Symbol.asyncIterator](){return{next:async()=>{const t=await this.read()
-;return{done:null===t,value:t}},[Symbol.asyncIterator](){return this}}}close(t){
-return void 0!==this.delegate?this.delegate.close.apply(this.delegate,arguments):t?void setImmediate((()=>t(void 0))):Promise.resolve()
-}closeSync(){if(void 0!==this.delegate)return this.delegate.closeSync.apply(this.delegate,arguments)}read(t){
-if(!t)return(async()=>{if(void 0!==this.delegate&&void 0===this.extraIterator){
-const t=await this.delegate.read.apply(this.delegate,arguments);if(null!==t)return t}
-void 0===this.extraIterator&&(this.extraIterator=this.dir.extraChildren.entries());const t=this.extraIterator.next()
-;return t.done?null:u(t.value[0],t.value[1])})()
-;if(void 0!==this.delegate&&void 0===this.extraIterator)this.delegate.read(((e,n)=>{null===e&&null===n||t(e,n),
-this.extraIterator=this.dir.extraChildren.entries();const r=this.extraIterator.next()
-;r.done?t(null,null):t(null,u(r.value[0],r.value[1]))}));else{
-void 0===this.extraIterator&&(this.extraIterator=this.dir.extraChildren.entries());const e=this.extraIterator.next()
-;e.done?setImmediate((()=>t(null,null))):setImmediate((()=>t(null,u(e.value[0],e.value[1]))))}}readSync(){
-if(void 0!==this.delegate&&void 0===this.extraIterator){const t=this.delegate.readSync.apply(this.delegate,arguments)
-;if(null!==t)return t}void 0===this.extraIterator&&(this.extraIterator=this.dir.extraChildren.entries())
-;const t=this.extraIterator.next();return t.done?null:u(t.value[0],t.value[1])}}function u(t,e){switch(e.type){
-case h.VfsNode.PATH:return new i.default.Dirent(t,i.default.constants.UV_DIRENT_DIR);case h.VfsNode.SYMLINK:
-return new i.default.Dirent(t,i.default.constants.UV_DIRENT_LINK)}}function c(t){
-if(t instanceof Buffer&&(t=t.toString()),t instanceof o.default.URL){
-if("file:"!==t.protocol)throw new Error(`Invalid protocol: ${t.protocol}`);t=(0,o.default.fileURLToPath)(t)}
-return s.default.resolve(t)}function l(t,e,n){return function(){const r=[...arguments];for(const e of n){
-const n=c(r[e]),i=t.resolve(n);void 0!==i.path&&n!==i.path&&(r[e]=i.path)}return e.apply(this,r)}}function f(t,e){
-return function(o,s,a){const u=c(o),l=t.entry(u);if("function"==typeof s&&(a=s,s={}),
-l)if(l.type===h.VfsNode.SYMLINK||void 0===l.path)setImmediate((()=>a(null,s.bigint?new n(l):new r(l))));else if(l.hardenSymlinks)return void i.default.stat(l.path,s,a)
-;return l&&l.path,e.apply(this,arguments)}}function p(t,e){return function(o,s){const a=c(o),u=t.entry(a);if(u){
-if(u.type===h.VfsNode.SYMLINK||void 0===u.path)return s.bigint?new n(u):new r(u)
-;if(u.hardenSymlinks)return i.default.statSync(u.path,s)}return u&&u.path,e.apply(this,arguments)}}function d(t,e){
-return function(n,r,i){const o=c(n);"function"==typeof r?(i=r,r={}):r="string"==typeof r?{encoding:r}:{}
-;const s=t.entry(o)
-;if(s&&s.type===h.VfsNode.SYMLINK)return void("buffer"===r.encoding?setImmediate((()=>i(null,Buffer.from(s.path)))):setImmediate((()=>i(null,s.path))))
-;const a=[...arguments];return s&&o!==s.path&&(a[0]=s.path),e.apply(this,a)}}function y(t,e){return function(n,r){
-const i=c(n);r="string"==typeof r?{encoding:r}:{};const o=t.entry(i)
-;if(o&&o.type===h.VfsNode.SYMLINK)return"buffer"===r.encoding?Buffer.from(o.path):o.path;const s=[...arguments]
-;return o&&i!==o.path&&(s[0]=o.path),e.apply(this,s)}}e.stringPath=c,e.replaceArguments=l,e.patchFs=function(t,e){
-e.access=function(t,e){return l(t,e,[0])}(t,e.access),e.accessSync=function(t,e){return l(t,e,[0])}(t,e.accessSync),
-e.appendFile=function(t,e){return l(t,e,[0])}(t,e.appendFile),e.appendFileSync=function(t,e){return l(t,e,[0])
-}(t,e.appendFileSync),e.chmod=function(t,e){return l(t,e,[0])}(t,e.chmod),e.chmodSync=function(t,e){return l(t,e,[0])
-}(t,e.chmodSync),e.chown=function(t,e){return l(t,e,[0])}(t,e.chown),e.chownSync=function(t,e){return l(t,e,[0])
-}(t,e.chownSync),e.copyFile=function(t,e){return l(t,e,[0,1])}(t,e.copyFile),e.copyFileSync=function(t,e){
-return l(t,e,[0,1])}(t,e.copyFileSync),e.createReadStream=function(t,e){return l(t,e,[0])}(t,e.createReadStream),
-e.createWriteStream=function(t,e){return l(t,e,[0])}(t,e.createWriteStream),e.exists=function(t,e){return l(t,e,[0])
-}(t,e.exists),e.existsSync=function(t,e){return l(t,e,[0])}(t,e.existsSync),e.link=function(t,e){return l(t,e,[0,1])
-}(t,e.link),e.linkSync=function(t,e){return l(t,e,[0,1])}(t,e.linkSync),e.lstat=f(t,e.lstat),
-e.lstatSync=p(t,e.lstatSync),e.mkdir=function(t,e){return l(t,e,[0])}(t,e.mkdir),e.mkdirSync=function(t,e){
-return l(t,e,[0])}(t,e.mkdirSync),e.open=function(t,e){return function(n){const r=c(n),i=t.resolve(r),o=[...arguments]
-;return i&&void 0===i.path||r!==i.path&&(o[0]=i.path),e.apply(this,o)}}(t,e.open),e.openSync=function(t,e){
-return function(n){const r=c(n),i=t.resolve(r),o=[...arguments];return i&&void 0===i.path||r!==i.path&&(o[0]=i.path),
-e.apply(this,o)}}(t,e.openSync),e.opendir=function(t,e){return function(n,r,i){const o=c(n);"function"==typeof r&&(i=r)
-;const s=t.resolve(o);if(s&&void 0===s.path)return void setImmediate((()=>i(null,new a(s,void 0))))
-;const u=[...arguments]
-;return s&&o!==s.path&&(u[0]=s.path),s&&s.extraChildren.size&&(u["function"==typeof u[1]?1:2]=function(t,e){
-if(t)return i.apply(this,arguments);i(null,new a(s,e))}),e.apply(this,u)}}(t,e.opendir),e.opendirSync=function(t,e){
-return function(n){const r=c(n),i=t.resolve(r);if(i&&void 0===i.path)return new a(i,void 0);const o=[...arguments]
-;i&&r!==i.path&&(o[0]=i.path);const s=e.apply(this,o);return i&&i.extraChildren.size?new a(i,s):s}}(t,e.opendirSync),
-e.readdir=function(t,e){return function(n,r,o){const s=c(n);"function"==typeof r?(o=r,r={}):"string"==typeof r?r={
-encoding:r}:null==r&&(r={});const a=t.resolve(s);let l=[]
-;if(a&&a.extraChildren.size&&(l=r.withFileTypes?[...a.extraChildren.entries()].map((([t,e])=>u(t,e))):"buffer"===r.encoding?[...a.extraChildren.keys()].map((t=>Buffer.from(t))):[...a.extraChildren.keys()]),
-a&&void 0===a.path)return void setImmediate((()=>o(null,l)));const h=[...arguments];return a&&s!==a.path&&(h[0]=a.path),
-h["function"==typeof h[1]?1:2]=function(t,e){if(t)return o.apply(this,arguments)
-;r.withFileTypes&&a.hardenSymlinks&&(e=e.map((t=>{if(t.isSymbolicLink())try{
-return i.default.statSync(`${s}/${t.name}`).isDirectory()?new i.default.Dirent(t.name,i.default.constants.UV_DIRENT_DIR):new i.default.Dirent(t.name,i.default.constants.UV_DIRENT_FILE)
-}catch{}return t}))),o(null,[...e,...l])},e.apply(this,h)}}(t,e.readdir),e.readdirSync=function(t,e){
-return function(n,r){const o=c(n);"string"==typeof r?r={encoding:r}:null==r&&(r={});const s=t.resolve(o);let a=[]
-;if(s&&s.extraChildren.size&&(a=r.withFileTypes?[...s.extraChildren.entries()].map((([t,e])=>u(t,e))):"buffer"===r.encoding?[...s.extraChildren.keys()].map((t=>Buffer.from(t))):[...s.extraChildren.keys()]),
-s&&void 0===s.path)return a;const l=[...arguments];s&&o!==s.path&&(l[0]=s.path);let h=e.apply(this,l)
-;return r.withFileTypes&&s.hardenSymlinks&&(h=h.map((t=>{if(t.isSymbolicLink())try{
-return i.default.statSync(`${o}/${t.name}`).isDirectory()?new i.default.Dirent(t.name,i.default.constants.UV_DIRENT_DIR):new i.default.Dirent(t.name,i.default.constants.UV_DIRENT_FILE)
-}catch{}return t}))),a.length?[...h,...a]:h}}(t,e.readdirSync),e.readFile=function(t,e){return l(t,e,[0])
-}(t,e.readFile),e.readFileSync=function(t,e){return l(t,e,[0])}(t,e.readFileSync),e.readlink=d(t,e.readlink),
-e.readlinkSync=y(t,e.readlinkSync),e.realpath=function(t,e){function n(n,r,i){const o=c(n);"function"==typeof r&&(i=r)
-;const s=t.realpath(o),a=[...arguments]
-;s&&o!=s.path&&(a[0]=s.path),s?.hardenSymlinks&&(a["function"==typeof a[1]?1:2]=function(t){
-if(t)return i.apply(this,arguments);i(null,"buffer"===r?Buffer.from(s.path):s.path)}),e.apply(this,a)}
-return n.native=function(n,r,i){const o=c(n);"function"==typeof r&&(i=r);const s=t.realpath(o),a=[...arguments]
-;s&&o!=s.path&&(a[0]=s.path),s?.hardenSymlinks&&(a["function"==typeof a[1]?1:2]=function(t){
-if(t)return i.apply(this,arguments);i(null,"buffer"===r?Buffer.from(s.path):s.path)}),e.native.apply(this,a)},n
-}(t,e.realpath),e.realpathSync=function(t,e){function n(n,r){const i=c(n),o=t.realpath(i),s=[...arguments]
-;o&&i!=o.path&&(s[0]=o.path);const a=e.apply(this,s);return o?.hardenSymlinks?"buffer"===r?Buffer.from(o.path):o.path:a}
-return n.native=function(n,r){const i=c(n),o=t.realpath(i),s=[...arguments];o&&i!=o.path&&(s[0]=o.path)
-;const a=e.native.apply(this,s);return o?.hardenSymlinks?"buffer"===r?Buffer.from(o.path):o.path:a},n
-}(t,e.realpathSync),e.rename=function(t,e){return l(t,e,[0,1])}(t,e.rename),e.renameSync=function(t,e){
-return l(t,e,[0,1])}(t,e.renameSync),e.rmdir=function(t,e){return l(t,e,[0])}(t,e.rmdir),e.rmdirSync=function(t,e){
-return l(t,e,[0])}(t,e.rmdirSync),e.rm=function(t,e){return l(t,e,[0])}(t,e.rm),e.rmSync=function(t,e){return l(t,e,[0])
-}(t,e.rmSync),e.stat=function(t,e){return function(i,o,s){const a=c(i),u=t.resolve(a);if("function"==typeof o&&(s=o,
-o={}),u&&void 0===u.path)return void setImmediate((()=>s(null,o.bigint?new n(u):new r(u))));const l=[...arguments]
-;return u&&a!==u.path&&(l[0]=u.path),e.apply(this,l)}}(t,e.stat),e.statSync=function(t,e){return function(i,o){
-const s=c(i),a=t.resolve(s);if(a&&void 0===a.path)return o?.bigint?new n(a):new r(a);const u=[...arguments]
-;return a&&s!==a.path&&(u[0]=a.path),e.apply(this,u)}}(t,e.statSync),e.symlink=function(t,e){return l(t,e,[0])
-}(t,e.symlink),e.symlinkSync=function(t,e){return l(t,e,[0])}(t,e.symlinkSync),e.truncate=function(t,e){
-return l(t,e,[0])}(t,e.truncate),e.truncateSync=function(t,e){return l(t,e,[0])}(t,e.truncateSync),
-e.unlink=function(t,e){return l(t,e,[0])}(t,e.unlink),e.unlinkSync=function(t,e){return l(t,e,[0])}(t,e.unlinkSync),
-e.utimes=function(t,e){return l(t,e,[0])}(t,e.utimes),e.utimesSync=function(t,e){return l(t,e,[0])}(t,e.unlinkSync),
-e.writeFile=function(t,e){return l(t,e,[0])}(t,e.writeFile),e.writeFileSync=function(t,e){return l(t,e,[0])
-}(t,e.writeFileSync)}})),p=u((function(t,e){Object.defineProperty(e,"__esModule",{value:!0}),e.patchFsPromises=void 0,
-e.patchFsPromises=function(t,e){e.access=function(t,e){return(0,f.replaceArguments)(t,e,[0])
-}(t,i.default.promises.access),e.appendFile=function(t,e){return(0,f.replaceArguments)(t,e,[0])
-}(t,i.default.promises.appendFile),e.chmod=function(t,e){return(0,f.replaceArguments)(t,e,[0])}(t,e.chmod),
-e.chown=function(t,e){return(0,f.replaceArguments)(t,e,[0])}(t,e.chown),e.copyFile=function(t,e){return(0,
-f.replaceArguments)(t,e,[0,1])}(t,e.copyFile),e.cp=function(t,e){return(0,f.replaceArguments)(t,e,[0,1])}(t,e.cp),
-e.lutimes=function(t,e){return(0,f.replaceArguments)(t,e,[0])}(t,e.lutimes)}})),d=u((function(t,e){
-Object.defineProperty(e,"__esModule",{value:!0}),e.createVfs=void 0;class n extends Error{}function r(t,e){
-const n=e.split("/").slice(1);for(let e=0;e<n.length;e++){let r=t.extraChildren.get(n[e]);r||(r={type:h.VfsNode.PATH,
-hardenSymlinks:!1,extraChildren:new Map,path:"/"+n.slice(0,e+1).join("/")},t.extraChildren.set(n[e],r)),t=r}
-return t.hardenSymlinks=!0,t}function i(t,e,r){const i=e.split("/");for(let e=0;e<i.length-1;e++){
-let r=t.extraChildren.get(i[e]);if(r){if(r.type!==h.VfsNode.PATH)throw new n}else r={type:h.VfsNode.PATH,
-hardenSymlinks:!1,extraChildren:new Map,path:void 0},t.extraChildren.set(i[e],r);t=r}t.extraChildren.set(i[i.length-1],{
-type:h.VfsNode.SYMLINK,path:r})}e.createVfs=function(t,e){
-const o=t=>s.default.resolve(e?`${process.env.RUNFILES_DIR}/${t}`:t),a={type:h.VfsNode.PATH,hardenSymlinks:!1,
-extraChildren:new Map,path:"/"};for(const[e,s]of t.entries()){const u=r(a,o(s.path)),c={type:h.VfsNode.PATH,
-hardenSymlinks:!1,extraChildren:new Map,path:void 0};u.extraChildren.set("node_modules",c);for(const[r,a]of s.deps)try{
-i(c,r,o(t.get(a).path))}catch(t){if(!(t instanceof n))throw t
-;throw new Error(`Dependency "${r}" of "${e}" conflicts with another`)}}return new h.VfsImpl(a)}})),y=u((function(t,e){
-Object.defineProperty(e,"__esModule",{value:!0});const n=process.env.NODE_FS_PACKAGE_MANIFEST
-;if(!n)throw new Error("NODE_FS_PACKAGE_MANIFEST is not set")
-;const r=c.JsonFormat.parse(l.PackageTree.json(),i.default.readFileSync(n,"utf8")),o=(0,
-d.createVfs)(r,"true"===process.env.NODE_FS_RUNFILES)
-;"true"===process.env.NODE_FS_TRACE&&process.stderr.write(o.print()),(0,f.patchFs)(o,i.default),(0,
-p.patchFsPromises)(o,i.default.promises)})),m=a(y);module.exports=m;
+'use strict';
+
+var fs = require('fs');
+var url_1 = require('url');
+var path = require('path');
+
+function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
+
+var fs__default = /*#__PURE__*/_interopDefaultLegacy(fs);
+var url_1__default = /*#__PURE__*/_interopDefaultLegacy(url_1);
+var path__default = /*#__PURE__*/_interopDefaultLegacy(path);
+
+function getDefaultExportFromCjs (x) {
+	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
+}
+
+function createCommonjsModule(fn, basedir, module) {
+	return module = {
+		path: basedir,
+		exports: {},
+		require: function (path, base) {
+			return commonjsRequire(path, (base === undefined || base === null) ? module.path : base);
+		}
+	}, fn(module, module.exports), module.exports;
+}
+
+function commonjsRequire () {
+	throw new Error('Dynamic requires are not currently supported by @rollup/plugin-commonjs');
+}
+
+var json = createCommonjsModule(function (module, exports) {
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.JsonFormat = void 0;
+(function (JsonFormat) {
+    function parse(format, string) {
+        return format.fromJson(JSON.parse(string));
+    }
+    JsonFormat.parse = parse;
+    function stringify(format, value) {
+        return JSON.stringify(format.toJson(value));
+    }
+    JsonFormat.stringify = stringify;
+})(exports.JsonFormat || (exports.JsonFormat = {}));
+(function (JsonFormat) {
+    function array(elementFormat) {
+        return new ArrayJsonFormat(elementFormat);
+    }
+    JsonFormat.array = array;
+    function map(keyFormat, valueFormat) {
+        return new MapJsonFormat(keyFormat, valueFormat);
+    }
+    JsonFormat.map = map;
+    function object(format) {
+        return new ObjectJsonFormat(format);
+    }
+    JsonFormat.object = object;
+    function defer(format) {
+        return {
+            fromJson(json) {
+                return format().fromJson(json);
+            },
+            toJson(value) {
+                return format().toJson(value);
+            },
+        };
+    }
+    JsonFormat.defer = defer;
+    function set(format) {
+        return new SetJsonFormat(format);
+    }
+    JsonFormat.set = set;
+    function string() {
+        return new StringJsonFormat();
+    }
+    JsonFormat.string = string;
+})(exports.JsonFormat || (exports.JsonFormat = {}));
+class ArrayJsonFormat {
+    constructor(elementFormat) {
+        this.elementFormat = elementFormat;
+    }
+    fromJson(json) {
+        return json.map((element) => this.elementFormat.fromJson(element));
+    }
+    toJson(json) {
+        return json.map((element) => this.elementFormat.toJson(element));
+    }
+}
+class ObjectJsonFormat {
+    constructor(format) {
+        this.format = format;
+    }
+    fromJson(json) {
+        const result = {};
+        for (const key in this.format) {
+            result[key] = this.format[key].fromJson(json[key]);
+        }
+        return result;
+    }
+    toJson(value) {
+        const json = {};
+        for (const key in this.format) {
+            json[key] = this.format[key].toJson(value[key]);
+        }
+        return json;
+    }
+}
+class MapJsonFormat {
+    constructor(keyFormat, valueFormat) {
+        this.keyFormat = keyFormat;
+        this.valueFormat = valueFormat;
+    }
+    fromJson(json) {
+        return new Map(json.map(({ key, value }) => [
+            this.keyFormat.fromJson(key),
+            this.valueFormat.fromJson(value),
+        ]));
+    }
+    toJson(value) {
+        return [...value.entries()].map(([key, value]) => ({
+            key: this.keyFormat.toJson(key),
+            value: this.valueFormat.toJson(value),
+        }));
+    }
+}
+class SetJsonFormat {
+    constructor(format) {
+        this.format = format;
+    }
+    fromJson(json) {
+        return new Set(json.map((element) => this.format.fromJson(element)));
+    }
+    toJson(value) {
+        return [...value].map((element) => this.format.toJson(element));
+    }
+}
+class StringJsonFormat {
+    fromJson(json) {
+        return json;
+    }
+    toJson(value) {
+        return value;
+    }
+}
+
+});
+
+var root$1 = createCommonjsModule(function (module, exports) {
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.PackageTree = exports.Package = void 0;
+
+class Package {
+}
+exports.Package = Package;
+(function (Package) {
+    function json$1() {
+        return json.JsonFormat.object({
+            id: json.JsonFormat.string(),
+            deps: json.JsonFormat.map(json.JsonFormat.string(), json.JsonFormat.string()),
+            path: json.JsonFormat.string(),
+        });
+    }
+    Package.json = json$1;
+})(Package = exports.Package || (exports.Package = {}));
+(function (PackageTree) {
+    function json$1() {
+        return json.JsonFormat.map(json.JsonFormat.string(), Package.json());
+    }
+    PackageTree.json = json$1;
+})(exports.PackageTree || (exports.PackageTree = {}));
+
+});
+
+var vfs = createCommonjsModule(function (module, exports) {
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.WrapperVfs = exports.NoopVfs = exports.VfsImpl = exports.VfsNode = void 0;
+var VfsNode;
+(function (VfsNode) {
+    VfsNode.PATH = Symbol("PATH");
+    VfsNode.SYMLINK = Symbol("SYMLINK");
+})(VfsNode = exports.VfsNode || (exports.VfsNode = {}));
+class VfsImpl {
+    constructor(root) {
+        this.root = root;
+    }
+    entry(path) {
+        loop: while (true) {
+            if (!path.startsWith("/")) {
+                throw new Error("Path must be absolute");
+            }
+            const parts = path.split("/").slice(1);
+            let node = this.root;
+            let i;
+            for (i = 0; i < parts.length; i++) {
+                if (node.type === VfsNode.SYMLINK) {
+                    path = [node.path, ...parts.slice(i)].join("/");
+                    continue loop;
+                }
+                const newNode = node.extraChildren.get(parts[i]);
+                if (!newNode) {
+                    break;
+                }
+                node = newNode;
+            }
+            if (i < parts.length) {
+                if (node.path === undefined) {
+                    return undefined;
+                }
+                return {
+                    type: VfsNode.PATH,
+                    extraChildren: new Map(),
+                    hardenSymlinks: node.hardenSymlinks,
+                    path: [node.path, ...parts.slice(i)].join("/"),
+                };
+            }
+            return node;
+        }
+    }
+    realpath(path) {
+        loop: while (true) {
+            if (!path.startsWith("/")) {
+                throw new Error("Path must be absolute");
+            }
+            const parts = path.split("/").slice(1);
+            let node = this.root;
+            let i;
+            for (i = 0; i < parts.length; i++) {
+                if (node.type === VfsNode.SYMLINK) {
+                    path = [node.path, ...parts.slice(i)].join("/");
+                    continue loop;
+                }
+                const newNode = node.extraChildren.get(parts[i]);
+                if (!newNode) {
+                    break;
+                }
+                node = newNode;
+            }
+            if (node.type === VfsNode.SYMLINK) {
+                path = [node.path, ...parts.slice(i)].join("/");
+                continue loop;
+            }
+            if (i < parts.length) {
+                if (node.path === undefined) {
+                    return undefined;
+                }
+                return {
+                    hardenSymlinks: node.hardenSymlinks,
+                    path: [node.path, ...parts.slice(i)].join("/"),
+                };
+            }
+            return {
+                hardenSymlinks: node.hardenSymlinks,
+                path: "/" + parts.join("/"),
+            };
+        }
+    }
+    /**
+     * Return node representing file path
+     */
+    resolve(path) {
+        loop: while (true) {
+            if (!path.startsWith("/")) {
+                throw new Error("Path must be absolute");
+            }
+            const parts = path.split("/").slice(1);
+            let node = this.root;
+            let i;
+            for (i = 0; i < parts.length; i++) {
+                if (node.type === VfsNode.SYMLINK) {
+                    path = [node.path, ...parts.slice(i)].join("/");
+                    continue loop;
+                }
+                const newNode = node.extraChildren.get(parts[i]);
+                if (!newNode) {
+                    break;
+                }
+                node = newNode;
+            }
+            if (node.type === VfsNode.SYMLINK) {
+                path = [node.path, ...parts.slice(i)].join("/");
+                continue loop;
+            }
+            if (i < parts.length) {
+                if (node.path === undefined) {
+                    return undefined;
+                }
+                return {
+                    type: VfsNode.PATH,
+                    extraChildren: new Map(),
+                    hardenSymlinks: node.hardenSymlinks,
+                    path: [node.path, ...parts.slice(i)].join("/"),
+                };
+            }
+            return node;
+        }
+    }
+    print() {
+        return (function print(name, node, prefix) {
+            switch (node.type) {
+                case VfsNode.PATH: {
+                    let result;
+                    if (node.path) {
+                        result = `${prefix}${name}/ (${node.path})`;
+                        if (node.hardenSymlinks) {
+                            result += " nolinks";
+                        }
+                        result += "\n";
+                    }
+                    else {
+                        result = `${prefix}${name}/\n`;
+                    }
+                    for (const [name, child] of node.extraChildren.entries()) {
+                        result += print(name, child, prefix + "  ");
+                    }
+                    return result;
+                }
+                case VfsNode.SYMLINK:
+                    return `${prefix}${name} -> ${node.path}\n`;
+            }
+        })("", this.root, "");
+    }
+}
+exports.VfsImpl = VfsImpl;
+class NoopVfs {
+    entry(path) {
+        return {
+            type: VfsNode.PATH,
+            extraChildren: new Map(),
+            hardenSymlinks: false,
+            path,
+        };
+    }
+    realpath(path) {
+        return {
+            hardenSymlinks: false,
+            path,
+        };
+    }
+    resolve(path) {
+        return {
+            type: VfsNode.PATH,
+            extraChildren: new Map(),
+            hardenSymlinks: false,
+            path,
+        };
+    }
+}
+exports.NoopVfs = NoopVfs;
+class WrapperVfs {
+    constructor() {
+        this.delegate = new NoopVfs();
+    }
+    entry(path) {
+        return this.delegate.entry(path);
+    }
+    realpath(path) {
+        return this.delegate.realpath(path);
+    }
+    resolve(path) {
+        return this.delegate.resolve(path);
+    }
+}
+exports.WrapperVfs = WrapperVfs;
+
+});
+
+var fs_1 = createCommonjsModule(function (module, exports) {
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.patchFs = exports.replaceArguments = exports.stringPath = void 0;
+
+
+
+
+/**
+ * @filedescription Node.js fs implementation of Vfs
+ */
+class LinkBigintStat {
+    constructor(entry) {
+        this.entry = entry;
+        this.atime = new Date(0);
+        this.atimeMs = 0n;
+        this.atimeNs = 0n;
+        this.birthtime = new Date(0);
+        this.birthtimeMs = 0n;
+        this.birthtimeNs = 0n;
+        this.blksize = 1024n;
+        this.blocks = 1n;
+        this.ctime = new Date(0);
+        this.ctimeMs = 0n;
+        this.ctimeNs = 0n;
+        this.dev = 0n;
+        this.gid = 0n;
+        this.ino = 0n;
+        this.mode = 493n;
+        this.mtime = new Date(0);
+        this.mtimeMs = 0n;
+        this.mtimeNs = 0n;
+        this.nlink = 1n;
+        this.rdev = 0n;
+        this.size = 1024n;
+        this.uid = 0n;
+    }
+    isFile() {
+        return false;
+    }
+    isDirectory() {
+        return this.entry.type === vfs.VfsNode.PATH;
+    }
+    isBlockDevice() {
+        return false;
+    }
+    isCharacterDevice() {
+        return false;
+    }
+    isSymbolicLink() {
+        return this.entry.type === vfs.VfsNode.PATH;
+    }
+    isFIFO() {
+        return false;
+    }
+    isSocket() {
+        return false;
+    }
+}
+class LinkStat {
+    constructor(entry) {
+        this.entry = entry;
+        this.atime = new Date(0);
+        this.atimeMs = 0;
+        this.birthtime = new Date(0);
+        this.birthtimeMs = 0;
+        this.blksize = 1024;
+        this.blocks = 1;
+        this.ctime = new Date(0);
+        this.ctimeMs = 0;
+        this.dev = 0;
+        this.gid = 0;
+        this.ino = 0;
+        this.mode = 0o755;
+        this.mtime = new Date(0);
+        this.mtimeMs = 0;
+        this.nlink = 1;
+        this.rdev = 0;
+        this.size = 1024;
+        this.uid = 0;
+    }
+    isFile() {
+        return false;
+    }
+    isDirectory() {
+        return this.entry.type === vfs.VfsNode.PATH;
+    }
+    isBlockDevice() {
+        return false;
+    }
+    isCharacterDevice() {
+        return false;
+    }
+    isSymbolicLink() {
+        return this.entry.type === vfs.VfsNode.SYMLINK;
+    }
+    isFIFO() {
+        return false;
+    }
+    isSocket() {
+        return false;
+    }
+}
+class VfsDir {
+    constructor(dir, delegate) {
+        this.dir = dir;
+        this.delegate = delegate;
+        this.extraIterator = undefined;
+    }
+    [Symbol.asyncIterator]() {
+        return {
+            next: async () => {
+                const value = await this.read();
+                return { done: value === null, value };
+            },
+            [Symbol.asyncIterator]() {
+                return this;
+            },
+        };
+    }
+    close(cb) {
+        if (this.delegate !== undefined) {
+            return this.delegate.close.apply(this.delegate, arguments);
+        }
+        if (cb) {
+            setImmediate(() => cb(undefined));
+        }
+        else {
+            return Promise.resolve();
+        }
+    }
+    closeSync() {
+        if (this.delegate !== undefined) {
+            return this.delegate.closeSync.apply(this.delegate, arguments);
+        }
+    }
+    read(cb) {
+        if (cb) {
+            if (this.delegate !== undefined && this.extraIterator === undefined) {
+                this.delegate.read((err, dirEnt) => {
+                    if (err !== null || dirEnt !== null) {
+                        cb(err, dirEnt);
+                    }
+                    this.extraIterator = this.dir.extraChildren.entries();
+                    const entry = this.extraIterator.next();
+                    if (entry.done) {
+                        cb(null, null);
+                    }
+                    else {
+                        cb(null, dirent(entry.value[0], entry.value[1]));
+                    }
+                });
+            }
+            else {
+                if (this.extraIterator === undefined) {
+                    this.extraIterator = this.dir.extraChildren.entries();
+                }
+                const entry = this.extraIterator.next();
+                if (entry.done) {
+                    setImmediate(() => cb(null, null));
+                }
+                else {
+                    setImmediate(() => cb(null, dirent(entry.value[0], entry.value[1])));
+                }
+            }
+            return;
+        }
+        return (async () => {
+            if (this.delegate !== undefined && this.extraIterator === undefined) {
+                const result = await this.delegate.read.apply(this.delegate, arguments);
+                if (result !== null) {
+                    return result;
+                }
+            }
+            if (this.extraIterator === undefined) {
+                this.extraIterator = this.dir.extraChildren.entries();
+            }
+            const entry = this.extraIterator.next();
+            if (entry.done) {
+                return null;
+            }
+            return dirent(entry.value[0], entry.value[1]);
+        })();
+    }
+    readSync() {
+        if (this.delegate !== undefined && this.extraIterator === undefined) {
+            const result = this.delegate.readSync.apply(this.delegate, arguments);
+            if (result !== null) {
+                return result;
+            }
+        }
+        if (this.extraIterator === undefined) {
+            this.extraIterator = this.dir.extraChildren.entries();
+        }
+        const entry = this.extraIterator.next();
+        if (entry.done) {
+            return null;
+        }
+        return dirent(entry.value[0], entry.value[1]);
+    }
+}
+function dirent(name, entry) {
+    switch (entry.type) {
+        case vfs.VfsNode.PATH:
+            return new fs__default["default"].Dirent(name, fs__default["default"].constants.UV_DIRENT_DIR);
+        case vfs.VfsNode.SYMLINK:
+            return new fs__default["default"].Dirent(name, fs__default["default"].constants.UV_DIRENT_LINK);
+    }
+}
+function stringPath(value) {
+    if (value instanceof Buffer) {
+        value = value.toString();
+    }
+    if (value instanceof url_1__default["default"].URL) {
+        if (value.protocol !== "file:") {
+            throw new Error(`Invalid protocol: ${value.protocol}`);
+        }
+        value = (0, url_1__default["default"].fileURLToPath)(value);
+    }
+    return path__default["default"].resolve(value);
+}
+exports.stringPath = stringPath;
+function replaceArguments(vfs, fn, indicies) {
+    return function () {
+        const args = [...arguments];
+        for (const index of indicies) {
+            const path = stringPath(args[index]);
+            const resolved = vfs.resolve(path);
+            if (resolved.path !== undefined && path !== resolved.path) {
+                args[index] = resolved.path;
+            }
+        }
+        return fn.apply(this, args);
+    };
+}
+exports.replaceArguments = replaceArguments;
+function access(vfs, delegate) {
+    return replaceArguments(vfs, delegate, [0]);
+}
+function accessSync(vfs, delegate) {
+    return replaceArguments(vfs, delegate, [0]);
+}
+function appendFile(vfs, delegate) {
+    return replaceArguments(vfs, delegate, [0]);
+}
+function appendFileSync(vfs, delegate) {
+    return replaceArguments(vfs, delegate, [0]);
+}
+function chmod(vfs, delegate) {
+    return replaceArguments(vfs, delegate, [0]);
+}
+function chmodSync(vfs, delegate) {
+    return replaceArguments(vfs, delegate, [0]);
+}
+function chown(vfs, delegate) {
+    return replaceArguments(vfs, delegate, [0]);
+}
+function chownSync(vfs, delegate) {
+    return replaceArguments(vfs, delegate, [0]);
+}
+function copyFile(vfs, delegate) {
+    return replaceArguments(vfs, delegate, [0, 1]);
+}
+function copyFileSync(vfs, delegate) {
+    return replaceArguments(vfs, delegate, [0, 1]);
+}
+function createReadStream(vfs, delegate) {
+    return replaceArguments(vfs, delegate, [0]);
+}
+function createWriteStream(vfs, delegate) {
+    return replaceArguments(vfs, delegate, [0]);
+}
+function exists(vfs, delegate) {
+    return replaceArguments(vfs, delegate, [0]);
+}
+function existsSync(vfs, delegate) {
+    return replaceArguments(vfs, delegate, [0]);
+}
+function link(vfs, delegate) {
+    return replaceArguments(vfs, delegate, [0, 1]);
+}
+function linkSync(vfs, delegate) {
+    return replaceArguments(vfs, delegate, [0, 1]);
+}
+function lstat(vfs$1, delegate) {
+    return (function (path, options, callback) {
+        const filePath = stringPath(path);
+        const resolved = vfs$1.entry(filePath);
+        if (typeof options === "function") {
+            callback = options;
+            options = {};
+        }
+        if (resolved) {
+            if (resolved.type === vfs.VfsNode.SYMLINK || resolved.path === undefined) {
+                setImmediate(() => callback(null, options.bigint
+                    ? new LinkBigintStat(resolved)
+                    : new LinkStat(resolved)));
+            }
+            else if (resolved.hardenSymlinks) {
+                fs__default["default"].stat(resolved.path, options, callback);
+                return;
+            }
+        }
+        if (resolved && filePath !== resolved.path) ;
+        return delegate.apply(this, arguments);
+    });
+}
+function lstatSync(vfs$1, delegate) {
+    return (function (path, options) {
+        const filePath = stringPath(path);
+        const resolved = vfs$1.entry(filePath);
+        if (resolved) {
+            if (resolved.type === vfs.VfsNode.SYMLINK || resolved.path === undefined) {
+                return options.bigint
+                    ? new LinkBigintStat(resolved)
+                    : new LinkStat(resolved);
+            }
+            else if (resolved.hardenSymlinks) {
+                return fs__default["default"].statSync(resolved.path, options);
+            }
+        }
+        if (resolved && filePath !== resolved.path) ;
+        return delegate.apply(this, arguments);
+    });
+}
+function mkdir(vfs, delegate) {
+    return replaceArguments(vfs, delegate, [0]);
+}
+function mkdirSync(vfs, delegate) {
+    return replaceArguments(vfs, delegate, [0]);
+}
+function open(vfs, delegate) {
+    return function (path) {
+        const filePath = stringPath(path);
+        const resolved = vfs.resolve(filePath);
+        const args = [...arguments];
+        if (resolved && resolved.path === undefined) ;
+        else if (filePath !== resolved.path) {
+            args[0] = resolved.path;
+        }
+        return delegate.apply(this, args);
+    };
+}
+function openSync(vfs, delegate) {
+    return function (path) {
+        const filePath = stringPath(path);
+        const resolved = vfs.resolve(filePath);
+        const args = [...arguments];
+        if (resolved && resolved.path === undefined) ;
+        else if (filePath !== resolved.path) {
+            args[0] = resolved.path;
+        }
+        return delegate.apply(this, args);
+    };
+}
+function opendir(vfs, delegate) {
+    return (function (path, options, callback) {
+        const filePath = stringPath(path);
+        if (typeof options === "function") {
+            callback = options;
+        }
+        const resolved = vfs.resolve(filePath);
+        if (resolved && resolved.path === undefined) {
+            setImmediate(() => callback(null, new VfsDir(resolved, undefined)));
+            return;
+        }
+        const args = [...arguments];
+        if (resolved && filePath !== resolved.path) {
+            args[0] = resolved.path;
+        }
+        if (resolved && resolved.extraChildren.size) {
+            args[typeof args[1] === "function" ? 1 : 2] = function (err, dir) {
+                if (err) {
+                    return callback.apply(this, arguments);
+                }
+                callback(null, new VfsDir(resolved, dir));
+            };
+        }
+        return delegate.apply(this, args);
+    });
+}
+function opendirSync(vfs, delegate) {
+    return function (path) {
+        const filePath = stringPath(path);
+        const resolved = vfs.resolve(filePath);
+        if (resolved && resolved.path === undefined) {
+            return new VfsDir(resolved, undefined);
+        }
+        const args = [...arguments];
+        if (resolved && filePath !== resolved.path) {
+            args[0] = resolved.path;
+        }
+        const dir = delegate.apply(this, args);
+        if (resolved && resolved.extraChildren.size) {
+            return new VfsDir(resolved, dir);
+        }
+        return dir;
+    };
+}
+function readdir(vfs, delegate) {
+    return function (path, options, callback) {
+        const filePath = stringPath(path);
+        if (typeof options === "function") {
+            callback = options;
+            options = {};
+        }
+        else if (typeof options === "string") {
+            options = { encoding: options };
+        }
+        else if (options == null) {
+            options = {};
+        }
+        const resolved = vfs.resolve(filePath);
+        let extra = [];
+        if (resolved && resolved.extraChildren.size) {
+            if (options.withFileTypes) {
+                extra = [...resolved.extraChildren.entries()].map(([name, entry]) => dirent(name, entry));
+            }
+            else if (options.encoding === "buffer") {
+                extra = [...resolved.extraChildren.keys()].map((name) => Buffer.from(name));
+            }
+            else {
+                extra = [...resolved.extraChildren.keys()];
+            }
+        }
+        if (resolved && resolved.path === undefined) {
+            setImmediate(() => callback(null, extra));
+            return;
+        }
+        const args = [...arguments];
+        if (resolved && filePath !== resolved.path) {
+            args[0] = resolved.path;
+        }
+        args[typeof args[1] === "function" ? 1 : 2] = function (err, files) {
+            if (err) {
+                return callback.apply(this, arguments);
+            }
+            if (options.withFileTypes && resolved.hardenSymlinks) {
+                files = files.map((file) => {
+                    if (file.isSymbolicLink()) {
+                        try {
+                            const stat = fs__default["default"].statSync(`${filePath}/${file.name}`);
+                            if (stat.isDirectory()) {
+                                return new fs__default["default"].Dirent(file.name, fs__default["default"].constants.UV_DIRENT_DIR);
+                            }
+                            return new fs__default["default"].Dirent(file.name, fs__default["default"].constants.UV_DIRENT_FILE);
+                        }
+                        catch { }
+                    }
+                    return file;
+                });
+            }
+            callback(null, [...files, ...extra]);
+        };
+        return delegate.apply(this, args);
+    };
+}
+function readdirSync(vfs, delegate) {
+    return function (path, options) {
+        const filePath = stringPath(path);
+        if (typeof options === "string") {
+            options = { encoding: options };
+        }
+        else if (options == null) {
+            options = {};
+        }
+        const resolved = vfs.resolve(filePath);
+        let extra = [];
+        if (resolved && resolved.extraChildren.size) {
+            if (options.withFileTypes) {
+                extra = [...resolved.extraChildren.entries()].map(([name, entry]) => dirent(name, entry));
+            }
+            else if (options.encoding === "buffer") {
+                extra = [...resolved.extraChildren.keys()].map((name) => Buffer.from(name));
+            }
+            else {
+                extra = [...resolved.extraChildren.keys()];
+            }
+        }
+        if (resolved && resolved.path === undefined) {
+            return extra;
+        }
+        const args = [...arguments];
+        if (resolved && filePath !== resolved.path) {
+            args[0] = resolved.path;
+        }
+        let result = delegate.apply(this, args);
+        if (options.withFileTypes && resolved.hardenSymlinks) {
+            result = result.map((file) => {
+                if (file.isSymbolicLink()) {
+                    try {
+                        const stat = fs__default["default"].statSync(`${filePath}/${file.name}`);
+                        if (stat.isDirectory()) {
+                            return new fs__default["default"].Dirent(file.name, fs__default["default"].constants.UV_DIRENT_DIR);
+                        }
+                        return new fs__default["default"].Dirent(file.name, fs__default["default"].constants.UV_DIRENT_FILE);
+                    }
+                    catch { }
+                }
+                return file;
+            });
+        }
+        if (extra.length) {
+            return [...result, ...extra];
+        }
+        return result;
+    };
+}
+function readFile(vfs, delegate) {
+    return replaceArguments(vfs, delegate, [0]);
+}
+function readFileSync(vfs, delegate) {
+    return replaceArguments(vfs, delegate, [0]);
+}
+function readlink(vfs$1, delegate) {
+    return function (path, options, callback) {
+        const filePath = stringPath(path);
+        if (typeof options === "function") {
+            callback = options;
+            options = {};
+        }
+        else if (typeof options === "string") {
+            options = { encoding: options };
+        }
+        else {
+            options = {};
+        }
+        const resolved = vfs$1.entry(filePath);
+        if (resolved && resolved.type === vfs.VfsNode.SYMLINK) {
+            if (options.encoding === "buffer") {
+                setImmediate(() => callback(null, Buffer.from(resolved.path)));
+            }
+            else {
+                setImmediate(() => callback(null, resolved.path));
+            }
+            return;
+        }
+        const args = [...arguments];
+        if (resolved && filePath !== resolved.path) {
+            args[0] = resolved.path;
+        }
+        return delegate.apply(this, args);
+    };
+}
+function readlinkSync(vfs$1, delegate) {
+    return function (path, options) {
+        const filePath = stringPath(path);
+        if (typeof options === "string") {
+            options = { encoding: options };
+        }
+        else {
+            options = {};
+        }
+        const resolved = vfs$1.entry(filePath);
+        if (resolved && resolved.type === vfs.VfsNode.SYMLINK) {
+            if (options.encoding === "buffer") {
+                return Buffer.from(resolved.path);
+            }
+            else {
+                return resolved.path;
+            }
+        }
+        const args = [...arguments];
+        if (resolved && filePath !== resolved.path) {
+            args[0] = resolved.path;
+        }
+        return delegate.apply(this, args);
+    };
+}
+function realpath(vfs, delegate) {
+    function realpath(path, options, callback) {
+        const filePath = stringPath(path);
+        if (typeof options === "function") {
+            callback = options;
+        }
+        const resolved = vfs.realpath(filePath);
+        const args = [...arguments];
+        if (resolved && filePath != resolved.path) {
+            args[0] = resolved.path;
+        }
+        if (resolved?.hardenSymlinks) {
+            args[typeof args[1] === "function" ? 1 : 2] = function (err) {
+                if (err) {
+                    return callback.apply(this, arguments);
+                }
+                else {
+                    callback(null, options === "buffer" ? Buffer.from(resolved.path) : resolved.path);
+                }
+            };
+        }
+        delegate.apply(this, args);
+    }
+    realpath.native = function (path, options, callback) {
+        const filePath = stringPath(path);
+        if (typeof options === "function") {
+            callback = options;
+        }
+        const resolved = vfs.realpath(filePath);
+        const args = [...arguments];
+        if (resolved && filePath != resolved.path) {
+            args[0] = resolved.path;
+        }
+        if (resolved?.hardenSymlinks) {
+            args[typeof args[1] === "function" ? 1 : 2] = function (err) {
+                if (err) {
+                    return callback.apply(this, arguments);
+                }
+                else {
+                    callback(null, options === "buffer" ? Buffer.from(resolved.path) : resolved.path);
+                }
+            };
+        }
+        delegate.native.apply(this, args);
+    };
+    return realpath;
+}
+function realpathSync(vfs, delegate) {
+    function realpathSync(path, options) {
+        const filePath = stringPath(path);
+        const resolved = vfs.realpath(filePath);
+        const args = [...arguments];
+        if (resolved && filePath != resolved.path) {
+            args[0] = resolved.path;
+        }
+        const result = delegate.apply(this, args);
+        if (resolved?.hardenSymlinks) {
+            return options === "buffer" ? Buffer.from(resolved.path) : resolved.path;
+        }
+        return result;
+    }
+    realpathSync.native = function (path, options) {
+        const filePath = stringPath(path);
+        const resolved = vfs.realpath(filePath);
+        const args = [...arguments];
+        if (resolved && filePath != resolved.path) {
+            args[0] = resolved.path;
+        }
+        const result = delegate.native.apply(this, args);
+        if (resolved?.hardenSymlinks) {
+            return options === "buffer" ? Buffer.from(resolved.path) : resolved.path;
+        }
+        return result;
+    };
+    return realpathSync;
+}
+function rename(vfs, delegate) {
+    return replaceArguments(vfs, delegate, [0, 1]);
+}
+function renameSync(vfs, delegate) {
+    return replaceArguments(vfs, delegate, [0, 1]);
+}
+function rm(vfs, delegate) {
+    return replaceArguments(vfs, delegate, [0]);
+}
+function rmSync(vfs, delegate) {
+    return replaceArguments(vfs, delegate, [0]);
+}
+function rmdir(vfs, delegate) {
+    return replaceArguments(vfs, delegate, [0]);
+}
+function rmdirSync(vfs, delegate) {
+    return replaceArguments(vfs, delegate, [0]);
+}
+function stat(vfs, delegate) {
+    return (function (path, options, callback) {
+        const filePath = stringPath(path);
+        const resolved = vfs.resolve(filePath);
+        if (typeof options === "function") {
+            callback = options;
+            options = {};
+        }
+        if (resolved && resolved.path === undefined) {
+            setImmediate(() => callback(null, options.bigint
+                ? new LinkBigintStat(resolved)
+                : new LinkStat(resolved)));
+            return;
+        }
+        const args = [...arguments];
+        if (resolved && filePath !== resolved.path) {
+            args[0] = resolved.path;
+        }
+        return delegate.apply(this, args);
+    });
+}
+function statSync(vfs, delegate) {
+    return (function (path, options) {
+        const filePath = stringPath(path);
+        const resolved = vfs.resolve(filePath);
+        if (resolved && resolved.path === undefined) {
+            return options?.bigint
+                ? new LinkBigintStat(resolved)
+                : new LinkStat(resolved);
+        }
+        const args = [...arguments];
+        if (resolved && filePath !== resolved.path) {
+            args[0] = resolved.path;
+        }
+        return delegate.apply(this, args);
+    });
+}
+function symlink(vfs, delegate) {
+    // difficult to sensibly manipulate target
+    return replaceArguments(vfs, delegate, [0]);
+}
+function symlinkSync(vfs, delegate) {
+    // difficult to sensibly manipulate target
+    return replaceArguments(vfs, delegate, [0]);
+}
+function truncate(vfs, delegate) {
+    return replaceArguments(vfs, delegate, [0]);
+}
+function truncateSync(vfs, delegate) {
+    return replaceArguments(vfs, delegate, [0]);
+}
+function unlink(vfs, delegate) {
+    return replaceArguments(vfs, delegate, [0]);
+}
+function unlinkSync(vfs, delegate) {
+    return replaceArguments(vfs, delegate, [0]);
+}
+function utimes(vfs, delegate) {
+    return replaceArguments(vfs, delegate, [0]);
+}
+function utimesSync(vfs, delegate) {
+    return replaceArguments(vfs, delegate, [0]);
+}
+function writeFile(vfs, delegate) {
+    return replaceArguments(vfs, delegate, [0]);
+}
+function writeFileSync(vfs, delegate) {
+    return replaceArguments(vfs, delegate, [0]);
+}
+function patchFs(vfs, delegate) {
+    delegate.access = access(vfs, delegate.access);
+    delegate.accessSync = accessSync(vfs, delegate.accessSync);
+    delegate.appendFile = appendFile(vfs, delegate.appendFile);
+    delegate.appendFileSync = appendFileSync(vfs, delegate.appendFileSync);
+    delegate.chmod = chmod(vfs, delegate.chmod);
+    delegate.chmodSync = chmodSync(vfs, delegate.chmodSync);
+    delegate.chown = chown(vfs, delegate.chown);
+    delegate.chownSync = chownSync(vfs, delegate.chownSync);
+    delegate.copyFile = copyFile(vfs, delegate.copyFile);
+    delegate.copyFileSync = copyFileSync(vfs, delegate.copyFileSync);
+    delegate.createReadStream = createReadStream(vfs, delegate.createReadStream);
+    delegate.createWriteStream = createWriteStream(vfs, delegate.createWriteStream);
+    delegate.exists = exists(vfs, delegate.exists);
+    delegate.existsSync = existsSync(vfs, delegate.existsSync);
+    // delegate.lchmod;
+    // delegate.lchmodSync;
+    // delegate.lchown;
+    // delegate.lchownSync;
+    // delegate.lutimes;
+    // delegate.lutimesSync;
+    delegate.link = link(vfs, delegate.link);
+    delegate.linkSync = linkSync(vfs, delegate.linkSync);
+    delegate.lstat = lstat(vfs, delegate.lstat);
+    delegate.lstatSync = lstatSync(vfs, delegate.lstatSync);
+    delegate.mkdir = mkdir(vfs, delegate.mkdir);
+    delegate.mkdirSync = mkdirSync(vfs, delegate.mkdirSync);
+    delegate.open = open(vfs, delegate.open);
+    delegate.openSync = openSync(vfs, delegate.openSync);
+    delegate.opendir = opendir(vfs, delegate.opendir);
+    delegate.opendirSync = opendirSync(vfs, delegate.opendirSync);
+    delegate.readdir = readdir(vfs, delegate.readdir);
+    delegate.readdirSync = readdirSync(vfs, delegate.readdirSync);
+    delegate.readFile = readFile(vfs, delegate.readFile);
+    delegate.readFileSync = readFileSync(vfs, delegate.readFileSync);
+    delegate.readlink = readlink(vfs, delegate.readlink);
+    delegate.readlinkSync = readlinkSync(vfs, delegate.readlinkSync);
+    delegate.realpath = realpath(vfs, delegate.realpath);
+    delegate.realpathSync = realpathSync(vfs, delegate.realpathSync);
+    delegate.rename = rename(vfs, delegate.rename);
+    delegate.renameSync = renameSync(vfs, delegate.renameSync);
+    delegate.rmdir = rmdir(vfs, delegate.rmdir);
+    delegate.rmdirSync = rmdirSync(vfs, delegate.rmdirSync);
+    delegate.rm = rm(vfs, delegate.rm);
+    delegate.rmSync = rmSync(vfs, delegate.rmSync);
+    delegate.stat = stat(vfs, delegate.stat);
+    delegate.statSync = statSync(vfs, delegate.statSync);
+    delegate.symlink = symlink(vfs, delegate.symlink);
+    delegate.symlinkSync = symlinkSync(vfs, delegate.symlinkSync);
+    delegate.truncate = truncate(vfs, delegate.truncate);
+    delegate.truncateSync = truncateSync(vfs, delegate.truncateSync);
+    delegate.unlink = unlink(vfs, delegate.unlink);
+    delegate.unlinkSync = unlinkSync(vfs, delegate.unlinkSync);
+    delegate.utimes = utimes(vfs, delegate.utimes);
+    delegate.utimesSync = utimesSync(vfs, delegate.unlinkSync);
+    delegate.writeFile = writeFile(vfs, delegate.writeFile);
+    delegate.writeFileSync = writeFileSync(vfs, delegate.writeFileSync);
+}
+exports.patchFs = patchFs;
+
+});
+
+var fsPromises = createCommonjsModule(function (module, exports) {
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.patchFsPromises = void 0;
+
+
+function access(vfs, delegate) {
+    return (0, fs_1.replaceArguments)(vfs, delegate, [0]);
+}
+function appendFile(vfs, delegate) {
+    return (0, fs_1.replaceArguments)(vfs, delegate, [0]);
+}
+function chmod(vfs, delegate) {
+    return (0, fs_1.replaceArguments)(vfs, delegate, [0]);
+}
+function chown(vfs, delegate) {
+    return (0, fs_1.replaceArguments)(vfs, delegate, [0]);
+}
+function copyFile(vfs, delegate) {
+    return (0, fs_1.replaceArguments)(vfs, delegate, [0, 1]);
+}
+function cp(vfs, delegate) {
+    return (0, fs_1.replaceArguments)(vfs, delegate, [0, 1]);
+}
+function lutimes(vfs, delegate) {
+    return (0, fs_1.replaceArguments)(vfs, delegate, [0]);
+}
+function patchFsPromises(vfs, delegate) {
+    delegate.access = access(vfs, fs__default["default"].promises.access);
+    delegate.appendFile = appendFile(vfs, fs__default["default"].promises.appendFile);
+    delegate.chmod = chmod(vfs, delegate.chmod);
+    delegate.chown = chown(vfs, delegate.chown);
+    delegate.copyFile = copyFile(vfs, delegate.copyFile);
+    delegate.cp = cp(vfs, delegate.cp);
+    // delegate.lchmod
+    // delegate.lchown
+    delegate.lutimes = lutimes(vfs, delegate.lutimes);
+}
+exports.patchFsPromises = patchFsPromises;
+
+});
+
+var _package = createCommonjsModule(function (module, exports) {
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.createVfs = void 0;
+
+
+class DependencyConflictError extends Error {
+}
+function addPackageNode(root, path) {
+    const parts = path.split("/").slice(1);
+    for (let i = 0; i < parts.length; i++) {
+        let newRoot = root.extraChildren.get(parts[i]);
+        if (!newRoot) {
+            newRoot = {
+                type: vfs.VfsNode.PATH,
+                hardenSymlinks: false,
+                extraChildren: new Map(),
+                path: "/" + parts.slice(0, i + 1).join("/"),
+            };
+            root.extraChildren.set(parts[i], newRoot);
+        }
+        root = newRoot;
+    }
+    root.hardenSymlinks = true;
+    return root;
+}
+function addDep(root, name, path) {
+    const parts = name.split("/");
+    for (let i = 0; i < parts.length - 1; i++) {
+        let newRoot = root.extraChildren.get(parts[i]);
+        if (!newRoot) {
+            newRoot = {
+                type: vfs.VfsNode.PATH,
+                hardenSymlinks: false,
+                extraChildren: new Map(),
+                path: undefined,
+            };
+            root.extraChildren.set(parts[i], newRoot);
+        }
+        else if (newRoot.type !== vfs.VfsNode.PATH) {
+            throw new DependencyConflictError();
+        }
+        root = newRoot;
+    }
+    root.extraChildren.set(parts[parts.length - 1], {
+        type: vfs.VfsNode.SYMLINK,
+        path,
+    });
+}
+function createVfs(packageTree, runfiles) {
+    const resolve = (path_) => path__default["default"].resolve(runfiles ? `${process.env.RUNFILES_DIR}/${path_}` : path_);
+    const root = {
+        type: vfs.VfsNode.PATH,
+        hardenSymlinks: false,
+        extraChildren: new Map(),
+        path: "/",
+    };
+    for (const [id, package_] of packageTree.entries()) {
+        const packageNode = addPackageNode(root, resolve(package_.path));
+        const nodeModules = {
+            type: vfs.VfsNode.PATH,
+            hardenSymlinks: false,
+            extraChildren: new Map(),
+            path: undefined,
+        };
+        packageNode.extraChildren.set("node_modules", nodeModules);
+        for (const [name, dep] of package_.deps) {
+            try {
+                addDep(nodeModules, name, resolve(packageTree.get(dep).path));
+            }
+            catch (e) {
+                if (!(e instanceof DependencyConflictError)) {
+                    throw e;
+                }
+                throw new Error(`Dependency "${name}" of "${id}" conflicts with another`);
+            }
+        }
+    }
+    return new vfs.VfsImpl(root);
+}
+exports.createVfs = createVfs;
+
+});
+
+var root = createCommonjsModule(function (module, exports) {
+Object.defineProperty(exports, "__esModule", { value: true });
+
+
+
+
+
+
+const manifestPath = process.env.NODE_FS_PACKAGE_MANIFEST;
+if (!manifestPath) {
+    throw new Error("NODE_FS_PACKAGE_MANIFEST is not set");
+}
+const packageTree = json.JsonFormat.parse(root$1.PackageTree.json(), fs__default["default"].readFileSync(manifestPath, "utf8"));
+const vfs = (0, _package.createVfs)(packageTree, process.env.NODE_FS_RUNFILES === "true");
+if (process.env.NODE_FS_TRACE === "true") {
+    process.stderr.write(vfs.print());
+}
+(0, fs_1.patchFs)(vfs, fs__default["default"]);
+(0, fsPromises.patchFsPromises)(vfs, fs__default["default"].promises);
+
+});
+
+var index = /*@__PURE__*/getDefaultExportFromCjs(root);
+
+module.exports = index;

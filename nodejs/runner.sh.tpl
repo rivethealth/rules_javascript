@@ -20,8 +20,11 @@ BAZEL_WORKSPACE=%{workspace} \
   NODE_PACKAGE_MANIFEST="$RUNFILES_DIR"/%{package_manifest} \
   %{env} \
   exec "$RUNFILES_DIR"/%{node} \
+  -r "$RUNFILES_DIR"/%{runtime} \
   -r "$RUNFILES_DIR"/%{module_linker} \
   --enable-source-maps \
+  --experimental-loader "$RUNFILES_DIR"/%{esm_loader} \
+  --experimental-specifier-resolution=node \
   --preserve-symlinks \
   --preserve-symlinks-main \
   %{node_options} \

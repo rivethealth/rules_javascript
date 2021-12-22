@@ -1,6 +1,6 @@
 import { ArgumentParser } from "argparse";
 import * as fs from "fs";
-import * as prettier from "prettier";
+import prettier from "prettier";
 import { run } from "@better_rules_javascript/worker";
 
 class PrettierWorker {

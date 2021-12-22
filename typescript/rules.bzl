@@ -288,7 +288,8 @@ def configure_ts_compiler(name, ts, tslib = None, visibility = None):
     cjs_root(
         name = "%s.root" % name,
         package_name = "@better_rules_javascript/typescript",
-        descriptors = [],
+        descriptors = ["@better_rules_javascript//typescript/js-compiler:descriptors"],
+        strip_prefix = "better_rules_javascript/typescript/js-compiler",
         visibility = ["//visibility:private"],
     )
 

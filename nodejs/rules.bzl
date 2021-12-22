@@ -87,11 +87,13 @@ def _nodejs_binary_implementation(ctx):
         output = bin,
         substitutions = {
             "%{env}": " ".join(["%s=%s" % (name, shell.quote(value)) for name, value in env.items()]),
+            "%{esm_loader}": shell.quote(runfile_path(ctx.workspace_name, ctx.file._esm_linker)),
             "%{main_module}": shell.quote(main_module),
             "%{node}": shell.quote(runfile_path(ctx.workspace_name, nodejs_toolchain.nodejs.bin)),
             "%{node_options}": " ".join([shell.quote(option) for option in ctx.attr.node_options]),
             "%{package_manifest}": shell.quote(runfile_path(ctx.workspace_name, package_manifest)),
             "%{module_linker}": shell.quote(runfile_path(ctx.workspace_name, ctx.file._module_linker)),
+            "%{runtime}": shell.quote(runfile_path(ctx.workspace_name, ctx.file._runtime)),
             "%{workspace}": shell.quote(ctx.workspace_name),
         },
         is_executable = True,
@@ -103,7 +105,7 @@ def _nodejs_binary_implementation(ctx):
     )
 
     runfiles = ctx.runfiles(
-        files = [nodejs_toolchain.nodejs.bin, ctx.file._module_linker, package_manifest] + ctx.files.preload + ctx.files.data,
+        files = [nodejs_toolchain.nodejs.bin, ctx.file._runtime, ctx.file._esm_linker, ctx.file._module_linker, package_manifest] + ctx.files.preload + ctx.files.data,
         transitive_files = depset([package_manifest], transitive = files),
         root_symlinks = symlinks,
     )
@@ -146,6 +148,10 @@ nodejs_binary = rule(
             allow_files = [".js"],
             doc = "Preload modules",
         ),
+        "_esm_linker": attr.label(
+            allow_single_file = [".js"],
+            default = "//nodejs/esm-linker:file",
+        ),
         "_runner": attr.label(
             allow_single_file = True,
             default = "//nodejs:runner.sh.tpl",
@@ -158,6 +164,10 @@ nodejs_binary = rule(
             cfg = "exec",
             executable = True,
             default = "//commonjs/manifest:bin",
+        ),
+        "_runtime": attr.label(
+            allow_single_file = [".js"],
+            default = "//nodejs/runtime:file",
         ),
     },
     doc = "Node.js binary",

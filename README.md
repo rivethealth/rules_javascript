@@ -89,7 +89,9 @@ javascript_respositories()
 **package.json**
 
 ```json
-{}
+{
+  "type": "module"
+}
 ```
 
 **lib.ts**
@@ -110,8 +112,7 @@ console.log(TEXT);
 ```
 {
   "compilerOptions": {
-    "lib": ["dom"],
-    "module": "commonjs"
+    "lib": ["dom"]
   }
 }
 ```

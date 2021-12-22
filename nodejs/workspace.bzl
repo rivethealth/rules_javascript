@@ -1,6 +1,6 @@
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
-DEFAULT_NODE_VERSION = "16.9.1"
+DEFAULT_NODE_VERSION = "17.3.0"
 
 NODEJS_URLS = [
     "https://nodejs.org/dist/{url}",
@@ -57,6 +57,13 @@ NODEJS_REPOSITORIES = {
             "url": "v16.9.1/node-v16.9.1-win-x64.zip",
             "prefix": "node-v16.9.1-win-x64",
             "sha256": "44b36846f45c3599d4230008cc5064d3e72405eea26268731b2374fe4ab998ed",
+        },
+    },
+    "17.3.0": {
+        "linux_x86_64": {
+            "url": "v17.3.0/node-v17.3.0-linux-x64.tar.gz",
+            "prefix": "node-v17.3.0-linux-x64",
+            "sha256": "479fb0b4b6405fb7240376187e2823cf384635a4998bdbaddc3ea826b63c8c74",
         },
     },
 }

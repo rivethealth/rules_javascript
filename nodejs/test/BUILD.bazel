@@ -18,6 +18,13 @@ sh_test(
     tags = ["local"],
 )
 
+sh_test(
+    name = "esm",
+    srcs = ["test_esm.sh"],
+    data = [":bazel"],
+    tags = ["local"],
+)
+
 test_suite(
     name = "test",
 )

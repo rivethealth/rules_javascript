@@ -24,7 +24,6 @@ js_file(
     deps = [
         "@better_rules_javascript_npm//@rollup/plugin-commonjs:lib",
         "@better_rules_javascript_npm//@rollup/plugin-node-resolve:lib",
-        "@better_rules_javascript_npm//rollup-plugin-terser:lib",
     ],
 )
 

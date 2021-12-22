@@ -7624,26 +7624,6 @@ PACKAGES = [
                 "name": "merge-stream",
             },
             {
-                "dep": "supports-color@7.2.0",
-                "name": "supports-color",
-            },
-        ],
-        "extra_deps": {},
-        "id": "jest-worker@26.6.2",
-        "name": "jest-worker",
-        "url": "https://registry.npmjs.org/jest-worker/-/jest-worker-26.6.2.tgz",
-    },
-    {
-        "deps": [
-            {
-                "dep": "@types/node@16.11.11",
-                "name": "@types/node",
-            },
-            {
-                "dep": "merge-stream@2.0.0",
-                "name": "merge-stream",
-            },
-            {
                 "dep": "supports-color@8.1.1",
                 "name": "supports-color",
             },
@@ -9466,34 +9446,6 @@ PACKAGES = [
     {
         "deps": [
             {
-                "dep": "@babel/code-frame@7.16.0",
-                "name": "@babel/code-frame",
-            },
-            {
-                "dep": "jest-worker@26.6.2",
-                "name": "jest-worker",
-            },
-            {
-                "dep": "serialize-javascript@4.0.0",
-                "name": "serialize-javascript",
-            },
-            {
-                "dep": "terser@5.10.0",
-                "name": "terser",
-            },
-            {
-                "dep": "rollup@2.58.3",
-                "name": "rollup",
-            },
-        ],
-        "extra_deps": {},
-        "id": "rollup-plugin-terser@7.0.2",
-        "name": "rollup-plugin-terser",
-        "url": "https://registry.npmjs.org/rollup-plugin-terser/-/rollup-plugin-terser-7.0.2.tgz",
-    },
-    {
-        "deps": [
-            {
                 "dep": "fsevents@2.3.2",
                 "name": "fsevents",
             },
@@ -9598,18 +9550,6 @@ PACKAGES = [
         "id": "semver@7.3.5",
         "name": "semver",
         "url": "https://registry.npmjs.org/semver/-/semver-7.3.5.tgz",
-    },
-    {
-        "deps": [
-            {
-                "dep": "randombytes@2.1.0",
-                "name": "randombytes",
-            },
-        ],
-        "extra_deps": {},
-        "id": "serialize-javascript@4.0.0",
-        "name": "serialize-javascript",
-        "url": "https://registry.npmjs.org/serialize-javascript/-/serialize-javascript-4.0.0.tgz",
     },
     {
         "deps": [
@@ -11344,10 +11284,6 @@ ROOTS = [
     {
         "dep": "rollup-plugin-ignore@1.0.10",
         "name": "rollup-plugin-ignore",
-    },
-    {
-        "dep": "rollup-plugin-terser@7.0.2",
-        "name": "rollup-plugin-terser",
     },
     {
         "dep": "rxjs@7.4.0",

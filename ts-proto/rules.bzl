@@ -43,7 +43,7 @@ def configure_ts_protoc(name, compiler, ts_proto, deps, visibility = None):
         name = "%s_bin" % name,
         node_options = ["--no-deprecation"],  # https://github.com/protobufjs/protobuf.js/issues/1411
         dep = ts_proto,
-        main = "protoc-gen-ts_proto",
+        main = "build/plugin.js",
         visibility = ["//visibility:private"],
     )
 

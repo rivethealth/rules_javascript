@@ -20,6 +20,7 @@ NODE_PACKAGE_MANIFEST="$RUNFILES_DIR"/%{package_manifest} \
   -r "$RUNFILES_DIR"/%{module_linker} \
   -r "$RUNFILES_DIR"/%{fs_linker} \
   --enable-source-maps \
+  --experimental-loader "$RUNFILES_DIR"/%{esm_loader} \
   --preserve-symlinks \
   --preserve-symlinks-main \
   "$RUNFILES_DIR"/%{main_module} \

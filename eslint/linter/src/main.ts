@@ -41,14 +41,14 @@ async function resolveOptions(file: string) {
   return await esLint.calculateConfigForFile("_dummy");
 }
 
-function createLinter(options: any) {
+async function createLinter(options: any) {
   const linter = new Linter();
   if (options.parser) {
-    linter.defineParser(options.parser, require(options.parser));
+    linter.defineParser(options.parser, await import(options.parser));
   }
   linter.defineRules(options);
   for (const plugin of options.plugins) {
-    const module = require(pluginPackage(plugin));
+    const module = await import(pluginPackage(plugin));
     if (module.rules) {
       for (const name in module.rules) {
         linter.defineRule(`${plugin}/${name}`, module.rules[name]);
@@ -64,7 +64,7 @@ run(async (a) => {
   const args = parser.parse_args(a);
 
   const options = await resolveOptions(args.config);
-  const linter = createLinter(options);
+  const linter = await createLinter(options);
   const worker = new EslintWorker(linter, options);
 
   return async (a) => {

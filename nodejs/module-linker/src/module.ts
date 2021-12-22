@@ -21,7 +21,7 @@ function resolveFilename(resolver: Resolver, delegate: Function): Function {
       return delegate.apply(this, arguments);
     }
 
-    const resolved = (request = resolver.resolve(parent.path, request));
+    const resolved = resolver.resolve(parent.path, request);
     const [base, packageName] = resolved.package.split("/node_modules/", 2);
     request = packageName;
     if (resolved.inner) {
