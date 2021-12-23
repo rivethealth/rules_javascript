@@ -231,7 +231,15 @@ def _ts_simple_library_impl(ctx):
         files = depset(declarations + js),
     )
 
-    return [default_info, js_info, ts_info]
+    cjs_entries = CjsEntries(
+        name = cjs_info.name,
+        package = cjs_info.package,
+        transitive_deps = depset(transitive = [js_info.transitive_deps, ts_info.transitive_deps]),
+        transitive_packages = depset(transitive = [js_info.transitive_packages, ts_info.transitive_packages]),
+        transitive_files = depset(transitive = [js_info.transitive_descriptors, ts_info.transitive_descriptors, ts_info.transitive_declarations, js_info.transitive_js, js_info.transitive_srcs]),
+    )
+
+    return [default_info, cjs_entries, js_info, ts_info]
 
 ts_simple_library = rule(
     implementation = _ts_simple_library_impl,
