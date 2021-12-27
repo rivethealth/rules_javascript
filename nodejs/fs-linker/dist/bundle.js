@@ -421,6 +421,14 @@ class LinkBigintStat {
         return false;
     }
 }
+function invalidError(syscall, path) {
+    const error = (new Error(`EINVAL: invalid argument, ${syscall}, ${path}`));
+    error.path = path;
+    error.syscall = syscall;
+    error.code = "EINVAL";
+    error.errno = -22;
+    return error;
+}
 class LinkStat {
     constructor(entry) {
         this.entry = entry;
@@ -890,14 +898,20 @@ function readlink(vfs$1, delegate) {
             options = {};
         }
         const resolved = vfs$1.entry(filePath);
-        if (resolved && resolved.type === vfs.VfsNode.SYMLINK) {
-            if (options.encoding === "buffer") {
-                setImmediate(() => callback(null, Buffer.from(resolved.path)));
+        if (resolved) {
+            if (resolved.type === vfs.VfsNode.SYMLINK) {
+                if (options.encoding === "buffer") {
+                    setImmediate(() => callback(null, Buffer.from(resolved.path)));
+                }
+                else {
+                    setImmediate(() => callback(null, resolved.path));
+                }
+                return;
             }
-            else {
-                setImmediate(() => callback(null, resolved.path));
+            if (resolved.hardenSymlinks) {
+                callback(invalidError("readlink", filePath));
+                return;
             }
-            return;
         }
         const args = [...arguments];
         if (resolved && filePath !== resolved.path) {
@@ -916,12 +930,17 @@ function readlinkSync(vfs$1, delegate) {
             options = {};
         }
         const resolved = vfs$1.entry(filePath);
-        if (resolved && resolved.type === vfs.VfsNode.SYMLINK) {
-            if (options.encoding === "buffer") {
-                return Buffer.from(resolved.path);
+        if (resolved) {
+            if (resolved.type === vfs.VfsNode.SYMLINK) {
+                if (options.encoding === "buffer") {
+                    return Buffer.from(resolved.path);
+                }
+                else {
+                    return resolved.path;
+                }
             }
-            else {
-                return resolved.path;
+            if (resolved.hardenSymlinks) {
+                throw invalidError("readlink", filePath);
             }
         }
         const args = [...arguments];

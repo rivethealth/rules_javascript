@@ -62,6 +62,17 @@ class LinkBigintStat implements fs.BigIntStats {
   uid = 0n;
 }
 
+function invalidError(syscall: string, path: string) {
+  const error = <NodeJS.ErrnoException>(
+    new Error(`EINVAL: invalid argument, ${syscall}, ${path}`)
+  );
+  error.path = path;
+  error.syscall = syscall;
+  error.code = "EINVAL";
+  error.errno = -22;
+  return error;
+}
+
 class LinkStat implements fs.Stats {
   constructor(private readonly entry: VfsNode) {}
 
@@ -666,13 +677,19 @@ function readlink(vfs: Vfs, delegate: typeof fs.readlink): typeof fs.readlink {
       options = {};
     }
     const resolved = vfs.entry(filePath);
-    if (resolved && resolved.type === VfsNode.SYMLINK) {
-      if (options.encoding === "buffer") {
-        setImmediate(() => callback(null, Buffer.from(resolved.path)));
-      } else {
-        setImmediate(() => callback(null, resolved.path));
+    if (resolved) {
+      if (resolved.type === VfsNode.SYMLINK) {
+        if (options.encoding === "buffer") {
+          setImmediate(() => callback(null, Buffer.from(resolved.path)));
+        } else {
+          setImmediate(() => callback(null, resolved.path));
+        }
+        return;
       }
-      return;
+      if (resolved.hardenSymlinks) {
+        callback(invalidError("readlink", filePath));
+        return;
+      }
     }
     const args = [...arguments];
     if (resolved && filePath !== resolved.path) {
@@ -694,11 +711,16 @@ function readlinkSync(
       options = {};
     }
     const resolved = vfs.entry(filePath);
-    if (resolved && resolved.type === VfsNode.SYMLINK) {
-      if (options.encoding === "buffer") {
-        return Buffer.from(resolved.path);
-      } else {
-        return resolved.path;
+    if (resolved) {
+      if (resolved.type === VfsNode.SYMLINK) {
+        if (options.encoding === "buffer") {
+          return Buffer.from(resolved.path);
+        } else {
+          return resolved.path;
+        }
+      }
+      if (resolved.hardenSymlinks) {
+        throw invalidError("readlink", filePath);
       }
     }
     const args = [...arguments];
