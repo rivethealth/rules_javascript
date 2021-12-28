@@ -1,4 +1,4 @@
-import %workspace%/.deleted.bazelrc
+import %workspace%/tools/deleted.bazelrc
 build --disk_cache=.bazel_cache
 build --experimental_allow_unresolved_symlinks
 build --experimental_strict_action_env
