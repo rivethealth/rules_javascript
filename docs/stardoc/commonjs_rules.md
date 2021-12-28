@@ -22,18 +22,18 @@ cjs_descriptors(<a href="#cjs_descriptors-name">name</a>, <a href="#cjs_descript
 ## cjs_root
 
 <pre>
-cjs_root(<a href="#cjs_root-name">name</a>, <a href="#cjs_root-deps">deps</a>, <a href="#cjs_root-descriptors">descriptors</a>, <a href="#cjs_root-package_name">package_name</a>, <a href="#cjs_root-strip_prefix">strip_prefix</a>, <a href="#cjs_root-subpackages">subpackages</a>)
+cjs_root(<a href="#cjs_root-name">name</a>, <a href="#cjs_root-deps">deps</a>, <a href="#cjs_root-descriptors">descriptors</a>, <a href="#cjs_root-package_name">package_name</a>, <a href="#cjs_root-sealed">sealed</a>, <a href="#cjs_root-strip_prefix">strip_prefix</a>)
 </pre>
 
 CommonJS-style root
 
 **ATTRIBUTES**
 
-| Name                                           | Description                        | Type                                                                        | Mandatory | Default |
-| :--------------------------------------------- | :--------------------------------- | :-------------------------------------------------------------------------- | :-------- | :------ |
-| <a id="cjs_root-name"></a>name                 | A unique name for this target.     | <a href="https://bazel.build/docs/build-ref.html#name">Name</a>             | required  |         |
-| <a id="cjs_root-deps"></a>deps                 | Dependencies                       | <a href="https://bazel.build/docs/build-ref.html#labels">List of labels</a> | optional  | []      |
-| <a id="cjs_root-descriptors"></a>descriptors   | package.json descriptors           | <a href="https://bazel.build/docs/build-ref.html#labels">List of labels</a> | optional  | []      |
-| <a id="cjs_root-package_name"></a>package_name | Package name                       | String                                                                      | required  |         |
-| <a id="cjs_root-strip_prefix"></a>strip_prefix | -                                  | String                                                                      | optional  | ""      |
-| <a id="cjs_root-subpackages"></a>subpackages   | Whether to allow Bazel subpackages | Boolean                                                                     | optional  | False   |
+| Name                                           | Description                    | Type                                                                        | Mandatory | Default |
+| :--------------------------------------------- | :----------------------------- | :-------------------------------------------------------------------------- | :-------- | :------ |
+| <a id="cjs_root-name"></a>name                 | A unique name for this target. | <a href="https://bazel.build/docs/build-ref.html#name">Name</a>             | required  |         |
+| <a id="cjs_root-deps"></a>deps                 | Dependencies                   | <a href="https://bazel.build/docs/build-ref.html#labels">List of labels</a> | optional  | []      |
+| <a id="cjs_root-descriptors"></a>descriptors   | package.json descriptors       | <a href="https://bazel.build/docs/build-ref.html#labels">List of labels</a> | optional  | []      |
+| <a id="cjs_root-package_name"></a>package_name | Package name                   | String                                                                      | required  |         |
+| <a id="cjs_root-sealed"></a>sealed             | Whether to add prefix          | Boolean                                                                     | optional  | False   |
+| <a id="cjs_root-strip_prefix"></a>strip_prefix | -                              | String                                                                      | optional  | ""      |

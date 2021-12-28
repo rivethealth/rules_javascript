@@ -25,18 +25,15 @@ cjs_descriptors = rule(
 
 def _cjs_root_impl(ctx):
     name = ctx.attr.package_name or _default_package_name(ctx)
-    prefix = ctx.label.name if not ctx.attr.subpackages else ""
+    prefix = ctx.label.name if ctx.attr.sealed else ""
     strip_prefix = ctx.attr.strip_prefix or default_strip_prefix(ctx)
     output_ = output(ctx.label, ctx.actions)
 
     path = output_.path
     short_path = output_.short_path
-    if not ctx.attr.subpackages:
-        prefix = ctx.label.name
-        path = "%s/%s" % (path, ctx.label.name) if path else ctx.label.name
-        short_path = "%s/%s" % (short_path, ctx.label.name) if short_path else ctx.label.name
-    else:
-        prefix = ""
+    if prefix:
+        path = "%s/%s" % (path, prefix) if path else prefix
+        short_path = "%s/%s" % (short_path, prefix) if short_path else ctx.label.name
 
     descriptors = create_entries(ctx, ctx.actions, ctx.files.descriptors, prefix, strip_prefix)
 
@@ -77,8 +74,8 @@ cjs_root = rule(
             doc = "Package name",
             mandatory = True,
         ),
-        "subpackages": attr.bool(
-            doc = "Whether to allow Bazel subpackages",
+        "sealed": attr.bool(
+            doc = "Whether to add prefix",
         ),
         "strip_prefix": attr.string(),
     },
