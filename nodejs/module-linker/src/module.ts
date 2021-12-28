@@ -2,12 +2,7 @@ import { Resolver } from "@better-rules-javascript/commonjs-package/resolve";
 import Module from "module";
 
 function resolveFilename(resolver: Resolver, delegate: Function): Function {
-  return function (
-    request: string,
-    parent: Module,
-    isMain: boolean,
-    options: any,
-  ) {
+  return function (request: string, parent: Module, isMain: boolean) {
     if (
       Module.builtinModules.includes(request) ||
       !parent ||
@@ -32,7 +27,8 @@ function resolveFilename(resolver: Resolver, delegate: Function): Function {
     newParent.filename = newParent.id;
     newParent.paths = [`${base}/node_modules`];
 
-    return delegate.call(this, request, newParent, isMain, options);
+    // ignore options, because paths interferes with resolution
+    return delegate.call(this, request, newParent, isMain);
   };
 }
 export function patchModule(resolver: Resolver, delegate: typeof Module) {

@@ -235,7 +235,7 @@ exports.Package = Package;
 })(exports.PackageTree || (exports.PackageTree = {}));
 
 });function resolveFilename(resolver, delegate) {
-    return function (request, parent, isMain, options) {
+    return function (request, parent, isMain) {
         if (Module__default["default"].builtinModules.includes(request) ||
             !parent ||
             parent.path === "internal" ||
@@ -255,7 +255,8 @@ exports.Package = Package;
         const newParent = new Module__default["default"](`${base}/_`, parent);
         newParent.filename = newParent.id;
         newParent.paths = [`${base}/node_modules`];
-        return delegate.call(this, request, newParent, isMain, options);
+        // ignore options, because paths interferes with resolution
+        return delegate.call(this, request, newParent, isMain);
     };
 }
 function patchModule(resolver, delegate) {
