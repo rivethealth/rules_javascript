@@ -14,6 +14,7 @@ def _js_import_external_impl(ctx):
     if files_result.return_code:
         fail("Could not list files")
     files = files_result.stdout.split("\n")
+    sass = any([file.endswith(".scss") for file in files])
     typescript = any([file.endswith(".d.ts") for file in files])
 
     deps = ctx.attr.deps
@@ -44,6 +45,11 @@ load("@better_rules_javascript//commonjs:rules.bzl", "cjs_root")
     """.strip()
     build += "\n"
 
+    if sass:
+        build += """
+load("@better_rules_css//sass:rules.bzl", "sass_library")
+        """.strip()
+        build += "\n"
     if typescript:
         build += """
 load("@better_rules_javascript//typescript:rules.bzl", "ts_import")
@@ -71,10 +77,22 @@ cjs_root(
 
     build += "\n"
 
+    if sass:
+        build += """
+sass_library(
+    name = "sass",
+    root = ":root",
+    srcs = glob(["npm/**/*.scss"]),
+    strip_prefix = "%s/npm" % {name},
+)
+        """.format(
+            name = json.encode(ctx.name),
+        )
+        build += "\n"
     if typescript:
         build += """
 ts_import(
-    declarations = glob(["npm/**/*.d.ts"]),
+    declarations = glob(["npm/**/*.d.ts"], ["npm/**/*.scss"]),
     name = "lib",
     root = ":root",
     deps = {deps},
@@ -94,7 +112,7 @@ js_library(
     root = ":root",
     deps = {deps},
     extra_deps = {extra_deps},
-    srcs = glob(["npm/**/*"]),
+    srcs = glob(["npm/**/*"], ["npm/**/*.scss"]),
     strip_prefix = "%s/npm" % repository_name()[1:],
 )
         """.strip().format(
@@ -140,9 +158,15 @@ alias(
     name = "lib",
     actual = {lib}
 )
+
+alias(
+    name = "sass",
+    actual = {sass}
+)
         """.strip().format(
             root = json.encode(repo + "//:root"),
             lib = json.encode(repo + "//:lib"),
+            sass = json.encode(repo + "//:sass"),
         )
 
         ctx.file("%s/BUILD.bazel" % package_name, build)
