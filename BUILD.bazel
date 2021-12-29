@@ -1,69 +1,8 @@
 load("//commonjs:rules.bzl", "cjs_root")
-load("//eslint:rules.bzl", "configure_eslint")
 load("//javascript:rules.bzl", "js_file")
-load("//nodejs:rules.bzl", "nodejs_archive", "nodejs_binary")
-load("//prettier:rules.bzl", "configure_prettier")
-load("@rules_format//buildifier:rules.bzl", "buildifier")
-load("@rules_format//format:rules.bzl", "format")
+load("//nodejs:rules.bzl", "nodejs_archive")
 
 package(default_visibility = ["//visibility:public"])
-
-buildifier(
-    name = "buildifier",
-)
-
-format(
-    name = "buildifier_format",
-    srcs = ["@better_rules_javascript_files//:buildifier_files"],
-    formatter = ":buildifier",
-    prefix = "external/better_rules_javascript_files/files",
-)
-
-js_file(
-    name = "prettier_config",
-    src = "prettierrc.yml",
-    root = ":root",
-)
-
-configure_prettier(
-    name = "prettier",
-    config = ":prettier_config",
-    dep = "@better_rules_javascript_npm//prettier:lib",
-)
-
-format(
-    name = "prettier_format",
-    srcs = ["@better_rules_javascript_files//:prettier_files"],
-    formatter = ":prettier",
-    prefix = "external/better_rules_javascript_files/files",
-)
-
-nodejs_binary(
-    name = "doctoc",
-    dep = "@better_rules_javascript_npm//doctoc:lib",
-    main = "doctoc.js",
-)
-
-test_suite(
-    name = "test",
-    tests = [
-        "//nodejs/test",
-        "//rollup/test",
-        "//ts-proto/test",
-        "//typescript/test",
-    ],
-)
-
-configure_eslint(
-    name = "eslint",
-    config = ":eslint_config",
-    dep = "@better_rules_javascript_npm//eslint:lib",
-    plugins = [
-        "@better_rules_javascript_npm//typescript:lib",
-        "@better_rules_javascript_npm//@typescript-eslint/eslint-plugin:lib",
-        "@better_rules_javascript_npm//@typescript-eslint/parser:lib",
-    ],
-)
 
 js_file(
     name = "eslint_config",
@@ -71,21 +10,8 @@ js_file(
     root = ":root",
 )
 
-format(
-    name = "eslint_lint",
-    srcs = ["@better_rules_javascript_files//:eslint_files"],
-    formatter = ":eslint",
-    prefix = "external/better_rules_javascript_files/files",
-)
-
-cjs_root(
-    name = "root",
-    package_name = "@better-rules-javascript/root",
-    descriptors = ["package.json"],
-)
-
 nodejs_archive(
-    name = "archive",
+    name = "nodejs_archive",
     deps = [
         "//worker/lib:worker_proto_lib",
         "@better_rules_javascript_npm//@angular/compiler:lib",
@@ -131,5 +57,27 @@ nodejs_archive(
         "@better_rules_javascript_npm//webpack-cli:lib",
         "@better_rules_javascript_npm//yaml:lib",
         "@better_rules_javascript_npm//yarn:lib",
+    ],
+)
+
+js_file(
+    name = "prettier_config",
+    src = "prettierrc.yml",
+    root = ":root",
+)
+
+cjs_root(
+    name = "root",
+    package_name = "@better-rules-javascript/root",
+    descriptors = ["package.json"],
+)
+
+test_suite(
+    name = "test",
+    tests = [
+        "//nodejs/test",
+        "//rollup/test",
+        "//ts-proto/test",
+        "//typescript/test",
     ],
 )

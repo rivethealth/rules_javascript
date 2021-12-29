@@ -1,0 +1,116 @@
+load("//nodejs:rules.bzl", "nodejs_archive", "nodejs_binary")
+load("@rules_format//format:rules.bzl", "format")
+load("@rules_format//buildifier:rules.bzl", "buildifier")
+load("//eslint:rules.bzl", "configure_eslint")
+load("//prettier:rules.bzl", "configure_prettier")
+
+buildifier(
+    name = "buildifier",
+)
+
+format(
+    name = "buildifier_format",
+    srcs = ["@better_rules_javascript_files//:buildifier_files"],
+    formatter = ":buildifier",
+    prefix = "external/better_rules_javascript_files/files",
+)
+
+nodejs_binary(
+    name = "doctoc",
+    dep = "@better_rules_javascript_npm//doctoc:lib",
+    main = "doctoc.js",
+)
+
+sh_binary(
+    name = "format",
+    srcs = ["format.sh"],
+    data = [
+        ":buildifier_format",
+        ":prettier_format",
+    ],
+)
+
+configure_eslint(
+    name = "eslint",
+    config = "//:eslint_config",
+    dep = "@better_rules_javascript_npm//eslint:lib",
+    plugins = [
+        "@better_rules_javascript_npm//typescript:lib",
+        "@better_rules_javascript_npm//@typescript-eslint/eslint-plugin:lib",
+        "@better_rules_javascript_npm//@typescript-eslint/parser:lib",
+    ],
+)
+
+format(
+    name = "eslint_lint",
+    srcs = ["@better_rules_javascript_files//:eslint_files"],
+    formatter = ":eslint",
+    prefix = "external/better_rules_javascript_files/files",
+)
+
+sh_binary(
+    name = "gen_bazelrc",
+    srcs = ["gen-bazelrc.sh"],
+    data = ["deleted.bazelrc.template"],
+)
+
+sh_binary(
+    name = "gen_docs",
+    srcs = ["gen-docs.sh"],
+    data = [
+        ":doctoc",
+        ":gen_docs_data",
+    ],
+)
+
+filegroup(
+    name = "gen_docs_data",
+    srcs = ["//docs"],
+)
+
+sh_binary(
+    name = "gen_js",
+    srcs = ["gen-js.sh"],
+    data = [":gen_js_data"],
+)
+
+filegroup(
+    name = "gen_js_data",
+    srcs = [
+        "//commonjs/manifest:bundle",
+        "//nodejs/esm-linker:bundle",
+        "//nodejs/fs-linker:bundle",
+        "//nodejs/module-linker:bundle",
+        "//nodejs/runtime:bundle",
+    ],
+)
+
+sh_binary(
+    name = "install_deps",
+    srcs = ["install-deps.sh"],
+    data = [":install_deps_data"],
+)
+
+filegroup(
+    name = "install_deps_data",
+    srcs = ["//:nodejs_archive"],
+)
+
+sh_binary(
+    name = "lint",
+    srcs = ["lint.sh"],
+    data = [":eslint_lint"],
+)
+
+configure_prettier(
+    name = "prettier",
+    config = "//:prettier_config",
+    dep = "@better_rules_javascript_npm//prettier:lib",
+)
+
+format(
+    name = "prettier_format",
+    srcs = ["@better_rules_javascript_files//:prettier_files"],
+    formatter = ":prettier",
+    prefix = "external/better_rules_javascript_files/files",
+)

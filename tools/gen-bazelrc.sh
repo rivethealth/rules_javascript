@@ -1,5 +1,7 @@
 #!/bin/bash -e
-cd "$(dirname "$0")/.."
+RUNFILES_DIR="$0.runfiles"
+
+cd "$BUILD_WORKSPACE_DIRECTORY"
 
 function escape_pattern {
   <<< "$1" sed 's/[\/&]/\\&/g'
@@ -21,4 +23,4 @@ packages="$(
     | sed 's/,$//' \
 )"
 
-sed -e "s/%{deleted_packages}/$(escape_pattern "$packages")/g" tools/deleted.bazelrc.template > tools/.deleted.bazelrc
+sed -e "s/%{deleted_packages}/$(escape_pattern "$packages")/g" "$RUNFILES_DIR/better_rules_javascript/tools/deleted.bazelrc.template" > tools/deleted.bazelrc
