@@ -110,7 +110,7 @@ create_global(<a href="#create_global-id">id</a>, <a href="#create_global-name">
 ## create_package
 
 <pre>
-create_package(<a href="#create_package-id">id</a>, <a href="#create_package-path">path</a>, <a href="#create_package-short_path">short_path</a>, <a href="#create_package-label">label</a>)
+create_package(<a href="#create_package-id">id</a>, <a href="#create_package-name">name</a>, <a href="#create_package-path">path</a>, <a href="#create_package-short_path">short_path</a>, <a href="#create_package-label">label</a>)
 </pre>
 
 Create package struct.
@@ -120,6 +120,7 @@ Create package struct.
 | Name                                             | Description             | Default Value |
 | :----------------------------------------------- | :---------------------- | :------------ |
 | <a id="create_package-id"></a>id                 | ID                      | none          |
+| <a id="create_package-name"></a>name             | Name of package         | none          |
 | <a id="create_package-path"></a>path             | Part to directory       | none          |
 | <a id="create_package-short_path"></a>short_path | Short path to directory | none          |
 | <a id="create_package-label"></a>label           | Source label            | none          |

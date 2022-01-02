@@ -1,0 +1,12 @@
+load("//docs:rules.bzl", "stardoc")
+
+package(default_visibility = ["//visibility:public"])
+
+stardoc(
+    "doc",
+    "//angular:bzl",
+    [
+        "//angular:providers.bzl",
+        "//angular:rules.bzl",
+    ],
+)

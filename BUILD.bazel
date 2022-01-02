@@ -14,9 +14,14 @@ nodejs_archive(
     name = "nodejs_archive",
     deps = [
         "//worker/lib:worker_proto_lib",
+        "@better_rules_javascript_npm//@angular-devkit/build-optimizer:lib",
+        "@better_rules_javascript_npm//@angular/common:lib",
         "@better_rules_javascript_npm//@angular/compiler:lib",
         "@better_rules_javascript_npm//@angular/compiler-cli:lib",
         "@better_rules_javascript_npm//@angular/core:lib",
+        "@better_rules_javascript_npm//@angular/material:lib",
+        "@better_rules_javascript_npm//@angular/platform-browser:lib",
+        "@better_rules_javascript_npm//@angular/platform-browser-dynamic:lib",
         "@better_rules_javascript_npm//@babel/plugin-transform-modules-commonjs:lib",
         "@better_rules_javascript_npm//@jest/types:lib",
         "@better_rules_javascript_npm//@rollup/plugin-commonjs:lib",
@@ -57,6 +62,7 @@ nodejs_archive(
         "@better_rules_javascript_npm//webpack-cli:lib",
         "@better_rules_javascript_npm//yaml:lib",
         "@better_rules_javascript_npm//yarn:lib",
+        "@better_rules_javascript_npm//zone.js:lib",
     ],
 )
 
@@ -75,6 +81,7 @@ cjs_root(
 test_suite(
     name = "test",
     tests = [
+        "//angular/test",
         "//nodejs/test",
         "//rollup/test",
         "//ts-proto/test",

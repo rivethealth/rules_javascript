@@ -4424,11 +4424,15 @@ async function main() {
         if (existingPackage) {
             throw new Error(`Multiple instances of package ${package_.id} from ${existingPackage.label} and ${package_.label}`);
         }
-        packages.set(package_.id, {
+        const p = {
             label: package_.label,
             deps: new Map(),
             path: package_.path,
-        });
+        };
+        if (package_.name) {
+            p.deps.set(package_.name, { label: p.label, id: package_.id });
+        }
+        packages.set(package_.id, p);
     }
     for (const dep of args.deps) {
         const package_ = packages.get(dep.id);

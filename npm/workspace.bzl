@@ -14,7 +14,7 @@ def _js_import_external_impl(ctx):
     if files_result.return_code:
         fail("Could not list files")
     files = files_result.stdout.split("\n")
-    sass = any([file.endswith(".scss") for file in files])
+    sass = False and any([file.endswith(".scss") for file in files])
     typescript = any([file.endswith(".d.ts") for file in files])
 
     deps = ctx.attr.deps

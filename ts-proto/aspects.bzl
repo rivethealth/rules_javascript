@@ -71,6 +71,7 @@ mkdir -p "$out"
     package_id = str(ctx.label)
     package = create_package(
         id = package_id,
+        name = "",
         label = ctx.label,
         path = output_.path,
         short_path = output_.short_path,

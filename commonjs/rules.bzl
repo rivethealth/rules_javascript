@@ -2,11 +2,9 @@ load("//util:path.bzl", "output")
 load(":providers.bzl", "CjsEntries", "CjsInfo", "create_entries", "create_package", "default_strip_prefix")
 
 def _default_package_name(ctx):
-    workspace = "@%s" % (ctx.label.workspace_name or ctx.workspace_name)
-    parts = [workspace]
-    if ctx.label.package:
-        parts.append(ctx.label.package)
-    return "/".join(parts)
+    workspace = ctx.label.workspace_name or ctx.workspace_name
+    name = ctx.label.package.replace("/", "-") or "root"
+    return "@%s/%s" % (workspace, name)
 
 def _cjs_descriptors_impl_(ctx):
     fail("TODO")
@@ -39,6 +37,7 @@ def _cjs_root_impl(ctx):
 
     package = create_package(
         id = str(ctx.label),
+        name = name,
         label = ctx.label,
         path = path,
         short_path = short_path,
@@ -72,7 +71,6 @@ cjs_root = rule(
         ),
         "package_name": attr.string(
             doc = "Package name",
-            mandatory = True,
         ),
         "sealed": attr.bool(
             doc = "Whether to add prefix",

@@ -28,11 +28,12 @@ CjsEntries = provider(
     },
 )
 
-def create_package(id, path, short_path, label):
+def create_package(id, name, path, short_path, label):
     """Create package struct.
 
     Args:
         id: ID
+        name: Name of package
         path: Part to directory
         short_path: Short path to directory
         descriptors: List of package descriptors
@@ -40,6 +41,7 @@ def create_package(id, path, short_path, label):
     """
     return struct(
         id = id,
+        name = name,
         label = label,
         path = path,
         short_path = short_path,
@@ -108,6 +110,7 @@ def _global_arg(dep):
 def _package_arg(package, package_path):
     data = struct(
         id = package.id,
+        name = package.name,
         path = package_path(package),
         label = str(package.label),
     )

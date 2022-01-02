@@ -82,7 +82,11 @@ def _js_file_impl(ctx):
         ),
     )
 
-    return [cjs_entries, js_file, js_info]
+    default_info = DefaultInfo(
+        files = depset(js),
+    )
+
+    return [cjs_entries, default_info, js_file, js_info]
 
 js_file = rule(
     attrs = {
@@ -94,7 +98,7 @@ js_file = rule(
             doc = "Extra dependencies.",
         ),
         "src": attr.label(
-            allow_files = True,
+            allow_single_file = True,
             mandatory = True,
         ),
         "path": attr.string(
@@ -239,7 +243,11 @@ def _js_library_impl(ctx):
         ),
     )
 
-    return [cjs_entries, js_info]
+    default_info = DefaultInfo(
+        files = depset(js),
+    )
+
+    return [cjs_entries, default_info, js_info]
 
 js_library = rule(
     attrs = {

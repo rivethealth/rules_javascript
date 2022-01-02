@@ -1,8 +1,16 @@
 {
   "dependencies": {
+    "@angular-devkit/build-optimizer": "~0.1301.0",
+    "@angular/animations": "~13.1.0",
+    "@angular/cdk": "~13.1.0",
+    "@angular/common": "~13.1.0",
     "@angular/compiler": "~13.1.0",
     "@angular/compiler-cli": "~13.1.0",
     "@angular/core": "~13.1.0",
+    "@angular/forms": "~13.1.0",
+    "@angular/material": "~13.1.0",
+    "@angular/platform-browser": "~13.1.0",
+    "@angular/platform-browser-dynamic": "~13.1.0",
     "@babel/plugin-transform-modules-commonjs": "~7.13.0",
     "@jest/types": "~27.4.0",
     "@rollup/plugin-commonjs": "~16.0.0",
@@ -13,6 +21,7 @@
     "@yarnpkg/cli-dist": "~3.1.0",
     "@yarnpkg/core": "^3.2.0-rc.7",
     "argparse": "~2.0.1",
+    "babel-loader": "~8.2.0",
     "doctoc": "~2.1.0",
     "enhanced-resolve": "~5.8.0",
     "eslint": "~8.3.0",
@@ -20,7 +29,7 @@
     "jest-haste-map": "~27.4.0",
     "jest-junit": "~13.0.0",
     "long": "~4.0.0",
-    "prettier": "~2.4.0",
+    "prettier": "~2.5.0",
     "protobufjs": "~6.11.2",
     "reflect-metadata": "0.1.13",
     "rollup": "~2.58.0",
@@ -35,7 +44,8 @@
     "webpack": "~5.64.0",
     "webpack-cli": "~4.9.0",
     "yaml": "~1.10.0",
-    "yarn": "~1.22.0"
+    "yarn": "~1.22.0",
+    "zone.js": "~0.11.4"
   },
   "devDependencies": {
     "@types/argparse": "~2.0.0",

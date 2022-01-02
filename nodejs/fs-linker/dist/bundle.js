@@ -202,9 +202,6 @@ class VfsImpl {
                 node = newNode;
             }
             if (i < parts.length) {
-                if (node.path === undefined) {
-                    return undefined;
-                }
                 return {
                     type: VfsNode.PATH,
                     extraChildren: new Map(),
@@ -598,7 +595,7 @@ function replaceArguments(vfs, fn, indicies) {
         for (const index of indicies) {
             const path = stringPath(args[index]);
             const resolved = vfs.resolve(path);
-            if (resolved.path !== undefined && path !== resolved.path) {
+            if (resolved !== undefined && path !== resolved.path) {
                 args[index] = resolved.path;
             }
         }
@@ -898,20 +895,18 @@ function readlink(vfs$1, delegate) {
             options = {};
         }
         const resolved = vfs$1.entry(filePath);
-        if (resolved) {
-            if (resolved.type === vfs.VfsNode.SYMLINK) {
-                if (options.encoding === "buffer") {
-                    setImmediate(() => callback(null, Buffer.from(resolved.path)));
-                }
-                else {
-                    setImmediate(() => callback(null, resolved.path));
-                }
-                return;
+        if (resolved.type === vfs.VfsNode.SYMLINK) {
+            if (options.encoding === "buffer") {
+                setImmediate(() => callback(null, Buffer.from(resolved.path)));
             }
-            if (resolved.hardenSymlinks) {
-                callback(invalidError("readlink", filePath));
-                return;
+            else {
+                setImmediate(() => callback(null, resolved.path));
             }
+            return;
+        }
+        if (resolved.hardenSymlinks) {
+            callback(invalidError("readlink", filePath));
+            return;
         }
         const args = [...arguments];
         if (resolved && filePath !== resolved.path) {
@@ -930,18 +925,16 @@ function readlinkSync(vfs$1, delegate) {
             options = {};
         }
         const resolved = vfs$1.entry(filePath);
-        if (resolved) {
-            if (resolved.type === vfs.VfsNode.SYMLINK) {
-                if (options.encoding === "buffer") {
-                    return Buffer.from(resolved.path);
-                }
-                else {
-                    return resolved.path;
-                }
+        if (resolved.type === vfs.VfsNode.SYMLINK) {
+            if (options.encoding === "buffer") {
+                return Buffer.from(resolved.path);
             }
-            if (resolved.hardenSymlinks) {
-                throw invalidError("readlink", filePath);
+            else {
+                return resolved.path;
             }
+        }
+        if (resolved.hardenSymlinks) {
+            throw invalidError("readlink", filePath);
         }
         const args = [...arguments];
         if (resolved && filePath !== resolved.path) {
@@ -1282,8 +1275,12 @@ function createVfs(packageTree, runfiles) {
         };
         packageNode.extraChildren.set("node_modules", nodeModules);
         for (const [name, dep] of package_.deps) {
+            const packageDep = packageTree.get(dep);
+            if (!packageDep) {
+                throw new Error(`Package ${dep} required by ${id} does not exist`);
+            }
             try {
-                addDep(nodeModules, name, resolve(packageTree.get(dep).path));
+                addDep(nodeModules, name, resolve(packageDep.path));
             }
             catch (e) {
                 if (!(e instanceof DependencyConflictError)) {

@@ -2,6 +2,94 @@ PACKAGES = [
     {
         "deps": [
             {
+                "dep": "source-map@0.7.3",
+                "name": "source-map",
+            },
+            {
+                "dep": "tslib@2.3.1",
+                "name": "tslib",
+            },
+            {
+                "dep": "typescript@4.5.3",
+                "name": "typescript",
+            },
+            {
+                "dep": "webpack@5.64.4",
+                "name": "webpack",
+            },
+        ],
+        "extra_deps": {},
+        "id": "@angular-devkit/build-optimizer@0.1301.2",
+        "name": "@angular-devkit/build-optimizer",
+        "url": "https://registry.npmjs.org/@angular-devkit/build-optimizer/-/build-optimizer-0.1301.2.tgz",
+    },
+    {
+        "deps": [
+            {
+                "dep": "tslib@2.3.1",
+                "name": "tslib",
+            },
+            {
+                "dep": "@angular/core@13.1.1",
+                "name": "@angular/core",
+            },
+        ],
+        "extra_deps": {},
+        "id": "@angular/animations@13.1.1",
+        "name": "@angular/animations",
+        "url": "https://registry.npmjs.org/@angular/animations/-/animations-13.1.1.tgz",
+    },
+    {
+        "deps": [
+            {
+                "dep": "parse5@5.1.1",
+                "name": "parse5",
+            },
+            {
+                "dep": "tslib@2.3.1",
+                "name": "tslib",
+            },
+            {
+                "dep": "@angular/common@13.1.1",
+                "name": "@angular/common",
+            },
+            {
+                "dep": "@angular/core@13.1.1",
+                "name": "@angular/core",
+            },
+            {
+                "dep": "rxjs@7.4.0",
+                "name": "rxjs",
+            },
+        ],
+        "extra_deps": {},
+        "id": "@angular/cdk@13.1.1",
+        "name": "@angular/cdk",
+        "url": "https://registry.npmjs.org/@angular/cdk/-/cdk-13.1.1.tgz",
+    },
+    {
+        "deps": [
+            {
+                "dep": "tslib@2.3.1",
+                "name": "tslib",
+            },
+            {
+                "dep": "@angular/core@13.1.1",
+                "name": "@angular/core",
+            },
+            {
+                "dep": "rxjs@7.4.0",
+                "name": "rxjs",
+            },
+        ],
+        "extra_deps": {},
+        "id": "@angular/common@13.1.1",
+        "name": "@angular/common",
+        "url": "https://registry.npmjs.org/@angular/common/-/common-13.1.1.tgz",
+    },
+    {
+        "deps": [
+            {
                 "dep": "@babel/core@7.16.5",
                 "name": "@babel/core",
             },
@@ -50,7 +138,7 @@ PACKAGES = [
                 "name": "@angular/compiler",
             },
             {
-                "dep": "typescript@4.5.4",
+                "dep": "typescript@4.5.3",
                 "name": "typescript",
             },
         ],
@@ -81,11 +169,131 @@ PACKAGES = [
                 "dep": "rxjs@7.4.0",
                 "name": "rxjs",
             },
+            {
+                "dep": "zone.js@0.11.4",
+                "name": "zone.js",
+            },
         ],
         "extra_deps": {},
         "id": "@angular/core@13.1.1",
         "name": "@angular/core",
         "url": "https://registry.npmjs.org/@angular/core/-/core-13.1.1.tgz",
+    },
+    {
+        "deps": [
+            {
+                "dep": "tslib@2.3.1",
+                "name": "tslib",
+            },
+            {
+                "dep": "@angular/common@13.1.1",
+                "name": "@angular/common",
+            },
+            {
+                "dep": "@angular/core@13.1.1",
+                "name": "@angular/core",
+            },
+            {
+                "dep": "@angular/platform-browser@13.1.1",
+                "name": "@angular/platform-browser",
+            },
+            {
+                "dep": "rxjs@7.4.0",
+                "name": "rxjs",
+            },
+        ],
+        "extra_deps": {},
+        "id": "@angular/forms@13.1.1",
+        "name": "@angular/forms",
+        "url": "https://registry.npmjs.org/@angular/forms/-/forms-13.1.1.tgz",
+    },
+    {
+        "deps": [
+            {
+                "dep": "tslib@2.3.1",
+                "name": "tslib",
+            },
+            {
+                "dep": "@angular/animations@13.1.1",
+                "name": "@angular/animations",
+            },
+            {
+                "dep": "@angular/cdk@13.1.1",
+                "name": "@angular/cdk",
+            },
+            {
+                "dep": "@angular/common@13.1.1",
+                "name": "@angular/common",
+            },
+            {
+                "dep": "@angular/core@13.1.1",
+                "name": "@angular/core",
+            },
+            {
+                "dep": "@angular/forms@13.1.1",
+                "name": "@angular/forms",
+            },
+            {
+                "dep": "rxjs@7.4.0",
+                "name": "rxjs",
+            },
+        ],
+        "extra_deps": {},
+        "id": "@angular/material@13.1.1",
+        "name": "@angular/material",
+        "url": "https://registry.npmjs.org/@angular/material/-/material-13.1.1.tgz",
+    },
+    {
+        "deps": [
+            {
+                "dep": "tslib@2.3.1",
+                "name": "tslib",
+            },
+            {
+                "dep": "@angular/common@13.1.1",
+                "name": "@angular/common",
+            },
+            {
+                "dep": "@angular/compiler@13.1.1",
+                "name": "@angular/compiler",
+            },
+            {
+                "dep": "@angular/core@13.1.1",
+                "name": "@angular/core",
+            },
+            {
+                "dep": "@angular/platform-browser@13.1.1",
+                "name": "@angular/platform-browser",
+            },
+        ],
+        "extra_deps": {},
+        "id": "@angular/platform-browser-dynamic@13.1.1",
+        "name": "@angular/platform-browser-dynamic",
+        "url": "https://registry.npmjs.org/@angular/platform-browser-dynamic/-/platform-browser-dynamic-13.1.1.tgz",
+    },
+    {
+        "deps": [
+            {
+                "dep": "tslib@2.3.1",
+                "name": "tslib",
+            },
+            {
+                "dep": "@angular/animations@13.1.1",
+                "name": "@angular/animations",
+            },
+            {
+                "dep": "@angular/common@13.1.1",
+                "name": "@angular/common",
+            },
+            {
+                "dep": "@angular/core@13.1.1",
+                "name": "@angular/core",
+            },
+        ],
+        "extra_deps": {},
+        "id": "@angular/platform-browser@13.1.1",
+        "name": "@angular/platform-browser",
+        "url": "https://registry.npmjs.org/@angular/platform-browser/-/platform-browser-13.1.1.tgz",
     },
     {
         "deps": [
@@ -2358,13 +2566,6 @@ PACKAGES = [
         "url": "https://registry.npmjs.org/@types/yargs/-/yargs-16.0.4.tgz",
     },
     {
-        "deps": [],
-        "extra_deps": {},
-        "id": "@types/yarnpkg__lockfile@1.1.5",
-        "name": "@types/yarnpkg__lockfile",
-        "url": "https://registry.npmjs.org/@types/yarnpkg__lockfile/-/yarnpkg__lockfile-1.1.5.tgz",
-    },
-    {
         "deps": [
             {
                 "dep": "@typescript-eslint/experimental-utils@5.5.0",
@@ -3535,6 +3736,38 @@ PACKAGES = [
     {
         "deps": [
             {
+                "dep": "find-cache-dir@3.3.2",
+                "name": "find-cache-dir",
+            },
+            {
+                "dep": "loader-utils@1.4.0",
+                "name": "loader-utils",
+            },
+            {
+                "dep": "make-dir@3.1.0",
+                "name": "make-dir",
+            },
+            {
+                "dep": "schema-utils@2.7.1",
+                "name": "schema-utils",
+            },
+            {
+                "dep": "@babel/core@7.16.0",
+                "name": "@babel/core",
+            },
+            {
+                "dep": "webpack@5.64.4",
+                "name": "webpack",
+            },
+        ],
+        "extra_deps": {},
+        "id": "babel-loader@8.2.3",
+        "name": "babel-loader",
+        "url": "https://registry.npmjs.org/babel-loader/-/babel-loader-8.2.3.tgz",
+    },
+    {
+        "deps": [
+            {
                 "dep": "object.assign@4.1.2",
                 "name": "object.assign",
             },
@@ -3696,6 +3929,13 @@ PACKAGES = [
         "id": "base64-js@1.5.1",
         "name": "base64-js",
         "url": "https://registry.npmjs.org/base64-js/-/base64-js-1.5.1.tgz",
+    },
+    {
+        "deps": [],
+        "extra_deps": {},
+        "id": "big.js@5.2.2",
+        "name": "big.js",
+        "url": "https://registry.npmjs.org/big.js/-/big.js-5.2.2.tgz",
     },
     {
         "deps": [],
@@ -4742,6 +4982,13 @@ PACKAGES = [
         "url": "https://registry.npmjs.org/emoji-regex/-/emoji-regex-6.1.3.tgz",
     },
     {
+        "deps": [],
+        "extra_deps": {},
+        "id": "emojis-list@3.0.0",
+        "name": "emojis-list",
+        "url": "https://registry.npmjs.org/emojis-list/-/emojis-list-3.0.0.tgz",
+    },
+    {
         "deps": [
             {
                 "dep": "iconv-lite@0.6.3",
@@ -5421,6 +5668,26 @@ PACKAGES = [
         "id": "fill-range@7.0.1",
         "name": "fill-range",
         "url": "https://registry.npmjs.org/fill-range/-/fill-range-7.0.1.tgz",
+    },
+    {
+        "deps": [
+            {
+                "dep": "commondir@1.0.1",
+                "name": "commondir",
+            },
+            {
+                "dep": "make-dir@3.1.0",
+                "name": "make-dir",
+            },
+            {
+                "dep": "pkg-dir@4.2.0",
+                "name": "pkg-dir",
+            },
+        ],
+        "extra_deps": {},
+        "id": "find-cache-dir@3.3.2",
+        "name": "find-cache-dir",
+        "url": "https://registry.npmjs.org/find-cache-dir/-/find-cache-dir-3.3.2.tgz",
     },
     {
         "deps": [
@@ -7984,6 +8251,18 @@ PACKAGES = [
             },
         ],
         "extra_deps": {},
+        "id": "json5@1.0.1",
+        "name": "json5",
+        "url": "https://registry.npmjs.org/json5/-/json5-1.0.1.tgz",
+    },
+    {
+        "deps": [
+            {
+                "dep": "minimist@1.2.5",
+                "name": "minimist",
+            },
+        ],
+        "extra_deps": {},
         "id": "json5@2.2.0",
         "name": "json5",
         "url": "https://registry.npmjs.org/json5/-/json5-2.2.0.tgz",
@@ -8059,6 +8338,26 @@ PACKAGES = [
         "id": "loader-runner@4.2.0",
         "name": "loader-runner",
         "url": "https://registry.npmjs.org/loader-runner/-/loader-runner-4.2.0.tgz",
+    },
+    {
+        "deps": [
+            {
+                "dep": "big.js@5.2.2",
+                "name": "big.js",
+            },
+            {
+                "dep": "emojis-list@3.0.0",
+                "name": "emojis-list",
+            },
+            {
+                "dep": "json5@1.0.1",
+                "name": "json5",
+            },
+        ],
+        "extra_deps": {},
+        "id": "loader-utils@1.4.0",
+        "name": "loader-utils",
+        "url": "https://registry.npmjs.org/loader-utils/-/loader-utils-1.4.0.tgz",
     },
     {
         "deps": [
@@ -8894,6 +9193,13 @@ PACKAGES = [
     {
         "deps": [],
         "extra_deps": {},
+        "id": "parse5@5.1.1",
+        "name": "parse5",
+        "url": "https://registry.npmjs.org/parse5/-/parse5-5.1.1.tgz",
+    },
+    {
+        "deps": [],
+        "extra_deps": {},
         "id": "path-exists@4.0.0",
         "name": "path-exists",
         "url": "https://registry.npmjs.org/path-exists/-/path-exists-4.0.0.tgz",
@@ -8986,13 +9292,6 @@ PACKAGES = [
         "id": "prettier@2.5.1",
         "name": "prettier",
         "url": "https://registry.npmjs.org/prettier/-/prettier-2.5.1.tgz",
-    },
-    {
-        "deps": [],
-        "extra_deps": {},
-        "id": "prettier@2.4.1",
-        "name": "prettier",
-        "url": "https://registry.npmjs.org/prettier/-/prettier-2.4.1.tgz",
     },
     {
         "deps": [],
@@ -9597,6 +9896,26 @@ PACKAGES = [
             },
         ],
         "extra_deps": {},
+        "id": "schema-utils@2.7.1",
+        "name": "schema-utils",
+        "url": "https://registry.npmjs.org/schema-utils/-/schema-utils-2.7.1.tgz",
+    },
+    {
+        "deps": [
+            {
+                "dep": "@types/json-schema@7.0.9",
+                "name": "@types/json-schema",
+            },
+            {
+                "dep": "ajv@6.12.6",
+                "name": "ajv",
+            },
+            {
+                "dep": "ajv-keywords@3.5.2",
+                "name": "ajv-keywords",
+            },
+        ],
+        "extra_deps": {},
         "id": "schema-utils@3.1.1",
         "name": "schema-utils",
         "url": "https://registry.npmjs.org/schema-utils/-/schema-utils-3.1.1.tgz",
@@ -9753,6 +10072,13 @@ PACKAGES = [
     {
         "deps": [],
         "extra_deps": {},
+        "id": "source-map@0.7.3",
+        "name": "source-map",
+        "url": "https://registry.npmjs.org/source-map/-/source-map-0.7.3.tgz",
+    },
+    {
+        "deps": [],
+        "extra_deps": {},
         "id": "source-map@0.5.7",
         "name": "source-map",
         "url": "https://registry.npmjs.org/source-map/-/source-map-0.5.7.tgz",
@@ -9763,13 +10089,6 @@ PACKAGES = [
         "id": "source-map@0.6.1",
         "name": "source-map",
         "url": "https://registry.npmjs.org/source-map/-/source-map-0.6.1.tgz",
-    },
-    {
-        "deps": [],
-        "extra_deps": {},
-        "id": "source-map@0.7.3",
-        "name": "source-map",
-        "url": "https://registry.npmjs.org/source-map/-/source-map-0.7.3.tgz",
     },
     {
         "deps": [],
@@ -10354,16 +10673,16 @@ PACKAGES = [
     {
         "deps": [],
         "extra_deps": {},
-        "id": "tslib@1.14.1",
+        "id": "tslib@2.3.1",
         "name": "tslib",
-        "url": "https://registry.npmjs.org/tslib/-/tslib-1.14.1.tgz",
+        "url": "https://registry.npmjs.org/tslib/-/tslib-2.3.1.tgz",
     },
     {
         "deps": [],
         "extra_deps": {},
-        "id": "tslib@2.3.1",
+        "id": "tslib@1.14.1",
         "name": "tslib",
-        "url": "https://registry.npmjs.org/tslib/-/tslib-2.3.1.tgz",
+        "url": "https://registry.npmjs.org/tslib/-/tslib-1.14.1.tgz",
     },
     {
         "deps": [],
@@ -10386,7 +10705,7 @@ PACKAGES = [
                 "name": "tslib",
             },
             {
-                "dep": "typescript@4.5.4",
+                "dep": "typescript@4.5.3",
                 "name": "typescript",
             },
         ],
@@ -10465,6 +10784,13 @@ PACKAGES = [
         "id": "typedarray-to-buffer@3.1.5",
         "name": "typedarray-to-buffer",
         "url": "https://registry.npmjs.org/typedarray-to-buffer/-/typedarray-to-buffer-3.1.5.tgz",
+    },
+    {
+        "deps": [],
+        "extra_deps": {},
+        "id": "typescript@4.5.3",
+        "name": "typescript",
+        "url": "https://registry.npmjs.org/typescript/-/typescript-4.5.3.tgz",
     },
     {
         "deps": [],
@@ -11247,9 +11573,37 @@ PACKAGES = [
         "name": "yarn",
         "url": "https://registry.npmjs.org/yarn/-/yarn-1.22.17.tgz",
     },
+    {
+        "deps": [
+            {
+                "dep": "tslib@2.3.1",
+                "name": "tslib",
+            },
+        ],
+        "extra_deps": {},
+        "id": "zone.js@0.11.4",
+        "name": "zone.js",
+        "url": "https://registry.npmjs.org/zone.js/-/zone.js-0.11.4.tgz",
+    },
 ]
 
 ROOTS = [
+    {
+        "dep": "@angular-devkit/build-optimizer@0.1301.2",
+        "name": "@angular-devkit/build-optimizer",
+    },
+    {
+        "dep": "@angular/animations@13.1.1",
+        "name": "@angular/animations",
+    },
+    {
+        "dep": "@angular/cdk@13.1.1",
+        "name": "@angular/cdk",
+    },
+    {
+        "dep": "@angular/common@13.1.1",
+        "name": "@angular/common",
+    },
     {
         "dep": "@angular/compiler@13.1.1",
         "name": "@angular/compiler",
@@ -11261,6 +11615,22 @@ ROOTS = [
     {
         "dep": "@angular/core@13.1.1",
         "name": "@angular/core",
+    },
+    {
+        "dep": "@angular/forms@13.1.1",
+        "name": "@angular/forms",
+    },
+    {
+        "dep": "@angular/material@13.1.1",
+        "name": "@angular/material",
+    },
+    {
+        "dep": "@angular/platform-browser@13.1.1",
+        "name": "@angular/platform-browser",
+    },
+    {
+        "dep": "@angular/platform-browser-dynamic@13.1.1",
+        "name": "@angular/platform-browser-dynamic",
     },
     {
         "dep": "@babel/plugin-transform-modules-commonjs@7.13.8",
@@ -11311,10 +11681,6 @@ ROOTS = [
         "name": "@types/yaml",
     },
     {
-        "dep": "@types/yarnpkg__lockfile@1.1.5",
-        "name": "@types/yarnpkg__lockfile",
-    },
-    {
         "dep": "@typescript-eslint/eslint-plugin@5.5.0",
         "name": "@typescript-eslint/eslint-plugin",
     },
@@ -11333,6 +11699,10 @@ ROOTS = [
     {
         "dep": "argparse@2.0.1",
         "name": "argparse",
+    },
+    {
+        "dep": "babel-loader@8.2.3",
+        "name": "babel-loader",
     },
     {
         "dep": "doctoc@2.1.0",
@@ -11363,7 +11733,7 @@ ROOTS = [
         "name": "long",
     },
     {
-        "dep": "prettier@2.4.1",
+        "dep": "prettier@2.5.1",
         "name": "prettier",
     },
     {
@@ -11425,5 +11795,9 @@ ROOTS = [
     {
         "dep": "yarn@1.22.17",
         "name": "yarn",
+    },
+    {
+        "dep": "zone.js@0.11.4",
+        "name": "zone.js",
     },
 ]

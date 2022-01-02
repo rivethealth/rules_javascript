@@ -35,7 +35,7 @@ export interface Vfs {
 export class VfsImpl implements Vfs {
   constructor(private readonly root: VfsNode) {}
 
-  entry(path: string): VfsNode | undefined {
+  entry(path: string): VfsNode {
     loop: while (true) {
       if (!path.startsWith("/")) {
         throw new Error("Path must be absolute");
@@ -58,9 +58,6 @@ export class VfsImpl implements Vfs {
       }
 
       if (i < parts.length) {
-        if (node.path === undefined) {
-          return undefined;
-        }
         return {
           type: VfsNode.PATH,
           extraChildren: new Map(),

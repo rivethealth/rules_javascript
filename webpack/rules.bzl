@@ -1,8 +1,8 @@
 load("@bazel_skylib//lib:shell.bzl", "shell")
 load("//commonjs:providers.bzl", "gen_manifest", "package_path")
 load("//javascript:providers.bzl", "JsFile", "JsInfo")
+load("//nodejs:providers.bzl", "NODE_MODULES_PREFIX", "package_path_name")
 load("//nodejs:rules.bzl", "nodejs_binary")
-load("//util:path.bzl", "runfile_path")
 load(":providers.bzl", "WebpackInfo")
 
 def _webpack_impl(ctx):
@@ -11,7 +11,7 @@ def _webpack_impl(ctx):
 
     webpack_info = WebpackInfo(
         bin = ctx.attr.bin[DefaultInfo].files_to_run,
-        config_path = "%s/%s" % (runfile_path(ctx.workspace_name, config_dep.package), config.path),
+        config_path = "%s/%s" % (package_path_name(config_dep.package.id), config.path),
     )
 
     return [webpack_info]
@@ -34,7 +34,7 @@ webpack = rule(
     implementation = _webpack_impl,
 )
 
-def configure_webpack(name, dep, config, other_deps = [], visibility = None):
+def configure_webpack(name, dep, config, global_deps = [], other_deps = [], visibility = None):
     """Set up webpack tools.
 
     Args:
@@ -46,20 +46,23 @@ def configure_webpack(name, dep, config, other_deps = [], visibility = None):
 
     nodejs_binary(
         main = "bin/cli.js",
-        name = "%s_bin" % name,
+        name = "%s.bin" % name,
         dep = dep,
-        other_deps = other_deps + [config],
-        visibility = visibility,
+        global_deps = global_deps,
+        other_deps = other_deps + [config, "@better_rules_javascript//webpack/config:lib"],
+        visibility = ["//visibility:private"],
     )
 
     webpack(
         name = name,
         config = config,
-        bin = "%s_bin" % name,
+        bin = "%s.bin" % name,
         visibility = visibility,
     )
 
 def _webpack_bundle_impl(ctx):
+    config = ctx.attr._config[JsInfo]
+    compilation_mode = ctx.var["COMPILATION_MODE"]
     dep = ctx.attr.dep[JsInfo]
     webpack = ctx.attr.webpack[WebpackInfo]
 
@@ -78,12 +81,14 @@ def _webpack_bundle_impl(ctx):
 
     args = []
     args.append("--config")
-    args.append("./%s.runfiles/%s" % (webpack.bin.executable.path, webpack.config_path))
+    args.append("./%s.runfiles/%s/%s/src/index.mjs" % (webpack.bin.executable.path, NODE_MODULES_PREFIX, package_path_name(config.package.id)))
 
     ctx.actions.run(
         env = {
+            "COMPILATION_MODE": compilation_mode,
             "NODE_FS_PACKAGE_MANIFEST": package_manifest.path,
             "NODE_OPTIONS_APPEND": "-r ./%s -r ./%s" % (ctx.file._fs_linker.path, ctx.file._skip_package_check.path),
+            "WEBPACK_CONFIG": "%s/%s" % (NODE_MODULES_PREFIX, webpack.config_path),
             "WEBPACK_INPUT_ROOT": dep.package.path,
             "WEBPACK_OUTPUT": bundle.path,
         },
@@ -115,6 +120,10 @@ webpack_bundle = rule(
             doc = "Webpack tools",
             mandatory = True,
             providers = [WebpackInfo],
+        ),
+        "_config": attr.label(
+            cfg = "exec",
+            default = "//webpack/config:lib",
         ),
         "_manifest": attr.label(
             cfg = "exec",

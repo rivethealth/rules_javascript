@@ -1,0 +1,37 @@
+load("//commonjs:rules.bzl", "cjs_root")
+load("//nodejs:rules.bzl", "nodejs_binary")
+load("//typescript:rules.bzl", "ts_library", "tsconfig")
+
+package(default_visibility = ["//visibility:public"])
+
+cjs_root(
+    name = "root",
+    package_name = "@better-rules-javascript/angular-resource-compiler",
+    descriptors = ["package.json"],
+)
+
+tsconfig(
+    name = "tsconfig",
+    src = "tsconfig.json",
+    dep = "//rules:tsconfig",
+    root = ":root",
+)
+
+ts_library(
+    name = "lib",
+    srcs = glob(["src/**/*.ts"]),
+    compiler = "//rules:tsc",
+    config = ":tsconfig",
+    root = ":root",
+    deps = [
+        "//worker/lib",
+        "@better_rules_javascript_npm//@types/argparse:lib",
+        "@better_rules_javascript_npm//argparse:lib",
+    ],
+)
+
+nodejs_binary(
+    name = "bin",
+    dep = ":lib",
+    main = "src/main.js",
+)

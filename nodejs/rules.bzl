@@ -183,6 +183,7 @@ def _nodejs_archive_impl(ctx):
 
     package = create_package(
         id = "_",
+        name = "",
         path = "_",
         short_path = "_",
         label = ctx.label,

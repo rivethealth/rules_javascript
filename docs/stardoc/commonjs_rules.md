@@ -34,6 +34,6 @@ CommonJS-style root
 | <a id="cjs_root-name"></a>name                 | A unique name for this target. | <a href="https://bazel.build/docs/build-ref.html#name">Name</a>             | required  |         |
 | <a id="cjs_root-deps"></a>deps                 | Dependencies                   | <a href="https://bazel.build/docs/build-ref.html#labels">List of labels</a> | optional  | []      |
 | <a id="cjs_root-descriptors"></a>descriptors   | package.json descriptors       | <a href="https://bazel.build/docs/build-ref.html#labels">List of labels</a> | optional  | []      |
-| <a id="cjs_root-package_name"></a>package_name | Package name                   | String                                                                      | required  |         |
+| <a id="cjs_root-package_name"></a>package_name | Package name                   | String                                                                      | optional  | ""      |
 | <a id="cjs_root-sealed"></a>sealed             | Whether to add prefix          | Boolean                                                                     | optional  | False   |
 | <a id="cjs_root-strip_prefix"></a>strip_prefix | -                              | String                                                                      | optional  | ""      |

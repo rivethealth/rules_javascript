@@ -1,0 +1,19 @@
+load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
+
+package(default_visibility = ["//visibility:public"])
+
+exports_files(
+    glob(["**/*.bzl"]),
+)
+
+bzl_library(
+    name = "bzl",
+    srcs = glob(["**/*.bzl"]),
+    deps = [
+        "//commonjs:bzl",
+        "//javascript:bzl",
+        "//nodejs:bzl",
+        "//typescript:bzl",
+        "//util:bzl",
+    ],
+)

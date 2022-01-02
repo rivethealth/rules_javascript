@@ -41,17 +41,18 @@ Webpack bundle
 ## configure_webpack
 
 <pre>
-configure_webpack(<a href="#configure_webpack-name">name</a>, <a href="#configure_webpack-dep">dep</a>, <a href="#configure_webpack-config">config</a>, <a href="#configure_webpack-other_deps">other_deps</a>, <a href="#configure_webpack-visibility">visibility</a>)
+configure_webpack(<a href="#configure_webpack-name">name</a>, <a href="#configure_webpack-dep">dep</a>, <a href="#configure_webpack-config">config</a>, <a href="#configure_webpack-global_deps">global_deps</a>, <a href="#configure_webpack-other_deps">other_deps</a>, <a href="#configure_webpack-visibility">visibility</a>)
 </pre>
 
 Set up webpack tools.
 
 **PARAMETERS**
 
-| Name                                                | Description                                    | Default Value     |
-| :-------------------------------------------------- | :--------------------------------------------- | :---------------- |
-| <a id="configure_webpack-name"></a>name             | Name                                           | none              |
-| <a id="configure_webpack-dep"></a>dep               | Webpack library                                | none              |
-| <a id="configure_webpack-config"></a>config         | Configuration                                  | none              |
-| <a id="configure_webpack-other_deps"></a>other_deps | Other deps (helps with Webpack package cycles) | <code>[]</code>   |
-| <a id="configure_webpack-visibility"></a>visibility | <p align="center"> - </p>                      | <code>None</code> |
+| Name                                                  | Description                                    | Default Value     |
+| :---------------------------------------------------- | :--------------------------------------------- | :---------------- |
+| <a id="configure_webpack-name"></a>name               | Name                                           | none              |
+| <a id="configure_webpack-dep"></a>dep                 | Webpack library                                | none              |
+| <a id="configure_webpack-config"></a>config           | Configuration                                  | none              |
+| <a id="configure_webpack-global_deps"></a>global_deps | <p align="center"> - </p>                      | <code>[]</code>   |
+| <a id="configure_webpack-other_deps"></a>other_deps   | Other deps (helps with Webpack package cycles) | <code>[]</code>   |
+| <a id="configure_webpack-visibility"></a>visibility   | <p align="center"> - </p>                      | <code>None</code> |

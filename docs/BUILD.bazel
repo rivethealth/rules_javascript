@@ -1,10 +1,26 @@
+load("//nodejs:rules.bzl", "nodejs_binary")
 load("@rules_pkg//:pkg.bzl", "pkg_tar")
 
 package(default_visibility = ["//visibility:public"])
 
+sh_binary(
+    name = "gen_docs",
+    srcs = ["gen-docs.sh"],
+    data = [
+        ":doctoc",
+        ":gen_docs_data",
+    ],
+)
+
+filegroup(
+    name = "gen_docs_data",
+    srcs = ["//docs"],
+)
+
 pkg_tar(
     name = "docs",
     srcs = [
+        "//angular/doc",
         "//commonjs/doc",
         "//javascript/doc",
         "//jest/doc",
@@ -20,4 +36,10 @@ pkg_tar(
         "//webpack/doc",
     ],
     mode = "0644",
+)
+
+nodejs_binary(
+    name = "doctoc",
+    dep = "@better_rules_javascript_npm//doctoc:lib",
+    main = "doctoc.js",
 )

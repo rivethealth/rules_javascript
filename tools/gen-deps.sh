@@ -1,6 +1,8 @@
 #!/bin/sh -e
-cd "$(dirname "$0")/.."
+export RUNFILES_DIR="$0.runfiles"
 
-bazel run npm/yarn-gen:bin -- \
+cd "$BUILD_WORKSPACE_DIRECTORY"
+
+"$RUNFILES_DIR/better_rules_javascript/npm/yarn-gen/bin/bin" \
     --refresh \
     rules/npm_data.bzl

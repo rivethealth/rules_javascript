@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "importHelpers": true,
+    "module": "es2020",
+    "moduleResolution": "node",
+    "lib": ["dom", "es2019"],
+    "target": "es2019",
+    "types": ["node"]
+  }
+}

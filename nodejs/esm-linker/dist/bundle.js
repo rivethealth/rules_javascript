@@ -251,7 +251,8 @@ function resolve(specifier, context, defaultResolve) {
         specifier == ".." ||
         specifier.startsWith("./") ||
         specifier.startsWith("../") ||
-        specifier.startsWith("/")) {
+        specifier.startsWith("/") ||
+        specifier.startsWith("file://")) {
         return defaultResolve(specifier, context, defaultResolve);
     }
     const resolved = resolver.resolve(parent.pathname, specifier);

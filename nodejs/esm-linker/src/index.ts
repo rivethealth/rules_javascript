@@ -36,7 +36,8 @@ export function resolve(
     specifier == ".." ||
     specifier.startsWith("./") ||
     specifier.startsWith("../") ||
-    specifier.startsWith("/")
+    specifier.startsWith("/") ||
+    specifier.startsWith("file://")
   ) {
     return defaultResolve(specifier, context, defaultResolve);
   }

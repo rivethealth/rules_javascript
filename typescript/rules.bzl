@@ -40,11 +40,18 @@ ts_simple_compiler = rule(
 def declaration_path(input):
     if input.endswith(".js"):
         return input.replace(".js", ".d.ts")
+    if input.endswith(".mjs"):
+        return input.replace(".mjs", ".d.mts")
     if input.endswith(".ts"):
         return input.replace(".ts", ".d.ts")
+    if input.endswith(".mts"):
+        return input.replace(".mts", ".d.mts")
 
 def compiled_path(input):
-    return input.replace(".ts", ".js")
+    if input.endswith(".ts"):
+        return input.replace(".ts", ".js")
+    if input.endswith(".mts"):
+        return input.replace(".mts", ".mjs")
 
 def map_path(input):
     return input + ".map"
@@ -91,7 +98,7 @@ def _ts_simple_library_impl(ctx):
         if not path.endswith(".d.ts"):
             declaration = ctx.actions.declare_file(declaration_path(path))
             declarations.append(declaration)
-        if path.endswith(".js") or path.endswith(".ts"):
+        if path.endswith(".js") or path.endswith(".ts") or path.endswith(".mts"):
             js_ = ctx.actions.declare_file(compiled_path(path))
             js.append(js_)
             map = ctx.actions.declare_file(map_path(compiled_path(path)))
@@ -128,6 +135,7 @@ def _ts_simple_library_impl(ctx):
             [
                 create_package(
                     id = "",
+                    name = cjs_info.name,
                     path = "%s/%s.ts" % (output_.path, ctx.attr.name),
                     short_path = "%s/%s.ts" % (output_.short_path, ctx.attr.name),
                     label = cjs_info.package.label,
@@ -510,6 +518,7 @@ def _ts_library_impl(ctx):
             [
                 create_package(
                     id = "",
+                    name = cjs_info.name,
                     path = "%s/%s.ts" % (output_.path, ctx.attr.name),
                     short_path = "%s/%s.ts" % (output_.short_path, ctx.attr.name),
                     label = cjs_info.package.label,
@@ -589,7 +598,7 @@ def _ts_library_impl(ctx):
             js_ = ctx.actions.declare_file(compiled_path(path))
             js.append(js_)
 
-            if path.endswith(".js") or path.endswith(".ts"):
+            if path.endswith(".js") or path.endswith(".ts") or path.endswith(".mts"):
                 declaration = ctx.actions.declare_file(declaration_path(path))
                 declarations.append(declaration)
                 map = ctx.actions.declare_file(map_path(compiled_path(path)))
@@ -763,7 +772,7 @@ ts_library = rule(
             providers = [[TsInfo]],
         ),
         "srcs": attr.label_list(
-            allow_files = [".js", ".json", ".ts"],
+            allow_files = [".js", ".json", ".ts", ".mts"],
             doc = "TypeScript sources",
             mandatory = True,
         ),

@@ -32,6 +32,7 @@ def _jest_test_impl(ctx):
 
     package = create_package(
         id = "_jestconfig",
+        name = "_jestconfig",
         path = "%s/%s" % (output_.path, ctx.label.name),
         short_path = "%s/%s" % (output_.short_path, ctx.label.name),
         label = ctx.label,

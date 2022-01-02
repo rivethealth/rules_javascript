@@ -70,8 +70,12 @@ export function createVfs(
     };
     packageNode.extraChildren.set("node_modules", nodeModules);
     for (const [name, dep] of package_.deps) {
+      const packageDep = packageTree.get(dep);
+      if (!packageDep) {
+        throw new Error(`Package ${dep} required by ${id} does not exist`);
+      }
       try {
-        addDep(nodeModules, name, resolve(packageTree.get(dep).path));
+        addDep(nodeModules, name, resolve(packageDep.path));
       } catch (e) {
         if (!(e instanceof DependencyConflictError)) {
           throw e;

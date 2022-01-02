@@ -62,11 +62,15 @@ async function main() {
       );
     }
 
-    packages.set(package_.id, {
+    const p = {
       label: package_.label,
       deps: new Map(),
       path: package_.path,
-    });
+    };
+    if (package_.name) {
+      p.deps.set(package_.name, { label: p.label, id: package_.id });
+    }
+    packages.set(package_.id, p);
   }
 
   for (const dep of args.deps) {

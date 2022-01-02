@@ -2,6 +2,8 @@ load("//commonjs:rules.bzl", "cjs_root")
 load("//nodejs:rules.bzl", "nodejs_binary")
 load("//typescript:rules.bzl", "ts_library", "tsconfig")
 
+package(default_visibility = ["//visibility:public"])
+
 cjs_root(
     name = "root",
     package_name = "@better-rules-javascript/yarn-gen",
