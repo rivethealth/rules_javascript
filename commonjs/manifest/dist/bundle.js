@@ -4429,7 +4429,7 @@ async function main() {
             deps: new Map(),
             path: package_.path,
         };
-        if (package_.name) {
+        if (package_.id && package_.name) {
             p.deps.set(package_.name, { label: p.label, id: package_.id });
         }
         packages.set(package_.id, p);
@@ -4441,7 +4441,7 @@ async function main() {
         }
         const existingDep = package_.deps.get(dep.name);
         if (existingDep && existingDep.id !== dep.dep) {
-            throw new Error(`Multiple dependencies for ${dep.name} in ${dep.id}, added by ${existingDep.label} and ${dep.label}`);
+            throw new Error(`Multiple dependencies ${existingDep.id} (${existingDep.label}) and ${dep.dep} (${dep.label}) for ${dep.name} in ${dep.id}`);
         }
         package_.deps.set(dep.name, { label: dep.label, id: dep.dep });
     }

@@ -1100,6 +1100,12 @@ function utimes(vfs, delegate) {
 function utimesSync(vfs, delegate) {
     return replaceArguments(vfs, delegate, [0]);
 }
+function watch(vfs, delegate) {
+    return replaceArguments(vfs, delegate, [0]);
+}
+function watchFile(vfs, delegate) {
+    return replaceArguments(vfs, delegate, [0]);
+}
 function writeFile(vfs, delegate) {
     return replaceArguments(vfs, delegate, [0]);
 }
@@ -1161,6 +1167,8 @@ function patchFs(vfs, delegate) {
     delegate.unlinkSync = unlinkSync(vfs, delegate.unlinkSync);
     delegate.utimes = utimes(vfs, delegate.utimes);
     delegate.utimesSync = utimesSync(vfs, delegate.unlinkSync);
+    delegate.watch = watch(vfs, delegate.watch);
+    delegate.watchFile = watchFile(vfs, delegate.watchFile);
     delegate.writeFile = writeFile(vfs, delegate.writeFile);
     delegate.writeFileSync = writeFileSync(vfs, delegate.writeFileSync);
 }
