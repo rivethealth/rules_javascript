@@ -2,7 +2,7 @@ load("@bazel_skylib//lib:shell.bzl", "shell")
 load("//commonjs:providers.bzl", "CjsEntries", "create_dep", "create_global", "create_package", "gen_manifest", "package_path")
 load("//javascript:providers.bzl", "JsInfo")
 load("//util:path.bzl", "output", "runfile_path")
-load(":providers.bzl", "NODE_MODULES_PREFIX", "node_modules_links", "package_path_name")
+load(":providers.bzl", "NODE_MODULES_PREFIX", "modules_links", "package_path_name")
 
 def _nodejs_simple_binary_implementation(ctx):
     nodejs_toolchain = ctx.toolchains["@better_rules_javascript//nodejs:toolchain_type"]
@@ -33,7 +33,7 @@ nodejs_simple_binary = rule(
         ),
         "_runner": attr.label(
             allow_single_file = True,
-            default = "//nodejs:simple_runner.sh.tpl",
+            default = "//nodejs:simple_runner",
         ),
     },
     doc = "Node.js executable, from a single file.",
@@ -94,19 +94,18 @@ def _nodejs_binary_implementation(ctx):
             "%{package_manifest}": shell.quote(runfile_path(ctx.workspace_name, package_manifest)),
             "%{module_linker}": shell.quote(runfile_path(ctx.workspace_name, ctx.file._module_linker)),
             "%{runtime}": shell.quote(runfile_path(ctx.workspace_name, ctx.file._runtime)),
-            "%{workspace}": shell.quote(ctx.workspace_name),
         },
         is_executable = True,
     )
 
-    symlinks = node_modules_links(
+    symlinks = modules_links(
+        prefix = NODE_MODULES_PREFIX,
         packages = transitive_packages.to_list(),
         files = depset(transitive = files).to_list(),
     )
 
     runfiles = ctx.runfiles(
         files = [nodejs_toolchain.nodejs.bin, ctx.file._runtime, ctx.file._esm_linker, ctx.file._module_linker, package_manifest] + ctx.files.preload + ctx.files.data,
-        transitive_files = depset([package_manifest], transitive = files),
         root_symlinks = symlinks,
     )
 
@@ -154,7 +153,7 @@ nodejs_binary = rule(
         ),
         "_runner": attr.label(
             allow_single_file = True,
-            default = "//nodejs:runner.sh.tpl",
+            default = "//nodejs:runner",
         ),
         "_module_linker": attr.label(
             allow_single_file = True,

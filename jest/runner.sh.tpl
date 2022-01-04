@@ -12,10 +12,11 @@ if [ -z "${RUNFILES_DIR:-}" ]; then
   fi
 fi
 
-NODE_PACKAGE_MANIFEST="$RUNFILES_DIR"/%{package_manifest} \
-  NODE_FS_PACKAGE_MANIFEST="$RUNFILES_DIR"/%{package_manifest} \
-  NODE_FS_RUNFILES=true \
-  %{env} \
+export NODE_PACKAGE_MANIFEST="$RUNFILES_DIR"/%{package_manifest}
+export NODE_FS_PACKAGE_MANIFEST="$RUNFILES_DIR"/%{package_manifest}
+export NODE_FS_RUNFILES=true
+
+%{env} \
   exec "$RUNFILES_DIR"/%{node} \
   -r "$RUNFILES_DIR"/%{module_linker} \
   -r "$RUNFILES_DIR"/%{fs_linker} \

@@ -2,7 +2,15 @@ load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
 
 package(default_visibility = ["//visibility:public"])
 
-exports_files(["skip-package-check.js"])
+filegroup(
+    name = "skip_package_check",
+    srcs = ["skip-package-check.js"],
+)
+
+filegroup(
+    name = "server_runner",
+    srcs = ["server-runner.sh.tpl"],
+)
 
 bzl_library(
     name = "bzl",
@@ -11,6 +19,7 @@ bzl_library(
         "//commonjs:bzl",
         "//javascript:bzl",
         "//nodejs:bzl",
+        "//typescript:bzl",
         "@rules_proto//proto:defs",
     ],
 )

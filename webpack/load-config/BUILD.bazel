@@ -1,0 +1,25 @@
+load("//commonjs:rules.bzl", "cjs_root")
+load("//typescript:rules.bzl", "ts_library", "tsconfig")
+
+ts_library(
+    name = "lib",
+    srcs = glob(["src/**/*.mts"]),
+    compiler = "//rules:tsc",
+    config = ":tsconfig",
+    root = ":root",
+    visibility = ["//visibility:public"],
+    deps = ["//webpack/config:lib"],
+)
+
+cjs_root(
+    name = "root",
+    package_name = "@better-rules-javascript/webpack-load-config",
+    descriptors = ["package.json"],
+)
+
+tsconfig(
+    name = "tsconfig",
+    src = "tsconfig.json",
+    dep = "//rules:tsconfig",
+    root = ":root",
+)

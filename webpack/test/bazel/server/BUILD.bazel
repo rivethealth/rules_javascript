@@ -1,0 +1,41 @@
+load("@better_rules_javascript//commonjs:rules.bzl", "cjs_root")
+load("@better_rules_javascript//javascript:rules.bzl", "js_file", "js_library")
+load("@better_rules_javascript//webpack:rules.bzl", "configure_webpack", "webpack_server")
+
+cjs_root(
+    name = "root",
+    package_name = "@better-rules-javascript_test/webpack-server",
+    descriptors = ["package.json"],
+)
+
+js_library(
+    name = "lib",
+    srcs = [
+        "lib.js",
+        "main.js",
+    ],
+    root = ":root",
+)
+
+js_file(
+    name = "webpack_config",
+    src = "webpack.config.js",
+    root = ":root",
+    deps = ["@better_rules_javascript_npm//html-webpack-plugin:lib"],
+)
+
+configure_webpack(
+    name = "webpack",
+    cli = "@better_rules_javascript_npm//webpack-cli:lib",
+    config = ":webpack_config",
+    dev_server = "@better_rules_javascript_npm//webpack-dev-server:lib",
+    other_deps = ["@better_rules_javascript_npm_webpack_cli_configtest1.1.0//:lib"],
+    webpack = "@better_rules_javascript_npm//webpack:lib",
+)
+
+webpack_server(
+    name = "server",
+    dep = ":lib",
+    tags = ["ibazel_notify_changes"],
+    webpack = ":webpack",
+)

@@ -1,6 +1,6 @@
 load("@bazel_skylib//lib:shell.bzl", "shell")
 load("//commonjs:providers.bzl", "create_dep", "create_global", "create_package", "gen_manifest")
-load("//nodejs:providers.bzl", "NODE_MODULES_PREFIX", "node_modules_links", "package_path_name")
+load("//nodejs:providers.bzl", "NODE_MODULES_PREFIX", "modules_links", "package_path_name")
 load("//javascript:providers.bzl", "JsFile", "JsInfo")
 load("//util:path.bzl", "output", "runfile_path")
 
@@ -98,7 +98,8 @@ def _jest_test_impl(ctx):
         runfiles = ctx.runfiles(
             files = [config_file, nodejs_toolchain.nodejs.bin, ctx.file._fs_linker, ctx.file._module_linker, package_manifest, haste_map] + ctx.files.data,
             transitive_files = depset(transitive = files),
-            root_symlinks = node_modules_links(
+            root_symlinks = modules_links(
+                prefix = NODE_MODULES_PREFIX,
                 packages = transitive_packages.to_list(),
                 files = depset([config_file, haste_map], transitive = files).to_list(),
             ),

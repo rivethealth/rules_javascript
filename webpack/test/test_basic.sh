@@ -1,5 +1,4 @@
 #!/bin/sh -e
-echo start
 cd webpack/test/bazel
 unset RUNFILES_DIR
 unset TEST_TMPDIR

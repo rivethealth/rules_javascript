@@ -322,7 +322,7 @@ def configure_ts_compiler(name, ts, tslib = None, visibility = None):
             ts,
             "@better_rules_javascript//commonjs/package:lib",
             "@better_rules_javascript//nodejs/fs-linker:lib",
-            "@better_rules_javascript//worker/lib",
+            "@better_rules_javascript//bazel/worker:lib",
             "@better_rules_javascript_npm//argparse:lib",
             "@better_rules_javascript_npm//@types/argparse:lib",
             "@better_rules_javascript_npm//@types/node:lib",
@@ -340,7 +340,7 @@ def configure_ts_compiler(name, ts, tslib = None, visibility = None):
         deps = [
             ts,
             "@better_rules_javascript_npm//argparse:lib",
-            "@better_rules_javascript//worker/lib",
+            "@better_rules_javascript//bazel/worker:lib",
             "@better_rules_javascript_npm//@types/argparse:lib",
             "@better_rules_javascript_npm//@types/node:lib",
         ],

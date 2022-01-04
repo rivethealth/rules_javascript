@@ -39,7 +39,7 @@ def configure_angular_compiler(name, core, compiler_cli, ts, tslib, reflect_meta
             ts,
             "@better_rules_javascript//commonjs/package:lib",
             "@better_rules_javascript//nodejs/fs-linker:lib",
-            "@better_rules_javascript//worker/lib",
+            "@better_rules_javascript//bazel/worker",
             "@better_rules_javascript_npm//argparse:lib",
             "@better_rules_javascript_npm//@types/argparse:lib",
             "@better_rules_javascript_npm//@types/node:lib",

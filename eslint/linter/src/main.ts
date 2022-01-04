@@ -1,7 +1,7 @@
 import { ArgumentParser } from "argparse";
 import * as fs from "fs";
 import { ESLint, Linter } from "eslint";
-import { run } from "@better-rules-javascript/worker";
+import { run } from "@better-rules-javascript/bazel-worker";
 
 class EslintWorker {
   constructor(private linter: Linter, private readonly options: any) {}

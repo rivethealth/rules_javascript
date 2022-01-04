@@ -20,7 +20,6 @@ if ! [ -z "${BUILD_WORKING_DIRECTORY:-}" ]; then
   unset BUILD_WORKING_DIRECTORY
 fi
 
-BAZEL_WORKSPACE=%{workspace} \
-  exec "$(rlocation %{node})" \
+exec "$(rlocation %{node})" \
   "$(rlocation %{module})" \
   "$@"

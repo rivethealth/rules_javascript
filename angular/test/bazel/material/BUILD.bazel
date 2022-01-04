@@ -61,12 +61,14 @@ js_library(
 
 configure_webpack(
     name = "webpack",
+    cli = "@better_rules_javascript_npm//webpack-cli:lib",
     config = ":webpack_config",
-    dep = "@better_rules_javascript_npm//webpack-cli:lib",
+    dev_server = "@better_rules_javascript_npm//webpack-dev-server:lib",
     other_deps = [
         "@better_rules_javascript_npm_webpack_cli_configtest1.1.0//:lib",
         "@better_rules_javascript_npm_babel_helper_compilation_targets7.16.3//:lib",
     ],
+    webpack = "@better_rules_javascript_npm//webpack:lib",
 )
 
 webpack_bundle(

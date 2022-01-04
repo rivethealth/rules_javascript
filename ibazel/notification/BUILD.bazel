@@ -1,0 +1,24 @@
+load("@better_rules_javascript//typescript:rules.bzl", "ts_library", "tsconfig")
+load("//commonjs:rules.bzl", "cjs_root")
+
+cjs_root(
+    name = "root",
+    package_name = "@better-rules-javascript/ibazel-notification",
+    descriptors = ["package.json"],
+)
+
+tsconfig(
+    name = "tsconfig",
+    src = "tsconfig.json",
+    dep = "//rules:tsconfig",
+    root = ":root",
+)
+
+ts_library(
+    name = "lib",
+    srcs = glob(["src/**/*.ts"]),
+    compiler = "//rules:tsc",
+    config = ":tsconfig",
+    root = ":root",
+    visibility = ["//visibility:public"],
+)

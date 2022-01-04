@@ -51,6 +51,7 @@ rules_proto_grpc_repos()
 
 local_repository(
     name = "better_rules_javascript",
+    # path = "../../..",
     path = "../../../external/better_rules_javascript_files/files",
 )
 

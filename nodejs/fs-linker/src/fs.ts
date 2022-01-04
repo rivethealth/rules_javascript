@@ -950,6 +950,17 @@ function utimesSync(
   return replaceArguments(vfs, delegate, [0]);
 }
 
+function watch(vfs: Vfs, delegate: typeof fs.watch): typeof fs.watch {
+  return replaceArguments(vfs, delegate, [0]);
+}
+
+function watchFile(
+  vfs: Vfs,
+  delegate: typeof fs.watchFile,
+): typeof fs.watchFile {
+  return replaceArguments(vfs, delegate, [0]);
+}
+
 function writeFile(
   vfs: Vfs,
   delegate: typeof fs.writeFile,
@@ -1025,6 +1036,8 @@ export function patchFs(
   delegate.unlinkSync = unlinkSync(vfs, delegate.unlinkSync);
   delegate.utimes = utimes(vfs, delegate.utimes);
   delegate.utimesSync = utimesSync(vfs, delegate.unlinkSync);
+  delegate.watch = watch(vfs, delegate.watch);
+  delegate.watchFile = watchFile(vfs, delegate.watchFile);
   delegate.writeFile = writeFile(vfs, delegate.writeFile);
   delegate.writeFileSync = writeFileSync(vfs, delegate.writeFileSync);
 }
