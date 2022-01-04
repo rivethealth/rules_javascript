@@ -5,6 +5,11 @@ package(default_visibility = ["//visibility:public"])
 exports_files(["nodejs.BUILD.bazel"])
 
 filegroup(
+    name = "archive_runner",
+    srcs = ["archive-runner.sh.tpl"],
+)
+
+filegroup(
     name = "simple_runner",
     srcs = ["simple-runner.sh.tpl"],
 )

@@ -256,3 +256,110 @@ nodejs_archive = rule(
     },
     implementation = _nodejs_archive_impl,
 )
+
+def _nodejs_binary_archive_impl(ctx):
+    archive_linker = ctx.attr._archive_linker[DefaultInfo]
+    env = ctx.attr.env
+    node_options = ctx.attr.node_options
+    manifest = ctx.attr._manifest[DefaultInfo]
+    js_globals = [dep[JsInfo] for dep in ctx.attr.global_deps]
+    archive_runner = ctx.file._archive_runner
+    js_info = ctx.attr.dep[JsInfo]
+    deps = [js_info] + js_globals
+
+    transitive_deps = depset(
+        transitive = [js_info.transitive_deps for js_info in deps],
+    )
+    transitive_js = depset(
+        transitive = [js_info.transitive_js for js_info in deps],
+    )
+    transitive_packages = depset(
+        transitive = [js_info.transitive_packages for js_info in deps],
+    )
+    transitive_srcs = depset(
+        transitive = [js_info.transitive_srcs for js_info in deps],
+    )
+
+    main_module = "%s/%s" % (package_path_name(js_info.package.id), ctx.attr.main)
+
+    bin = ctx.actions.declare_file("%s/bin" % ctx.label.name)
+    ctx.actions.expand_template(
+        template = archive_runner,
+        output = bin,
+        substitutions = {
+            "%{env}": " ".join(["%s=%s" % (name, shell.quote(value)) for name, value in env.items()]),
+            "%{main_module}": shell.quote(main_module),
+            "%{node_options}": " ".join([shell.quote(option) for option in ctx.attr.node_options]),
+        },
+        is_executable = True,
+    )
+
+    package_manifest = ctx.actions.declare_file("%s/packages.json" % ctx.label.name)
+    gen_manifest(
+        actions = ctx.actions,
+        manifest_bin = manifest,
+        manifest = package_manifest,
+        packages = transitive_packages,
+        deps = transitive_deps,
+        globals = [create_global(id = dep.package.id, name = dep.name) for dep in js_globals],
+        package_path = package_path,
+    )
+
+    archive = ctx.actions.declare_file("%s/modules.tar" % ctx.attr.name)
+
+    args = ctx.actions.args()
+    args.use_param_file("@%s")
+    args.set_param_file_format("multiline")
+    args.add("--bin", bin)
+    args.add("--manifest", package_manifest)
+    args.add("--output", archive)
+    args.add_all(transitive_js)
+    args.add_all(transitive_srcs)
+
+    ctx.actions.run(
+        arguments = [args],
+        inputs = depset([bin, package_manifest], transitive = [transitive_js, transitive_srcs]),
+        outputs = [archive],
+        executable = archive_linker.files_to_run.executable,
+        tools = [archive_linker.files_to_run],
+    )
+
+    default_info = DefaultInfo(files = depset([archive]))
+
+    return [default_info]
+
+nodejs_binary_archive = rule(
+    attrs = {
+        "dep": attr.label(
+            mandatory = True,
+            providers = [JsInfo],
+        ),
+        "env": attr.string_dict(
+            doc = "Environment variables",
+        ),
+        "global_deps": attr.label_list(
+            providers = [JsInfo],
+        ),
+        "main": attr.string(
+            mandatory = True,
+        ),
+        "node_options": attr.string_list(
+            doc = "Node.js options",
+        ),
+        "_archive_linker": attr.label(
+            cfg = "exec",
+            executable = True,
+            default = "//nodejs/archive-linker:bin",
+        ),
+        "_archive_runner": attr.label(
+            allow_single_file = True,
+            default = "//nodejs:archive_runner",
+        ),
+        "_manifest": attr.label(
+            cfg = "exec",
+            executable = True,
+            default = "//commonjs/manifest:bin",
+        ),
+    },
+    implementation = _nodejs_binary_archive_impl,
+)

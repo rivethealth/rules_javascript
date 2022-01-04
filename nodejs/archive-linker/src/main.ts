@@ -11,6 +11,7 @@ function packagePathName(id: string): string {
 }
 
 interface Args {
+  bin?: string;
   manifest: string;
   output: string;
   root?: string;
@@ -22,6 +23,7 @@ interface Args {
     prog: "nodejs-archive-linker",
     fromfile_prefix_chars: "@",
   });
+  parser.add_argument("--bin");
   parser.add_argument("--manifest", { required: true });
   parser.add_argument("--output", { required: true });
   parser.add_argument("--root", { help: "Root package ID" });
@@ -65,6 +67,10 @@ interface Args {
         linkname: path.relative(path.dirname(path_), otherPath),
       });
     }
+  }
+
+  if (args.bin) {
+    await copyFile("bin", args.bin);
   }
 
   for (const file of args.files) {
