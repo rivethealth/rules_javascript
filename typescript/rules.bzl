@@ -46,12 +46,16 @@ def declaration_path(input):
         return input.replace(".ts", ".d.ts")
     if input.endswith(".mts"):
         return input.replace(".mts", ".d.mts")
+    fail("%s does not have a recognized file extension" % input)
 
 def compiled_path(input):
     if input.endswith(".ts"):
         return input.replace(".ts", ".js")
     if input.endswith(".mts"):
         return input.replace(".mts", ".mjs")
+    if input.endswith(".json"):
+        return input
+    fail("%s does not have a recognized file extension" % input)
 
 def map_path(input):
     return input + ".map"
