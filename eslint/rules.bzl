@@ -32,7 +32,7 @@ def configure_eslint(name, dep, config, plugins = [], visibility = None):
         config = ":%s.config" % name,
         deps = [
             dep,
-            "@better_rules_javascript//worker/lib",
+            "@better_rules_javascript//bazel/worker:lib",
             "@better_rules_javascript_npm//argparse:lib",
             "@better_rules_javascript_npm//@types/argparse:lib",
             "@better_rules_javascript_npm//@types/node:lib",

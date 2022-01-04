@@ -1,7 +1,7 @@
 import { ArgumentParser } from "argparse";
 import * as fs from "fs";
 import prettier from "prettier";
-import { run } from "@better-rules-javascript/worker";
+import { run } from "@better-rules-javascript/bazel-worker";
 
 class PrettierWorker {
   constructor(private readonly options: any) {}

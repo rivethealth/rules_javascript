@@ -3,10 +3,7 @@ load("//typescript:rules.bzl", "ts_library", "tsconfig")
 
 ts_library(
     name = "lib",
-    srcs = glob([
-        "src/**/*.ts",
-        "src/**/*.mts",
-    ]),
+    srcs = glob(["src/**/*.ts"]),
     compiler = "//rules:tsc",
     config = ":tsconfig",
     root = ":root",
@@ -19,7 +16,8 @@ ts_library(
 
 cjs_root(
     name = "root",
-    package_name = "@better-rules-javascript//webpack-config",
+    package_name = "@better-rules-javascript/webpack-config",
+    descriptors = ["package.json"],
 )
 
 tsconfig(

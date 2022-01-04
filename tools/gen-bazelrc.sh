@@ -8,7 +8,7 @@ function escape_pattern {
 }
 
 test_packages="$( \
-    find . -path '*/bazel/*' \( -name BUILD -o -name BUILD.bazel \) \
+    find . -path '*/test/bazel/*' \( -name BUILD -o -name BUILD.bazel \) \
     | sed -e 's:/[^/]*$::' -e 's:^\./::' \
 )"
 

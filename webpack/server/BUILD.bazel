@@ -1,0 +1,16 @@
+package(default_visibility = ["//visibility:public"])
+
+filegroup(
+    name = "src",
+    srcs = glob(["src/**/*.ts"]),
+)
+
+filegroup(
+    name = "descriptors",
+    srcs = ["package.json"],
+)
+
+filegroup(
+    name = "tsconfig",
+    srcs = ["tsconfig.json"],
+)

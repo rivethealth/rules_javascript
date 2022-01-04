@@ -10,6 +10,13 @@ sh_test(
     tags = ["local"],
 )
 
+sh_test(
+    name = "server",
+    srcs = ["test_server.sh"],
+    data = [":bazel"],
+    tags = ["local"],
+)
+
 test_suite(
     name = "test",
 )

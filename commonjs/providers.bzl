@@ -82,6 +82,13 @@ def create_entries(ctx, actions, srcs, prefix, strip_prefix):
             target_file = src,
             progress_message = "Copying file to %{output}",
         )
+
+        #actions.run(
+        #    executable = "cp",
+        #    arguments = [src.path, file.path],
+        #    inputs = [src],
+        #    outputs = [file],
+        #)
         files.append(file)
     return files
 

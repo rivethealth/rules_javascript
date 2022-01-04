@@ -24,6 +24,9 @@ ln -rs .node_modules/better_rules_javascript_npm_zone.js0.11.4___root .node_modu
 # local deps
 mkdir -p node_modules/@better-rules-javascript
 ln -rs commonjs/package node_modules/@better-rules-javascript/commonjs-package
-ln -rs rules node_modules/@better-rules-javascript/rules
-ln -rs worker/lib node_modules/@better-rules-javascript/worker
+ln -rs ibazel/notification node_modules/@better-rules-javascript/ibazel-notification
 ln -rs nodejs/fs-linker node_modules/@better-rules-javascript/nodejs-fs-linker
+ln -rs rules node_modules/@better-rules-javascript/rules
+ln -rs webpack/config node_modules/@better-rules-javascript/webpack-config
+ln -rs bazel/runfiles node_modules/@better-rules-javascript/bazel-runfiles
+ln -rs bazel/worker node_modules/@better-rules-javascript/bazel-worker

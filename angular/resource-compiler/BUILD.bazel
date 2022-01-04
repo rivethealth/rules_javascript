@@ -24,7 +24,7 @@ ts_library(
     config = ":tsconfig",
     root = ":root",
     deps = [
-        "//worker/lib",
+        "//bazel/worker:lib",
         "@better_rules_javascript_npm//@types/argparse:lib",
         "@better_rules_javascript_npm//argparse:lib",
     ],

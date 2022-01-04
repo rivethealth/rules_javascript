@@ -3,7 +3,7 @@ NODE_MODULES_PREFIX = "_nodejs/node_modules"
 def package_path_name(id):
     return id.replace("@", "").replace(":", "_").replace("/", "_")
 
-def node_modules_links(packages, files):
+def modules_links(prefix, packages, files):
     result = {}
 
     packages_dict = {package.short_path: package for package in packages}
@@ -16,7 +16,7 @@ def node_modules_links(packages, files):
             root = "/".join(parts[:i])
             package = packages_dict.get(root, None)
             if package != None:
-                path = "%s/%s/%s" % (NODE_MODULES_PREFIX, package_path_name(package.id), "/".join(parts[i:]))
+                path = "%s/%s/%s" % (prefix, package_path_name(package.id), "/".join(parts[i:]))
                 result[path] = file
                 found = True
                 break

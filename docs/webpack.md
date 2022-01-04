@@ -72,6 +72,7 @@ configure_webpack(
     name = "webpack",
     config = ":webpack_config",
     dep = "@npm//webpack:lib",
+    # TODO: devserver
 )
 
 webpack_bundle(

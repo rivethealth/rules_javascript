@@ -1,19 +1,20 @@
 <!-- Generated with Stardoc: http://skydoc.bazel.build -->
 
-<a id="#node_modules_links"></a>
+<a id="#modules_links"></a>
 
-## node_modules_links
+## modules_links
 
 <pre>
-node_modules_links(<a href="#node_modules_links-packages">packages</a>, <a href="#node_modules_links-files">files</a>)
+modules_links(<a href="#modules_links-prefix">prefix</a>, <a href="#modules_links-packages">packages</a>, <a href="#modules_links-files">files</a>)
 </pre>
 
 **PARAMETERS**
 
-| Name                                             | Description               | Default Value |
-| :----------------------------------------------- | :------------------------ | :------------ |
-| <a id="node_modules_links-packages"></a>packages | <p align="center"> - </p> | none          |
-| <a id="node_modules_links-files"></a>files       | <p align="center"> - </p> | none          |
+| Name                                        | Description               | Default Value |
+| :------------------------------------------ | :------------------------ | :------------ |
+| <a id="modules_links-prefix"></a>prefix     | <p align="center"> - </p> | none          |
+| <a id="modules_links-packages"></a>packages | <p align="center"> - </p> | none          |
+| <a id="modules_links-files"></a>files       | <p align="center"> - </p> | none          |
 
 <a id="#package_path_name"></a>
 

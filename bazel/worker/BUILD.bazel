@@ -6,14 +6,14 @@ package(default_visibility = ["//visibility:public"])
 
 cjs_root(
     name = "root",
-    package_name = "@better-rules-javascript/worker",
+    package_name = "@better-rules-javascript/bazel-worker",
     descriptors = ["package.json"],
 )
 
 ts_proto_export(
     name = "worker_proto_lib",
     dep = "@bazel_tools//src/main/protobuf:worker_protocol_proto",
-    lib = "//worker/proto:libs",
+    lib = "//bazel/worker-proto:libs",
 )
 
 ts_simple_library(

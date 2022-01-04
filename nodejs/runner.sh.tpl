@@ -11,14 +11,14 @@ if [ -z "${RUNFILES_DIR:-}" ]; then
   fi
 fi
 
-if ! [ -z "${BUILD_WORKING_DIRECTORY:-}" ]; then
-  cd "$BUILD_WORKING_DIRECTORY"
-  unset BUILD_WORKING_DIRECTORY
-fi
+# if ! [ -z "${BUILD_WORKING_DIRECTORY:-}" ]; then
+#   cd "$BUILD_WORKING_DIRECTORY"
+#   unset BUILD_WORKING_DIRECTORY
+# fi
 
-BAZEL_WORKSPACE=%{workspace} \
-  NODE_PACKAGE_MANIFEST="$RUNFILES_DIR"/%{package_manifest} \
-  %{env} \
+export NODE_PACKAGE_MANIFEST="$RUNFILES_DIR"/%{package_manifest}
+
+%{env} \
   exec "$RUNFILES_DIR"/%{node} \
   -r "$RUNFILES_DIR"/%{runtime} \
   -r "$RUNFILES_DIR"/%{module_linker} \
