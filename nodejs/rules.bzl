@@ -279,6 +279,9 @@ def _nodejs_binary_archive_impl(ctx):
     transitive_srcs = depset(
         transitive = [js_info.transitive_srcs for js_info in deps],
     )
+    transitive_descriptors = depset(
+        transitive = [js_info.transitive_descriptors for js_info in deps],
+    )
 
     main_module = "%s/%s" % (package_path_name(js_info.package.id), ctx.attr.main)
 
@@ -315,10 +318,11 @@ def _nodejs_binary_archive_impl(ctx):
     args.add("--output", archive)
     args.add_all(transitive_js)
     args.add_all(transitive_srcs)
+    args.add_all(transitive_descriptors)
 
     ctx.actions.run(
         arguments = [args],
-        inputs = depset([bin, package_manifest], transitive = [transitive_js, transitive_srcs]),
+        inputs = depset([bin, package_manifest], transitive = [transitive_descriptors, transitive_js, transitive_srcs]),
         outputs = [archive],
         executable = archive_linker.files_to_run.executable,
         tools = [archive_linker.files_to_run],
