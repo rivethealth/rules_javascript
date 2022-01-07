@@ -4,9 +4,9 @@ package(default_visibility = ["//visibility:public"])
 
 stardoc(
     "doc",
-    "//protobuf:bzl",
+    "//ts-proto:bzl",
     [
-        "//protobuf:providers.bzl",
-        "//protobuf:rules.bzl",
+        "//ts-proto:providers.bzl",
+        "//ts-proto:rules.bzl",
     ],
 )

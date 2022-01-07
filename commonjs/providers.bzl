@@ -162,3 +162,6 @@ def output_prefix(path, label, actions):
 
 def package_path(package):
     return package.path
+
+def cjs_npm_label(repo):
+    return "@%s//:root" % repo

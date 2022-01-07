@@ -1,184 +1,117 @@
-def _js_import_external_impl(ctx):
-    ctx.download_and_extract(
-        ctx.attr.urls,
-        "tmp",
-        integrity = ctx.attr.integrity,
-    )
+load("//commonjs:workspace.bzl", "cjs_npm_plugin")
+load("//javascript:workspace.bzl", "js_npm_plugin")
 
-    # packages can have different prefixes
-    mv_result = ctx.execute(["sh", "-c", "mv tmp/* npm"])
-    if mv_result.return_code:
-        fail("Could not extract package")
+def npm_import_external_rule(plugins):
+    def impl(ctx):
+        deps = ctx.attr.deps
+        extra_deps = ctx.attr.extra_deps
+        package_name = ctx.attr.package_name
 
-    files_result = ctx.execute(["find", "npm", "-type", "f"])
-    if files_result.return_code:
-        fail("Could not list files")
-    files = files_result.stdout.split("\n")
-    sass = False and any([file.endswith(".scss") for file in files])
-    typescript = any([file.endswith(".d.ts") for file in files])
-
-    deps = ctx.attr.deps
-    extra_deps = ctx.attr.extra_deps
-
-    if ctx.name.startswith("npm_protobufjs"):
-        # protobufjs attempts to run npm install dependencies(!!)
-        # this may be fixed when protobufjs-cli is released
-        ctx.execute(["sh", "-c", "echo 'exports.setup = () => {}' >> npm/cli/util.js"])
-        ctx.execute(["sh", "-c", "echo 'require(\"./targets/json-module\")' >> npm/cli/util.js"])
-        ctx.execute(["sh", "-c", "echo 'require(\"./targets/json\")' >> npm/cli/util.js"])
-        ctx.execute(["sh", "-c", "echo 'require(\"./targets/proto\")' >> npm/cli/util.js"])
-        ctx.execute(["sh", "-c", "echo 'require(\"./targets/proto2\")' >> npm/cli/util.js"])
-        ctx.execute(["sh", "-c", "echo 'require(\"./targets/proto3\")' >> npm/cli/util.js"])
-        ctx.execute(["sh", "-c", "echo 'require(\"./targets/static-module\")' >> npm/cli/util.js"])
-        ctx.execute(["sh", "-c", "echo 'require(\"./targets/static\")' >> npm/cli/util.js"])
-        deps = list(deps)
-        deps.append("@npm_chalk4.1.0//:lib")
-        deps.append("@npm_escodegen2.0.0//:lib")
-        deps.append("@npm_espree7.3.0//:lib")
-        deps.append("@npm_glob7.1.6//:lib")
-        deps.append("@npm_minimist1.2.5//:lib")
-        deps.append("@npm_uglify_js3.11.6//:lib")
-        deps.append("@npm_estraverse5.2.0//:lib")
-
-    build = """
-load("@better_rules_javascript//commonjs:rules.bzl", "cjs_root")
-    """.strip()
-    build += "\n"
-
-    if sass:
-        build += """
-load("@better_rules_css//sass:rules.bzl", "sass_library")
-        """.strip()
-        build += "\n"
-    if typescript:
-        build += """
-load("@better_rules_javascript//typescript:rules.bzl", "ts_import")
-        """.strip()
-        build += "\n"
-    else:
-        build += """
-load("@better_rules_javascript//javascript:rules.bzl", "js_library")
-        """.strip()
-        build += "\n"
-
-    build += """
-package(default_visibility = ["//visibility:public"])
-
-cjs_root(
-    descriptors = glob(["npm/**/package.json"]),
-    name = "root",
-    package_name = {package_name},
-    strip_prefix = "%s/npm" % {name},
-)
-    """.strip().format(
-        package_name = json.encode(ctx.attr.package_name),
-        name = json.encode(ctx.name),
-    )
-
-    build += "\n"
-
-    if sass:
-        build += """
-sass_library(
-    name = "sass",
-    root = ":root",
-    srcs = glob(["npm/**/*.scss"]),
-    strip_prefix = "%s/npm" % {name},
-)
-        """.format(
-            name = json.encode(ctx.name),
+        ctx.download_and_extract(
+            ctx.attr.urls,
+            "tmp",
+            integrity = ctx.attr.integrity,
         )
-        build += "\n"
-    if typescript:
-        build += """
-ts_import(
-    declarations = glob(["npm/**/*.d.ts"], ["npm/**/*.scss"]),
-    name = "lib",
-    root = ":root",
-    deps = {deps},
-    extra_deps = {extra_deps},
-    js = glob(["npm/**/*"]),
-    strip_prefix = "%s/npm" % repository_name()[1:],
-)
-        """.strip().format(
-            deps = json.encode(deps),
-            extra_deps = json.encode(extra_deps),
-        )
-        build += "\n"
-    else:
-        build += """
-js_library(
-    name = "lib",
-    root = ":root",
-    deps = {deps},
-    extra_deps = {extra_deps},
-    srcs = glob(["npm/**/*"], ["npm/**/*.scss"]),
-    strip_prefix = "%s/npm" % repository_name()[1:],
-)
-        """.strip().format(
-            deps = json.encode(deps),
-            extra_deps = json.encode(extra_deps),
-        )
-        build += "\n"
-    ctx.file("BUILD.bazel", build)
 
-js_import_external = repository_rule(
-    implementation = _js_import_external_impl,
-    attrs = {
-        "deps": attr.string_list(
-            doc = "Dependencies",
-        ),
-        "extra_deps": attr.string_dict(
-            doc = "Extra dependencies.",
-        ),
-        "package_name": attr.string(
-            mandatory = True,
-        ),
-        "urls": attr.string_list(
-            doc = "URLs",
-            mandatory = True,
-        ),
-        "integrity": attr.string(
-            doc = "Integrity",
-        ),
-    },
-)
+        # packages can have different prefixes
+        mv_result = ctx.execute(["sh", "-c", "mv tmp/* npm"])
+        if mv_result.return_code:
+            fail("Could not extract package")
 
-def _js_import_npm_impl(ctx):
-    for package_name, repo in ctx.attr.packages.items():
+        files_result = ctx.execute(["find", "npm", "-type", "f"])
+        if files_result.return_code:
+            fail("Could not list files")
+        files = files_result.stdout.split("\n")
+        sass = False and any([file.endswith(".scss") for file in files])
+        typescript = any([file.endswith(".d.ts") for file in files])
+
+        if ctx.name.startswith("npm_protobufjs"):
+            # protobufjs attempts to run npm install dependencies(!!)
+            # this may be fixed when protobufjs-cli is released
+            ctx.execute(["sh", "-c", "echo 'exports.setup = () => {}' >> npm/cli/util.js"])
+            ctx.execute(["sh", "-c", "echo 'require(\"./targets/json-module\")' >> npm/cli/util.js"])
+            ctx.execute(["sh", "-c", "echo 'require(\"./targets/json\")' >> npm/cli/util.js"])
+            ctx.execute(["sh", "-c", "echo 'require(\"./targets/proto\")' >> npm/cli/util.js"])
+            ctx.execute(["sh", "-c", "echo 'require(\"./targets/proto2\")' >> npm/cli/util.js"])
+            ctx.execute(["sh", "-c", "echo 'require(\"./targets/proto3\")' >> npm/cli/util.js"])
+            ctx.execute(["sh", "-c", "echo 'require(\"./targets/static-module\")' >> npm/cli/util.js"])
+            ctx.execute(["sh", "-c", "echo 'require(\"./targets/static\")' >> npm/cli/util.js"])
+            deps = list(deps)
+            deps.append("@npm_chalk4.1.0//:lib")
+            deps.append("@npm_escodegen2.0.0//:lib")
+            deps.append("@npm_espree7.3.0//:lib")
+            deps.append("@npm_glob7.1.6//:lib")
+            deps.append("@npm_minimist1.2.5//:lib")
+            deps.append("@npm_uglify_js3.11.6//:lib")
+            deps.append("@npm_estraverse5.2.0//:lib")
+
         build = """
-package(default_visibility = ["//visibility:public"])
+    package(default_visibility = ["//visibility:public"])
+        """.strip()
+        build += "\n"
 
-alias(
-    name = "root",
-    actual = {root}
-)
-
-alias(
-    name = "lib",
-    actual = {lib}
-)
-
-alias(
-    name = "sass",
-    actual = {sass}
-)
-        """.strip().format(
-            root = json.encode(repo + "//:root"),
-            lib = json.encode(repo + "//:lib"),
-            sass = json.encode(repo + "//:sass"),
+        package = struct(
+            deps = deps,
+            extra_deps = extra_deps,
+            name = package_name,
         )
 
-        ctx.file("%s/BUILD.bazel" % package_name, build)
+        for plugin in plugins:
+            content = plugin.package_build(package, files)
+            if content:
+                build += content
+                build += "\n"
 
-js_import_npm = repository_rule(
-    implementation = _js_import_npm_impl,
-    attrs = {
-        "packages": attr.string_dict(
-            doc = "Packages",
-        ),
-    },
-)
+        ctx.file("BUILD.bazel", build)
+
+    return repository_rule(
+        implementation = impl,
+        attrs = {
+            "deps": attr.string_list(
+                doc = "Dependencies",
+            ),
+            "extra_deps": attr.string_dict(
+                doc = "Extra dependencies.",
+            ),
+            "package_name": attr.string(
+                mandatory = True,
+            ),
+            "urls": attr.string_list(
+                doc = "URLs",
+                mandatory = True,
+            ),
+            "integrity": attr.string(
+                doc = "Integrity",
+            ),
+        },
+    )
+
+def npm_import_rule(plugins):
+    def impl(ctx):
+        packages = ctx.attr.packages
+
+        for package_name, repo in packages.items():
+            build = """
+    package(default_visibility = ["//visibility:public"])
+            """.strip()
+            build += "\n"
+
+            for plugin in plugins:
+                content = plugin.alias_build(repo)
+                if content:
+                    build += content
+                    build += "\n"
+
+            ctx.file("%s/BUILD.bazel" % package_name, build)
+
+    return repository_rule(
+        implementation = impl,
+        attrs = {
+            "packages": attr.string_dict(
+                doc = "Packages",
+            ),
+        },
+    )
 
 def package_repo_name(name):
     name = name.replace("@", "")
@@ -186,24 +119,23 @@ def package_repo_name(name):
     name = name.replace("-", "_")
     return name
 
-def npm_package(name, package):
-    js_import_external(
-        name = "%s_%s" % (name, package_repo_name(package["id"])),
-        package_name = package["name"],
-        deps = ["@%s_%s//:lib" % (name, package_repo_name(dep["dep"])) for dep in package["deps"]],
-        extra_deps = {n: "@%s_%s//:root" % (name, package_repo_name(id)) for n, id in package.get("extra_deps", {}).items()},
-        urls = [package["url"]],
-        integrity = package["integrity"] if "integrity" in package and not package["integrity"].startswith("sha1-") else None,
-    )
+DEFAULT_PLUGINS = [
+    cjs_npm_plugin(),
+    js_npm_plugin(),
+]
 
-def npm_roots(name, roots):
-    root_packages = {root["name"]: "@%s_%s" % (name, package_repo_name(root["dep"])) for root in roots}
-    js_import_npm(name = name, packages = root_packages)
+def npm(name, packages, roots, plugins = DEFAULT_PLUGINS):
+    npm_import_external = npm_import_external_rule(plugins)
+    npm_import = npm_import_rule(plugins)
 
-def repositories():
-    pass
-
-def npm(name, packages, roots):
     for package in packages:
-        npm_package(name, package)
-    npm_roots(name, roots)
+        npm_import_external(
+            name = "%s_%s" % (name, package_repo_name(package["id"])),
+            package_name = package["name"],
+            deps = ["%s_%s" % (name, package_repo_name(dep["dep"])) for dep in package["deps"]],
+            extra_deps = {n: "%s_%s" % (name, package_repo_name(id)) for n, id in package.get("extra_deps", {}).items()},
+            urls = [package["url"]],
+            integrity = package["integrity"] if "integrity" in package and not package["integrity"].startswith("sha1-") else None,
+        )
+    root_packages = {root["name"]: "%s_%s" % (name, package_repo_name(root["dep"])) for root in roots}
+    npm_import(name = name, packages = root_packages)

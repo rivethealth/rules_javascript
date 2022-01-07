@@ -17,3 +17,6 @@ JsInfo = provider(
         "transitive_srcs": "Depset of sources",
     },
 )
+
+def js_npm_label(repo):
+    return "@%s//:lib" % repo
