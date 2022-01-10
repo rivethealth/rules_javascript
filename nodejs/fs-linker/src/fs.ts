@@ -448,7 +448,7 @@ function open(vfs: Vfs, delegate: typeof fs.open): typeof fs.open {
     if (resolved && resolved.path === undefined) {
       const args = [...arguments];
       args[0] = "/";
-    } else if (filePath !== resolved.path) {
+    } else if (resolved && filePath !== resolved.path) {
       args[0] = resolved.path;
     }
     return delegate.apply(this, args);
@@ -463,7 +463,7 @@ function openSync(vfs: Vfs, delegate: typeof fs.openSync): typeof fs.openSync {
     if (resolved && resolved.path === undefined) {
       const args = [...arguments];
       args[0] = "/";
-    } else if (filePath !== resolved.path) {
+    } else if (resolved && filePath !== resolved.path) {
       args[0] = resolved.path;
     }
     return delegate.apply(this, args);

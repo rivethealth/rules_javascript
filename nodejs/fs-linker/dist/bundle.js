@@ -704,7 +704,7 @@ function open(vfs, delegate) {
         const resolved = vfs.resolve(filePath);
         const args = [...arguments];
         if (resolved && resolved.path === undefined) ;
-        else if (filePath !== resolved.path) {
+        else if (resolved && filePath !== resolved.path) {
             args[0] = resolved.path;
         }
         return delegate.apply(this, args);
@@ -716,7 +716,7 @@ function openSync(vfs, delegate) {
         const resolved = vfs.resolve(filePath);
         const args = [...arguments];
         if (resolved && resolved.path === undefined) ;
-        else if (filePath !== resolved.path) {
+        else if (resolved && filePath !== resolved.path) {
             args[0] = resolved.path;
         }
         return delegate.apply(this, args);
