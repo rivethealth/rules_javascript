@@ -93,17 +93,25 @@ def _jest_test_impl(ctx):
         is_executable = True,
     )
 
+    runfiles = ctx.runfiles(
+        files = [config_file, nodejs_toolchain.nodejs.bin, ctx.file._fs_linker, ctx.file._module_linker, package_manifest, haste_map] + ctx.files.data,
+        transitive_files = depset(transitive = files),
+        root_symlinks = modules_links(
+            prefix = NODE_MODULES_PREFIX,
+            packages = transitive_packages.to_list(),
+            files = depset([config_file, haste_map], transitive = files).to_list(),
+        ),
+    )
+
+    for dep in ctx.attr.data:
+        if DefaultInfo not in dep:
+            continue
+        if dep[DefaultInfo].default_runfiles != None:
+            runfiles = runfiles.merge(dep[DefaultInfo].default_runfiles)
+
     default_info = DefaultInfo(
         executable = bin,
-        runfiles = ctx.runfiles(
-            files = [config_file, nodejs_toolchain.nodejs.bin, ctx.file._fs_linker, ctx.file._module_linker, package_manifest, haste_map] + ctx.files.data,
-            transitive_files = depset(transitive = files),
-            root_symlinks = modules_links(
-                prefix = NODE_MODULES_PREFIX,
-                packages = transitive_packages.to_list(),
-                files = depset([config_file, haste_map], transitive = files).to_list(),
-            ),
-        ),
+        runfiles = runfiles,
     )
 
     return [default_info]
