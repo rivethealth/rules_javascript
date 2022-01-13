@@ -12,4 +12,4 @@ else
     arg=write
 fi
 
-exec "$RUNFILES_DIR/better_rules_javascript/tools/eslint_lint/bin" "$arg"
+exec "$RUNFILES_DIR/better_rules_javascript/tools/eslint_lint" "$arg"

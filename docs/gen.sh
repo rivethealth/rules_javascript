@@ -10,4 +10,4 @@ mkdir -p docs/stardoc
 bazel build docs
 tar x --touch -f "$RUNFILES_DIR/better_rules_javascript/docs/docs.tar" -C docs/stardoc
 
-"$RUNFILES_DIR/better_rules_javascript/docs/doctoc/bin" --maxlevel 2 --notitle README.md docs/*.md
+"$RUNFILES_DIR/better_rules_javascript/docs/doctoc" --maxlevel 2 --notitle README.md docs/*.md

@@ -51,7 +51,7 @@ def _nodejs_binary_implementation(ctx):
     js_info = ctx.attr.dep[JsInfo]
     js_deps = [js_info] + [dep[JsInfo] for dep in ctx.attr.global_deps + ctx.attr.other_deps]
     js_globals = [dep[JsInfo] for dep in ctx.attr.global_deps]
-    name = ctx.label.name
+    name = ctx.attr.name
     node_options = ctx.attr.node_options
 
     nodejs_toolchain = ctx.toolchains["@better_rules_javascript//nodejs:toolchain_type"]
@@ -61,7 +61,7 @@ def _nodejs_binary_implementation(ctx):
     def package_path(package):
         return "%s/%s" % (NODE_MODULES_PREFIX, package_path_name(package.id))
 
-    package_manifest = actions.declare_file("%s/packages.json" % ctx.label.name)
+    package_manifest = actions.declare_file("%s.packages.json" % name)
     gen_manifest(
         actions = actions,
         manifest_bin = manifest,
@@ -74,7 +74,7 @@ def _nodejs_binary_implementation(ctx):
 
     main_module = "%s/%s/%s" % (NODE_MODULES_PREFIX, package_path_name(js_info.package.id), ctx.attr.main)
 
-    bin = actions.declare_file("%s/bin" % ctx.label.name)
+    bin = actions.declare_file(name)
     for file in ctx.files.preload:
         node_options.append("-r")
         node_options.append("./%s" % file.short_path)
@@ -181,6 +181,7 @@ def _nodejs_archive_impl(ctx):
     archive_linker = ctx.attr._archive_linker[DefaultInfo]
     manifest = ctx.attr._manifest[DefaultInfo]
     deps = [dep[CjsEntries] for dep in ctx.attr.deps]
+    name = ctx.attr.name
 
     package = create_package(
         id = "_",
@@ -207,7 +208,7 @@ def _nodejs_archive_impl(ctx):
         transitive = [cjs_entries.transitive_packages for cjs_entries in deps],
     )
 
-    package_manifest = actions.declare_file("%s/packages.json" % ctx.label.name)
+    package_manifest = actions.declare_file("%s.packages.json" % name)
     gen_manifest(
         actions = actions,
         manifest_bin = manifest,
@@ -218,7 +219,7 @@ def _nodejs_archive_impl(ctx):
         package_path = package_path,
     )
 
-    archive = actions.declare_file("%s/modules.tar" % ctx.attr.name)
+    archive = actions.declare_file("%s.modules.tar" % name)
 
     args = actions.args()
     args.use_param_file("@%s")
@@ -263,6 +264,7 @@ def _nodejs_binary_archive_impl(ctx):
     actions = ctx.actions
     archive_linker = ctx.attr._archive_linker[DefaultInfo]
     env = ctx.attr.env
+    name = ctx.attr.name
     node_options = ctx.attr.node_options
     manifest = ctx.attr._manifest[DefaultInfo]
     js_globals = [dep[JsInfo] for dep in ctx.attr.global_deps]
@@ -285,7 +287,7 @@ def _nodejs_binary_archive_impl(ctx):
 
     main_module = "%s/%s" % (package_path_name(js_info.package.id), ctx.attr.main)
 
-    bin = actions.declare_file("%s/bin" % ctx.label.name)
+    bin = actions.declare_file(name)
     actions.expand_template(
         template = archive_runner,
         output = bin,
@@ -297,7 +299,7 @@ def _nodejs_binary_archive_impl(ctx):
         is_executable = True,
     )
 
-    package_manifest = actions.declare_file("%s/packages.json" % ctx.label.name)
+    package_manifest = actions.declare_file("%s.packages.json" % name)
     gen_manifest(
         actions = actions,
         manifest_bin = manifest,
@@ -308,7 +310,7 @@ def _nodejs_binary_archive_impl(ctx):
         package_path = package_path,
     )
 
-    archive = actions.declare_file("%s/modules.tar" % ctx.attr.name)
+    archive = actions.declare_file("%s.tar" % name)
 
     args = actions.args()
     args.use_param_file("@%s")
