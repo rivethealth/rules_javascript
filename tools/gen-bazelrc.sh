@@ -23,4 +23,4 @@ packages="$(
     | sed 's/,$//' \
 )"
 
-sed -e "s/%{deleted_packages}/$(escape_pattern "$packages")/g" "$RUNFILES_DIR/better_rules_javascript/tools/deleted.bazelrc.template" > tools/deleted.bazelrc
+sed -e "s/%{deleted_packages}/$(escape_pattern "$packages")/g" "$RUNFILES_DIR/better_rules_javascript/tools/deleted.bazelrc.tpl" > tools/deleted.bazelrc

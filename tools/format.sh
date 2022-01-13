@@ -12,5 +12,5 @@ else
     arg=write
 fi
 
-"$RUNFILES_DIR/better_rules_javascript/tools/buildifier_format/bin" "$arg"
-"$RUNFILES_DIR/better_rules_javascript/tools/prettier_format/bin" "$arg"
+"$RUNFILES_DIR/better_rules_javascript/tools/buildifier_format" "$arg"
+"$RUNFILES_DIR/better_rules_javascript/tools/prettier_format" "$arg"
