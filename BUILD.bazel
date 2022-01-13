@@ -1,7 +1,6 @@
 load("//commonjs:rules.bzl", "cjs_root")
 load("//javascript:rules.bzl", "js_file")
 load("//nodejs:rules.bzl", "nodejs_archive")
-load("//nodejs:rules.bzl", "nodejs_binary_archive")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -9,12 +8,6 @@ js_file(
     name = "eslint_config",
     src = ".eslintrc.js",
     root = ":root",
-)
-
-nodejs_binary_archive(
-    name = "test_archive",
-    dep = "@better_rules_javascript_npm//webpack-cli:lib",
-    main = "bin/cli.js",
 )
 
 nodejs_archive(

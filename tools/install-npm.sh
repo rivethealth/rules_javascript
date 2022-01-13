@@ -8,7 +8,7 @@ cd "$BUILD_WORKSPACE_DIRECTORY"
 # external deps
 rm -fr .node_modules node_modules
 mkdir .node_modules
-tar xf "$RUNFILES_DIR/better_rules_javascript/nodejs_archive/modules.tar" -C .node_modules
+tar xf "$RUNFILES_DIR/better_rules_javascript/nodejs_archive.tar" -C .node_modules
 ln -s .node_modules/_ node_modules
 
 # fix Angular language service

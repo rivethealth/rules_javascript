@@ -219,7 +219,7 @@ def _nodejs_archive_impl(ctx):
         package_path = package_path,
     )
 
-    archive = actions.declare_file("%s.modules.tar" % name)
+    archive = actions.declare_file("%s.tar" % name)
 
     args = actions.args()
     args.use_param_file("@%s")
