@@ -4,12 +4,14 @@ load("@better_rules_javascript//jest:rules.bzl", "jest_test")
 
 cjs_root(
     name = "root",
-    package_name = "@better-rules-javascript_test/jest-dep",
+    package_name = "@better-rules-javascript-test/jest-dep",
+    sealed = True,
 )
 
 cjs_root(
     name = "other_root",
-    package_name = "@better-rules-javascript_test/jest-other",
+    package_name = "@better-rules-javascript-test/jest-other",
+    sealed = True,
 )
 
 js_library(
@@ -36,7 +38,10 @@ jest_test(
     config = ":jest_config",
     global_deps = [
         "@better_rules_javascript_npm_source_map_support0.5.21//:lib",
+        "@better_rules_javascript_npm_babel_helper_compilation_targets7.16.3//:lib",
+        "@better_rules_javascript_npm//jest-junit:lib",
     ],
     jest = "@better_rules_javascript_npm//jest:lib",
+    jest_haste_map = "@better_rules_javascript_npm//jest-haste-map:lib",
     deps = [":test_lib"],
 )

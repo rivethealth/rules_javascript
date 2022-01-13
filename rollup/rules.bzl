@@ -60,12 +60,13 @@ def configure_rollup(name, dep, config, visibility = None):
     )
 
 def _rollup_bundle_impl(ctx):
+    actions = ctx.actions
     dep = ctx.attr.dep[JsInfo]
     rollup = ctx.attr.rollup[RollupInfo]
 
-    package_manifest = ctx.actions.declare_file("%s/packages.json" % ctx.label.name)
+    package_manifest = actions.declare_file("%s/packages.json" % ctx.label.name)
     gen_manifest(
-        actions = ctx.actions,
+        actions = actions,
         deps = dep.transitive_deps,
         globals = [],
         manifest = package_manifest,
@@ -74,13 +75,13 @@ def _rollup_bundle_impl(ctx):
         package_path = package_path,
     )
 
-    bundle = ctx.actions.declare_file("%s/bundle.js" % ctx.label.name)
+    bundle = actions.declare_file("%s/bundle.js" % ctx.label.name)
 
     args = []
     args.append("--config")
     args.append("./%s.runfiles/%s/%s" % (rollup.bin.executable.path, NODE_MODULES_PREFIX, rollup.config_path))
 
-    ctx.actions.run(
+    actions.run(
         env = {
             "NODE_FS_PACKAGE_MANIFEST": package_manifest.path,
             "NODE_OPTIONS_APPEND": "-r ./%s" % ctx.file._fs_linker.path,
@@ -92,11 +93,7 @@ def _rollup_bundle_impl(ctx):
         arguments = args,
         inputs = depset(
             [package_manifest, ctx.file._fs_linker],
-            transitive = [
-                dep.transitive_descriptors,
-                dep.transitive_js,
-                dep.transitive_srcs,
-            ],
+            transitive = [dep.transitive_files, dep.transitive_srcs],
         ),
         outputs = [bundle],
     )

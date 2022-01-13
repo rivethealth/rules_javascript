@@ -1,0 +1,16 @@
+filegroup(
+    name = "bazel",
+    srcs = glob(["bazel/**/*"]),
+    data = ["@better_rules_javascript_files//:common"],
+)
+
+sh_test(
+    name = "directory",
+    srcs = ["test_directory.sh"],
+    data = [":bazel"],
+    tags = ["local"],
+)
+
+test_suite(
+    name = "test",
+)

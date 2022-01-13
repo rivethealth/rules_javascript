@@ -91,6 +91,9 @@ test_suite(
     name = "test",
     tests = [
         "//angular/test",
+        "//commonjs/test",
+        "//file/test",
+        "//javascript/test",
         "//nodejs/test",
         "//rollup/test",
         "//ts-proto/test",

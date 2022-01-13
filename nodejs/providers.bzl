@@ -12,7 +12,7 @@ def modules_links(prefix, packages, files):
         found = False
 
         # find longest prefix
-        for i in reversed(range(len(parts))):
+        for i in reversed(range(len(parts) + 1)):
             root = "/".join(parts[:i])
             package = packages_dict.get(root, None)
             if package != None:
@@ -21,6 +21,7 @@ def modules_links(prefix, packages, files):
                 found = True
                 break
         if not found:
+            print(packages_dict.keys())
             fail("No packages found for file %s" % file.short_path)
 
     return result

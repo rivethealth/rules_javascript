@@ -8,5 +8,6 @@ stardoc(
     [
         "//commonjs:providers.bzl",
         "//commonjs:rules.bzl",
+        "//commonjs:workspace.bzl",
     ],
 )

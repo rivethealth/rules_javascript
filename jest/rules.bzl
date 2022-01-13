@@ -5,6 +5,7 @@ load("//javascript:providers.bzl", "JsFile", "JsInfo")
 load("//util:path.bzl", "output", "runfile_path")
 
 def _jest_test_impl(ctx):
+    actions = ctx.actions
     env = ctx.attr.env
     manifest_bin = ctx.attr._manifest[DefaultInfo]
     config_dep = ctx.attr.config[JsInfo]
@@ -13,12 +14,12 @@ def _jest_test_impl(ctx):
     js_info = ctx.attr.jest[JsInfo]
     js_deps = [js_info, ctx.attr.jest_haste_map[JsInfo]] + [dep[JsInfo] for dep in ctx.attr.deps + ctx.attr.global_deps + [ctx.attr.config]]
     js_globals = [dep[JsInfo] for dep in ctx.attr.global_deps]
-    output_ = output(label = ctx.label, actions = ctx.actions)
+    output_ = output(label = ctx.label, actions = actions)
 
     nodejs_toolchain = ctx.toolchains["@better_rules_javascript//nodejs:toolchain_type"]
 
-    haste_map = ctx.actions.declare_file("%s/haste-map.js" % ctx.attr.name)
-    ctx.actions.symlink(
+    haste_map = actions.declare_file("%s/haste-map.js" % ctx.attr.name)
+    actions.symlink(
         output = haste_map,
         target_file = ctx.file._haste_map,
         progress_message = "Copying file to %{output}",
@@ -26,8 +27,7 @@ def _jest_test_impl(ctx):
 
     files = []
     for js_info_ in [js_info] + js_deps:
-        files.append(js_info_.transitive_descriptors)
-        files.append(js_info_.transitive_js)
+        files.append(js_info_.transitive_files)
         files.append(js_info_.transitive_srcs)
 
     package = create_package(
@@ -49,9 +49,9 @@ def _jest_test_impl(ctx):
     def package_path(package):
         return "%s/%s" % (NODE_MODULES_PREFIX, package_path_name(package.id))
 
-    package_manifest = ctx.actions.declare_file("%s/packages.json" % ctx.label.name)
+    package_manifest = actions.declare_file("%s/packages.json" % ctx.label.name)
     gen_manifest(
-        actions = ctx.actions,
+        actions = actions,
         deps = depset(deps, transitive = [dep.transitive_deps for dep in js_deps]),
         globals = [create_global(id = dep.package.id, name = dep.name) for dep in js_globals],
         manifest = package_manifest,
@@ -62,8 +62,8 @@ def _jest_test_impl(ctx):
 
     main_module = "%s/%s/bin/jest.js" % (NODE_MODULES_PREFIX, package_path_name(js_info.package.id))
 
-    config_file = ctx.actions.declare_file("%s/jestconfig.js" % ctx.attr.name)
-    ctx.actions.expand_template(
+    config_file = actions.declare_file("%s/jestconfig.js" % ctx.attr.name)
+    actions.expand_template(
         template = ctx.file._config,
         output = config_file,
         substitutions = {
@@ -76,8 +76,8 @@ def _jest_test_impl(ctx):
         },
     )
 
-    bin = ctx.actions.declare_file("%s/bin" % ctx.label.name)
-    ctx.actions.expand_template(
+    bin = actions.declare_file("%s/bin" % ctx.label.name)
+    actions.expand_template(
         template = ctx.file._runner,
         output = bin,
         substitutions = {

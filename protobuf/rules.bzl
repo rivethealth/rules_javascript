@@ -1,6 +1,6 @@
-load("@better_rules_javascript//commonjs:providers.bzl", "create_dep", "output_prefix")
-load("//commonjs:providers.bzl", "CjsInfo")
+load("//commonjs:providers.bzl", "CjsInfo", "create_dep", "output_name")
 load("//javascript:providers.bzl", "JsInfo")
+load("//util:path.bzl", "output")
 load(":aspects.bzl", "js_proto_aspect")
 load(":providers.bzl", "JsProtoInfo", "JsProtobuf")
 
@@ -24,7 +24,9 @@ js_protoc = rule(
 
 def _js_proto_libraries_impl(ctx):
     cjs_info = ctx.attr.root[CjsInfo]
-    prefix = output_prefix(cjs_info.package.path, ctx.label, ctx.actions)
+    prefix = ctx.attr.prefix
+    output_ = output(ctx.label, actions)
+    workspace_name = ctx.workspace_name
 
     libs = depset(
         order = "postorder",
@@ -34,17 +36,21 @@ def _js_proto_libraries_impl(ctx):
     js_infos = {}
     for lib in libs.to_list():
         js = []
-        for js_ in lib.js:
-            path = js_.path[len(lib.path + "/"):]
-            if prefix:
-                path = "%s/%s" % (prefix, path)
-            file = ctx.actions.declare_file(path)
-            ctx.actions.symlink(
-                output = file,
-                target_file = js_,
-                progress_message = "Copying file to %{output}",
+        for file in lib.js:
+            path = output_name(
+                package_output = output_,
+                file = js_,
+                prefix = prefix,
+                root = cjs_info.package,
+                strip_prefix = lib.path,
+                workspace_name = workspace_name,
             )
-            js.append(file)
+            js_ = actions.declare_file(path)
+            actions.symlink(
+                output = js_,
+                target_file = file,
+            )
+            js.append(js_)
 
         js_deps = list(lib.js_deps) + [js_infos[label] for label in lib.deps]
 
@@ -52,17 +58,13 @@ def _js_proto_libraries_impl(ctx):
             [create_dep(id = cjs_info.package.id, name = js_info.name, dep = js_info.package.id, label = lib.label) for js_info in js_deps],
             transitive = [js_info.transitive_deps for js_info in js_deps],
         )
-        transitive_descriptors = depset(
-            cjs_info.descriptors,
-            transitive = [js_info.transitive_descriptors for js_info in js_deps],
-        )
         transitive_packages = depset(
             [cjs_info.package],
             transitive = [js_info.transitive_packages for js_info in js_deps],
         )
-        transitive_js = depset(
+        transitive_files = depset(
             js,
-            transitive = [js_info.transitive_js for js_info in js_deps],
+            transitive = [js_info.transitive_files for js_info in js_deps],
         )
         transitive_srcs = depset(
             [],
@@ -72,8 +74,7 @@ def _js_proto_libraries_impl(ctx):
             name = cjs_info.name,
             package = cjs_info.package,
             transitive_deps = transitive_deps,
-            transitive_descriptors = transitive_descriptors,
-            transitive_js = transitive_js,
+            transitive_files = transitive_files,
             transitive_srcs = transitive_srcs,
             transitive_packages = transitive_packages,
         )
@@ -100,8 +101,10 @@ def js_proto_libraries_rule(js_proto):
                 aspects = [js_proto],
             ),
             "root": attr.label(
+                mandatory = True,
                 providers = [CjsInfo],
             ),
+            "prefix": attr.string(),
         },
     )
 
@@ -117,7 +120,7 @@ def _js_proto_export_impl(ctx):
     return [js_info]
 
 js_proto_export = rule(
-    doc = "TypeScript protobuf library",
+    doc = "JavaScript protobuf library",
     implementation = _js_proto_export_impl,
     attrs = {
         "dep": attr.label(

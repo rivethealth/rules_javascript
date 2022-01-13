@@ -31,6 +31,7 @@ tsconfig(
 configure_ts_simple_compiler(
     name = "simple_tsc",
     ts = "@better_rules_javascript_npm//typescript:lib",
+    tslib = "@better_rules_javascript_npm//tslib:lib",
 )
 
 configure_ts_compiler(

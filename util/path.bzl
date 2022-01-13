@@ -25,6 +25,9 @@ def runfile_path(workspace, file):
     return path
 
 def output(label, actions, dir = ""):
+    """
+    Returns the output paths
+    """
     file = actions.declare_file("%s.dummy" % label.name if not dir else "%s/.dummy" % dir)
     actions.write(file, "")
     return struct(

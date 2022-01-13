@@ -12,7 +12,7 @@ def _js_proto_impl(target, ctx):
     cjs_info = js_proto.root
 
     output_name = "%s/js_proto" % target.label.name
-    output_ = output(ctx.label, ctx.actions, output_name)
+    output_ = output(ctx.label, actions, output_name)
 
     # declare files
     js = []
@@ -22,11 +22,10 @@ def _js_proto_impl(target, ctx):
         if proto.proto_source_root and proto.proto_source_root != ".":
             path = path[len("%s/" % proto.proto_source_root):]
         protos.append(path)
-        name = path.replace(".proto", ".ts")
-        js_ = ctx.actions.declare_file("%s/js/%s" % (output_name, path.replace(".proto", "_pb.js")))
+        js_ = actions.declare_file("%s/%s" % (output_name, path.replace(".proto", "_pb.js")))
         js.append(js_)
 
-    args = ctx.actions.args()
+    args = actions.args()
     args.add(protoc.protoc_executable.path)
     args.add_joined(
         proto.transitive_descriptor_sets,
@@ -34,7 +33,7 @@ def _js_proto_impl(target, ctx):
         format_joined = "--descriptor_set_in=%s",
     )
 
-    ctx.actions.run_shell(
+    actions.run_shell(
         command = '''
 protoc="$1"
 shift
@@ -58,7 +57,7 @@ mkdir -p "$out"
         deps = [dep.label for dep in ctx.rule.attr.deps],
         js = js,
         label = ctx.label,
-        path = "%s/js" % output_.path,
+        path = output_.path,
         js_deps = js_proto.runtime,
     )
     transitive_libs = depset(

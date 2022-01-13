@@ -2,26 +2,23 @@ import { createRequire } from "module";
 import * as path from "path";
 import { Configuration } from "webpack";
 
-const runfilesDir = process.env.RUNFILES_DIR;
-const configRunfilePath = process.env.WEBPACK_CONFIG;
 const compilationMode = process.env.COMPILATION_MODE;
 const inputRoot = process.env.WEBPACK_INPUT_ROOT;
 const output = process.env.WEBPACK_OUTPUT;
 
-const configPath = path.resolve(runfilesDir, configRunfilePath);
-
-export async function configure(): Promise<Configuration> {
-  const baseConfig = await import(configPath);
+export async function configure(
+  configPath: string,
+  baseConfig: Configuration,
+): Promise<Configuration> {
   const configRequire = createRequire(configPath);
-
   const config: Configuration = { ...baseConfig };
   if (config.mode === undefined) {
     config.mode = compilationMode === "opt" ? "production" : "development";
   }
 
-  // config.output = config.output ? { ...config.output } : {};
-  // config.output.path = path.resolve(path.dirname(output));
-  // config.output.filename = path.basename(output);
+  config.output = config.output ? { ...config.output } : {};
+  config.output.path = path.resolve(path.dirname(output));
+  config.output.filename = path.basename(output);
   if (typeof config.entry === "string") {
     config.entry = path.resolve(inputRoot, config.entry);
   } else if (config.entry) {

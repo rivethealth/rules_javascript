@@ -63,35 +63,6 @@ def create_dep(id, name, dep, label):
         name = name,
     )
 
-def create_entries(ctx, actions, srcs, prefix, strip_prefix):
-    files = []
-    for src in srcs:
-        path = runfile_path(ctx.workspace_name, src)
-        if path == strip_prefix:
-            path = prefix
-        else:
-            if strip_prefix:
-                if not path.startswith(strip_prefix + "/"):
-                    fail("Source %s does not have prefix %s" % (path, strip_prefix))
-                path = path[len(strip_prefix + "/"):]
-            if prefix:
-                path = prefix + "/" + path
-        file = actions.declare_file(path)
-        actions.symlink(
-            output = file,
-            target_file = src,
-            progress_message = "Copying file to %{output}",
-        )
-
-        #actions.run(
-        #    executable = "cp",
-        #    arguments = [src.path, file.path],
-        #    inputs = [src],
-        #    outputs = [file],
-        #)
-        files.append(file)
-    return files
-
 def create_global(id, name):
     return struct(
         id = id,
@@ -148,17 +119,44 @@ def gen_manifest(actions, manifest_bin, manifest, packages, deps, globals, packa
         tools = [manifest_bin.files_to_run],
     )
 
-def output_prefix(path, label, actions):
-    dummy = actions.declare_file("%s.package" % label.name)
-    actions.write(dummy, "")
+def _output_name(root, package_output, prefix):
+    path = prefix
 
-    if path == dummy.dirname:
-        return ""
-    if dummy.dirname.startswith(path + "/"):
-        return ""
-    if path.startswith(dummy.dirname + "/"):
-        return path[len(dummy.dirname + "/"):]
-    fail("Package %s not compatible with ouput %s" % (path, dummy.dirname))
+def output_root(root, package_output, prefix):
+    if root.path.startswith(package_output.path + "/"):
+        return "%s/%s" % (root.path, prefix) if prefix else root.path
+    elif root.path != package_output.path:
+        fail("Output %s cannot write to %s" % (package_output.path, root))
+    return root.path
+
+def output_name(workspace_name, file, root, package_output, prefix, strip_prefix):
+    """
+    Computes the output name for a file.
+
+    Args:
+      workspace_name: Workspace name
+      file: Source file
+      root: Output root
+      package_output: Bazel package output path
+      prefix: Path segments to prepend
+      strip_prefix: Path segments to remove
+    """
+    path = runfile_path(workspace_name, file)
+    if strip_prefix:
+        if path == strip_prefix:
+            path = ""
+        elif path.startswith(strip_prefix + "/"):
+            path = path[len(strip_prefix + "/"):]
+        else:
+            fail("File %s does not have prefix %s" % (path, strip_prefix))
+    if prefix:
+        path = "%s/%s" % (prefix, path) if path else prefix
+    if root.path.startswith(package_output.path + "/"):
+        output = root.path[len(package_output.path + "/"):]
+        path = "%s/%s" % (output, path) if path else output
+    elif root.path != package_output.path:
+        fail("Output %s cannot write to %s" % (package_output.path, root))
+    return path
 
 def package_path(package):
     return package.path

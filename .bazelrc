@@ -12,6 +12,6 @@ test --disk_cache=.bazel_cache
 test --experimental_allow_unresolved_symlinks
 test --experimental_strict_action_env
 test --test_env=HOME
-test --test_output=errors
+test --test_output=streamed
 test --local_test_jobs=1
 test --verbose_failures

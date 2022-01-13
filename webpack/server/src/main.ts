@@ -13,7 +13,7 @@ interface Args {
 
 const packageManifestPath = process.env.NODE_FS_PACKAGE_MANIFEST;
 
-const parser = new ArgumentParser();
+const parser = new ArgumentParser({ prog: "webpack-server" });
 parser.add_argument("--packages-manifest", {
   dest: "packagesManifest",
   required: true,

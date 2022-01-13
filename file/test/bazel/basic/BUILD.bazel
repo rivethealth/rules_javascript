@@ -1,0 +1,9 @@
+load("@better_rules_javascript//file:rules.bzl", "directory")
+
+directory(
+    name = "example",
+    srcs = [
+        "a",
+        "b",
+    ],
+)

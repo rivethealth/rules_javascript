@@ -12,12 +12,12 @@ TsProtoInfo = provider(
         "transitive_libs": "Transitive library structs",
         "transitive_packages": "Transitive packages",
         "transitive_paths": "Paths of dependencies",
-        "transitive_declarations": "Transitive declarations",
+        "transitive_files": "Transitive declarations",
         "transitive_deps": "Transitive deps",
     },
 )
 
-def create_lib(label, path, deps, js, declarations, srcs, js_deps, ts_deps):
+def create_lib(label, path, runfile_path, deps, js, declarations, srcs, js_deps, ts_deps):
     """
     Create library struct
 
@@ -36,6 +36,7 @@ def create_lib(label, path, deps, js, declarations, srcs, js_deps, ts_deps):
         js_deps = tuple(js_deps),
         label = label,
         path = path,
+        runfile_path = runfile_path,
         srcs = tuple(srcs),
         ts_deps = tuple(ts_deps),
     )
@@ -45,5 +46,6 @@ TsProtosInfo = provider(
     fields = {
         "js": "Dict of JsInfo by label",
         "ts": "Dict of TsInfo by label",
+        "default": "Dict of DefaultInfo by label",
     },
 )

@@ -4,8 +4,8 @@ load("@rules_pkg//:pkg.bzl", "pkg_tar")
 package(default_visibility = ["//visibility:public"])
 
 sh_binary(
-    name = "gen_docs",
-    srcs = ["gen-docs.sh"],
+    name = "gen",
+    srcs = ["gen.sh"],
     data = [
         ":doctoc",
         ":gen_docs_data",
@@ -22,6 +22,7 @@ pkg_tar(
     srcs = [
         "//angular/doc",
         "//commonjs/doc",
+        "//file/doc",
         "//javascript/doc",
         "//jest/doc",
         "//nodejs/doc",

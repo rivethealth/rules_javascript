@@ -53,7 +53,7 @@ function transformDecorator(
       } else {
         return property;
       }
-      switch (property.name.text) {
+      switch (name) {
         case "styleUrls": {
           if (!ts.isArrayLiteralExpression(property.initializer)) {
             break;
@@ -110,7 +110,7 @@ export function resourceTransformer(): ts.TransformerFactory<ts.SourceFile> {
   return (context: ts.TransformationContext) => {
     const { factory } = context;
     return (file: ts.SourceFile) => {
-      let imports: ts.Statement[] = [];
+      const imports: ts.Statement[] = [];
       file = ts.visitEachChild(
         file,
         (node): ts.VisitResult<ts.Node> => {

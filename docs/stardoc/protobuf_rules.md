@@ -8,7 +8,7 @@
 js_proto_export(<a href="#js_proto_export-name">name</a>, <a href="#js_proto_export-dep">dep</a>, <a href="#js_proto_export-lib">lib</a>)
 </pre>
 
-TypeScript protobuf library
+JavaScript protobuf library
 
 **ATTRIBUTES**
 

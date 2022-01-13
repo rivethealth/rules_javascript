@@ -1,6 +1,6 @@
 const {
   Person,
-} = require("@better_rules_javascript_test/proto/example/proto/person_pb");
+} = require("@better-rules-javascript-test/proto/example/proto/person_pb");
 
 const person = new Person();
 person.setName("First Middle Last");

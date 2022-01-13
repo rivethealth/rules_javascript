@@ -42,8 +42,8 @@ format(
 )
 
 sh_binary(
-    name = "gen_deps",
-    srcs = ["gen-deps.sh"],
+    name = "gen_npm",
+    srcs = ["gen-npm.sh"],
     data = ["//npm/yarn-gen:bin"],
 )
 
@@ -71,13 +71,13 @@ filegroup(
 )
 
 sh_binary(
-    name = "install_deps",
-    srcs = ["install-deps.sh"],
-    data = [":install_deps_data"],
+    name = "install_npm",
+    srcs = ["install-npm.sh"],
+    data = [":install_npm_data"],
 )
 
 filegroup(
-    name = "install_deps_data",
+    name = "install_npm_data",
     srcs = ["//:nodejs_archive"],
 )
 

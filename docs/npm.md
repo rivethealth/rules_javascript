@@ -65,9 +65,34 @@ Then load the repositories into the workspace.
 
 ```bzl
 load("@better_rules_javascript//npm:workspace.bzl", "npm")
-load(":npm_data.bzl", NPM_PACKAGES = "PACKAGES", NPM_ROOTS = "ROOTS")
-npm("npm", NPM_PACKAGES, NPM_ROOTS)
+load(":npm_data.bzl", npm_packages = "PACKAGES", npm_roots = "ROOTS")
+npm("npm", npm_packages, npm_roots)
 ```
+
+### Plugins
+
+Several types of files can be distributed in NPM packages: JavaScript,
+TypeScript, CSS, etc.
+
+To support these, the npm repostiories can be customized via "plugins."
+
+```bzl
+npm("npm", npm_packages, npm_roots, npm_plugins)
+```
+
+The defaults are
+
+```bzl
+load("@better_rules_javascript//commonjs:workspace.bzl", "cjs_npm_plugin")
+load("@better_rules_javascript//js:workspace.bzl", "js_npm_plugin")
+
+[
+  cjs_npm_plugin(),
+  js_npm_plugin(),
+]
+```
+
+You may want to add others like `ts_npm_plugin()`.
 
 ### Usage
 

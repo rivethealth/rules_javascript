@@ -4,7 +4,7 @@ load("@better_rules_javascript//rollup:rules.bzl", "configure_rollup", "rollup_b
 
 cjs_root(
     name = "root",
-    package_name = "@better-rules-javascript_test/rollup-basic",
+    package_name = "@better-rules-javascript-test/rollup-basic",
     descriptors = ["package.json"],
 )
 

@@ -1,8 +1,8 @@
-load("@better_rules_javascript//commonjs:providers.bzl", "output_prefix")
 load("@rules_proto//proto:defs.bzl", "ProtoInfo")
-load("//commonjs:providers.bzl", "CjsInfo", "create_dep", "create_package")
+load("//commonjs:providers.bzl", "CjsInfo", "create_dep", "create_package", "output_name")
 load("//javascript:providers.bzl", "JsInfo")
 load("//nodejs:rules.bzl", "nodejs_binary")
+load("//util:path.bzl", "output")
 load(":providers.bzl", "JsProtobuf")
 
 def _js_proto_impl(ctx):
@@ -46,12 +46,22 @@ def configure_js_proto(name, dep, visibility = None):
 def _js_proto_library_impl(ctx):
     cjs_info = ctx.attr.root[CjsInfo]
     js_proto = ctx.attr.js_proto[JsProtobuf]
+    output_ = output(ctx.label, actions)
     runtime_package = js_proto.runtime
-    prefix = output_prefix(cjs_info.package.path, ctx.label, ctx.actions)
+    workspace_name = ctx.workspace_name
 
-    output = ctx.actions.declare_file("%s/%s" % (prefix, ctx.attr.output) if prefix else output)
+    output_name_ = output_name(
+        workspace_name = workspace_name,
+        file = struct(short_path = ctx.attr.output),
+        root = cjs_info.package,
+        package_output = output_,
+        prefix = "",
+        strip_prefix = "",
+    )
 
-    args = ctx.actions.args()
+    output = actions.declare_file(output_name_)
+
+    args = actions.args()
     for dep in ctx.attr.deps:
         args.add_all(dep[ProtoInfo].transitive_proto_path, before_each = "-p")
     args.add("-o", output.path)
@@ -60,7 +70,7 @@ def _js_proto_library_impl(ctx):
 
     # args.add("--es6")
     args.add_all(dep[ProtoInfo].transitive_sources)
-    ctx.actions.run(
+    actions.run(
         executable = js_proto.bin.executable,
         tools = [js_proto.bin],
         arguments = [args],
@@ -70,10 +80,6 @@ def _js_proto_library_impl(ctx):
 
     js_deps = [js_proto.runtime]
 
-    transitive_descriptors = depset(
-        cjs_info.descriptors,
-        transitive = [js_info.transitive_descriptors for js_info in js_deps],
-    )
     transitive_deps = depset(
         [
             create_dep(id = cjs_info.package.id, dep = js_proto.runtime.package.id, name = js_proto.runtime.name, label = ctx.attr.js_proto.label),
@@ -84,9 +90,9 @@ def _js_proto_library_impl(ctx):
         [cjs_info.package],
         transitive = [js_info.transitive_packages for js_info in js_deps],
     )
-    transitive_js = depset(
+    transitive_files = depset(
         [output],
-        transitive = [js_info.transitive_js for js_info in js_deps],
+        transitive = [js_info.transitive_files for js_info in js_deps],
     )
     transitive_srcs = depset(
         [],
@@ -94,10 +100,9 @@ def _js_proto_library_impl(ctx):
     )
 
     js_info = JsInfo(
-        transitive_js = transitive_js,
+        transitive_files = transitive_files,
         package = cjs_info.package,
         transitive_deps = transitive_deps,
-        transitive_descriptors = transitive_descriptors,
         transitive_packages = transitive_packages,
         transitive_srcs = transitive_srcs,
     )

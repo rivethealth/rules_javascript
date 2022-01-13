@@ -1,5 +1,3 @@
 module.exports = {
-  haste: {
-    forceNodeFilesystemAPI: true,
-  },
+  transformIgnorePatterns: [],
 };

@@ -4,23 +4,13 @@ load("@better_rules_javascript//jest:rules.bzl", "jest_test")
 
 cjs_root(
     name = "root",
-    package_name = "@better-rules-javascript_test/jest-transform",
+    package_name = "@better-rules-javascript-test/jest-transform",
 )
 
 js_library(
     name = "lib",
     srcs = ["example.js"],
     root = ":root",
-)
-
-jest_test(
-    name = "test_fail",
-    config = ":jest_config",
-    global_deps = [
-        "@better_rules_javascript_npm_source_map_support0.5.21//:lib",
-    ],
-    jest = "@better_rules_javascript_npm//jest:lib",
-    deps = [":test_fail_lib"],
 )
 
 js_library(
@@ -41,16 +31,12 @@ jest_test(
     config = ":jest_config",
     data = ["//:babel_config"],
     global_deps = [
-        "@better_rules_javascript_npm_source_map_support0.5.21//:lib",
         "@better_rules_javascript_npm//@babel/plugin-transform-modules-commonjs:lib",
+        "@better_rules_javascript_npm//jest-junit:lib",
+        "@better_rules_javascript_npm_babel_helper_compilation_targets7.16.3//:lib",
+        "@better_rules_javascript_npm_source_map_support0.5.21//:lib",
     ],
     jest = "@better_rules_javascript_npm//jest:lib",
+    jest_haste_map = "@better_rules_javascript_npm//jest-haste-map:lib",
     deps = [":test_lib"],
-)
-
-js_library(
-    name = "test_fail_lib",
-    srcs = ["example-fail.spec.js"],
-    root = ":root",
-    deps = [":lib"],
 )

@@ -8,5 +8,6 @@ stardoc(
     [
         "//typescript:providers.bzl",
         "//typescript:rules.bzl",
+        "//typescript:workspace.bzl",
     ],
 )

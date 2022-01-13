@@ -53,6 +53,20 @@ CommonJS-style package
 | <a id="CjsInfo-package"></a>package         | Package struct   |
 | <a id="CjsInfo-name"></a>name               | Name             |
 
+<a id="#cjs_npm_label"></a>
+
+## cjs_npm_label
+
+<pre>
+cjs_npm_label(<a href="#cjs_npm_label-repo">repo</a>)
+</pre>
+
+**PARAMETERS**
+
+| Name                                | Description               | Default Value |
+| :---------------------------------- | :------------------------ | :------------ |
+| <a id="cjs_npm_label-repo"></a>repo | <p align="center"> - </p> | none          |
+
 <a id="#create_dep"></a>
 
 ## create_dep
@@ -71,24 +85,6 @@ Create link for CommonJs package.
 | <a id="create_dep-name"></a>name   | Name                  | none          |
 | <a id="create_dep-dep"></a>dep     | Dependency package ID | none          |
 | <a id="create_dep-label"></a>label | Source label          | none          |
-
-<a id="#create_entries"></a>
-
-## create_entries
-
-<pre>
-create_entries(<a href="#create_entries-ctx">ctx</a>, <a href="#create_entries-actions">actions</a>, <a href="#create_entries-srcs">srcs</a>, <a href="#create_entries-prefix">prefix</a>, <a href="#create_entries-strip_prefix">strip_prefix</a>)
-</pre>
-
-**PARAMETERS**
-
-| Name                                                 | Description               | Default Value |
-| :--------------------------------------------------- | :------------------------ | :------------ |
-| <a id="create_entries-ctx"></a>ctx                   | <p align="center"> - </p> | none          |
-| <a id="create_entries-actions"></a>actions           | <p align="center"> - </p> | none          |
-| <a id="create_entries-srcs"></a>srcs                 | <p align="center"> - </p> | none          |
-| <a id="create_entries-prefix"></a>prefix             | <p align="center"> - </p> | none          |
-| <a id="create_entries-strip_prefix"></a>strip_prefix | <p align="center"> - </p> | none          |
 
 <a id="#create_global"></a>
 
@@ -159,21 +155,42 @@ gen_manifest(<a href="#gen_manifest-actions">actions</a>, <a href="#gen_manifest
 | <a id="gen_manifest-globals"></a>globals           | <p align="center"> - </p> | none          |
 | <a id="gen_manifest-package_path"></a>package_path | <p align="center"> - </p> | none          |
 
-<a id="#output_prefix"></a>
+<a id="#output_name"></a>
 
-## output_prefix
+## output_name
 
 <pre>
-output_prefix(<a href="#output_prefix-path">path</a>, <a href="#output_prefix-label">label</a>, <a href="#output_prefix-actions">actions</a>)
+output_name(<a href="#output_name-workspace_name">workspace_name</a>, <a href="#output_name-file">file</a>, <a href="#output_name-root">root</a>, <a href="#output_name-package_output">package_output</a>, <a href="#output_name-prefix">prefix</a>, <a href="#output_name-strip_prefix">strip_prefix</a>)
+</pre>
+
+    Computes the output name for a file.
+
+**PARAMETERS**
+
+| Name                                                  | Description               | Default Value |
+| :---------------------------------------------------- | :------------------------ | :------------ |
+| <a id="output_name-workspace_name"></a>workspace_name | Workspace name            | none          |
+| <a id="output_name-file"></a>file                     | Source file               | none          |
+| <a id="output_name-root"></a>root                     | Output root               | none          |
+| <a id="output_name-package_output"></a>package_output | Bazel package output path | none          |
+| <a id="output_name-prefix"></a>prefix                 | Path segments to prepend  | none          |
+| <a id="output_name-strip_prefix"></a>strip_prefix     | Path segments to remove   | none          |
+
+<a id="#output_root"></a>
+
+## output_root
+
+<pre>
+output_root(<a href="#output_root-root">root</a>, <a href="#output_root-package_output">package_output</a>, <a href="#output_root-prefix">prefix</a>)
 </pre>
 
 **PARAMETERS**
 
-| Name                                      | Description               | Default Value |
-| :---------------------------------------- | :------------------------ | :------------ |
-| <a id="output_prefix-path"></a>path       | <p align="center"> - </p> | none          |
-| <a id="output_prefix-label"></a>label     | <p align="center"> - </p> | none          |
-| <a id="output_prefix-actions"></a>actions | <p align="center"> - </p> | none          |
+| Name                                                  | Description               | Default Value |
+| :---------------------------------------------------- | :------------------------ | :------------ |
+| <a id="output_root-root"></a>root                     | <p align="center"> - </p> | none          |
+| <a id="output_root-package_output"></a>package_output | <p align="center"> - </p> | none          |
+| <a id="output_root-prefix"></a>prefix                 | <p align="center"> - </p> | none          |
 
 <a id="#package_path"></a>
 

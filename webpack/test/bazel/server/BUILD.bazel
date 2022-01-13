@@ -4,7 +4,7 @@ load("@better_rules_javascript//webpack:rules.bzl", "configure_webpack", "webpac
 
 cjs_root(
     name = "root",
-    package_name = "@better-rules-javascript_test/webpack-server",
+    package_name = "@better-rules-javascript-test/webpack-server",
     descriptors = ["package.json"],
 )
 

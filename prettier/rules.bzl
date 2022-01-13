@@ -57,13 +57,15 @@ def configure_prettier(name, dep, config, plugins = [], visibility = None):
     )
 
 def _prettier_fn(ctx, name, src, out, bin, config):
-    args = ctx.actions.args()
+    actions = ctx.actions
+
+    args = actions.args()
     args.add(src)
     args.add(out)
     args.set_param_file_format("multiline")
     args.use_param_file("@%s", use_always = True)
 
-    ctx.actions.run(
+    actions.run(
         arguments = ["--config", config, args],
         executable = bin.executable,
         mnemonic = "PrettierFormat",

@@ -5,10 +5,11 @@ load("//util:path.bzl", "output", "runfile_path")
 load(":providers.bzl", "NODE_MODULES_PREFIX", "modules_links", "package_path_name")
 
 def _nodejs_simple_binary_implementation(ctx):
+    actions = ctx.actions
     nodejs_toolchain = ctx.toolchains["@better_rules_javascript//nodejs:toolchain_type"]
 
-    bin = ctx.actions.declare_file("%s/bin" % ctx.label.name)
-    ctx.actions.expand_template(
+    bin = actions.declare_file("%s/bin" % ctx.label.name)
+    actions.expand_template(
         template = ctx.file._runner,
         output = bin,
         substitutions = {
@@ -43,7 +44,10 @@ nodejs_simple_binary = rule(
 )
 
 def _nodejs_binary_implementation(ctx):
+    actions = ctx.actions
     env = ctx.attr.env
+    include_sources = ctx.attr.include_sources
+    manifest = ctx.attr._manifest[DefaultInfo]
     js_info = ctx.attr.dep[JsInfo]
     js_deps = [js_info] + [dep[JsInfo] for dep in ctx.attr.global_deps + ctx.attr.other_deps]
     js_globals = [dep[JsInfo] for dep in ctx.attr.global_deps]
@@ -52,22 +56,15 @@ def _nodejs_binary_implementation(ctx):
 
     nodejs_toolchain = ctx.toolchains["@better_rules_javascript//nodejs:toolchain_type"]
 
-    files = []
-    for js_info_ in js_deps:
-        files.append(js_info_.transitive_descriptors)
-        files.append(js_info_.transitive_js)
-        if ctx.attr.include_sources:
-            files.append(js_info_.transitive_srcs)
-
     transitive_packages = depset(transitive = [dep.transitive_packages for dep in js_deps])
 
     def package_path(package):
         return "%s/%s" % (NODE_MODULES_PREFIX, package_path_name(package.id))
 
-    package_manifest = ctx.actions.declare_file("%s/packages.json" % ctx.label.name)
+    package_manifest = actions.declare_file("%s/packages.json" % ctx.label.name)
     gen_manifest(
-        actions = ctx.actions,
-        manifest_bin = ctx.attr._manifest[DefaultInfo],
+        actions = actions,
+        manifest_bin = manifest,
         manifest = package_manifest,
         packages = transitive_packages,
         deps = depset(transitive = [dep.transitive_deps for dep in js_deps]),
@@ -77,12 +74,12 @@ def _nodejs_binary_implementation(ctx):
 
     main_module = "%s/%s/%s" % (NODE_MODULES_PREFIX, package_path_name(js_info.package.id), ctx.attr.main)
 
-    bin = ctx.actions.declare_file("%s/bin" % ctx.label.name)
+    bin = actions.declare_file("%s/bin" % ctx.label.name)
     for file in ctx.files.preload:
         node_options.append("-r")
         node_options.append("./%s" % file.short_path)
 
-    ctx.actions.expand_template(
+    actions.expand_template(
         template = ctx.file._runner,
         output = bin,
         substitutions = {
@@ -101,7 +98,11 @@ def _nodejs_binary_implementation(ctx):
     symlinks = modules_links(
         prefix = NODE_MODULES_PREFIX,
         packages = transitive_packages.to_list(),
-        files = depset(transitive = files).to_list(),
+        files = depset(
+            transitive =
+                [js_info_.transitive_files for js_info_ in js_deps] +
+                [js_info_.transitive_srcs for js_info_ in js_deps if include_sources],
+        ).to_list(),
     )
 
     runfiles = ctx.runfiles(
@@ -176,6 +177,7 @@ nodejs_binary = rule(
 )
 
 def _nodejs_archive_impl(ctx):
+    actions = ctx.actions
     archive_linker = ctx.attr._archive_linker[DefaultInfo]
     manifest = ctx.attr._manifest[DefaultInfo]
     deps = [dep[CjsEntries] for dep in ctx.attr.deps]
@@ -205,9 +207,9 @@ def _nodejs_archive_impl(ctx):
         transitive = [cjs_entries.transitive_packages for cjs_entries in deps],
     )
 
-    package_manifest = ctx.actions.declare_file("%s/packages.json" % ctx.label.name)
+    package_manifest = actions.declare_file("%s/packages.json" % ctx.label.name)
     gen_manifest(
-        actions = ctx.actions,
+        actions = actions,
         manifest_bin = manifest,
         manifest = package_manifest,
         packages = transitive_packages,
@@ -216,9 +218,9 @@ def _nodejs_archive_impl(ctx):
         package_path = package_path,
     )
 
-    archive = ctx.actions.declare_file("%s/modules.tar" % ctx.attr.name)
+    archive = actions.declare_file("%s/modules.tar" % ctx.attr.name)
 
-    args = ctx.actions.args()
+    args = actions.args()
     args.use_param_file("@%s")
     args.set_param_file_format("multiline")
     args.add("--manifest", package_manifest)
@@ -226,7 +228,7 @@ def _nodejs_archive_impl(ctx):
     args.add("--output", archive)
     args.add_all(transitive_files)
 
-    ctx.actions.run(
+    actions.run(
         arguments = [args],
         inputs = depset([package_manifest], transitive = [transitive_files]),
         outputs = [archive],
@@ -258,6 +260,7 @@ nodejs_archive = rule(
 )
 
 def _nodejs_binary_archive_impl(ctx):
+    actions = ctx.actions
     archive_linker = ctx.attr._archive_linker[DefaultInfo]
     env = ctx.attr.env
     node_options = ctx.attr.node_options
@@ -270,8 +273,8 @@ def _nodejs_binary_archive_impl(ctx):
     transitive_deps = depset(
         transitive = [js_info.transitive_deps for js_info in deps],
     )
-    transitive_js = depset(
-        transitive = [js_info.transitive_js for js_info in deps],
+    transitive_files = depset(
+        transitive = [js_info.transitive_files for js_info in deps],
     )
     transitive_packages = depset(
         transitive = [js_info.transitive_packages for js_info in deps],
@@ -279,14 +282,11 @@ def _nodejs_binary_archive_impl(ctx):
     transitive_srcs = depset(
         transitive = [js_info.transitive_srcs for js_info in deps],
     )
-    transitive_descriptors = depset(
-        transitive = [js_info.transitive_descriptors for js_info in deps],
-    )
 
     main_module = "%s/%s" % (package_path_name(js_info.package.id), ctx.attr.main)
 
-    bin = ctx.actions.declare_file("%s/bin" % ctx.label.name)
-    ctx.actions.expand_template(
+    bin = actions.declare_file("%s/bin" % ctx.label.name)
+    actions.expand_template(
         template = archive_runner,
         output = bin,
         substitutions = {
@@ -297,9 +297,9 @@ def _nodejs_binary_archive_impl(ctx):
         is_executable = True,
     )
 
-    package_manifest = ctx.actions.declare_file("%s/packages.json" % ctx.label.name)
+    package_manifest = actions.declare_file("%s/packages.json" % ctx.label.name)
     gen_manifest(
-        actions = ctx.actions,
+        actions = actions,
         manifest_bin = manifest,
         manifest = package_manifest,
         packages = transitive_packages,
@@ -308,21 +308,20 @@ def _nodejs_binary_archive_impl(ctx):
         package_path = package_path,
     )
 
-    archive = ctx.actions.declare_file("%s/modules.tar" % ctx.attr.name)
+    archive = actions.declare_file("%s/modules.tar" % ctx.attr.name)
 
-    args = ctx.actions.args()
+    args = actions.args()
     args.use_param_file("@%s")
     args.set_param_file_format("multiline")
     args.add("--bin", bin)
     args.add("--manifest", package_manifest)
     args.add("--output", archive)
-    args.add_all(transitive_js)
+    args.add_all(transitive_files)
     args.add_all(transitive_srcs)
-    args.add_all(transitive_descriptors)
 
-    ctx.actions.run(
+    actions.run(
         arguments = [args],
-        inputs = depset([bin, package_manifest], transitive = [transitive_descriptors, transitive_js, transitive_srcs]),
+        inputs = depset([bin, package_manifest], transitive = [transitive_files, transitive_srcs]),
         outputs = [archive],
         executable = archive_linker.files_to_run.executable,
         tools = [archive_linker.files_to_run],

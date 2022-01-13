@@ -1,5 +1,5 @@
 load("//util:path.bzl", "output")
-load(":providers.bzl", "CjsEntries", "CjsInfo", "create_entries", "create_package", "default_strip_prefix")
+load(":providers.bzl", "CjsEntries", "CjsInfo", "create_package", "default_strip_prefix", "output_name")
 
 def _default_package_name(ctx):
     workspace = ctx.label.workspace_name or ctx.workspace_name
@@ -22,25 +22,47 @@ cjs_descriptors = rule(
 )
 
 def _cjs_root_impl(ctx):
+    actions = ctx.actions
     name = ctx.attr.package_name or _default_package_name(ctx)
-    prefix = ctx.label.name if ctx.attr.sealed else ""
+    label = ctx.label
     strip_prefix = ctx.attr.strip_prefix or default_strip_prefix(ctx)
-    output_ = output(ctx.label, ctx.actions)
+    output_ = output(ctx.label, actions)
+    workspace_name = ctx.workspace_name
 
-    path = output_.path
-    short_path = output_.short_path
-    if prefix:
-        path = "%s/%s" % (path, prefix) if path else prefix
-        short_path = "%s/%s" % (short_path, prefix) if short_path else ctx.label.name
+    if ctx.attr.sealed:
+        root = struct(
+            path = "%s/%s" % (output_.path, label.name),
+            short_path = "%s/%s" % (output_.short_path, label.name) if output_.short_path else label.name,
+        )
+    else:
+        root = output_
 
-    descriptors = create_entries(ctx, ctx.actions, ctx.files.descriptors, prefix, strip_prefix)
+    descriptors = []
+    for file in ctx.files.descriptors:
+        path = output_name(
+            workspace_name = workspace_name,
+            file = file,
+            root = root,
+            package_output = output_,
+            prefix = "",
+            strip_prefix = strip_prefix,
+        )
+        if file.path == "%s/%s" % (output_.path, path):
+            descriptor = file
+        else:
+            descriptor = actions.declare_file(path)
+            actions.symlink(
+                target_file = file,
+                output = descriptor,
+            )
+        descriptors.append(descriptor)
 
     package = create_package(
         id = str(ctx.label),
         name = name,
         label = ctx.label,
-        path = path,
-        short_path = short_path,
+        path = root.path,
+        short_path = root.short_path,
     )
     cjs_info = CjsInfo(
         descriptors = descriptors,
@@ -56,7 +78,11 @@ def _cjs_root_impl(ctx):
         transitive_deps = depset([]),
     )
 
-    return [cjs_entries, cjs_info]
+    default_info = DefaultInfo(
+        files = depset(descriptors),
+    )
+
+    return [cjs_entries, cjs_info, default_info]
 
 cjs_root = rule(
     doc = "CommonJS-style root",
@@ -66,7 +92,7 @@ cjs_root = rule(
             doc = "Dependencies",
         ),
         "descriptors": attr.label_list(
-            allow_files = [".json"],
+            allow_files = True,
             doc = "package.json descriptors",
         ),
         "package_name": attr.string(

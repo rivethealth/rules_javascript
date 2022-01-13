@@ -1,0 +1,35 @@
+load("@better_rules_javascript//commonjs:rules.bzl", "cjs_root")
+load("@better_rules_javascript//file:rules.bzl", "directory")
+load("@better_rules_javascript//javascript:rules.bzl", "js_library")
+load("@better_rules_javascript//nodejs:rules.bzl", "nodejs_binary")
+
+cjs_root(
+    name = "root",
+    package_name = "@better-rules-javascript-test/nodejs-binary",
+    descriptors = [":src"],
+    sealed = True,
+    strip_prefix = "better_rules_javascript_test/directory/root",
+)
+
+directory(
+    name = "src",
+    srcs = [
+        "lib.js",
+        "main.js",
+        "package.json",
+    ],
+    output = "root",
+)
+
+js_library(
+    name = "lib",
+    srcs = [":src"],
+    root = ":root",
+    strip_prefix = "better_rules_javascript_test/directory/root",
+)
+
+nodejs_binary(
+    name = "bin",
+    dep = ":lib",
+    main = "main.js",
+)

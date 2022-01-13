@@ -8,3 +8,6 @@ AngularCompilerInfo = provider(
         "resource_compiler": "Resource compiler",
     },
 )
+
+def resource_path(path):
+    return path + ".cjs"
