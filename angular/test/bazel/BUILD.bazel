@@ -1,4 +1,5 @@
 load("@better_rules_javascript//angular:rules.bzl", "configure_angular_compiler")
+load("@better_rules_javascript//typescript:rules.bzl", "configure_ts_compiler")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -7,6 +8,12 @@ configure_angular_compiler(
     compiler_cli = "@better_rules_javascript_npm//@angular/compiler-cli:lib",
     core = "@better_rules_javascript_npm//@angular/core:lib",
     reflect_metadata = "@better_rules_javascript_npm//reflect-metadata:lib",
+    ts = "@better_rules_javascript_npm//typescript:lib",
+    tslib = "@better_rules_javascript_npm//tslib:lib",
+)
+
+configure_ts_compiler(
+    name = "tsc",
     ts = "@better_rules_javascript_npm//typescript:lib",
     tslib = "@better_rules_javascript_npm//tslib:lib",
 )

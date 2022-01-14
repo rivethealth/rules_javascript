@@ -325,23 +325,6 @@ def configure_ts_compiler(name, ts, tslib = None, visibility = None):
         visibility = ["//visibility:private"],
     )
 
-    ts_simple_library(
-        name = "%s.dts_lib" % name,
-        srcs = ["@better_rules_javascript//typescript/dts-compiler:src"],
-        compiler = "@better_rules_javascript//rules:simple_tsc",
-        root = ":%s.root" % name,
-        compiler_options = ["--esModuleInterop", "--lib", "dom,es2019", "--types", "node"],
-        strip_prefix = "better_rules_javascript/typescript/dts-compiler",
-        deps = [
-            ts,
-            "@better_rules_javascript_npm//argparse:lib",
-            "@better_rules_javascript//bazel/worker:lib",
-            "@better_rules_javascript_npm//@types/argparse:lib",
-            "@better_rules_javascript_npm//@types/node:lib",
-        ],
-        visibility = ["//visibility:private"],
-    )
-
     nodejs_binary(
         main = "lib/tsc.js",
         name = "%s.bin" % name,
@@ -353,13 +336,6 @@ def configure_ts_compiler(name, ts, tslib = None, visibility = None):
         main = "src/main.js",
         name = "%s.js_bin" % name,
         dep = ":%s.js_lib" % name,
-        visibility = ["//visibility:private"],
-    )
-
-    nodejs_binary(
-        main = "src/main.js",
-        name = "%s.dts_bin" % name,
-        dep = ":%s.dts_lib" % name,
         visibility = ["//visibility:private"],
     )
 
@@ -388,11 +364,13 @@ ts_compiler = rule(
             cfg = "exec",
             doc = "Declaration compiler executable.",
             executable = True,
+            mandatory = True,
         ),
         "transpile_bin": attr.label(
             cfg = "exec",
             doc = "JS compiler executable.",
             executable = True,
+            mandatory = True,
         ),
         "runtime": attr.label(
             doc = "Runtime library. If set, importHelpers will be used.",
@@ -519,12 +497,12 @@ def _ts_library_impl(ctx):
         manifest_bin = ctx.attr._manifest[DefaultInfo],
         manifest = transpile_package_manifest,
         deps = depset(
-            create_deps(cjs_info.package, label, compiler.ts_deps) +
-            ([create_dep(id = cjs_info.package.id, name = tsconfig_info.name, dep = tsconfig_info.package.id, label = label)] if tsconfig_info else []),
+            create_deps(cjs_info.package, label, compiler.ts_deps),
             transitive = ([tsconfig_info.transitive_deps] if tsconfig_info else []) + [ts_info.transitive_deps for ts_info in compiler.ts_deps],
         ),
         globals = [],
         packages = depset(
+            [cjs_info.package],
             transitive = ([tsconfig_info.transitive_packages] if tsconfig_info else []) + [ts_info.transitive_packages for ts_info in compiler.ts_deps],
         ),
         package_path = package_path,

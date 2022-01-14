@@ -30,3 +30,4 @@ ln -rs rules node_modules/@better-rules-javascript/rules
 ln -rs webpack/config node_modules/@better-rules-javascript/webpack-config
 ln -rs bazel/runfiles node_modules/@better-rules-javascript/bazel-runfiles
 ln -rs bazel/worker node_modules/@better-rules-javascript/bazel-worker
+ln -rs angular/fs-resource node_modules/@better-rules-javascript/angular-fs-resource

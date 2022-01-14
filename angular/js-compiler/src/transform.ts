@@ -1,4 +1,5 @@
 import * as ts from "typescript";
+import { stylePath } from "./angular";
 
 function resourceModuleSpecifier(path: string) {
   if (!path.startsWith("./")) {
@@ -14,7 +15,7 @@ function createImport(
 ): ts.Expression {
   const identifier = factory.createTempVariable(undefined);
   imports.push(
-    ts.createImportDeclaration(
+    factory.createImportDeclaration(
       undefined,
       undefined,
       factory.createImportClause(
@@ -63,7 +64,7 @@ function transformDecorator(
               if (!ts.isStringLiteral(element)) {
                 return element;
               }
-              return createImport(factory, imports, element.text);
+              return createImport(factory, imports, stylePath(element.text));
             }),
           );
           return factory.updatePropertyAssignment(

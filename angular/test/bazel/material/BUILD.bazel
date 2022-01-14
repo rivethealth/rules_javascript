@@ -1,12 +1,12 @@
 load("@better_rules_javascript//angular:rules.bzl", "angular_library")
 load("@better_rules_javascript//commonjs:rules.bzl", "cjs_root")
 load("@better_rules_javascript//javascript:rules.bzl", "js_file", "js_library")
-load("@better_rules_javascript//typescript:rules.bzl", "tsconfig")
+load("@better_rules_javascript//typescript:rules.bzl", "ts_library", "tsconfig")
 load("@better_rules_javascript//webpack:rules.bzl", "configure_webpack", "webpack_bundle")
 
 cjs_root(
     name = "root",
-    package_name = "@better-rules-javascript-test/angular-test",
+    package_name = "@better-rules-javascript-test/angular-material",
 )
 
 tsconfig(
@@ -19,8 +19,6 @@ angular_library(
     name = "lib",
     srcs = [
         "example.component.ts",
-        "main.dev.ts",
-        "main.prod.ts",
         "module.ts",
         "service.ts",
     ],
@@ -30,13 +28,28 @@ angular_library(
     root = ":root",
     deps = [
         "@better_rules_javascript_npm//@angular/common:lib",
-        "@better_rules_javascript_npm//@angular/compiler:lib",
         "@better_rules_javascript_npm//@angular/material:lib",
         "@better_rules_javascript_npm//@angular/platform-browser:lib",
-        "@better_rules_javascript_npm//@angular/platform-browser-dynamic:lib",
         "@better_rules_javascript_npm//@types/node:lib",
-        "@better_rules_javascript_npm//reflect-metadata:lib",
         "@better_rules_javascript_npm//rxjs:lib",
+    ],
+)
+
+ts_library(
+    name = "main",
+    srcs = [
+        "main.dev.ts",
+        "main.prod.ts",
+    ],
+    compiler = "//:tsc",
+    config = ":tsconfig",
+    root = ":root",
+    deps = [
+        ":lib",
+        "@better_rules_javascript_npm//@angular/compiler:lib",
+        "@better_rules_javascript_npm//@angular/platform-browser:lib",
+        "@better_rules_javascript_npm//@angular/platform-browser-dynamic:lib",
+        "@better_rules_javascript_npm//reflect-metadata:lib",
         "@better_rules_javascript_npm//zone.js:lib",
     ],
 )
@@ -73,6 +86,6 @@ configure_webpack(
 
 webpack_bundle(
     name = "bundle",
-    dep = ":lib",
+    dep = ":main",
     webpack = ":webpack",
 )

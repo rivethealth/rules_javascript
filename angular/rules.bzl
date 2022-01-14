@@ -17,6 +17,13 @@ def configure_angular_compiler(name, core, compiler_cli, ts, tslib, reflect_meta
         visibility = ["//visibility:private"],
     )
 
+    nodejs_binary(
+        main = "lib/tsc.js",
+        name = "%s.tsc_bin" % name,
+        dep = ts,
+        visibility = ["//visibility:private"],
+    )
+
     tsconfig(
         name = "%s.tsconfig" % name,
         src = "@better_rules_javascript//angular/js-compiler:tsconfig",
@@ -65,6 +72,7 @@ def configure_angular_compiler(name, core, compiler_cli, ts, tslib, reflect_meta
         js_deps = [core, tslib],
         ts_deps = [core, tslib],
         js_compiler = ":%s.js_bin" % name,
+        tsc_bin = ":%s.tsc_bin" % name,
     )
 
 def _angular_library(ctx):
@@ -74,8 +82,10 @@ def _angular_library(ctx):
     compiler = ctx.attr.compiler[AngularCompilerInfo]
     config = ctx.attr._config[DefaultInfo]
     declaration_prefix = ctx.attr.declaration_prefix
+    fs_linker = ctx.file._fs_linker
     js_deps = compiler.js_deps + [dep[JsInfo] for dep in ctx.attr.deps + ctx.attr.global_deps if JsInfo in dep]
     js_prefix = ctx.attr.js_prefix
+    name = ctx.attr.name
     label = ctx.label
     output_ = output(ctx.label, actions)
     src_prefix = ctx.attr.src_prefix
@@ -83,6 +93,62 @@ def _angular_library(ctx):
     ts_deps = compiler.ts_deps + [dep[TsInfo] for dep in ctx.attr.deps + ctx.attr.global_deps if TsInfo in dep]
     tsconfig_info = ctx.attr.config[TsconfigInfo] if ctx.attr.config else None
     workspace_name = ctx.workspace_name
+
+    declarations = []
+    inputs = []
+    js = []
+    js_srcs = []
+    outputs = []
+
+    # resource
+
+    for file in ctx.files.resources:
+        path = output_name(
+            workspace_name = ctx.workspace_name,
+            file = file,
+            root = cjs_info.package,
+            package_output = output_,
+            prefix = js_prefix,
+            strip_prefix = strip_prefix,
+        )
+        if compilation_mode == "opt":
+            if file.path == "%s/%s" % (output_, path):
+                resource = file
+            else:
+                resource = actions.declare_file(path)
+                actions.symlink(
+                    output = resource,
+                    target_file = file,
+                )
+            js_srcs.append(resource)
+            inputs.append(resource)
+        else:
+            js_path_ = output_name(
+                file = file,
+                package_output = output_,
+                prefix = js_prefix,
+                root = cjs_info.package,
+                strip_prefix = strip_prefix,
+                workspace_name = workspace_name,
+            )
+            if not file.is_directory:
+                js_path_ = resource_path(js_path_)
+            js_ = actions.declare_file(js_path_)
+            js.append(js_)
+            args = actions.args()
+            args.add(file)
+            args.add(js_)
+            args.set_param_file_format("multiline")
+            args.use_param_file("@%s", use_always = True)
+            actions.run(
+                arguments = [args],
+                executable = compiler.resource_compiler.files_to_run.executable,
+                execution_requirements = {"supports-workers": "1"},
+                inputs = [file],
+                mnemonic = "TypeScriptTranspile",
+                outputs = [js_],
+                tools = [compiler.resource_compiler.files_to_run],
+            )
 
     if compilation_mode != "opt":
         transpile_tsconfig = actions.declare_file("%s/js-tsconfig.json" % ctx.attr.name)
@@ -136,11 +202,6 @@ def _angular_library(ctx):
         )
 
     # transpile
-    declarations = []
-    inputs = []
-    js = []
-    outputs = []
-    js_srcs = []
     for file in ctx.files.srcs:
         path = output_name(
             file = file,
@@ -226,54 +287,6 @@ def _angular_library(ctx):
                         tools = [compiler.js_compiler.files_to_run],
                     )
 
-    for file in ctx.files.resources:
-        path = output_name(
-            workspace_name = ctx.workspace_name,
-            file = file,
-            root = cjs_info.package,
-            package_output = output_,
-            prefix = js_prefix,
-            strip_prefix = strip_prefix,
-        )
-        if compilation_mode == "opt":
-            if file.path == "%s/%s" % (output_, path):
-                resource = file
-            else:
-                resource = actions.declare_file(path)
-                actions.symlink(
-                    output = resource,
-                    target_file = file,
-                )
-            js_srcs.append(resource)
-            inputs.append(resource)
-        else:
-            js_path_ = output_name(
-                file = file,
-                package_output = output_,
-                prefix = js_prefix,
-                root = cjs_info.package,
-                strip_prefix = strip_prefix,
-                workspace_name = workspace_name,
-            )
-            if not file.is_directory:
-                js_path_ = resource_path(js_path_)
-            js_ = actions.declare_file(js_path_)
-            js.append(js_)
-            args = actions.args()
-            args.add(file)
-            args.add(js_)
-            args.set_param_file_format("multiline")
-            args.use_param_file("@%s", use_always = True)
-            actions.run(
-                arguments = [args],
-                executable = compiler.resource_compiler.files_to_run.executable,
-                execution_requirements = {"supports-workers": "1"},
-                inputs = [file],
-                mnemonic = "TypeScriptTranspile",
-                outputs = [js_],
-                tools = [compiler.resource_compiler.files_to_run],
-            )
-
     transitive_deps = depset(
         target_deps(cjs_info.package, ctx.attr.deps) + create_deps(cjs_info.package, label, compiler.ts_deps),
         transitive = [ts_info.transitive_deps for ts_info in ts_deps],
@@ -307,9 +320,8 @@ def _angular_library(ctx):
         args = actions.args()
         if ctx.attr.config:
             args.add("--config", tsconfig_info.file)
-        if compilation_mode == "opt":
-            args.add("--out-dir", js_root)
-            args.add("--declaration-dir", declaration_root)
+        args.add("--out-dir", js_root)
+        args.add("--declaration-dir", declaration_root)
         args.add("--root-dir", src_root)
         args.add("--type-root", "%s/node_modules/@types" % cjs_info.package.path)
         args.add(tsconfig)
@@ -335,21 +347,38 @@ def _angular_library(ctx):
             package_path = package_path,
         )
 
-        actions.run(
-            arguments = ["-p", tsconfig.path],
-            env = {
-                "NODE_OPTIONS_APPEND": "-r ./%s" % ctx.file._fs_linker.path,
-                "NODE_FS_PACKAGE_MANIFEST": package_manifest.path,
-            },
-            executable = compiler.bin.files_to_run.executable,
-            inputs = depset(
-                [package_manifest, ctx.file._fs_linker, tsconfig] + cjs_info.descriptors + inputs,
-                transitive = ([tsconfig_info.transitive_files] if tsconfig_info else []) + [ts_info.transitive_files for ts_info in ts_deps],
-            ),
-            mnemonic = "TypeScriptCompile",
-            outputs = outputs,
-            tools = [compiler.bin.files_to_run],
-        )
+        if compilation_mode == "opt":
+            actions.run(
+                arguments = ["-p", tsconfig.path],
+                env = {
+                    "NODE_OPTIONS_APPEND": "-r ./%s" % fs_linker.path,
+                    "NODE_FS_PACKAGE_MANIFEST": package_manifest.path,
+                },
+                executable = compiler.bin.files_to_run.executable,
+                inputs = depset(
+                    [package_manifest, fs_linker, tsconfig] + cjs_info.descriptors + inputs,
+                    transitive = ([tsconfig_info.transitive_files] if tsconfig_info else []) + [ts_info.transitive_files for ts_info in ts_deps],
+                ),
+                mnemonic = "TypeScriptCompile",
+                outputs = outputs,
+                tools = [compiler.bin.files_to_run],
+            )
+        else:
+            actions.run(
+                arguments = ["-p", tsconfig.path],
+                env = {
+                    "NODE_OPTIONS_APPEND": "-r ./%s" % fs_linker.path,
+                    "NODE_FS_PACKAGE_MANIFEST": package_manifest.path,
+                },
+                executable = compiler.tsc_bin.files_to_run.executable,
+                inputs = depset(
+                    [package_manifest, fs_linker, tsconfig] + cjs_info.descriptors + inputs,
+                    transitive = ([tsconfig_info.transitive_files] if tsconfig_info else []) + [ts_info.transitive_files for ts_info in ts_deps],
+                ),
+                mnemonic = "TypeScriptCompile",
+                outputs = outputs,
+                tools = [compiler.tsc_bin.files_to_run],
+            )
 
     ts_info = TsInfo(
         name = cjs_info.name,
@@ -407,16 +436,16 @@ angular_library = rule(
         "_config": attr.label(
             cfg = "exec",
             executable = True,
-            default = "@better_rules_javascript//typescript/config:bin",
+            default = "//typescript/config:bin",
         ),
         "_fs_linker": attr.label(
             allow_single_file = [".js"],
-            default = "@better_rules_javascript//nodejs/fs-linker:file",
+            default = "//nodejs/fs-linker:file",
         ),
         "_manifest": attr.label(
             cfg = "exec",
             executable = True,
-            default = "@better_rules_javascript//commonjs/manifest:bin",
+            default = "//commonjs/manifest:bin",
         ),
         "compiler": attr.label(
             doc = "Angular compiler.",
@@ -473,6 +502,7 @@ def _angular_compiler_impl(ctx):
     ts_deps = [dep[TsInfo] for dep in ctx.attr.ts_deps]
     js_compiler = ctx.attr.js_compiler[DefaultInfo]
     resource_compiler = ctx.attr.resource_compiler[DefaultInfo]
+    tsc_bin = ctx.attr.tsc_bin[DefaultInfo]
 
     angular_compiler_info = AngularCompilerInfo(
         bin = bin,
@@ -480,6 +510,7 @@ def _angular_compiler_impl(ctx):
         ts_deps = ts_deps,
         js_compiler = js_compiler,
         resource_compiler = resource_compiler,
+        tsc_bin = tsc_bin,
     )
 
     return [angular_compiler_info]
@@ -508,6 +539,11 @@ angular_compiler = rule(
             cfg = "exec",
             executable = True,
             default = "//angular/resource-compiler:bin",
+        ),
+        "tsc_bin": attr.label(
+            mandatory = True,
+            cfg = "exec",
+            executable = True,
         ),
     },
     implementation = _angular_compiler_impl,

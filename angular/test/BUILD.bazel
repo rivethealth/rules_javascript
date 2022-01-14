@@ -11,6 +11,13 @@ sh_test(
     tags = ["local"],
 )
 
+sh_test(
+    name = "replace",
+    srcs = ["test_replace.sh"],
+    data = [":bazel"],
+    tags = ["local"],
+)
+
 test_suite(
     name = "test",
 )
