@@ -155,7 +155,7 @@ def output_name(workspace_name, file, root, package_output, prefix, strip_prefix
         output = root.path[len(package_output.path + "/"):]
         path = "%s/%s" % (output, path) if path else output
     elif root.path != package_output.path:
-        fail("Output %s cannot write to %s" % (package_output.path, root))
+        fail("Output %s cannot write to %s" % (package_output.path, root.path))
     return path
 
 def package_path(package):

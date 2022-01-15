@@ -28,9 +28,15 @@ def output(label, actions, dir = ""):
     """
     Returns the output paths
     """
-    file = actions.declare_file("%s.dummy" % label.name if not dir else "%s/.dummy" % dir)
+    if dir:
+        base = ".dummy"
+        name = "%s/%s" % (dir, base)
+    else:
+        base = "%s.dummy" % label.name
+        name = base
+    file = actions.declare_file(name)
     actions.write(file, "")
     return struct(
-        path = file.dirname,
-        short_path = paths.dirname(file.short_path),
+        path = file.path[:-len("/" + base)],
+        short_path = file.short_path[:-len("/" + base)],
     )
