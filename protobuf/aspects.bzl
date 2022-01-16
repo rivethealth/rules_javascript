@@ -5,6 +5,7 @@ load("@rules_proto//proto:defs.bzl", "ProtoInfo")
 load(":providers.bzl", "JsProtoInfo", "JsProtobuf", "create_lib")
 
 def _js_proto_impl(target, ctx):
+    actions = ctx.actions
     protoc = ctx.toolchains["@rules_proto_grpc//protobuf:toolchain_type"]
     proto = target[ProtoInfo]
     js_proto = ctx.attr._js_protoc[JsProtobuf]

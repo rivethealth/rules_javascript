@@ -44,6 +44,14 @@ export namespace JsonFormat {
     };
   }
 
+  export function nullable<T>(format: JsonFormat<T>): JsonFormat<T | null> {
+    return new NullableJsonFormat(format);
+  }
+
+  export function number(): JsonFormat<number> {
+    return new NumberJsonFormat();
+  }
+
   export function set<T>(format: JsonFormat<T>) {
     return new SetJsonFormat(format);
   }
@@ -71,7 +79,9 @@ class ObjectJsonFormat<V> implements JsonFormat<V> {
   fromJson(json: any) {
     const result = <V>{};
     for (const key in this.format) {
-      result[key] = this.format[key].fromJson(json[key]);
+      if (key in json) {
+        result[key] = this.format[key].fromJson(json[key]);
+      }
     }
     return result;
   }
@@ -79,7 +89,9 @@ class ObjectJsonFormat<V> implements JsonFormat<V> {
   toJson(value: V) {
     const json = <Json>{};
     for (const key in this.format) {
-      json[key] = this.format[key].toJson(value[key]);
+      if (key in value) {
+        json[key] = this.format[key].toJson(value[key]);
+      }
     }
     return json;
   }
@@ -105,6 +117,34 @@ class MapJsonFormat<K, V> implements JsonFormat<Map<K, V>> {
       key: this.keyFormat.toJson(key),
       value: this.valueFormat.toJson(value),
     }));
+  }
+}
+
+class NullableJsonFormat<T> implements JsonFormat<T | null> {
+  constructor(private readonly format: JsonFormat<T>) {}
+
+  fromJson(json: any) {
+    if (json === null) {
+      return null;
+    }
+    return this.format.fromJson(json);
+  }
+
+  toJson(value: T | null) {
+    if (value === null) {
+      return null;
+    }
+    return this.format.toJson(value);
+  }
+}
+
+class NumberJsonFormat implements JsonFormat<number> {
+  fromJson(json: any) {
+    return json;
+  }
+
+  toJson(value: number) {
+    return value;
   }
 }
 

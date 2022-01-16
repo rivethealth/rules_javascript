@@ -3,6 +3,11 @@ load("//nodejs:rules.bzl", "nodejs_binary")
 
 package(default_visibility = ["//visibility:public"])
 
+filegroup(
+    name = "yarn_resolve_template",
+    srcs = ["yarn-resolve.sh.tpl"],
+)
+
 bzl_library(
     name = "bzl",
     srcs = glob(["**/*.bzl"]),

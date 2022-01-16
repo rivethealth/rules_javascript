@@ -1,5 +1,5 @@
 import { PackageTree } from "@better-rules-javascript/commonjs-package";
-import { JsonFormat } from "@better-rules-javascript/commonjs-package/json";
+import { JsonFormat } from "@better-rules-javascript/util-json";
 import { ArgumentParser } from "argparse";
 import * as fs from "fs";
 

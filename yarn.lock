@@ -1549,13 +1549,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/semver@npm:~5.5.0":
-  version: 5.5.0
-  resolution: "@types/semver@npm:5.5.0"
-  checksum: 88fa46ace5a40457ff22d55affe9ddd63c7a3b2ced6bb177249e3013152a78015c2ea60ca0242a0439215f2d0e5d78509ff2f6734e9b5024a5b70112b78a9067
-  languageName: node
-  linkType: hard
-
 "@types/serve-index@npm:^1.9.1":
   version: 1.9.1
   resolution: "@types/serve-index@npm:1.9.1"
@@ -1613,15 +1606,6 @@ __metadata:
   dependencies:
     "@types/node": "*"
   checksum: 308957864b9a5a0378ac82f1b084fa31b1bbe85106fb0d84ed2b392e4829404f21ab6ab2c1eb782d556e59cd33d57c75ad2d0cedc4b9b9d0ca3b2311bc915578
-  languageName: node
-  linkType: hard
-
-"@types/yaml@npm:~1.9.0":
-  version: 1.9.7
-  resolution: "@types/yaml@npm:1.9.7"
-  dependencies:
-    yaml: "*"
-  checksum: 0cdbf1857d89ade9b7d00aa09f2e0a2a56b707870b1dc1387f5be5398cd60c3f92bb32a543471147d2eaf38919f921391e0ade34fc9e1e022c7d67fb1a0da73c
   languageName: node
   linkType: hard
 
@@ -7381,9 +7365,7 @@ __metadata:
     "@types/long": ~4.0.0
     "@types/node": ~16.11.0
     "@types/prettier": ~2.4.0
-    "@types/semver": ~5.5.0
     "@types/tar-stream": ~2.2.0
-    "@types/yaml": ~1.9.0
     "@typescript-eslint/eslint-plugin": ~5.5.0
     "@typescript-eslint/parser": ~5.5.0
     "@yarnpkg/cli-dist": ~3.1.0
@@ -7405,7 +7387,6 @@ __metadata:
     rollup-plugin-hypothetical: ~2.1.0
     rollup-plugin-ignore: ~1.0.0
     rxjs: ~7.4.0
-    semver: ~7.3.0
     tar-stream: ~2.2.0
     ts-proto: ~1.83.0
     tslib: ~2.0.0
@@ -7413,7 +7394,6 @@ __metadata:
     webpack: ~5.64.0
     webpack-cli: ~4.9.0
     webpack-dev-server: ~4.7.0
-    yaml: ~1.10.0
     yarn: ~1.22.0
     zone.js: ~0.11.4
   languageName: unknown
@@ -7526,7 +7506,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"semver@npm:^7.0.0, semver@npm:^7.1.2, semver@npm:^7.2.1, semver@npm:^7.3.2, semver@npm:^7.3.5, semver@npm:~7.3.0":
+"semver@npm:^7.0.0, semver@npm:^7.1.2, semver@npm:^7.2.1, semver@npm:^7.3.2, semver@npm:^7.3.5":
   version: 7.3.5
   resolution: "semver@npm:7.3.5"
   dependencies:
@@ -8954,13 +8934,6 @@ __metadata:
   version: 4.0.0
   resolution: "yallist@npm:4.0.0"
   checksum: 343617202af32df2a15a3be36a5a8c0c8545208f3d3dfbc6bb7c3e3b7e8c6f8e7485432e4f3b88da3031a6e20afa7c711eded32ddfb122896ac5d914e75848d5
-  languageName: node
-  linkType: hard
-
-"yaml@npm:*, yaml@npm:~1.10.0":
-  version: 1.10.2
-  resolution: "yaml@npm:1.10.2"
-  checksum: ce4ada136e8a78a0b08dc10b4b900936912d15de59905b2bf415b4d33c63df1d555d23acb2a41b23cf9fb5da41c256441afca3d6509de7247daa062fd2c5ea5f
   languageName: node
   linkType: hard
 

@@ -1,12 +1,12 @@
 export interface BzlPackage {
   deps: BzlDep[];
-  extra_deps: BazelDeps;
+  extra_deps: BzlExtraDeps;
   name: string;
   id: string;
   url: string;
 }
 
-export interface BazelDeps {
+export interface BzlExtraDeps {
   [name: string]: string;
 }
 
@@ -29,8 +29,4 @@ export namespace BzlRoots {
 export interface BzlDep {
   name: string;
   dep: string;
-}
-
-export function bzlId(resolution: string) {
-  return resolution.replace("@npm:", "@");
 }

@@ -1,6 +1,6 @@
 import { ArgumentParser } from "argparse";
 import { PackageTree } from "@better-rules-javascript/commonjs-package";
-import { JsonFormat } from "@better-rules-javascript/commonjs-package/json";
+import { JsonFormat } from "@better-rules-javascript/util-json";
 import * as tarStream from "tar-stream";
 import * as fs from "fs";
 import * as path from "path";

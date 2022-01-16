@@ -23,6 +23,7 @@ js_protoc = rule(
 )
 
 def _js_proto_libraries_impl(ctx):
+    actions = ctx.actions
     cjs_info = ctx.attr.root[CjsInfo]
     prefix = ctx.attr.prefix
     output_ = output(ctx.label, actions)

@@ -1,5 +1,5 @@
 import { PackageTree } from "@better-rules-javascript/commonjs-package";
-import { JsonFormat } from "@better-rules-javascript/commonjs-package/json";
+import { JsonFormat } from "@better-rules-javascript/util-json";
 import { createVfs } from "@better-rules-javascript/nodejs-fs-linker/package";
 import { WrapperVfs } from "@better-rules-javascript/nodejs-fs-linker/vfs";
 import { ArgumentParser } from "argparse";

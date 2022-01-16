@@ -315,12 +315,13 @@ def configure_ts_compiler(name, ts, tslib = None, visibility = None):
         strip_prefix = "better_rules_javascript/typescript/js-compiler",
         deps = [
             ts,
+            "@better_rules_javascript//bazel/worker:lib",
             "@better_rules_javascript//commonjs/package:lib",
             "@better_rules_javascript//nodejs/fs-linker:lib",
-            "@better_rules_javascript//bazel/worker:lib",
-            "@better_rules_javascript_npm//argparse:lib",
+            "@better_rules_javascript//util/json:lib",
             "@better_rules_javascript_npm//@types/argparse:lib",
             "@better_rules_javascript_npm//@types/node:lib",
+            "@better_rules_javascript_npm//argparse:lib",
         ],
         visibility = ["//visibility:private"],
     )
@@ -633,7 +634,7 @@ def _ts_library_impl(ctx):
             ),
             globals = target_globals(ctx.attr.global_deps),
             packages = depset(
-                transitive = [transitive_packages] + ([tsconfig_info.transitive_packages] if tsconfig_info else []),
+                transitive = [transitive_packages] + [target[TsInfo].transitive_packages for target in ctx.attr.global_deps if TsInfo in target] + ([tsconfig_info.transitive_packages] if tsconfig_info else []),
             ),
             package_path = package_path,
         )
@@ -647,7 +648,7 @@ def _ts_library_impl(ctx):
             executable = compiler.bin.files_to_run.executable,
             inputs = depset(
                 [package_manifest, fs_linker, tsconfig] + cjs_info.descriptors + inputs,
-                transitive = ([tsconfig_info.transitive_files] if tsconfig_info else []) + [dep.transitive_files for dep in ts_deps],
+                transitive = ([tsconfig_info.transitive_files] if tsconfig_info else []) + [target[TsInfo].transitive_files for target in ctx.attr.global_deps if TsInfo in target] + [dep.transitive_files for dep in ts_deps],
             ),
             mnemonic = "TypeScriptCompile",
             outputs = outputs,

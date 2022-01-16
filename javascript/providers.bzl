@@ -34,7 +34,7 @@ def target_deps(package, targets):
 
 def target_globals(targets):
     return [
-        create_global(id = target[JsInfo].name, name = target[JsInfo].name)
+        create_global(id = target[JsInfo].package.id, name = target[JsInfo].name)
         for target in targets
         if JsInfo in target
     ]

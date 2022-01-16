@@ -1,4 +1,4 @@
-import { JsonFormat } from "./json";
+import { JsonFormat } from "@better-rules-javascript/util-json";
 
 export class Package {
   /** Dependencies */

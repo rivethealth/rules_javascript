@@ -5,7 +5,7 @@
 ## angular_compiler
 
 <pre>
-angular_compiler(<a href="#angular_compiler-name">name</a>, <a href="#angular_compiler-bin">bin</a>, <a href="#angular_compiler-js_compiler">js_compiler</a>, <a href="#angular_compiler-js_deps">js_deps</a>, <a href="#angular_compiler-resource_compiler">resource_compiler</a>, <a href="#angular_compiler-ts_deps">ts_deps</a>)
+angular_compiler(<a href="#angular_compiler-name">name</a>, <a href="#angular_compiler-bin">bin</a>, <a href="#angular_compiler-js_compiler">js_compiler</a>, <a href="#angular_compiler-js_deps">js_deps</a>, <a href="#angular_compiler-resource_compiler">resource_compiler</a>, <a href="#angular_compiler-ts_deps">ts_deps</a>, <a href="#angular_compiler-tsc_bin">tsc_bin</a>)
 </pre>
 
 **ATTRIBUTES**
@@ -18,6 +18,7 @@ angular_compiler(<a href="#angular_compiler-name">name</a>, <a href="#angular_co
 | <a id="angular_compiler-js_deps"></a>js_deps                     | -                              | <a href="https://bazel.build/docs/build-ref.html#labels">List of labels</a> | required  |                                 |
 | <a id="angular_compiler-resource_compiler"></a>resource_compiler | -                              | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a>          | optional  | //angular/resource-compiler:bin |
 | <a id="angular_compiler-ts_deps"></a>ts_deps                     | -                              | <a href="https://bazel.build/docs/build-ref.html#labels">List of labels</a> | required  |                                 |
+| <a id="angular_compiler-tsc_bin"></a>tsc_bin                     | -                              | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a>          | required  |                                 |
 
 <a id="#angular_library"></a>
 

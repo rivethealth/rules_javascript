@@ -13,9 +13,9 @@ ts_compiler(<a href="#ts_compiler-name">name</a>, <a href="#ts_compiler-bin">bin
 | Name                                                | Description                                          | Type                                                               | Mandatory | Default |
 | :-------------------------------------------------- | :--------------------------------------------------- | :----------------------------------------------------------------- | :-------- | :------ |
 | <a id="ts_compiler-name"></a>name                   | A unique name for this target.                       | <a href="https://bazel.build/docs/build-ref.html#name">Name</a>    | required  |         |
-| <a id="ts_compiler-bin"></a>bin                     | Declaration compiler executable.                     | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a> | optional  | None    |
+| <a id="ts_compiler-bin"></a>bin                     | Declaration compiler executable.                     | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a> | required  |         |
 | <a id="ts_compiler-runtime"></a>runtime             | Runtime library. If set, importHelpers will be used. | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a> | optional  | None    |
-| <a id="ts_compiler-transpile_bin"></a>transpile_bin | JS compiler executable.                              | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a> | optional  | None    |
+| <a id="ts_compiler-transpile_bin"></a>transpile_bin | JS compiler executable.                              | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a> | required  |         |
 
 <a id="#ts_import"></a>
 

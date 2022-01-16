@@ -6,7 +6,7 @@ package(default_visibility = ["//visibility:public"])
 
 cjs_root(
     name = "root",
-    package_name = "@better-rules-javascript/yarn-gen",
+    package_name = "@better-rules-javascript/yarn-resolve",
     descriptors = ["package.json"],
 )
 
@@ -22,17 +22,12 @@ ts_library(
     srcs = glob(["src/**/*.ts"]),
     compiler = "//rules:tsc",
     config = ":config",
-    global_deps = [
-        "@better_rules_javascript_npm//@types/node:lib",
-    ],
     root = ":root",
     deps = [
+        "//util/json:lib",
         "@better_rules_javascript_npm//@types/argparse:lib",
-        "@better_rules_javascript_npm//@types/semver:lib",
-        "@better_rules_javascript_npm//@types/yaml:lib",
+        "@better_rules_javascript_npm//@types/node:lib",
         "@better_rules_javascript_npm//argparse:lib",
-        "@better_rules_javascript_npm//semver:lib",
-        "@better_rules_javascript_npm//yaml:lib",
     ],
 )
 
@@ -40,8 +35,5 @@ nodejs_binary(
     name = "bin",
     data = ["//npm:yarn"],
     dep = ":lib",
-    env = {
-        "_YARN_BIN": "better_rules_javascript/npm/yarn",
-    },
     main = "src/main.js",
 )

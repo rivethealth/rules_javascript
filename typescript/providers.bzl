@@ -58,7 +58,7 @@ def create_deps(package, label, ts_infos):
 
 def target_globals(targets):
     return [
-        create_global(id = target[TsInfo].name, name = target[TsInfo].name)
+        create_global(id = target[TsInfo].package.id, name = target[TsInfo].name)
         for target in targets
         if TsInfo in target
     ]
