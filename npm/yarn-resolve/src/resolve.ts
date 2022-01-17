@@ -15,44 +15,13 @@ export async function resolvePackages(
 
   const npmClient = new NpmRegistryClient();
 
-  const packageInfosById = new Map<string, YarnPackageInfo>(
-    packageInfos.map((package_) => [
-      YarnLocator.serialize(package_.value),
-      package_,
-    ]),
-  );
-
   const bzlPackages: BzlPackage[] = [];
   let bzlRoots: BzlDep[] | undefined;
 
   let finished = 0;
   await Promise.all(
     packageInfos.map(async (packageInfo) => {
-      const yarnDeps: YarnDependencyInfo[] = [];
-      yarnDeps.push(...(packageInfo.children.Dependencies || []));
-      yarnDeps.push(...(packageInfo.children["Peer dependencies"] || []));
-      const names = new Set<string>(yarnDeps.map((dep) => dep.descriptor.name));
-      if (packageInfo.value.version.type === YarnVersion.VIRTUAL) {
-        const id = YarnLocator.serialize({
-          name: packageInfo.value.name,
-          version: packageInfo.value.version.version,
-        });
-        const resolvedPackageInfo = packageInfosById.get(id);
-        if (!resolvedPackageInfo) {
-          throw new Error(`Cannot find package ${id}`);
-        }
-        yarnDeps.push(
-          ...(resolvedPackageInfo.children.Dependencies || []).filter(
-            (dep) => !names.has(dep.descriptor.name),
-          ),
-        );
-        yarnDeps.push(
-          ...(resolvedPackageInfo.children["Peer dependencies"] || []).filter(
-            (dep) => !names.has(dep.descriptor.name),
-          ),
-        );
-      }
-      const deps = bzlDeps(yarnDeps);
+      const deps = bzlDeps(packageInfo.children.Dependencies || []);
       const id = bzlId(packageInfo.value);
       const specifier = npmSpecifier(packageInfo.value);
       if (id && specifier) {
@@ -75,7 +44,6 @@ export async function resolvePackages(
       if (!(finished % 100)) {
         progress(`Resolved ${finished} packages`);
       }
-      await new Promise((resolve) => setTimeout(resolve, 1));
     }),
   );
   if (finished % 100) {

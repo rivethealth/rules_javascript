@@ -3,7 +3,7 @@ import * as fs from "fs";
 import * as childProcess from "child_process";
 import { BzlPackages, BzlDep, BzlRoots, BzlPackage } from "./bzl";
 import { JsonFormat } from "@better-rules-javascript/util-json";
-import { YarnPackageInfo } from "./yarn";
+import { YarnLocator, YarnPackageInfo, YarnVersion } from "./yarn";
 import * as path from "path";
 import { resolvePackages } from "./resolve";
 
@@ -50,7 +50,7 @@ const YARN_BIN = path.resolve(RUNFILES_DIR, "better_rules_javascript/npm/yarn");
 function getPackageInfos(dir: string) {
   const infoResult = childProcess.spawnSync(
     YARN_BIN,
-    ["info", "-R", "--json", "--virtuals"],
+    ["info", "-R", "--dependents", "--json", "--virtuals"],
     { cwd: dir, stdio: ["ignore", "pipe", "inherit"], encoding: "utf-8" },
   );
   if (infoResult.error) {
@@ -60,10 +60,37 @@ function getPackageInfos(dir: string) {
     throw new Error(`Yarn info failed with code ${infoResult.status}`);
   }
 
-  return infoResult.stdout
+  const infos = infoResult.stdout
     .trim()
     .split("\n")
     .map((line) => JsonFormat.parse(YarnPackageInfo.json(), line));
+
+  const byId = new Map<string, YarnPackageInfo>(
+    infos.map((package_) => [YarnLocator.serialize(package_.value), package_]),
+  );
+
+  // fixup dependencies
+  // virtual packages don't display dependencies
+  // won't work with package aliases
+  for (const info of infos) {
+    for (const dependent of info.children.Dependents || []) {
+      if (dependent.version.type === YarnVersion.VIRTUAL) {
+        const package_ = byId.get(YarnLocator.serialize(dependent));
+        if (!package_.children.Dependencies) {
+          package_.children.Dependencies = [];
+        }
+        package_.children.Dependencies.push({
+          descriptor: {
+            name: info.value.name,
+            version: YarnVersion.serialize(info.value.version),
+          },
+          locator: info.value,
+        });
+      }
+    }
+  }
+
+  return infos;
 }
 
 function refreshYarn(dir: string) {

@@ -15,7 +15,7 @@ def repositories():
     nodejs_repositories()
 
     packages = PACKAGES
-    angular_platform_browser = [package for package in packages if package["name"] == "@angular/platform-browser"][0]
+    angular_platform_browser = [package for package in packages if package["id"] == "@angular/platform-browser@13.1.1-dc3fc578"][0]
     packages = [_fix_angular_material(package, angular_platform_browser) if package["name"] == "@angular/material" else package for package in packages]
 
     plugins = [

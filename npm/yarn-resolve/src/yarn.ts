@@ -140,6 +140,7 @@ export namespace YarnDescriptor {
 export interface YarnPackageInfo {
   value: YarnLocator;
   children: {
+    Dependents?: YarnLocator[];
     Dependencies?: YarnDependencyInfo[];
     "Peer dependencies"?: YarnDependencyInfo[];
     Instances?: number;
@@ -154,6 +155,7 @@ export namespace YarnPackageInfo {
       children: JsonFormat.object({
         Instances: JsonFormat.number(),
         Version: JsonFormat.string(),
+        Dependents: JsonFormat.array(YarnLocator.json()),
         Dependencies: JsonFormat.array(YarnDependencyInfo.json()),
         "Peer dependencies": JsonFormat.array(YarnDependencyInfo.json()),
       }),

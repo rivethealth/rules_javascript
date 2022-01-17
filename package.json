@@ -11,6 +11,7 @@
     "@angular/material": "~13.1.0",
     "@angular/platform-browser": "~13.1.0",
     "@angular/platform-browser-dynamic": "~13.1.0",
+    "@babel/core": "~7.16.0",
     "@babel/plugin-transform-modules-commonjs": "~7.13.0",
     "@jest/types": "~27.4.0",
     "@rollup/plugin-commonjs": "~16.0.0",
