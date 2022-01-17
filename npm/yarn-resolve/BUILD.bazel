@@ -27,7 +27,9 @@ ts_library(
         "//util/json:lib",
         "@better_rules_javascript_npm//@types/argparse:lib",
         "@better_rules_javascript_npm//@types/node:lib",
+        "@better_rules_javascript_npm//@types/node-fetch:lib",
         "@better_rules_javascript_npm//argparse:lib",
+        "@better_rules_javascript_npm//node-fetch:lib",
     ],
 )
 

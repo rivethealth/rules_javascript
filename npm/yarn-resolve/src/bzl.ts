@@ -3,6 +3,7 @@ export interface BzlPackage {
   extra_deps: BzlExtraDeps;
   name: string;
   id: string;
+  integrity?: string;
   url: string;
 }
 

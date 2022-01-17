@@ -1,19 +1,34 @@
+import { Agent } from "https";
+import fetch from "node-fetch";
+
 export interface NpmSpecifier {
   name: string;
   version: string;
 }
 
-// name
-// @scope/name
-export function parsePackage(package_: string) {
-  const [first, second] = package_.split("/");
-  if (second) {
-    return { scope: first, name: second };
-  }
-  return { scope: null, name: first };
+export interface NpmPackage {
+  dist: {
+    integrity: string;
+    tarball: string;
+  };
 }
 
-export function npmUrl(specifier: NpmSpecifier) {
-  const baseName = parsePackage(specifier.name).name;
-  return `https://registry.npmjs.org/${specifier.name}/-/${baseName}-${specifier.version}.tgz`;
+export class NpmRegistryClient {
+  private readonly agent = new Agent({
+    keepAlive: true,
+    maxTotalSockets: 10,
+    timeout: 1000 * 5,
+  });
+  private readonly url = "https://registry.npmjs.org";
+
+  async getPackageVersion(specifier: NpmSpecifier): Promise<NpmPackage> {
+    const response = await fetch(
+      `${this.url}/${specifier.name}/${specifier.version}`,
+      { agent: this.agent },
+    );
+    if (!response.ok) {
+      throw new Error(`Registry error ${response.status}`);
+    }
+    return <NpmPackage>await response.json();
+  }
 }

@@ -28,15 +28,20 @@ const YARN_BIN = path.resolve(RUNFILES_DIR, "better_rules_javascript/npm/yarn");
   const args = parser.parse_args();
 
   if (args.refresh) {
+    console.error("Refreshing Yarn");
     refreshYarn(args.dir);
   }
 
+  console.error("Listing packages");
   const packageInfos = getPackageInfos(args.dir);
-  const { packages: bzlPackages, roots: bzlRoots } =
-    resolvePackages(packageInfos);
+
+  const { packages: bzlPackages, roots: bzlRoots } = await resolvePackages(
+    packageInfos,
+    (message) => console.error(message),
+  );
   fs.writeFileSync(args.output, serializeBzl(bzlRoots, bzlPackages));
 
-  console.error(`Processed ${bzlPackages.length} packages`);
+  console.error(`Created ${bzlPackages.length} packages`);
 })().catch((e) => {
   console.error(e);
   process.exit(1);

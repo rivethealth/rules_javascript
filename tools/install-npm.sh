@@ -13,7 +13,7 @@ ln -s .node_modules/_ node_modules
 
 # fix Angular language service
 mkdir -p .node_modules/@angular
-mv .node_modules/better_rules_javascript_npm_angular_core13.1.1___root .node_modules/@angular/core
+mv .node_modules/better_rules_javascript_npm_angular_core13.1.1_dc3fc578___root .node_modules/@angular/core
 ln -rs .node_modules/@angular/core .node_modules/better_rules_javascript_npm_angular_core13.1.1___root
 rm -r .node_modules/@angular/core/node_modules
 mkdir -p .node_modules/@angular/core/node_modules

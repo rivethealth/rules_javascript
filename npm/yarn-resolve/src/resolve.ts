@@ -1,5 +1,5 @@
 import { BzlDep, BzlPackage } from "./bzl";
-import { NpmSpecifier, npmUrl } from "./npm";
+import { NpmSpecifier, NpmRegistryClient } from "./npm";
 import {
   YarnDependencyInfo,
   YarnLocator,
@@ -7,7 +7,14 @@ import {
   YarnVersion,
 } from "./yarn";
 
-export function resolvePackages(packageInfos: YarnPackageInfo[]) {
+export async function resolvePackages(
+  packageInfos: YarnPackageInfo[],
+  progress: (message: string) => void,
+) {
+  progress(`Resolving ${packageInfos.length} packages`);
+
+  const npmClient = new NpmRegistryClient();
+
   const packageInfosById = new Map<string, YarnPackageInfo>(
     packageInfos.map((package_) => [
       YarnLocator.serialize(package_.value),
@@ -18,41 +25,61 @@ export function resolvePackages(packageInfos: YarnPackageInfo[]) {
   const bzlPackages: BzlPackage[] = [];
   let bzlRoots: BzlDep[] | undefined;
 
-  for (const packageInfo of packageInfos) {
-    const yarnDeps: YarnDependencyInfo[] = [];
-    if (packageInfo.value.version.type === YarnVersion.VIRTUAL) {
-      const id = YarnLocator.serialize({
-        name: packageInfo.value.name,
-        version: packageInfo.value.version.version,
-      });
-      const resolvedPackageInfo = packageInfosById.get(id);
-      if (!resolvedPackageInfo) {
-        throw new Error(`Cannot find package ${id}`);
+  let finished = 0;
+  await Promise.all(
+    packageInfos.map(async (packageInfo) => {
+      const yarnDeps: YarnDependencyInfo[] = [];
+      yarnDeps.push(...(packageInfo.children.Dependencies || []));
+      yarnDeps.push(...(packageInfo.children["Peer dependencies"] || []));
+      const names = new Set<string>(yarnDeps.map((dep) => dep.descriptor.name));
+      if (packageInfo.value.version.type === YarnVersion.VIRTUAL) {
+        const id = YarnLocator.serialize({
+          name: packageInfo.value.name,
+          version: packageInfo.value.version.version,
+        });
+        const resolvedPackageInfo = packageInfosById.get(id);
+        if (!resolvedPackageInfo) {
+          throw new Error(`Cannot find package ${id}`);
+        }
+        yarnDeps.push(
+          ...(resolvedPackageInfo.children.Dependencies || []).filter(
+            (dep) => !names.has(dep.descriptor.name),
+          ),
+        );
+        yarnDeps.push(
+          ...(resolvedPackageInfo.children["Peer dependencies"] || []).filter(
+            (dep) => !names.has(dep.descriptor.name),
+          ),
+        );
       }
-      yarnDeps.push(...(resolvedPackageInfo.children.Dependencies || []));
-      yarnDeps.push(
-        ...(resolvedPackageInfo.children["Peer dependencies"] || []),
-      );
-    }
-    yarnDeps.push(...(packageInfo.children.Dependencies || []));
-    yarnDeps.push(...(packageInfo.children["Peer dependencies"] || []));
-    const deps = bzlDeps(yarnDeps);
-    const id = bzlId(packageInfo.value);
-    const specifier = npmSpecifier(packageInfo.value);
-    if (id && specifier) {
-      bzlPackages.push({
-        deps,
-        extra_deps: {},
-        id,
-        name: packageInfo.value.name,
-        url: npmUrl(specifier),
-      });
-    } else if (
-      packageInfo.value.version.type === YarnVersion.WORKSPACE &&
-      packageInfo.value.version.path === "."
-    ) {
-      bzlRoots = deps;
-    }
+      const deps = bzlDeps(yarnDeps);
+      const id = bzlId(packageInfo.value);
+      const specifier = npmSpecifier(packageInfo.value);
+      if (id && specifier) {
+        const npmPackage = await npmClient.getPackageVersion(specifier);
+        bzlPackages.push({
+          deps,
+          extra_deps: {},
+          id,
+          integrity: npmPackage.dist.integrity,
+          name: packageInfo.value.name,
+          url: npmPackage.dist.tarball,
+        });
+      } else if (
+        packageInfo.value.version.type === YarnVersion.WORKSPACE &&
+        packageInfo.value.version.path === "."
+      ) {
+        bzlRoots = deps;
+      }
+      finished++;
+      if (!(finished % 100)) {
+        progress(`Resolved ${finished} packages`);
+      }
+      await new Promise((resolve) => setTimeout(resolve, 1));
+    }),
+  );
+  if (finished % 100) {
+    progress(`Resolved ${finished} packages`);
   }
   if (!bzlRoots) {
     throw new Error("Could not find root workspace");
@@ -73,9 +100,7 @@ function npmSpecifier(locator: YarnLocator): NpmSpecifier | undefined {
       }
       return {
         name: locator.name,
-        version: `${
-          locator.version.version.version
-        }-${locator.version.digest.slice(0, 8)}`,
+        version: locator.version.version.version,
       };
     case YarnVersion.NPM:
       return { name: locator.name, version: locator.version.version };
@@ -83,9 +108,18 @@ function npmSpecifier(locator: YarnLocator): NpmSpecifier | undefined {
 }
 
 function bzlId(locator: YarnLocator): string | undefined {
-  const specifier = npmSpecifier(locator);
-  if (specifier) {
-    return `${specifier.name}@${specifier.version}`;
+  switch (locator.version.type) {
+    case YarnVersion.PATCH:
+      return bzlId(locator.version.locator);
+    case YarnVersion.VIRTUAL:
+      if (locator.version.version.type !== YarnVersion.NPM) {
+        return;
+      }
+      return `${locator.name}@${
+        locator.version.version.version
+      }-${locator.version.digest.slice(0, 8)}`;
+    case YarnVersion.NPM:
+      return `${locator.name}@${locator.version.version}`;
   }
 }
 

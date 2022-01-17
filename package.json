@@ -29,6 +29,7 @@
     "jest-haste-map": "~27.4.0",
     "jest-junit": "~13.0.0",
     "long": "~4.0.0",
+    "node-fetch": "^2.0.0",
     "prettier": "~2.5.0",
     "protobufjs": "~6.11.2",
     "reflect-metadata": "0.1.13",
@@ -51,6 +52,7 @@
     "@types/eslint": "~7.28.0",
     "@types/long": "~4.0.0",
     "@types/node": "~16.11.0",
+    "@types/node-fetch": "^2.0.0",
     "@types/prettier": "~2.4.0",
     "@types/tar-stream": "~2.2.0"
   },
