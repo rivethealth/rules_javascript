@@ -33,12 +33,14 @@ const YARN_BIN = path.resolve(RUNFILES_DIR, "better_rules_javascript/npm/yarn");
   }
 
   console.error("Listing packages");
-  const packageInfos = getPackageInfos(args.dir);
+  const packageInfos = await getPackageInfos(args.dir);
 
   const { packages: bzlPackages, roots: bzlRoots } = await resolvePackages(
     packageInfos,
     (message) => console.error(message),
   );
+  // normalize order
+  bzlPackages.sort((a, b) => +(a.id > b.id) - +(a.id < b.id));
   fs.writeFileSync(args.output, serializeBzl(bzlRoots, bzlPackages));
 
   console.error(`Created ${bzlPackages.length} packages`);
@@ -47,20 +49,25 @@ const YARN_BIN = path.resolve(RUNFILES_DIR, "better_rules_javascript/npm/yarn");
   process.exit(1);
 });
 
-function getPackageInfos(dir: string) {
-  const infoResult = childProcess.spawnSync(
+async function getPackageInfos(dir: string) {
+  // buffer too large for spawnSync
+  // https://stackoverflow.com/questions/63796633/spawnsync-bin-sh-enobufs
+  const infoProcess = childProcess.spawn(
     YARN_BIN,
     ["info", "-R", "--dependents", "--json", "--virtuals"],
-    { cwd: dir, stdio: ["ignore", "pipe", "inherit"], encoding: "utf-8" },
+    { cwd: dir, stdio: ["ignore", "pipe", "inherit"] },
   );
-  if (infoResult.error) {
-    throw new Error(`Yarn info failed with ${infoResult.error}`);
+  let chunks: Buffer[] = [];
+  infoProcess.stdout.on("data", (chunk) => chunks.push(chunk));
+  await new Promise((resolve, reject) => {
+    infoProcess.on("error", reject);
+    infoProcess.on("close", resolve);
+  });
+  if (infoProcess.exitCode) {
+    throw new Error(`Yarn info failed with code ${infoProcess.exitCode}`);
   }
-  if (infoResult.status) {
-    throw new Error(`Yarn info failed with code ${infoResult.status}`);
-  }
-
-  const infos = infoResult.stdout
+  const infos = Buffer.concat(chunks)
+    .toString()
     .trim()
     .split("\n")
     .map((line) => JsonFormat.parse(YarnPackageInfo.json(), line));
