@@ -113,7 +113,7 @@ def _angular_library(ctx):
             strip_prefix = strip_prefix,
         )
         if compilation_mode == "opt":
-            if file.path == "%s/%s" % (output_, path):
+            if file.path == "%s/%s" % (output_.path, path):
                 resource = file
             else:
                 resource = actions.declare_file(path)
