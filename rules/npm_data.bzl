@@ -14709,14 +14709,6 @@ PACKAGES = [
     {
         "deps": [],
         "extra_deps": {},
-        "id": "rollup-plugin-hypothetical@2.1.1",
-        "integrity": "sha512-Ne40a4qyXap1C41ObstbgfklT8VGEirJ57ZRIEgkEMaEIxdx5kNwdzrxfyS9cn59tAYROHh+2hfiFU4sTQt1rw==",
-        "name": "rollup-plugin-hypothetical",
-        "url": "https://registry.npmjs.org/rollup-plugin-hypothetical/-/rollup-plugin-hypothetical-2.1.1.tgz",
-    },
-    {
-        "deps": [],
-        "extra_deps": {},
         "id": "rollup-plugin-ignore@1.0.10",
         "integrity": "sha512-VsbnfwwaTv2Dxl2onubetX/3RnSnplNnjdix0hvF8y2YpqdzlZrjIq6zkcuVJ08XysS8zqW3gt3ORBndFDgsrg==",
         "name": "rollup-plugin-ignore",
@@ -17713,10 +17705,6 @@ ROOTS = [
     {
         "dep": "reflect-metadata@0.1.13",
         "name": "reflect-metadata",
-    },
-    {
-        "dep": "rollup-plugin-hypothetical@2.1.1",
-        "name": "rollup-plugin-hypothetical",
     },
     {
         "dep": "rollup-plugin-ignore@1.0.10",

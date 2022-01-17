@@ -44,12 +44,16 @@ export namespace JsonFormat {
     };
   }
 
+  export function identity<T>(): JsonFormat<T> {
+    return new IdentityJsonFormat();
+  }
+
   export function nullable<T>(format: JsonFormat<T>): JsonFormat<T | null> {
     return new NullableJsonFormat(format);
   }
 
   export function number(): JsonFormat<number> {
-    return new NumberJsonFormat();
+    return new IdentityJsonFormat<number>();
   }
 
   export function set<T>(format: JsonFormat<T>) {
@@ -57,7 +61,7 @@ export namespace JsonFormat {
   }
 
   export function string(): JsonFormat<string> {
-    return new StringJsonFormat();
+    return new IdentityJsonFormat<string>();
   }
 }
 
@@ -70,6 +74,16 @@ class ArrayJsonFormat<T> implements JsonFormat<T[]> {
 
   toJson(json: any) {
     return json.map((element) => this.elementFormat.toJson(element));
+  }
+}
+
+class IdentityJsonFormat<T> implements JsonFormat<T> {
+  fromJson(json: any) {
+    return json;
+  }
+
+  toJson(value: T) {
+    return value;
   }
 }
 
@@ -138,16 +152,6 @@ class NullableJsonFormat<T> implements JsonFormat<T | null> {
   }
 }
 
-class NumberJsonFormat implements JsonFormat<number> {
-  fromJson(json: any) {
-    return json;
-  }
-
-  toJson(value: number) {
-    return value;
-  }
-}
-
 class SetJsonFormat<T> implements JsonFormat<Set<T>> {
   constructor(private readonly format: JsonFormat<T>) {}
 
@@ -157,15 +161,5 @@ class SetJsonFormat<T> implements JsonFormat<Set<T>> {
 
   toJson(value: Set<T>) {
     return [...value].map((element) => this.format.toJson(element));
-  }
-}
-
-class StringJsonFormat implements JsonFormat<string> {
-  fromJson(json: any) {
-    return json;
-  }
-
-  toJson(value: string) {
-    return value;
   }
 }

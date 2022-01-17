@@ -1,6 +1,7 @@
 load("//commonjs:rules.bzl", "cjs_root")
 load("//javascript:rules.bzl", "js_file")
 load("//nodejs:rules.bzl", "nodejs_archive")
+load("//rules:npm_data.bzl", "ROOTS")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -14,55 +15,7 @@ nodejs_archive(
     name = "nodejs_archive",
     deps = [
         "//bazel/worker:worker_proto_lib",
-        "@better_rules_javascript_npm//@angular-devkit/build-optimizer:lib",
-        "@better_rules_javascript_npm//@angular/common:lib",
-        "@better_rules_javascript_npm//@angular/compiler:lib",
-        "@better_rules_javascript_npm//@angular/compiler-cli:lib",
-        "@better_rules_javascript_npm//@angular/core:lib",
-        "@better_rules_javascript_npm//@angular/material:lib",
-        "@better_rules_javascript_npm//@angular/platform-browser:lib",
-        "@better_rules_javascript_npm//@angular/platform-browser-dynamic:lib",
-        "@better_rules_javascript_npm//@babel/plugin-transform-modules-commonjs:lib",
-        "@better_rules_javascript_npm//@jest/types:lib",
-        "@better_rules_javascript_npm//@rollup/plugin-commonjs:lib",
-        "@better_rules_javascript_npm//@rollup/plugin-node-resolve:lib",
-        "@better_rules_javascript_npm//@types/argparse:lib",
-        "@better_rules_javascript_npm//@types/eslint:lib",
-        "@better_rules_javascript_npm//@types/long:lib",
-        "@better_rules_javascript_npm//@types/node:lib",
-        "@better_rules_javascript_npm//@types/prettier:lib",
-        "@better_rules_javascript_npm//@types/tar-stream:lib",
-        "@better_rules_javascript_npm//@typescript-eslint/eslint-plugin:lib",
-        "@better_rules_javascript_npm//@typescript-eslint/parser:lib",
-        "@better_rules_javascript_npm//@yarnpkg/cli-dist:lib",
-        "@better_rules_javascript_npm//@yarnpkg/core:lib",
-        "@better_rules_javascript_npm//argparse:lib",
-        "@better_rules_javascript_npm//doctoc:lib",
-        "@better_rules_javascript_npm//enhanced-resolve:lib",
-        "@better_rules_javascript_npm//eslint:lib",
-        "@better_rules_javascript_npm//html-webpack-plugin:lib",
-        "@better_rules_javascript_npm//jest:lib",
-        "@better_rules_javascript_npm//jest-haste-map:lib",
-        "@better_rules_javascript_npm//jest-junit:lib",
-        "@better_rules_javascript_npm//long:lib",
-        "@better_rules_javascript_npm//node-fetch:lib",
-        "@better_rules_javascript_npm//prettier:lib",
-        "@better_rules_javascript_npm//protobufjs:lib",
-        "@better_rules_javascript_npm//reflect-metadata:lib",
-        "@better_rules_javascript_npm//rollup:lib",
-        "@better_rules_javascript_npm//rollup-plugin-hypothetical:lib",
-        "@better_rules_javascript_npm//rollup-plugin-ignore:lib",
-        "@better_rules_javascript_npm//rxjs:lib",
-        "@better_rules_javascript_npm//tar-stream:lib",
-        "@better_rules_javascript_npm//ts-proto:lib",
-        "@better_rules_javascript_npm//tslib:lib",
-        "@better_rules_javascript_npm//typescript:lib",
-        "@better_rules_javascript_npm//webpack:lib",
-        "@better_rules_javascript_npm//webpack-cli:lib",
-        "@better_rules_javascript_npm//webpack-dev-server:lib",
-        "@better_rules_javascript_npm//yarn:lib",
-        "@better_rules_javascript_npm//zone.js:lib",
-    ],
+    ] + ["@better_rules_javascript_npm//%s:lib" % dep["name"] for dep in ROOTS],
 )
 
 js_file(

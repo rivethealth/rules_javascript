@@ -1,5 +1,5 @@
 import { BzlDep, BzlPackage } from "./bzl";
-import { NpmSpecifier, NpmRegistryClient } from "./npm";
+import { NpmSpecifier, NpmRegistryClient, NpmPackage } from "./npm";
 import {
   YarnDependencyInfo,
   YarnLocator,
@@ -9,23 +9,31 @@ import {
 
 export async function resolvePackages(
   packageInfos: YarnPackageInfo[],
+  getPackage: (specifier: NpmSpecifier) => Promise<NpmPackage>,
   progress: (message: string) => void,
 ) {
   progress(`Resolving ${packageInfos.length} packages`);
-
-  const npmClient = new NpmRegistryClient();
 
   const bzlPackages: BzlPackage[] = [];
   let bzlRoots: BzlDep[] | undefined;
 
   let finished = 0;
+  let lastReported = 0;
+  const report = () => {
+    if (lastReported !== finished) {
+      lastReported = finished;
+      progress(`Resolved ${finished} packages`);
+    }
+  };
+
+  let reported = process.hrtime.bigint();
   await Promise.all(
     packageInfos.map(async (packageInfo) => {
       const deps = bzlDeps(packageInfo.children.Dependencies || []);
       const id = bzlId(packageInfo.value);
       const specifier = npmSpecifier(packageInfo.value);
       if (id && specifier) {
-        const npmPackage = await npmClient.getPackageVersion(specifier);
+        const npmPackage = await getPackage(specifier);
         bzlPackages.push({
           deps,
           extra_deps: {},
@@ -41,14 +49,15 @@ export async function resolvePackages(
         bzlRoots = deps;
       }
       finished++;
-      if (!(finished % 100)) {
-        progress(`Resolved ${finished} packages`);
+      const now = process.hrtime.bigint();
+      if (reported + BigInt(2 * 1e9) < now) {
+        reported = now;
+        report();
       }
     }),
   );
-  if (finished % 100) {
-    progress(`Resolved ${finished} packages`);
-  }
+  report();
+
   if (!bzlRoots) {
     throw new Error("Could not find root workspace");
   }

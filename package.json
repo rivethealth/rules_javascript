@@ -35,7 +35,6 @@
     "protobufjs": "~6.11.2",
     "reflect-metadata": "0.1.13",
     "rollup": "~2.58.0",
-    "rollup-plugin-hypothetical": "~2.1.0",
     "rollup-plugin-ignore": "~1.0.0",
     "rxjs": "~7.4.0",
     "tar-stream": "~2.2.0",

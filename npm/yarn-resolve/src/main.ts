@@ -6,11 +6,13 @@ import { JsonFormat } from "@better-rules-javascript/util-json";
 import { YarnLocator, YarnPackageInfo, YarnVersion } from "./yarn";
 import * as path from "path";
 import { resolvePackages } from "./resolve";
+import { NpmPackage, NpmRegistryClient } from "./npm";
 
 const RUNFILES_DIR = process.env.RUNFILES_DIR!;
 const YARN_BIN = path.resolve(RUNFILES_DIR, "better_rules_javascript/npm/yarn");
 
 (async () => {
+  // parse args
   const parser = new ArgumentParser({
     description: "Generate Starlark from yarn resolutions.",
     prog: "yarn-resolve",
@@ -27,27 +29,60 @@ const YARN_BIN = path.resolve(RUNFILES_DIR, "better_rules_javascript/npm/yarn");
 
   const args = parser.parse_args();
 
+  // refresh
   if (args.refresh) {
     console.error("Refreshing Yarn");
     refreshYarn(args.dir);
   }
 
+  // list packages
   console.error("Listing packages");
   const packageInfos = await getPackageInfos(args.dir);
 
+  // load cache
+  const cachePath = path.join(args.dir, ".bazel-npm-cache.json");
+  let cacheContent: string;
+  try {
+    cacheContent = fs.readFileSync(cachePath, "utf-8");
+  } catch (e) {
+    cacheContent = "[]";
+  }
+  const cache = JsonFormat.parse(Cache.json(), cacheContent);
+  const newCache = new Map<string, NpmPackage>();
+
+  // resolve
+  const npmClient = new NpmRegistryClient();
   const { packages: bzlPackages, roots: bzlRoots } = await resolvePackages(
     packageInfos,
+    async (specifier) => {
+      const id = `${specifier.name}@${specifier.version}`;
+      const package_ =
+        cache.get(id) || (await npmClient.getPackageVersion(specifier));
+      newCache.set(id, package_);
+      return package_;
+    },
     (message) => console.error(message),
   );
-  // normalize order
+
+  // save cache
+  fs.writeFileSync(cachePath, JsonFormat.stringify(Cache.json(), newCache));
+
+  // output
   bzlPackages.sort((a, b) => +(a.id > b.id) - +(a.id < b.id));
   fs.writeFileSync(args.output, serializeBzl(bzlRoots, bzlPackages));
-
   console.error(`Created ${bzlPackages.length} packages`);
 })().catch((e) => {
   console.error(e);
   process.exit(1);
 });
+
+type Cache = Map<string, NpmPackage>;
+
+namespace Cache {
+  export function json(): JsonFormat<Cache> {
+    return JsonFormat.map(JsonFormat.string(), JsonFormat.identity());
+  }
+}
 
 async function getPackageInfos(dir: string) {
   // buffer too large for spawnSync

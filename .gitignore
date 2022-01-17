@@ -1,6 +1,7 @@
 *.log
 bazel-*
 
+.bazel-npm-cache.json
 .node_modules
 node_modules
 .bazel_cache
