@@ -31,7 +31,9 @@ interface Args {
     fs.readFileSync(args.manifest, "utf8"),
   );
 
-  const output = fs.createWriteStream(args.output);
+  const output = fs.createWriteStream(args.output, {
+    highWaterMark: 1024 * 128,
+  });
 
   const tar = tarStream.pack();
   tar.pipe(output);
