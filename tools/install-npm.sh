@@ -6,20 +6,20 @@ RUNFILES_DIR="$0.runfiles"
 cd "$BUILD_WORKSPACE_DIRECTORY"
 
 # external deps
-rm -fr .node_modules node_modules
-mkdir .node_modules
-tar xf "$RUNFILES_DIR/better_rules_javascript/nodejs_archive.tar" -C .node_modules
-ln -s .node_modules/_ node_modules
+rm -fr node_modules
+mkdir node_modules
+tar xf "$RUNFILES_DIR/better_rules_javascript/nodejs_archive.tar" -C node_modules
 
 # fix Angular language service
-mkdir -p .node_modules/@angular
-mv .node_modules/better_rules_javascript_npm_angular_core13.1.1_dc3fc578___root .node_modules/@angular/core
-ln -rs .node_modules/@angular/core .node_modules/better_rules_javascript_npm_angular_core13.1.1___root
-rm -r .node_modules/@angular/core/node_modules
-mkdir -p .node_modules/@angular/core/node_modules
-ln -rs .node_modules/better_rules_javascript_npm_rxjs7.4.0___root .node_modules/@angular/core/node_modules/rxjs
-ln -rs .node_modules/better_rules_javascript_npm_tslib2.3.1___root .node_modules/@angular/core/node_modules/tslib
-ln -rs .node_modules/better_rules_javascript_npm_zone.js0.11.4___root .node_modules/@angular/core/node_modules/tslib
+mkdir -p node_modules/@angular
+rm -fr node_modules/@angular/core
+mv node_modules/_better_rules_javascript_npm_angular_core13.1.1_dc3fc578___root node_modules/@angular/core
+ln -rs node_modules/@angular/core node_modules/_better_rules_javascript_npm_angular_core13.1.1_dc3fc578___root
+rm -r node_modules/@angular/core/node_modules
+mkdir -p node_modules/@angular/core/node_modules
+ln -rs node_modules/_better_rules_javascript_npm_rxjs7.4.0___root node_modules/@angular/core/node_modules/rxjs
+ln -rs node_modules/_better_rules_javascript_npm_tslib2.3.1___root node_modules/@angular/core/node_modules/tslib
+ln -rs node_modules/_better_rules_javascript_npm_zone.js0.11.4___root node_modules/@angular/core/node_modules/zone.js
 
 # local deps
 mkdir -p node_modules/@better-rules-javascript

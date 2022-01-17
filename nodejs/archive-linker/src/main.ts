@@ -6,10 +6,6 @@ import * as fs from "fs";
 import * as path from "path";
 import { promisify } from "util";
 
-function packagePathName(id: string): string {
-  return id.replace(/@/g, "").replace(/:/g, "_").replace(/\//g, "_");
-}
-
 interface Args {
   bin?: string;
   manifest: string;
@@ -49,6 +45,10 @@ interface Args {
     await write({ name, mode: stat.mode }, content);
   };
 
+  const packagePathName = (id: string): string =>
+    (args.root || "") +
+    id.replace(/@/g, "").replace(/:/g, "_").replace(/\//g, "_");
+
   const packagesByPath = new Map<string, string>();
   for (const [id, package_] of packageTree.entries()) {
     packagesByPath.set(package_.path, id);
@@ -59,7 +59,7 @@ interface Args {
     }
     for (const [name, dep] of package_.deps) {
       const path_ =
-        id === args.root ? `_/${name}` : `${packagePath}/node_modules/${name}`;
+        id === args.root ? name : `${packagePath}/node_modules/${name}`;
       const otherPath = packagePathName(dep);
       await write({
         type: "symlink",
