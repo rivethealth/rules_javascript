@@ -7,7 +7,7 @@ load("//typescript:providers.bzl", "TsInfo", "TsconfigInfo", "create_deps", "dec
 load("//typescript:rules.bzl", "ts_library", "tsconfig")
 load(":providers.bzl", "AngularCompilerInfo", "resource_path")
 
-def configure_angular_compiler(name, core, compiler_cli, ts, tslib, reflect_metadata, visibility = None):
+def configure_angular_compiler(name, core, compiler_cli, ts, tslib, reflect_metadata, ngc_main = "bundles/src/bin/ngc.js", visibility = None):
     cjs_root(
         name = "%s.root" % name,
         package_name = "@better-rules-javascript/angular-js-compiler",
@@ -63,7 +63,7 @@ def configure_angular_compiler(name, core, compiler_cli, ts, tslib, reflect_meta
         name = "%s.bin" % name,
         dep = compiler_cli,
         global_deps = [reflect_metadata],
-        main = "bundles/src/bin/ngc.js",
+        main = ngc_main,
         visibility = ["//visibility:private"],
     )
 
