@@ -11,6 +11,7 @@ def _jest_test_impl(ctx):
     config_dep = ctx.attr.config[JsInfo]
     config = ctx.attr.config[JsFile]
     name = ctx.attr.name
+    node_options = ctx.attr.node_options
     js_info = ctx.attr.jest[JsInfo]
     js_deps = [js_info, ctx.attr.jest_haste_map[JsInfo]] + [dep[JsInfo] for dep in ctx.attr.deps + ctx.attr.global_deps + [ctx.attr.config]]
     js_globals = [dep[JsInfo] for dep in ctx.attr.global_deps]
@@ -86,6 +87,7 @@ def _jest_test_impl(ctx):
             "%{fs_linker}": shell.quote(runfile_path(ctx.workspace_name, ctx.file._fs_linker)),
             "%{main_module}": shell.quote(main_module),
             "%{node}": shell.quote(runfile_path(ctx.workspace_name, nodejs_toolchain.nodejs.bin)),
+            "%{node_options}": " ".join([shell.quote(option) for option in ctx.attr.node_options]),
             "%{package_manifest}": shell.quote(runfile_path(ctx.workspace_name, package_manifest)),
             "%{module_linker}": shell.quote(runfile_path(ctx.workspace_name, ctx.file._module_linker)),
             "%{workspace}": shell.quote(ctx.workspace_name),
@@ -147,6 +149,8 @@ jest_test = rule(
         "global_deps": attr.label_list(
             doc = "Global dependencies.",
             providers = [JsInfo],
+        ),
+        "node_options": attr.string_list(
         ),
         "_config": attr.label(
             allow_single_file = [".js"],

@@ -1,5 +1,5 @@
 import { Config } from "@jest/types";
-import { findFiles, touch } from "./fs";
+import { findFiles } from "./fs";
 import { DEFAULT_TEST_REGEX } from "./jest";
 import * as path from "path";
 import { escapeRegex } from "./regex";
@@ -69,9 +69,5 @@ export class Configuration {
       .map((path) => `${escapeRegex(path)}$`);
 
     config.testPathIgnorePatterns = [];
-
-    if (process.env.TEST_SHARD_STATUS_FILE) {
-      touch(process.env.TEST_SHARD_STATUS_FILE);
-    }
   }
 }

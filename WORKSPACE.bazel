@@ -134,6 +134,7 @@ http_archive(
 load("//rules:workspace.bzl", javascript_repositories = "repositories")
 
 javascript_repositories()
+
 # Format
 
 FORMAT_VERSION = "a87f0df6f3f1d8de441bf1662eddbfc4a9f075e4"
@@ -144,6 +145,17 @@ http_archive(
     strip_prefix = "rules_format-%s" % FORMAT_VERSION,
     url = "https://github.com/rivethealth/rules_format/archive/%s.tar.gz" % FORMAT_VERSION,
 )
+
+# File
+
+# FILE_VERSION = "a87f0df6f3f1d8de441bf1662eddbfc4a9f075e4"
+
+# http_archive(
+#     name = "rules_file",
+# sha256 = "713e5b851071d68d51db17744c3f195ea6cfd72f8115f6b77977095faf9a5cef",
+#    strip_prefix = "rules_format-%s" % FORMAT_VERSION,
+#    url = "https://github.com/rivethealth/rules_format/archive/%s.tar.gz" % FORMAT_VERSION,
+# )
 
 load("@rules_format//file:workspace.bzl", "files")
 

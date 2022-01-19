@@ -16,16 +16,22 @@ export NODE_PACKAGE_MANIFEST="$RUNFILES_DIR"/%{package_manifest}
 export NODE_FS_PACKAGE_MANIFEST="$RUNFILES_DIR"/%{package_manifest}
 export NODE_FS_RUNFILES=true
 
+args=("$@")
+
+if [ ! -z "${TESTBRIDGE_TEST_ONLY-}" ]; then
+  args+=("$TESTBRIDGE_TEST_ONLY")
+fi
+
 %{env} \
   exec "$RUNFILES_DIR"/%{node} \
   -r "$RUNFILES_DIR"/%{module_linker} \
   -r "$RUNFILES_DIR"/%{fs_linker} \
-  --enable-source-maps \
   --preserve-symlinks \
   --preserve-symlinks-main \
   "$RUNFILES_DIR"/%{main_module} \
+  %{node_options} \
   --config="$RUNFILES_DIR"/%{config} \
   --no-cache \
   --no-watchman \
   --runInBand \
-  "$@"
+  "${args[@]}"

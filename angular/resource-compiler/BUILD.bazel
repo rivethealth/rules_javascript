@@ -34,4 +34,5 @@ nodejs_binary(
     name = "bin",
     dep = ":lib",
     main = "src/main.js",
+    node_options = ["--enable-source-maps"],
 )

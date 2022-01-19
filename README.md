@@ -160,6 +160,7 @@ nodejs_binary(
     name = "bin",
     dep = ":main",
     main = "main.js",
+    node_options = ["--enable-source-maps"]
 )
 ```
 
