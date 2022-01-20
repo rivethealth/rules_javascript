@@ -1,5 +1,5 @@
 import { BzlDep, BzlPackage } from "./bzl";
-import { NpmSpecifier, NpmRegistryClient, NpmPackage } from "./npm";
+import { NpmSpecifier, NpmPackage } from "./npm";
 import {
   YarnDependencyInfo,
   YarnLocator,

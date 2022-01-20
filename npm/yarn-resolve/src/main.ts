@@ -1,7 +1,7 @@
 import { ArgumentParser } from "argparse";
 import * as fs from "fs";
 import * as childProcess from "child_process";
-import { BzlPackages, BzlDep, BzlRoots, BzlPackage } from "./bzl";
+import { BzlPackages, BzlRoots } from "./bzl";
 import { JsonFormat } from "@better-rules-javascript/util-json";
 import { YarnLocator, YarnPackageInfo, YarnVersion } from "./yarn";
 import * as path from "path";
@@ -92,7 +92,7 @@ async function getPackageInfos(dir: string) {
     ["info", "-R", "--dependents", "--json", "--virtuals"],
     { cwd: dir, stdio: ["ignore", "pipe", "inherit"] },
   );
-  let chunks: Buffer[] = [];
+  const chunks: Buffer[] = [];
   infoProcess.stdout.on("data", (chunk) => chunks.push(chunk));
   await new Promise((resolve, reject) => {
     infoProcess.on("error", reject);

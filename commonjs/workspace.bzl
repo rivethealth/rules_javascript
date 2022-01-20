@@ -1,13 +1,13 @@
 def _cjs_directory_npm_package_build(package):
     return """
 load("@better_rules_javascript//commonjs:rules.bzl", "cjs_root")
-load("@better_rules_javascript//file:rules.bzl", "directory")
+load("@rules_file//file:rules.bzl", "directory")
 
 directory(
     name = "files",
     output = "root",
     srcs = glob(["npm/**/*"]),
-    strip_prefix = "%s/npm" % repository_name()[1:],
+    strip_prefix = "npm",
     visibility = ["//visibility:private"],
 )
 

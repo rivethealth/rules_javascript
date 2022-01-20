@@ -1,5 +1,5 @@
 load("@bazel_skylib//lib:shell.bzl", "shell")
-load("@rules_format//format:providers.bzl", "FormatInfo")
+load("@rules_file//generate:providers.bzl", "FormatterInfo")
 load("//commonjs:rules.bzl", "cjs_root")
 load("//javascript:providers.bzl", "JsFile", "JsInfo")
 load("//nodejs:rules.bzl", "nodejs_binary")
@@ -59,7 +59,7 @@ def configure_eslint(name, dep, config, plugins = [], visibility = None):
         visibility = visibility,
     )
 
-def _eslint_fn(ctx, name, src, out, bin, config):
+def _eslint_format(ctx, name, src, out, bin, config):
     actions = ctx.actions
 
     args = actions.args()
@@ -73,7 +73,7 @@ def _eslint_fn(ctx, name, src, out, bin, config):
         executable = bin.executable,
         mnemonic = "EslintLint",
         inputs = [src],
-        progress_message = "Linting %s" % name,
+        progress_message = "Linting %{input}",
         outputs = [out],
         tools = [bin],
         execution_requirements = {
@@ -87,14 +87,12 @@ def _eslint_impl(ctx):
     config_dep = ctx.attr.config[JsInfo]
 
     config_path = "%s/%s" % (package_path_name(config_dep.package.id), config.path)
+    config = "./%s.runfiles/%s/%s" % (bin.files_to_run.executable.path, NODE_MODULES_PREFIX, config_path)
 
-    format_info = FormatInfo(
-        fn = _eslint_fn,
-        args = [
-            bin.files_to_run,
-            "./%s.runfiles/%s/%s" % (bin.files_to_run.executable.path, NODE_MODULES_PREFIX, config_path),
-        ],
-    )
+    def format(ctx, name, src, out):
+        _eslint_format(ctx, name, src, out, bin.files_to_run, config)
+
+    format_info = FormatterInfo(fn = format)
 
     default_info = DefaultInfo(files = depset(transitive = [bin.files]))
 

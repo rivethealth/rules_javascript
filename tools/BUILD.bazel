@@ -1,5 +1,5 @@
-load("@rules_format//format:rules.bzl", "format")
-load("@rules_format//buildifier:rules.bzl", "buildifier")
+load("@rules_file//buildifier:rules.bzl", "buildifier")
+load("@rules_file//generate:rules.bzl", "format", "generate_test", "multi_generate")
 load("//eslint:rules.bzl", "configure_eslint")
 load("//prettier:rules.bzl", "configure_prettier")
 load("//npm:rules.bzl", "yarn_resolve")
@@ -12,16 +12,7 @@ format(
     name = "buildifier_format",
     srcs = ["@better_rules_javascript_files//:buildifier_files"],
     formatter = ":buildifier",
-    prefix = "external/better_rules_javascript_files/files",
-)
-
-sh_binary(
-    name = "format",
-    srcs = ["format.sh"],
-    data = [
-        ":buildifier_format",
-        ":prettier_format",
-    ],
+    strip_prefix = "files",
 )
 
 configure_eslint(
@@ -39,7 +30,25 @@ format(
     name = "eslint_lint",
     srcs = ["@better_rules_javascript_files//:eslint_files"],
     formatter = ":eslint",
-    prefix = "external/better_rules_javascript_files/files",
+    strip_prefix = "files",
+)
+
+generate_test(
+    name = "eslint_test",
+    generate = ":eslint_lint",
+)
+
+multi_generate(
+    name = "format",
+    deps = [
+        ":buildifier_format",
+        ":prettier_format",
+    ],
+)
+
+generate_test(
+    name = "format_test",
+    generate = ":format",
 )
 
 sh_binary(
@@ -76,10 +85,14 @@ filegroup(
     srcs = ["//:nodejs_archive"],
 )
 
-sh_binary(
+alias(
     name = "lint",
-    srcs = ["lint.sh"],
-    data = [":eslint_lint"],
+    actual = ":eslint_lint",
+)
+
+alias(
+    name = "lint_test",
+    actual = ":eslint_test",
 )
 
 configure_prettier(
@@ -92,7 +105,7 @@ format(
     name = "prettier_format",
     srcs = ["@better_rules_javascript_files//:prettier_files"],
     formatter = ":prettier",
-    prefix = "external/better_rules_javascript_files/files",
+    strip_prefix = "files",
 )
 
 yarn_resolve(
