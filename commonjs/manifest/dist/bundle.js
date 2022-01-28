@@ -45,7 +45,7 @@ function commonjsRequire () {
 	throw new Error('Dynamic requires are not currently supported by @rollup/plugin-commonjs');
 }
 
-var json = createCommonjsModule(function (module, exports) {
+var src$1 = createCommonjsModule(function (module, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.JsonFormat = void 0;
 (function (JsonFormat) {
@@ -82,12 +82,24 @@ exports.JsonFormat = void 0;
         };
     }
     JsonFormat.defer = defer;
+    function identity() {
+        return new IdentityJsonFormat();
+    }
+    JsonFormat.identity = identity;
+    function nullable(format) {
+        return new NullableJsonFormat(format);
+    }
+    JsonFormat.nullable = nullable;
+    function number() {
+        return new IdentityJsonFormat();
+    }
+    JsonFormat.number = number;
     function set(format) {
         return new SetJsonFormat(format);
     }
     JsonFormat.set = set;
     function string() {
-        return new StringJsonFormat();
+        return new IdentityJsonFormat();
     }
     JsonFormat.string = string;
 })(exports.JsonFormat || (exports.JsonFormat = {}));
@@ -102,6 +114,14 @@ class ArrayJsonFormat {
         return json.map((element) => this.elementFormat.toJson(element));
     }
 }
+class IdentityJsonFormat {
+    fromJson(json) {
+        return json;
+    }
+    toJson(value) {
+        return value;
+    }
+}
 class ObjectJsonFormat {
     constructor(format) {
         this.format = format;
@@ -109,14 +129,18 @@ class ObjectJsonFormat {
     fromJson(json) {
         const result = {};
         for (const key in this.format) {
-            result[key] = this.format[key].fromJson(json[key]);
+            if (key in json) {
+                result[key] = this.format[key].fromJson(json[key]);
+            }
         }
         return result;
     }
     toJson(value) {
         const json = {};
         for (const key in this.format) {
-            json[key] = this.format[key].toJson(value[key]);
+            if (key in value) {
+                json[key] = this.format[key].toJson(value[key]);
+            }
         }
         return json;
     }
@@ -139,6 +163,23 @@ class MapJsonFormat {
         }));
     }
 }
+class NullableJsonFormat {
+    constructor(format) {
+        this.format = format;
+    }
+    fromJson(json) {
+        if (json === null) {
+            return null;
+        }
+        return this.format.fromJson(json);
+    }
+    toJson(value) {
+        if (value === null) {
+            return null;
+        }
+        return this.format.toJson(value);
+    }
+}
 class SetJsonFormat {
     constructor(format) {
         this.format = format;
@@ -148,14 +189,6 @@ class SetJsonFormat {
     }
     toJson(value) {
         return [...value].map((element) => this.format.toJson(element));
-    }
-}
-class StringJsonFormat {
-    fromJson(json) {
-        return json;
-    }
-    toJson(value) {
-        return value;
     }
 }
 
@@ -169,20 +202,20 @@ class Package {
 }
 exports.Package = Package;
 (function (Package) {
-    function json$1() {
-        return json.JsonFormat.object({
-            id: json.JsonFormat.string(),
-            deps: json.JsonFormat.map(json.JsonFormat.string(), json.JsonFormat.string()),
-            path: json.JsonFormat.string(),
+    function json() {
+        return src$1.JsonFormat.object({
+            id: src$1.JsonFormat.string(),
+            deps: src$1.JsonFormat.map(src$1.JsonFormat.string(), src$1.JsonFormat.string()),
+            path: src$1.JsonFormat.string(),
         });
     }
-    Package.json = json$1;
+    Package.json = json;
 })(Package = exports.Package || (exports.Package = {}));
 (function (PackageTree) {
-    function json$1() {
-        return json.JsonFormat.map(json.JsonFormat.string(), Package.json());
+    function json() {
+        return src$1.JsonFormat.map(src$1.JsonFormat.string(), Package.json());
     }
-    PackageTree.json = json$1;
+    PackageTree.json = json;
 })(exports.PackageTree || (exports.PackageTree = {}));
 
 });
@@ -4460,7 +4493,7 @@ async function main() {
             deps: new Map([...package_.deps.entries()].map(([name, dep]) => [name, dep.id])),
         },
     ]));
-    await fs__namespace.promises.writeFile(args.output, json.JsonFormat.stringify(src.PackageTree.json(), tree));
+    await fs__namespace.promises.writeFile(args.output, src$1.JsonFormat.stringify(src.PackageTree.json(), tree));
 }
 main().catch((e) => {
     console.error(e.stack);

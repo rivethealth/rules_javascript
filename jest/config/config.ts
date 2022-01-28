@@ -62,7 +62,7 @@ export class Configuration {
         }
       }
     }
-    config.roots = roots.map((root) => `${this.runfilesDir}/${root}`);
+    config.roots = roots.map((root) => path.resolve(this.runfilesDir, root));
 
     config.testRegex = filePaths
       .filter((_, i) => i % totalShards === shardIndex)

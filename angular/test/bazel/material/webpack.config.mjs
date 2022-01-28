@@ -1,7 +1,9 @@
 import linkerPlugin from '@angular/compiler-cli/linker/babel';
+import { createRequire } from "module";
 import webpack from "webpack";
 
 const compilationMode = process.env.COMPILATION_MODE;
+const require = createRequire(import.meta.url);
 
 const plugins = [
   new webpack.DefinePlugin({
@@ -19,7 +21,7 @@ if (compilationMode === "opt") {
     {
       test: /\.[cm]?js$/,
       use: {
-        loader: 'babel-loader',
+        loader: require.resolve('babel-loader'),
         options: { plugins: [linkerPlugin] },
       },
     });
@@ -29,4 +31,9 @@ export default {
   entry: `main.${compilationMode === "opt" ? "prod" : "dev"}.js`,
   module: { rules },
   plugins,
+  optimization: {
+    splitChunks: {
+      chunks: 'all',
+    },
+  },
 };

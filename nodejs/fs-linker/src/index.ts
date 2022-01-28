@@ -3,6 +3,7 @@ import { JsonFormat } from "@better-rules-javascript/util-json";
 import * as fs from "fs";
 import { patchFs } from "./fs";
 import { patchFsPromises } from "./fs-promises";
+import { patchModule } from "./module";
 import { createVfs } from "./package";
 
 const manifestPath = process.env.NODE_FS_PACKAGE_MANIFEST;
@@ -21,3 +22,4 @@ if (process.env.NODE_FS_TRACE === "true") {
 
 patchFs(vfs, require("fs"));
 patchFsPromises(vfs, require("fs").promises);
+patchModule(require("module"));

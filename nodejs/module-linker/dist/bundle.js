@@ -76,7 +76,7 @@ class Resolver {
         return { package: dep, inner: depRest.join("/") };
     }
     static create(packageTree, runfiles) {
-        const resolve = (path_) => path__default["default"].resolve(runfiles ? `${process.env.RUNFILES_DIR}/${path_}` : path_);
+        const resolve = (path_) => runfiles ? path__default["default"].resolve(process.env.RUNFILES_DIR, path_) : path__default["default"].resolve(path_);
         const packages = new collection.Trie();
         for (const [id, package_] of packageTree.entries()) {
             const path_ = pathParts(resolve(package_.path));
@@ -96,7 +96,7 @@ class Resolver {
 }
 exports.Resolver = Resolver;
 
-});var json = createCommonjsModule(function (module, exports) {
+});var src$1 = createCommonjsModule(function (module, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.JsonFormat = void 0;
 (function (JsonFormat) {
@@ -133,12 +133,24 @@ exports.JsonFormat = void 0;
         };
     }
     JsonFormat.defer = defer;
+    function identity() {
+        return new IdentityJsonFormat();
+    }
+    JsonFormat.identity = identity;
+    function nullable(format) {
+        return new NullableJsonFormat(format);
+    }
+    JsonFormat.nullable = nullable;
+    function number() {
+        return new IdentityJsonFormat();
+    }
+    JsonFormat.number = number;
     function set(format) {
         return new SetJsonFormat(format);
     }
     JsonFormat.set = set;
     function string() {
-        return new StringJsonFormat();
+        return new IdentityJsonFormat();
     }
     JsonFormat.string = string;
 })(exports.JsonFormat || (exports.JsonFormat = {}));
@@ -153,6 +165,14 @@ class ArrayJsonFormat {
         return json.map((element) => this.elementFormat.toJson(element));
     }
 }
+class IdentityJsonFormat {
+    fromJson(json) {
+        return json;
+    }
+    toJson(value) {
+        return value;
+    }
+}
 class ObjectJsonFormat {
     constructor(format) {
         this.format = format;
@@ -160,14 +180,18 @@ class ObjectJsonFormat {
     fromJson(json) {
         const result = {};
         for (const key in this.format) {
-            result[key] = this.format[key].fromJson(json[key]);
+            if (key in json) {
+                result[key] = this.format[key].fromJson(json[key]);
+            }
         }
         return result;
     }
     toJson(value) {
         const json = {};
         for (const key in this.format) {
-            json[key] = this.format[key].toJson(value[key]);
+            if (key in value) {
+                json[key] = this.format[key].toJson(value[key]);
+            }
         }
         return json;
     }
@@ -190,6 +214,23 @@ class MapJsonFormat {
         }));
     }
 }
+class NullableJsonFormat {
+    constructor(format) {
+        this.format = format;
+    }
+    fromJson(json) {
+        if (json === null) {
+            return null;
+        }
+        return this.format.fromJson(json);
+    }
+    toJson(value) {
+        if (value === null) {
+            return null;
+        }
+        return this.format.toJson(value);
+    }
+}
 class SetJsonFormat {
     constructor(format) {
         this.format = format;
@@ -201,14 +242,6 @@ class SetJsonFormat {
         return [...value].map((element) => this.format.toJson(element));
     }
 }
-class StringJsonFormat {
-    fromJson(json) {
-        return json;
-    }
-    toJson(value) {
-        return value;
-    }
-}
 
 });var src = createCommonjsModule(function (module, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
@@ -218,20 +251,20 @@ class Package {
 }
 exports.Package = Package;
 (function (Package) {
-    function json$1() {
-        return json.JsonFormat.object({
-            id: json.JsonFormat.string(),
-            deps: json.JsonFormat.map(json.JsonFormat.string(), json.JsonFormat.string()),
-            path: json.JsonFormat.string(),
+    function json() {
+        return src$1.JsonFormat.object({
+            id: src$1.JsonFormat.string(),
+            deps: src$1.JsonFormat.map(src$1.JsonFormat.string(), src$1.JsonFormat.string()),
+            path: src$1.JsonFormat.string(),
         });
     }
-    Package.json = json$1;
+    Package.json = json;
 })(Package = exports.Package || (exports.Package = {}));
 (function (PackageTree) {
-    function json$1() {
-        return json.JsonFormat.map(json.JsonFormat.string(), Package.json());
+    function json() {
+        return src$1.JsonFormat.map(src$1.JsonFormat.string(), Package.json());
     }
-    PackageTree.json = json$1;
+    PackageTree.json = json;
 })(exports.PackageTree || (exports.PackageTree = {}));
 
 });function resolveFilename(resolver, delegate) {
@@ -265,6 +298,6 @@ function patchModule(resolver, delegate) {
 if (!manifestPath) {
     throw new Error("NODE_PACKAGE_MANIFEST is not set");
 }
-const packageTree = json.JsonFormat.parse(src.PackageTree.json(), fs__namespace.readFileSync(manifestPath, "utf8"));
+const packageTree = src$1.JsonFormat.parse(src.PackageTree.json(), fs__namespace.readFileSync(manifestPath, "utf8"));
 const resolver = resolve.Resolver.create(packageTree, true);
 patchModule(resolver, require("module"));

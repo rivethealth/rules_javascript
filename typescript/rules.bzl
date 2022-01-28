@@ -479,11 +479,15 @@ def _ts_library_impl(ctx):
     tsconfig_info = ctx.attr.config[TsconfigInfo] if ctx.attr.config else None
     workspace_name = ctx.workspace_name
 
+    src_root = output_root(root = cjs_info.package, package_output = output_, prefix = src_prefix)
+    js_root = output_root(root = cjs_info.package, package_output = output_, prefix = js_prefix)
+
     transpile_tsconfig = actions.declare_file("%s/js-tsconfig.json" % ctx.attr.name)
     args = actions.args()
     if tsconfig_info:
         args.add("--config", tsconfig_info.file)
-    args.add("--out-dir", "/dummy")  # force source maps
+    args.add("--out-dir", js_root)
+    args.add("--root-dir", src_root)
     args.add(transpile_tsconfig)
     actions.run(
         arguments = [args],
@@ -578,7 +582,7 @@ def _ts_library_impl(ctx):
                 args.add("--manifest", transpile_package_manifest)
                 args.add("--js", js_)
                 args.add("--map", map)
-                args.add(file)
+                args.add(ts_)
                 args.set_param_file_format("multiline")
                 args.use_param_file("@%s", use_always = True)
                 actions.run(
@@ -586,7 +590,7 @@ def _ts_library_impl(ctx):
                     executable = compiler.transpile_bin.files_to_run.executable,
                     execution_requirements = {"supports-workers": "1"},
                     inputs = depset(
-                        [file, transpile_package_manifest, transpile_tsconfig],
+                        [ts_, transpile_package_manifest, transpile_tsconfig],
                         transitive = [tsconfig_info.transitive_files] if tsconfig_info else [],
                     ),
                     mnemonic = "TypeScriptTranspile",
@@ -612,7 +616,6 @@ def _ts_library_impl(ctx):
         if tsconfig_info:
             args.add("--config", tsconfig_info.file)
         declaration_root = output_root(root = cjs_info.package, package_output = output_, prefix = declaration_prefix)
-        src_root = output_root(root = cjs_info.package, package_output = output_, prefix = src_prefix)
         args.add("--declaration-dir", declaration_root)
         args.add("--root-dir", src_root)
         args.add("--type-root", ("%s/node_modules/@types") % cjs_info.package.path)

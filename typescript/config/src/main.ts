@@ -38,7 +38,8 @@ interface Args {
   const outDir = path.dirname(args.output);
   const relative = (path_: string) => {
     let result = path.relative(outDir, path_);
-    if (!result.startsWith("./") && !result.startsWith("../")) {
+    const [first] = result.split("/", 1);
+    if (first != "." && first != "..") {
       result = `./${result}`;
     }
     return result;

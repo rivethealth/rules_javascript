@@ -55,7 +55,7 @@ webpack = rule(
 
 _webpack = webpack
 
-def configure_webpack(name, cli, webpack, dev_server, config, global_deps = [], other_deps = [], visibility = None):
+def configure_webpack(name, cli, webpack, node_options, dev_server, config, global_deps = [], other_deps = [], visibility = None):
     """Set up webpack tools.
 
     Args:
@@ -70,6 +70,7 @@ def configure_webpack(name, cli, webpack, dev_server, config, global_deps = [], 
         name = "%s.bin" % name,
         dep = cli,
         global_deps = global_deps,
+        node_options = node_options,
         other_deps = other_deps + [config, "@better_rules_javascript//webpack/load-config:lib"],
         visibility = ["//visibility:private"],
     )
@@ -78,6 +79,7 @@ def configure_webpack(name, cli, webpack, dev_server, config, global_deps = [], 
         name = "%s.server_bin" % name,
         dep = ":%s.server_lib" % name,
         global_deps = global_deps,
+        node_options = node_options,
         other_deps = other_deps + [config],
         main = "src/main.js",
     )
@@ -136,8 +138,9 @@ def _webpack_bundle_impl(ctx):
     compilation_mode = ctx.var["COMPILATION_MODE"]
     dep = ctx.attr.dep[JsInfo]
     webpack = ctx.attr.webpack[WebpackInfo]
+    output_name = ctx.attr.output or ctx.attr.name
 
-    package_manifest = actions.declare_file("%s/packages.json" % ctx.label.name)
+    package_manifest = actions.declare_file("%s.packages.json" % ctx.label.name)
     gen_manifest(
         actions = actions,
         deps = dep.transitive_deps,
@@ -148,7 +151,7 @@ def _webpack_bundle_impl(ctx):
         package_path = package_path,
     )
 
-    bundle = actions.declare_file("%s/bundle.js" % ctx.label.name)
+    output = actions.declare_directory(output_name)
 
     args = []
     args.append("--config")
@@ -161,7 +164,7 @@ def _webpack_bundle_impl(ctx):
             "NODE_OPTIONS_APPEND": "-r ./%s -r ./%s" % (ctx.file._fs_linker.path, ctx.file._skip_package_check.path),
             "WEBPACK_CONFIG": "%s/%s" % (NODE_MODULES_PREFIX, webpack.config_path),
             "WEBPACK_INPUT_ROOT": dep.package.path,
-            "WEBPACK_OUTPUT": bundle.path,
+            "WEBPACK_OUTPUT": output.path,
         },
         executable = webpack.bin.files_to_run.executable,
         tools = [webpack.bin.files_to_run],
@@ -170,10 +173,10 @@ def _webpack_bundle_impl(ctx):
             [package_manifest, ctx.file._fs_linker, ctx.file._skip_package_check],
             transitive = [dep.transitive_files, dep.transitive_srcs],
         ),
-        outputs = [bundle],
+        outputs = [output],
     )
 
-    default_info = DefaultInfo(files = depset([bundle]))
+    default_info = DefaultInfo(files = depset([output]))
 
     return [default_info]
 
@@ -182,6 +185,9 @@ webpack_bundle = rule(
         "dep": attr.label(
             doc = "JavaScript dependencies",
             providers = [JsInfo],
+        ),
+        "output": attr.string(
+            doc = "Output directory. Defaults to the name of the rule",
         ),
         "webpack": attr.label(
             doc = "Webpack tools",

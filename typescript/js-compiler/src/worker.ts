@@ -73,7 +73,7 @@ export class JsWorker {
 
     const input = fs.readFileSync(args.src, "utf8");
     const result = ts.transpileModule(input, {
-      fileName: args.src,
+      fileName: path.relative(path.dirname(args.map), args.src),
       compilerOptions: options,
     });
     if (result.diagnostics.length) {

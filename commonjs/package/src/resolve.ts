@@ -50,7 +50,9 @@ export class Resolver {
 
   static create(packageTree: PackageTree, runfiles: boolean): Resolver {
     const resolve = (path_: string) =>
-      path.resolve(runfiles ? `${process.env.RUNFILES_DIR}/${path_}` : path_);
+      runfiles
+        ? path.resolve(process.env.RUNFILES_DIR, path_)
+        : path.resolve(path_);
     const packages = new Trie<string, ResolverPackage>();
     for (const [id, package_] of packageTree.entries()) {
       const path_ = pathParts(resolve(package_.path));

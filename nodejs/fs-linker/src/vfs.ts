@@ -65,7 +65,10 @@ export class VfsImpl implements Vfs {
           path: [node.path, ...parts.slice(i)].join("/"),
         };
       }
-      return node;
+      if (node.type === VfsNode.SYMLINK) {
+        return node;
+      }
+      return { ...node, hardenSymlinks: true };
     }
   }
 
@@ -106,7 +109,7 @@ export class VfsImpl implements Vfs {
         };
       }
       return {
-        hardenSymlinks: (<VfsNode.Path>node).hardenSymlinks,
+        hardenSymlinks: true,
         path: "/" + parts.join("/"),
       };
     }
@@ -153,7 +156,7 @@ export class VfsImpl implements Vfs {
           path: [node.path, ...parts.slice(i)].join("/"),
         };
       }
-      return node;
+      return { ...node, hardenSymlinks: true };
     }
   }
 

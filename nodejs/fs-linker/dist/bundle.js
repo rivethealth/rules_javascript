@@ -3,12 +3,14 @@
 var fs = require('fs');
 var url_1 = require('url');
 var path = require('path');
+var require$$0 = require('module');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
 var fs__default = /*#__PURE__*/_interopDefaultLegacy(fs);
 var url_1__default = /*#__PURE__*/_interopDefaultLegacy(url_1);
 var path__default = /*#__PURE__*/_interopDefaultLegacy(path);
+var require$$0__default = /*#__PURE__*/_interopDefaultLegacy(require$$0);
 
 function getDefaultExportFromCjs (x) {
 	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
@@ -28,7 +30,7 @@ function commonjsRequire () {
 	throw new Error('Dynamic requires are not currently supported by @rollup/plugin-commonjs');
 }
 
-var json = createCommonjsModule(function (module, exports) {
+var src$2 = createCommonjsModule(function (module, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.JsonFormat = void 0;
 (function (JsonFormat) {
@@ -65,12 +67,24 @@ exports.JsonFormat = void 0;
         };
     }
     JsonFormat.defer = defer;
+    function identity() {
+        return new IdentityJsonFormat();
+    }
+    JsonFormat.identity = identity;
+    function nullable(format) {
+        return new NullableJsonFormat(format);
+    }
+    JsonFormat.nullable = nullable;
+    function number() {
+        return new IdentityJsonFormat();
+    }
+    JsonFormat.number = number;
     function set(format) {
         return new SetJsonFormat(format);
     }
     JsonFormat.set = set;
     function string() {
-        return new StringJsonFormat();
+        return new IdentityJsonFormat();
     }
     JsonFormat.string = string;
 })(exports.JsonFormat || (exports.JsonFormat = {}));
@@ -85,6 +99,14 @@ class ArrayJsonFormat {
         return json.map((element) => this.elementFormat.toJson(element));
     }
 }
+class IdentityJsonFormat {
+    fromJson(json) {
+        return json;
+    }
+    toJson(value) {
+        return value;
+    }
+}
 class ObjectJsonFormat {
     constructor(format) {
         this.format = format;
@@ -92,14 +114,18 @@ class ObjectJsonFormat {
     fromJson(json) {
         const result = {};
         for (const key in this.format) {
-            result[key] = this.format[key].fromJson(json[key]);
+            if (key in json) {
+                result[key] = this.format[key].fromJson(json[key]);
+            }
         }
         return result;
     }
     toJson(value) {
         const json = {};
         for (const key in this.format) {
-            json[key] = this.format[key].toJson(value[key]);
+            if (key in value) {
+                json[key] = this.format[key].toJson(value[key]);
+            }
         }
         return json;
     }
@@ -122,6 +148,23 @@ class MapJsonFormat {
         }));
     }
 }
+class NullableJsonFormat {
+    constructor(format) {
+        this.format = format;
+    }
+    fromJson(json) {
+        if (json === null) {
+            return null;
+        }
+        return this.format.fromJson(json);
+    }
+    toJson(value) {
+        if (value === null) {
+            return null;
+        }
+        return this.format.toJson(value);
+    }
+}
 class SetJsonFormat {
     constructor(format) {
         this.format = format;
@@ -131,14 +174,6 @@ class SetJsonFormat {
     }
     toJson(value) {
         return [...value].map((element) => this.format.toJson(element));
-    }
-}
-class StringJsonFormat {
-    fromJson(json) {
-        return json;
-    }
-    toJson(value) {
-        return value;
     }
 }
 
@@ -152,20 +187,20 @@ class Package {
 }
 exports.Package = Package;
 (function (Package) {
-    function json$1() {
-        return json.JsonFormat.object({
-            id: json.JsonFormat.string(),
-            deps: json.JsonFormat.map(json.JsonFormat.string(), json.JsonFormat.string()),
-            path: json.JsonFormat.string(),
+    function json() {
+        return src$2.JsonFormat.object({
+            id: src$2.JsonFormat.string(),
+            deps: src$2.JsonFormat.map(src$2.JsonFormat.string(), src$2.JsonFormat.string()),
+            path: src$2.JsonFormat.string(),
         });
     }
-    Package.json = json$1;
+    Package.json = json;
 })(Package = exports.Package || (exports.Package = {}));
 (function (PackageTree) {
-    function json$1() {
-        return json.JsonFormat.map(json.JsonFormat.string(), Package.json());
+    function json() {
+        return src$2.JsonFormat.map(src$2.JsonFormat.string(), Package.json());
     }
-    PackageTree.json = json$1;
+    PackageTree.json = json;
 })(exports.PackageTree || (exports.PackageTree = {}));
 
 });
@@ -209,7 +244,10 @@ class VfsImpl {
                     path: [node.path, ...parts.slice(i)].join("/"),
                 };
             }
-            return node;
+            if (node.type === VfsNode.SYMLINK) {
+                return node;
+            }
+            return { ...node, hardenSymlinks: true };
         }
     }
     realpath(path) {
@@ -245,7 +283,7 @@ class VfsImpl {
                 };
             }
             return {
-                hardenSymlinks: node.hardenSymlinks,
+                hardenSymlinks: true,
                 path: "/" + parts.join("/"),
             };
         }
@@ -287,7 +325,7 @@ class VfsImpl {
                     path: [node.path, ...parts.slice(i)].join("/"),
                 };
             }
-            return node;
+            return { ...node, hardenSymlinks: true };
         }
     }
     print() {
@@ -1217,6 +1255,25 @@ exports.patchFsPromises = patchFsPromises;
 
 });
 
+var module$1 = createCommonjsModule(function (module, exports) {
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.patchModule = void 0;
+function load(delegate) {
+    return function (path) {
+        const args = [...arguments];
+        if (path === "graceful-fs") {
+            args[0] = "fs";
+        }
+        return delegate.apply(this, args);
+    };
+}
+function patchModule(delegate) {
+    delegate._load = load(delegate._load);
+}
+exports.patchModule = patchModule;
+
+});
+
 var _package = createCommonjsModule(function (module, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createVfs = void 0;
@@ -1266,7 +1323,7 @@ function addDep(root, name, path) {
     });
 }
 function createVfs(packageTree, runfiles) {
-    const resolve = (path_) => path__default["default"].resolve(runfiles ? `${process.env.RUNFILES_DIR}/${path_}` : path_);
+    const resolve = (path_) => runfiles ? path__default["default"].resolve(process.env.RUNFILES_DIR, path_) : path__default["default"].resolve(path_);
     const root = {
         type: vfs.VfsNode.PATH,
         hardenSymlinks: false,
@@ -1312,17 +1369,19 @@ Object.defineProperty(exports, "__esModule", { value: true });
 
 
 
+
 const manifestPath = process.env.NODE_FS_PACKAGE_MANIFEST;
 if (!manifestPath) {
     throw new Error("NODE_FS_PACKAGE_MANIFEST is not set");
 }
-const packageTree = json.JsonFormat.parse(src$1.PackageTree.json(), fs__default["default"].readFileSync(manifestPath, "utf8"));
+const packageTree = src$2.JsonFormat.parse(src$1.PackageTree.json(), fs__default["default"].readFileSync(manifestPath, "utf8"));
 const vfs = (0, _package.createVfs)(packageTree, process.env.NODE_FS_RUNFILES === "true");
 if (process.env.NODE_FS_TRACE === "true") {
     process.stderr.write(vfs.print());
 }
 (0, fs_1.patchFs)(vfs, fs__default["default"]);
 (0, fsPromises.patchFsPromises)(vfs, fs__default["default"].promises);
+(0, module$1.patchModule)(require$$0__default["default"]);
 
 });
 

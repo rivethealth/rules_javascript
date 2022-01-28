@@ -17,7 +17,7 @@ if (testShardStatus) {
 
 let config: Config.InitialOptions;
 if (configRunfile) {
-  const configPath = `${runfilesDir}/${configRunfile}`;
+  const configPath = path.resolve(runfilesDir, configRunfile);
   config = require(configPath);
   config.rootDir = path.dirname(configPath);
 } else {
