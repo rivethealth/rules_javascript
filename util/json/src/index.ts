@@ -44,6 +44,10 @@ export namespace JsonFormat {
     };
   }
 
+  export function any(): JsonFormat<any> {
+    return new AnyJsonFormat();
+  }
+
   export function identity<T>(): JsonFormat<T> {
     return new IdentityJsonFormat();
   }
@@ -62,6 +66,23 @@ export namespace JsonFormat {
 
   export function string(): JsonFormat<string> {
     return new IdentityJsonFormat<string>();
+  }
+}
+
+class AnyJsonFormat implements JsonFormat<any> {
+  fromJson(json: any) {
+    return json;
+  }
+
+  toJson(value: any) {
+    if (typeof value !== "object" || value === null || value instanceof Array) {
+      return value;
+    }
+    const json = <Json>{};
+    for (const key of Object.keys(value).sort()) {
+      json[key] = this.toJson(value[key]);
+    }
+    return json;
   }
 }
 
@@ -88,13 +109,19 @@ class IdentityJsonFormat<T> implements JsonFormat<T> {
 }
 
 class ObjectJsonFormat<V> implements JsonFormat<V> {
-  constructor(private readonly format: { [K in keyof V]: JsonFormat<V[K]> }) {}
+  constructor(format: { [K in keyof V]: JsonFormat<V[K]> }) {
+    this.properties = (<[string, JsonFormat<any>][]>(
+      Object.entries(format)
+    )).sort(([a], [b]) => (a < b ? -1 : b > a ? 1 : 0));
+  }
+
+  private readonly properties: [string, JsonFormat<any>][];
 
   fromJson(json: any) {
     const result = <V>{};
-    for (const key in this.format) {
+    for (const [key, format] of this.properties) {
       if (key in json) {
-        result[key] = this.format[key].fromJson(json[key]);
+        result[key] = format.fromJson(json[key]);
       }
     }
     return result;
@@ -102,9 +129,9 @@ class ObjectJsonFormat<V> implements JsonFormat<V> {
 
   toJson(value: V) {
     const json = <Json>{};
-    for (const key in this.format) {
+    for (const [key, format] of this.properties) {
       if (key in value) {
-        json[key] = this.format[key].toJson(value[key]);
+        json[key] = format.toJson(value[key]);
       }
     }
     return json;

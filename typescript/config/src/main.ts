@@ -1,4 +1,5 @@
 import { ArgumentParser } from "argparse";
+import { JsonFormat } from "@better-rules-javascript/util-json";
 import * as fs from "fs";
 import * as path from "path";
 
@@ -16,6 +17,7 @@ parser.add_argument("--root-dirs", {
   default: [],
 });
 parser.add_argument("--out-dir", { dest: "outDir" });
+parser.add_argument("--target");
 parser.add_argument("--type-root", {
   action: "append",
   dest: "typeRoots",
@@ -30,6 +32,7 @@ interface Args {
   rootDir?: string;
   rootDirs: string[];
   outDir?: string;
+  target?: string;
   typeRoots: string[];
   output?: string;
 }
@@ -88,7 +91,12 @@ interface Args {
     tsconfig.extends = relative(args.config);
   }
 
-  await fs.promises.writeFile(args.output, JSON.stringify(tsconfig), "utf8");
+  if (args.target) {
+    tsconfig.compilerOptions.target = args.target;
+  }
+
+  const content = JsonFormat.stringify(JsonFormat.any(), tsconfig);
+  await fs.promises.writeFile(args.output, content, "utf8");
 })().catch((e) => {
   console.error(e);
   process.exit(1);

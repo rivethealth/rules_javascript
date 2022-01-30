@@ -1,7 +1,6 @@
 {
   "compilerOptions": {
     "module": "commonjs",
-    "target": "es2019",
     "types": ["node"]
   },
   "extends": "@better-rules-javascript/rules/tsconfig.common.json"

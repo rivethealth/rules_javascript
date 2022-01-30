@@ -27,6 +27,9 @@ def _module(module):
         return "commonjs"
     return module
 
+def _target(language):
+    return language
+
 def _ts_simple_compiler_impl(ctx):
     tslib_js = ctx.attr.tslib[JsInfo] if ctx.attr.tslib else None
     tslib_ts = ctx.attr.tslib[TsInfo] if ctx.attr.tslib else None
@@ -498,6 +501,7 @@ def _ts_library_impl(ctx):
     src_prefix = ctx.attr.src_prefix
     srcs = ctx.files.srcs
     strip_prefix = ctx.attr.strip_prefix or default_strip_prefix(ctx)
+    target = _target(ctx.attr._language[BuildSettingInfo].value)
     ts_deps = compiler.ts_deps + [dep[TsInfo] for dep in ctx.attr.deps if TsInfo in dep]
     tsconfig_info = ctx.attr.config[TsconfigInfo] if ctx.attr.config else None
     workspace_name = ctx.workspace_name
@@ -512,6 +516,7 @@ def _ts_library_impl(ctx):
     args.add("--module", module)
     args.add("--out-dir", js_root)
     args.add("--root-dir", src_root)
+    args.add("--target", target)
     args.add(transpile_tsconfig)
     actions.run(
         arguments = [args],
@@ -643,6 +648,7 @@ def _ts_library_impl(ctx):
         args.add("--declaration-dir", declaration_root)
         args.add("--module", module)
         args.add("--root-dir", src_root)
+        args.add("--target", target)
         args.add("--type-root", ("%s/node_modules/@types") % cjs_info.package.path)
         args.add(tsconfig)
         actions.run(
@@ -744,6 +750,10 @@ ts_library = rule(
         "_fs_linker": attr.label(
             allow_single_file = [".js"],
             default = "//nodejs/fs-linker:file",
+        ),
+        "_language": attr.label(
+            default = "//javascript:language",
+            providers = [BuildSettingInfo],
         ),
         "_manifest": attr.label(
             cfg = "exec",

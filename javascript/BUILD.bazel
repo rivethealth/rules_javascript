@@ -13,6 +13,11 @@ bzl_library(
 )
 
 string_flag(
+    name = "language",
+    build_setting_default = "es2019",
+)
+
+string_flag(
     name = "module",
     build_setting_default = "es2020",
     values = [
