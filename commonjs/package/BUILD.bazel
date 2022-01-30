@@ -1,6 +1,6 @@
 load("//commonjs:rules.bzl", "cjs_root")
 load("//javascript:rules.bzl", "js_library")
-load("//typescript:rules.bzl", "ts_simple_library")
+load("//typescript:rules.bzl", "ts_library", "tsconfig")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -10,19 +10,21 @@ cjs_root(
     descriptors = ["package.json"],
 )
 
-ts_simple_library(
+ts_library(
     name = "lib",
     srcs = glob(["src/**/*.ts"]),
-    compiler = "//rules:simple_tsc",
-    compiler_options = [
-        "--moduleResolution",
-        "node",
-        "--target",
-        "es2019",
-    ],
+    compiler = "//rules:tsc",
+    config = ":tsconfig",
     root = ":root",
     deps = [
         "//util/json:lib",
         "@better_rules_javascript_npm//@types/node:lib",
     ],
+)
+
+tsconfig(
+    name = "tsconfig",
+    src = "tsconfig.json",
+    dep = "//rules:tsconfig",
+    root = ":root",
 )

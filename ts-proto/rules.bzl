@@ -2,7 +2,7 @@ load("//commonjs:providers.bzl", "CjsEntries", "CjsInfo", "output_name")
 load("//javascript:providers.bzl", "JsInfo", js_create_deps = "create_deps")
 load("//nodejs:rules.bzl", "nodejs_binary")
 load("//util:path.bzl", "runfile_path")
-load("//typescript:providers.bzl", "SimpleTsCompilerInfo", "TsInfo", "create_deps")
+load("//typescript:providers.bzl", "TsCompilerInfo", "TsInfo", "create_deps")
 load("//util:path.bzl", "output")
 load(":aspects.bzl", _ts_proto_aspect = "ts_proto_aspect")
 load(":providers.bzl", "TsProtoInfo", "TsProtobuf", "TsProtosInfo")
@@ -10,7 +10,7 @@ load(":providers.bzl", "TsProtoInfo", "TsProtobuf", "TsProtosInfo")
 def _ts_protoc_impl(ctx):
     ts_protobuf = TsProtobuf(
         bin = ctx.attr.bin[DefaultInfo].files_to_run,
-        compiler = ctx.attr.compiler[SimpleTsCompilerInfo],
+        compiler = ctx.attr.compiler[TsCompilerInfo],
         js_deps = [dep[JsInfo] for dep in ctx.attr.deps if JsInfo in dep],
         ts_deps = [dep[TsInfo] for dep in ctx.attr.deps if TsInfo in dep],
     )
@@ -29,7 +29,7 @@ ts_protoc = rule(
         "compiler": attr.label(
             doc = "TypeScript compiler",
             mandatory = True,
-            providers = [SimpleTsCompilerInfo],
+            providers = [TsCompilerInfo],
         ),
         "deps": attr.label_list(
             doc = "Declarations",

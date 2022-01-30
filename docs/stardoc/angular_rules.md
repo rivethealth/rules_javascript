@@ -52,17 +52,19 @@ angular_library(<a href="#angular_library-name">name</a>, <a href="#angular_libr
 ## configure_angular_compiler
 
 <pre>
-configure_angular_compiler(<a href="#configure_angular_compiler-name">name</a>, <a href="#configure_angular_compiler-core">core</a>, <a href="#configure_angular_compiler-compiler_cli">compiler_cli</a>, <a href="#configure_angular_compiler-ts">ts</a>, <a href="#configure_angular_compiler-tslib">tslib</a>, <a href="#configure_angular_compiler-reflect_metadata">reflect_metadata</a>, <a href="#configure_angular_compiler-visibility">visibility</a>)
+configure_angular_compiler(<a href="#configure_angular_compiler-name">name</a>, <a href="#configure_angular_compiler-core">core</a>, <a href="#configure_angular_compiler-compiler_cli">compiler_cli</a>, <a href="#configure_angular_compiler-ts">ts</a>, <a href="#configure_angular_compiler-tslib">tslib</a>, <a href="#configure_angular_compiler-reflect_metadata">reflect_metadata</a>, <a href="#configure_angular_compiler-ngc_main">ngc_main</a>,
+                           <a href="#configure_angular_compiler-visibility">visibility</a>)
 </pre>
 
 **PARAMETERS**
 
-| Name                                                                     | Description               | Default Value     |
-| :----------------------------------------------------------------------- | :------------------------ | :---------------- |
-| <a id="configure_angular_compiler-name"></a>name                         | <p align="center"> - </p> | none              |
-| <a id="configure_angular_compiler-core"></a>core                         | <p align="center"> - </p> | none              |
-| <a id="configure_angular_compiler-compiler_cli"></a>compiler_cli         | <p align="center"> - </p> | none              |
-| <a id="configure_angular_compiler-ts"></a>ts                             | <p align="center"> - </p> | none              |
-| <a id="configure_angular_compiler-tslib"></a>tslib                       | <p align="center"> - </p> | none              |
-| <a id="configure_angular_compiler-reflect_metadata"></a>reflect_metadata | <p align="center"> - </p> | none              |
-| <a id="configure_angular_compiler-visibility"></a>visibility             | <p align="center"> - </p> | <code>None</code> |
+| Name                                                                     | Description               | Default Value                         |
+| :----------------------------------------------------------------------- | :------------------------ | :------------------------------------ |
+| <a id="configure_angular_compiler-name"></a>name                         | <p align="center"> - </p> | none                                  |
+| <a id="configure_angular_compiler-core"></a>core                         | <p align="center"> - </p> | none                                  |
+| <a id="configure_angular_compiler-compiler_cli"></a>compiler_cli         | <p align="center"> - </p> | none                                  |
+| <a id="configure_angular_compiler-ts"></a>ts                             | <p align="center"> - </p> | none                                  |
+| <a id="configure_angular_compiler-tslib"></a>tslib                       | <p align="center"> - </p> | none                                  |
+| <a id="configure_angular_compiler-reflect_metadata"></a>reflect_metadata | <p align="center"> - </p> | none                                  |
+| <a id="configure_angular_compiler-ngc_main"></a>ngc_main                 | <p align="center"> - </p> | <code>"bundles/src/bin/ngc.js"</code> |
+| <a id="configure_angular_compiler-visibility"></a>visibility             | <p align="center"> - </p> | <code>None</code>                     |

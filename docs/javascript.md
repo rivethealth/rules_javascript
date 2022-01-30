@@ -8,6 +8,7 @@ resolution, see [Module Resolution](module.md).
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
+- [Module](#module)
 - [Example](#example)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->

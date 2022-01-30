@@ -1,8 +1,17 @@
+load("@rules_file//generate:rules.bzl", "generate")
 load("//commonjs:rules.bzl", "cjs_root")
 load("//nodejs:rules.bzl", "nodejs_binary")
-load("//typescript:rules.bzl", "ts_simple_library")
+load("//javascript:rules.bzl", "js_file", "js_library")
+load("//typescript:rules.bzl", "ts_library", "tsconfig")
+load("//rollup:rules.bzl", "configure_rollup", "rollup_bundle")
 
 package(default_visibility = ["//visibility:public"])
+
+rollup_bundle(
+    name = "bundle",
+    dep = ":lib",
+    rollup = ":rollup",
+)
 
 cjs_root(
     name = "root",
@@ -10,18 +19,33 @@ cjs_root(
     descriptors = ["package.json"],
 )
 
-ts_simple_library(
+generate(
+    name = "gen",
+    srcs = ["dist/bundle.js"],
+    data = [":bundle"],
+    data_prefix = "typescript/config/dist",
+    data_strip_prefix = "typescript/config/bundle",
+)
+
+js_library(
+    name = "dist",
+    srcs = ["dist/bundle.js"],
+    root = ":root",
+)
+
+tsconfig(
+    name = "tsconfig",
+    src = "tsconfig.json",
+    dep = "//rules:tsconfig",
+    root = ":root",
+)
+
+ts_library(
     name = "lib",
     srcs = glob(["src/**/*.ts"]),
-    compiler = "//rules:simple_tsc",
-    compiler_options = [
-        "--lib",
-        "es2019",
-        "--types",
-        "node",
-    ],
+    compiler = "//rules:tsc",
+    config = ":tsconfig",
     root = ":root",
-    strip_prefix = "better_rules_javascript/typescript/config/src",
     deps = [
         "//util/json:lib",
         "@better_rules_javascript_npm//@types/argparse:lib",
@@ -32,6 +56,23 @@ ts_simple_library(
 
 nodejs_binary(
     name = "bin",
-    dep = ":lib",
-    main = "main.js",
+    dep = ":dist",
+    global_deps = ["@better_rules_javascript_npm//argparse:lib"],
+    main = "dist/bundle.js",
+)
+
+js_file(
+    name = "rollup_config",
+    src = "rollup.config.cjs",
+    root = ":root",
+    deps = [
+        "@better_rules_javascript_npm//@rollup/plugin-commonjs:lib",
+        "@better_rules_javascript_npm//@rollup/plugin-node-resolve:lib",
+    ],
+)
+
+configure_rollup(
+    name = "rollup",
+    config = ":rollup_config",
+    dep = "@better_rules_javascript_npm//rollup:lib",
 )

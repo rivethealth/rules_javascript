@@ -1,4 +1,4 @@
-'use strict';var emitWarning = process.emitWarning;
+'use strict';const { emitWarning } = process;
 /**
  * @file
  * @see https://github.com/nodejs/node/issues/30810

@@ -25,18 +25,19 @@ Webpack tools
 ## webpack_bundle
 
 <pre>
-webpack_bundle(<a href="#webpack_bundle-name">name</a>, <a href="#webpack_bundle-dep">dep</a>, <a href="#webpack_bundle-webpack">webpack</a>)
+webpack_bundle(<a href="#webpack_bundle-name">name</a>, <a href="#webpack_bundle-dep">dep</a>, <a href="#webpack_bundle-output">output</a>, <a href="#webpack_bundle-webpack">webpack</a>)
 </pre>
 
 Webpack bundle
 
 **ATTRIBUTES**
 
-| Name                                       | Description                    | Type                                                               | Mandatory | Default |
-| :----------------------------------------- | :----------------------------- | :----------------------------------------------------------------- | :-------- | :------ |
-| <a id="webpack_bundle-name"></a>name       | A unique name for this target. | <a href="https://bazel.build/docs/build-ref.html#name">Name</a>    | required  |         |
-| <a id="webpack_bundle-dep"></a>dep         | JavaScript dependencies        | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a> | optional  | None    |
-| <a id="webpack_bundle-webpack"></a>webpack | Webpack tools                  | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a> | required  |         |
+| Name                                       | Description                                        | Type                                                               | Mandatory | Default |
+| :----------------------------------------- | :------------------------------------------------- | :----------------------------------------------------------------- | :-------- | :------ |
+| <a id="webpack_bundle-name"></a>name       | A unique name for this target.                     | <a href="https://bazel.build/docs/build-ref.html#name">Name</a>    | required  |         |
+| <a id="webpack_bundle-dep"></a>dep         | JavaScript dependencies                            | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a> | optional  | None    |
+| <a id="webpack_bundle-output"></a>output   | Output directory. Defaults to the name of the rule | String                                                             | optional  | ""      |
+| <a id="webpack_bundle-webpack"></a>webpack | Webpack tools                                      | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a> | required  |         |
 
 <a id="#webpack_server"></a>
 
@@ -62,20 +63,22 @@ Run a webpack server
 ## configure_webpack
 
 <pre>
-configure_webpack(<a href="#configure_webpack-name">name</a>, <a href="#configure_webpack-cli">cli</a>, <a href="#configure_webpack-webpack">webpack</a>, <a href="#configure_webpack-dev_server">dev_server</a>, <a href="#configure_webpack-config">config</a>, <a href="#configure_webpack-global_deps">global_deps</a>, <a href="#configure_webpack-other_deps">other_deps</a>, <a href="#configure_webpack-visibility">visibility</a>)
+configure_webpack(<a href="#configure_webpack-name">name</a>, <a href="#configure_webpack-cli">cli</a>, <a href="#configure_webpack-webpack">webpack</a>, <a href="#configure_webpack-dev_server">dev_server</a>, <a href="#configure_webpack-config">config</a>, <a href="#configure_webpack-global_deps">global_deps</a>, <a href="#configure_webpack-node_options">node_options</a>, <a href="#configure_webpack-other_deps">other_deps</a>,
+                  <a href="#configure_webpack-visibility">visibility</a>)
 </pre>
 
 Set up webpack tools.
 
 **PARAMETERS**
 
-| Name                                                  | Description                                    | Default Value     |
-| :---------------------------------------------------- | :--------------------------------------------- | :---------------- |
-| <a id="configure_webpack-name"></a>name               | Name                                           | none              |
-| <a id="configure_webpack-cli"></a>cli                 | <p align="center"> - </p>                      | none              |
-| <a id="configure_webpack-webpack"></a>webpack         | <p align="center"> - </p>                      | none              |
-| <a id="configure_webpack-dev_server"></a>dev_server   | <p align="center"> - </p>                      | none              |
-| <a id="configure_webpack-config"></a>config           | Configuration                                  | none              |
-| <a id="configure_webpack-global_deps"></a>global_deps | <p align="center"> - </p>                      | <code>[]</code>   |
-| <a id="configure_webpack-other_deps"></a>other_deps   | Other deps (helps with Webpack package cycles) | <code>[]</code>   |
-| <a id="configure_webpack-visibility"></a>visibility   | <p align="center"> - </p>                      | <code>None</code> |
+| Name                                                    | Description                                    | Default Value     |
+| :------------------------------------------------------ | :--------------------------------------------- | :---------------- |
+| <a id="configure_webpack-name"></a>name                 | Name                                           | none              |
+| <a id="configure_webpack-cli"></a>cli                   | <p align="center"> - </p>                      | none              |
+| <a id="configure_webpack-webpack"></a>webpack           | <p align="center"> - </p>                      | none              |
+| <a id="configure_webpack-dev_server"></a>dev_server     | <p align="center"> - </p>                      | none              |
+| <a id="configure_webpack-config"></a>config             | Configuration                                  | none              |
+| <a id="configure_webpack-global_deps"></a>global_deps   | <p align="center"> - </p>                      | <code>[]</code>   |
+| <a id="configure_webpack-node_options"></a>node_options | <p align="center"> - </p>                      | <code>[]</code>   |
+| <a id="configure_webpack-other_deps"></a>other_deps     | Other deps (helps with Webpack package cycles) | <code>[]</code>   |
+| <a id="configure_webpack-visibility"></a>visibility     | <p align="center"> - </p>                      | <code>None</code> |

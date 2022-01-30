@@ -107,6 +107,10 @@ class Resolver {
         };
     }
     JsonFormat.defer = defer;
+    function any() {
+        return new AnyJsonFormat();
+    }
+    JsonFormat.any = any;
     function identity() {
         return new IdentityJsonFormat();
     }
@@ -128,6 +132,21 @@ class Resolver {
     }
     JsonFormat.string = string;
 })(JsonFormat || (JsonFormat = {}));
+class AnyJsonFormat {
+    fromJson(json) {
+        return json;
+    }
+    toJson(value) {
+        if (typeof value !== "object" || value === null || value instanceof Array) {
+            return value;
+        }
+        const json = {};
+        for (const key of Object.keys(value).sort()) {
+            json[key] = this.toJson(value[key]);
+        }
+        return json;
+    }
+}
 class ArrayJsonFormat {
     constructor(elementFormat) {
         this.elementFormat = elementFormat;
@@ -149,22 +168,22 @@ class IdentityJsonFormat {
 }
 class ObjectJsonFormat {
     constructor(format) {
-        this.format = format;
+        this.properties = (Object.entries(format)).sort(([a], [b]) => (a < b ? -1 : b > a ? 1 : 0));
     }
     fromJson(json) {
         const result = {};
-        for (const key in this.format) {
+        for (const [key, format] of this.properties) {
             if (key in json) {
-                result[key] = this.format[key].fromJson(json[key]);
+                result[key] = format.fromJson(json[key]);
             }
         }
         return result;
     }
     toJson(value) {
         const json = {};
-        for (const key in this.format) {
+        for (const [key, format] of this.properties) {
             if (key in value) {
-                json[key] = this.format[key].toJson(value[key]);
+                json[key] = format.toJson(value[key]);
             }
         }
         return json;
@@ -245,7 +264,7 @@ function resolve(specifier, context, defaultResolve) {
     }
     const parent = context.parentURL !== undefined ? new URL(context.parentURL) : undefined;
     if (Module__default["default"].builtinModules.includes(specifier) ||
-        (parent === null || parent === void 0 ? void 0 : parent.protocol) !== "file:" ||
+        parent?.protocol !== "file:" ||
         specifier == "." ||
         specifier == ".." ||
         specifier.startsWith("./") ||

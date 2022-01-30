@@ -5,22 +5,7 @@ load("//commonjs:rules.bzl", "cjs_root")
 load("//nodejs:rules.bzl", "nodejs_binary")
 load("//javascript:providers.bzl", "JsInfo", js_create_deps = "create_deps", js_create_extra_deps = "create_extra_deps", js_target_deps = "target_deps")
 load("//util:path.bzl", "output", "runfile_path")
-load(":providers.bzl", "SimpleTsCompilerInfo", "TsCompilerInfo", "TsInfo", "TsconfigInfo", "create_deps", "create_extra_deps", "declaration_path", "is_declaration", "is_directory", "is_json", "js_path", "map_path", "target_deps", "target_globals")
-
-def configure_ts_simple_compiler(name, ts, tslib = None, visibility = None):
-    nodejs_binary(
-        main = "lib/tsc.js",
-        name = "%s_bin" % name,
-        dep = ts,
-        visibility = ["//visibility:private"],
-    )
-
-    ts_simple_compiler(
-        name = name,
-        bin = "%s_bin" % name,
-        tslib = tslib,
-        visibility = visibility,
-    )
+load(":providers.bzl", "TsCompilerInfo", "TsInfo", "TsconfigInfo", "create_deps", "create_extra_deps", "declaration_path", "is_declaration", "is_directory", "is_json", "js_path", "map_path", "target_deps", "target_globals")
 
 def _module(module):
     if module == "node":
@@ -29,287 +14,6 @@ def _module(module):
 
 def _target(language):
     return language
-
-def _ts_simple_compiler_impl(ctx):
-    tslib_js = ctx.attr.tslib[JsInfo] if ctx.attr.tslib else None
-    tslib_ts = ctx.attr.tslib[TsInfo] if ctx.attr.tslib else None
-
-    compiler_info = SimpleTsCompilerInfo(
-        bin = ctx.attr.bin[DefaultInfo],
-        js_deps = [tslib_js] if tslib_js else [],
-        ts_deps = [tslib_ts] if tslib_ts else [],
-    )
-
-    return [compiler_info]
-
-ts_simple_compiler = rule(
-    attrs = {
-        "bin": attr.label(
-            executable = True,
-            cfg = "exec",
-        ),
-        "tslib": attr.label(
-            providers = [[JsInfo], [TsInfo]],
-        ),
-    },
-    implementation = _ts_simple_compiler_impl,
-)
-
-def _ts_simple_library_impl(ctx):
-    actions = ctx.actions
-    cjs_info = ctx.attr.root[CjsInfo]
-    compiler = ctx.attr.compiler[SimpleTsCompilerInfo]
-    declaration_prefix = ctx.attr.declaration_prefix
-    fs_linker = ctx.file._fs_linker
-    js_deps = compiler.js_deps + [dep[JsInfo] for dep in ctx.attr.deps if JsInfo in dep]
-    js_prefix = ctx.attr.js_prefix
-    module = ctx.attr.module or _module(ctx.attr._module[BuildSettingInfo].value)
-    output_ = output(ctx.label, actions)
-    src_prefix = ctx.attr.src_prefix
-    srcs = ctx.files.srcs
-    strip_prefix = ctx.attr.strip_prefix or default_strip_prefix(ctx)
-    ts_deps = compiler.ts_deps + [dep[TsInfo] for dep in ctx.attr.deps if TsInfo in dep]
-    workspace_name = ctx.workspace_name
-
-    declarations = []
-    inputs = []
-    js = []
-    outputs = []
-    js_srcs = []
-    for file in ctx.files.srcs:
-        path = output_name(
-            file = file,
-            package_output = output_,
-            prefix = src_prefix,
-            root = cjs_info.package,
-            strip_prefix = strip_prefix,
-            workspace_name = workspace_name,
-        )
-        if file.path == "%s/%s" % (output_.path, path):
-            ts_ = file
-        else:
-            ts_ = actions.declare_file(path)
-            actions.symlink(
-                target_file = file,
-                output = ts_,
-            )
-        inputs.append(ts_)
-        js_srcs.append(ts_)
-        if not is_declaration(path):
-            js_path_ = output_name(
-                file = file,
-                package_output = output_,
-                prefix = js_prefix,
-                root = cjs_info.package,
-                strip_prefix = strip_prefix,
-                workspace_name = workspace_name,
-            )
-            declaration_path_ = output_name(
-                file = file,
-                package_output = output_,
-                prefix = declaration_prefix,
-                root = cjs_info.package,
-                strip_prefix = strip_prefix,
-                workspace_name = workspace_name,
-            )
-            if is_directory(path):
-                js_ = actions.declare_directory(js_path_)
-                js.append(js_)
-                outputs.append(js_)
-                declaration = actions.declare_directory(declaration_path_)
-                declarations.append(declaration)
-                outputs.append(declaration)
-            elif is_json(path):
-                if path == js_path_:
-                    js_ = ts_
-                else:
-                    js_ = actions.declare_file(js_path_)
-                    outputs.append(js_)
-                js.append(js_)
-                declarations.append(js_)
-            else:
-                js_ = actions.declare_file(js_path(js_path_))
-                js.append(js_)
-                outputs.append(js_)
-                map = actions.declare_file(map_path(js_path(js_path_)))
-                js_srcs.append(map)
-                outputs.append(map)
-                declaration = actions.declare_file(declaration_path(declaration_path_))
-                declarations.append(declaration)
-                outputs.append(declaration)
-
-    transitive_deps = depset(
-        target_deps(cjs_info.package, ctx.attr.deps),
-        transitive = [ts_info.transitive_deps for ts_info in ts_deps],
-    )
-    transitive_packages = depset(
-        [cjs_info.package],
-        transitive =
-            [ts_info.transitive_packages for ts_info in ts_deps],
-    )
-
-    package_manifest = actions.declare_file("%s/package-manifest.json" % ctx.attr.name)
-    gen_manifest(
-        actions = actions,
-        manifest_bin = ctx.attr._manifest[DefaultInfo],
-        manifest = package_manifest,
-        packages = transitive_packages,
-        deps = transitive_deps,
-        globals = [],
-        package_path = package_path,
-    )
-
-    if outputs:
-        js_root = output_root(
-            root = cjs_info.package,
-            package_output = output_,
-            prefix = js_prefix,
-        )
-        src_root = output_root(
-            root = cjs_info.package,
-            package_output = output_,
-            prefix = src_prefix,
-        )
-        declaration_root = output_root(
-            root = cjs_info.package,
-            package_output = output_,
-            prefix = declaration_prefix,
-        )
-
-        args = actions.args()
-        args.add("--pretty")
-        args.add("--declaration", "true")
-        args.add("--declarationDir", declaration_root)
-        args.add("--module", module)
-        args.add("--rootDir", src_root)
-        args.add("--sourceMap", "true")
-        args.add("--typeRoots", "%s/node_modules/@types" % cjs_info.package.path)
-        args.add("--outDir", js_root)
-        args.add_all(ctx.attr.compiler_options)
-        args.add_all(inputs)
-
-        actions.run(
-            arguments = [args],
-            env = {
-                "NODE_OPTIONS_APPEND": "-r ./%s" % fs_linker.path,
-                "NODE_FS_PACKAGE_MANIFEST": package_manifest.path,
-            },
-            executable = compiler.bin.files_to_run.executable,
-            inputs = depset(
-                [package_manifest, fs_linker] + cjs_info.descriptors + inputs,
-                transitive = [ts_info.transitive_files for ts_info in ts_deps],
-            ),
-            mnemonic = "TypescriptCompile",
-            outputs = outputs,
-            tools = [compiler.bin.files_to_run],
-        )
-
-    ts_info = TsInfo(
-        name = cjs_info.name,
-        package = cjs_info.package,
-        transitive_deps = transitive_deps,
-        transitive_files = depset(
-            cjs_info.descriptors + declarations,
-            transitive = [dep.transitive_files for dep in ts_deps],
-        ),
-        transitive_packages = transitive_packages,
-        transitive_srcs = depset(
-            transitive = [dep.transitive_srcs for dep in ts_deps],
-        ),
-    )
-
-    js_info = JsInfo(
-        name = cjs_info.name,
-        package = cjs_info.package,
-        transitive_deps = depset(
-            js_target_deps(cjs_info.package, ctx.attr.deps) + js_create_deps(cjs_info.package, ctx.attr.compiler.label, compiler.js_deps),
-            transitive = [js_info.transitive_deps for js_info in js_deps],
-        ),
-        transitive_files = depset(
-            cjs_info.descriptors + js,
-            transitive = [js_info.transitive_files for js_info in js_deps],
-        ),
-        transitive_packages = depset(
-            [cjs_info.package],
-            transitive =
-                [js_info.transitive_packages for js_info in js_deps],
-        ),
-        transitive_srcs = depset(
-            js_srcs,
-            transitive = [js_info.transitive_srcs for js_info in js_deps],
-        ),
-    )
-
-    default_info = DefaultInfo(
-        files = depset(declarations + js),
-    )
-
-    cjs_entries = CjsEntries(
-        name = cjs_info.name,
-        package = cjs_info.package,
-        transitive_deps = depset(transitive = [js_info.transitive_deps, ts_info.transitive_deps]),
-        transitive_packages = depset(transitive = [js_info.transitive_packages, ts_info.transitive_packages]),
-        transitive_files = depset(transitive = [js_info.transitive_files, ts_info.transitive_files]),
-    )
-
-    return [default_info, cjs_entries, js_info, ts_info]
-
-ts_simple_library = rule(
-    implementation = _ts_simple_library_impl,
-    attrs = {
-        "srcs": attr.label_list(
-            allow_files = True,
-            doc = "TypeScript sources",
-        ),
-        "compiler_options": attr.string_list(
-            doc = "Compiler CLI options",
-        ),
-        "deps": attr.label_list(
-            doc = "Dependencies",
-            providers = [[JsInfo], [TsInfo]],
-        ),
-        "module": attr.string(
-            values = [
-                "commonjs",
-                "es2015",
-                "es2020",
-                "esnext",
-                "node",
-                "nodenext",
-            ],
-        ),
-        "root": attr.label(
-            doc = "CommonJS root.",
-            mandatory = True,
-            providers = [CjsInfo],
-        ),
-        "strip_prefix": attr.string(
-            doc = "Strip prefix",
-        ),
-        "declaration_prefix": attr.string(),
-        "src_prefix": attr.string(),
-        "js_prefix": attr.string(
-            doc = "Prefix",
-        ),
-        "compiler": attr.label(
-            mandatory = True,
-            providers = [SimpleTsCompilerInfo],
-        ),
-        "_fs_linker": attr.label(
-            allow_single_file = True,
-            default = "//nodejs/fs-linker:file",
-        ),
-        "_manifest": attr.label(
-            cfg = "exec",
-            executable = True,
-            default = "//commonjs/manifest:bin",
-        ),
-        "_module": attr.label(
-            default = "//javascript:module",
-            providers = [BuildSettingInfo],
-        ),
-    },
-)
 
 def configure_ts_compiler(name, ts, tslib = None, visibility = None):
     """Configure TypeScript compiler.
@@ -322,35 +26,6 @@ def configure_ts_compiler(name, ts, tslib = None, visibility = None):
         visibility: Visibility.
     """
 
-    cjs_root(
-        name = "%s.root" % name,
-        package_name = "@better-rules-javascript/typescript",
-        descriptors = ["@better_rules_javascript//typescript/js-compiler:descriptors"],
-        sealed = True,
-        strip_prefix = "better_rules_javascript/typescript/js-compiler",
-        visibility = ["//visibility:private"],
-    )
-
-    ts_simple_library(
-        name = "%s.js_lib" % name,
-        srcs = ["@better_rules_javascript//typescript/js-compiler:src"],
-        compiler = "@better_rules_javascript//rules:simple_tsc",
-        root = ":%s.root" % name,
-        compiler_options = ["--esModuleInterop", "--lib", "dom,es2019", "--target", "es2019", "--types", "node"],
-        strip_prefix = "better_rules_javascript/typescript/js-compiler",
-        deps = [
-            ts,
-            "@better_rules_javascript//bazel/worker:lib",
-            "@better_rules_javascript//commonjs/package:lib",
-            "@better_rules_javascript//nodejs/fs-linker:lib",
-            "@better_rules_javascript//util/json:lib",
-            "@better_rules_javascript_npm//@types/argparse:lib",
-            "@better_rules_javascript_npm//@types/node:lib",
-            "@better_rules_javascript_npm//argparse:lib",
-        ],
-        visibility = ["//visibility:private"],
-    )
-
     nodejs_binary(
         main = "lib/tsc.js",
         name = "%s.bin" % name,
@@ -359,9 +34,15 @@ def configure_ts_compiler(name, ts, tslib = None, visibility = None):
     )
 
     nodejs_binary(
-        main = "src/main.js",
+        main = "dist/bundle.js",
         name = "%s.js_bin" % name,
-        dep = ":%s.js_lib" % name,
+        global_deps = [
+            ts,
+            "@better_rules_javascript_npm//argparse:lib",
+            "@better_rules_javascript_npm//long:lib",
+            "@better_rules_javascript_npm//protobufjs:lib",
+        ],
+        dep = "@better_rules_javascript//typescript/js-compiler:dist",
         visibility = ["//visibility:private"],
     )
 
@@ -772,14 +453,7 @@ ts_library = rule(
             providers = [[TsInfo]],
         ),
         "module": attr.string(
-            values = [
-                "commonjs",
-                "es2015",
-                "es2020",
-                "esnext",
-                "node",
-                "nodenext",
-            ],
+            doc = "Module type. By default, uses //javascript:module.",
         ),
         "srcs": attr.label_list(
             allow_files = True,
@@ -801,6 +475,9 @@ ts_library = rule(
         ),
         "declaration_prefix": attr.string(
             doc = "Prefix",
+        ),
+        "target": attr.string(
+            doc = "Target language. By default, uses //javascript:language.",
         ),
         "src_prefix": attr.string(),
         "js_prefix": attr.string(),

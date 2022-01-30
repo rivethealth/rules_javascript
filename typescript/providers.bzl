@@ -12,15 +12,6 @@ TsInfo = provider(
     },
 )
 
-SimpleTsCompilerInfo = provider(
-    doc = "TypeScript compiler",
-    fields = {
-        "bin": "Executable",
-        "js_deps": "Js deps",
-        "ts_deps": "TS deps",
-    },
-)
-
 TsCompilerInfo = provider(
     doc = "TypeScript compiler",
     fields = {

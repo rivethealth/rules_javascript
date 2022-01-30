@@ -1,23 +1,5 @@
 <!-- Generated with Stardoc: http://skydoc.bazel.build -->
 
-<a id="#SimpleTsCompilerInfo"></a>
-
-## SimpleTsCompilerInfo
-
-<pre>
-SimpleTsCompilerInfo(<a href="#SimpleTsCompilerInfo-bin">bin</a>, <a href="#SimpleTsCompilerInfo-js_deps">js_deps</a>, <a href="#SimpleTsCompilerInfo-ts_deps">ts_deps</a>)
-</pre>
-
-TypeScript compiler
-
-**FIELDS**
-
-| Name                                             | Description |
-| :----------------------------------------------- | :---------- |
-| <a id="SimpleTsCompilerInfo-bin"></a>bin         | Executable  |
-| <a id="SimpleTsCompilerInfo-js_deps"></a>js_deps | Js deps     |
-| <a id="SimpleTsCompilerInfo-ts_deps"></a>ts_deps | TS deps     |
-
 <a id="#TsCompilerInfo"></a>
 
 ## TsCompilerInfo

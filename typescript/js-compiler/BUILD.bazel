@@ -1,3 +1,9 @@
+load("@rules_file//generate:rules.bzl", "generate")
+load("//commonjs:rules.bzl", "cjs_root")
+load("//javascript:rules.bzl", "js_file", "js_library")
+load("//rollup:rules.bzl", "configure_rollup", "rollup_bundle")
+load("//typescript:rules.bzl", "ts_library", "tsconfig")
+
 package(default_visibility = ["//visibility:public"])
 
 filegroup(
@@ -8,4 +14,70 @@ filegroup(
 filegroup(
     name = "descriptors",
     srcs = ["package.json"],
+)
+
+js_library(
+    name = "dist",
+    srcs = ["dist/bundle.js"],
+    root = ":root",
+)
+
+generate(
+    name = "gen",
+    srcs = ["dist/bundle.js"],
+    data = [":bundle"],
+    data_prefix = "typescript/js-compiler/dist",
+    data_strip_prefix = "typescript/js-compiler/bundle",
+)
+
+cjs_root(
+    name = "root",
+    package_name = "@better-rules-javascript/typescript-js-compiler",
+    descriptors = ["package.json"],
+)
+
+ts_library(
+    name = "lib",
+    srcs = glob(["src/**/*.ts"]),
+    compiler = "//rules:tsc",
+    root = ":root",
+    deps = [
+        "@better_rules_javascript//bazel/worker:lib",
+        "@better_rules_javascript//commonjs/package:lib",
+        "@better_rules_javascript//nodejs/fs-linker:lib",
+        "@better_rules_javascript//util/json:lib",
+        "@better_rules_javascript_npm//@types/argparse:lib",
+        "@better_rules_javascript_npm//@types/node:lib",
+        "@better_rules_javascript_npm//argparse:lib",
+        "@better_rules_javascript_npm//typescript:lib",
+    ],
+)
+
+tsconfig(
+    name = "tsconfig",
+    src = "tsconfig.json",
+    dep = "//rules:tsconfig",
+    root = ":root",
+)
+
+js_file(
+    name = "rollup_config",
+    src = "rollup.config.cjs",
+    root = ":root",
+    deps = [
+        "@better_rules_javascript_npm//@rollup/plugin-commonjs:lib",
+        "@better_rules_javascript_npm//@rollup/plugin-node-resolve:lib",
+    ],
+)
+
+configure_rollup(
+    name = "rollup",
+    config = ":rollup_config",
+    dep = "@better_rules_javascript_npm//rollup:lib",
+)
+
+rollup_bundle(
+    name = "bundle",
+    dep = ":lib",
+    rollup = ":rollup",
 )

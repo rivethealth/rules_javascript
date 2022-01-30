@@ -14,7 +14,7 @@ bzl_library(
 
 string_flag(
     name = "language",
-    build_setting_default = "es2019",
+    build_setting_default = "es2020",
 )
 
 string_flag(
