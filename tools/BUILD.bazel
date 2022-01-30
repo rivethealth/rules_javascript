@@ -57,20 +57,19 @@ sh_binary(
     data = ["deleted.bazelrc.tpl"],
 )
 
-sh_binary(
-    name = "gen_js",
-    srcs = ["gen-js.sh"],
-    data = [":gen_js_data"],
+generate_test(
+    name = "diff_js",
+    generate = ":gen_js",
 )
 
-filegroup(
-    name = "gen_js_data",
-    srcs = [
-        "//commonjs/manifest:bundle",
-        "//nodejs/esm-linker:bundle",
-        "//nodejs/fs-linker:bundle",
-        "//nodejs/module-linker:bundle",
-        "//nodejs/runtime:bundle",
+multi_generate(
+    name = "gen_js",
+    deps = [
+        "//commonjs/manifest:gen",
+        "//nodejs/esm-linker:gen",
+        "//nodejs/fs-linker:gen",
+        "//nodejs/module-linker:gen",
+        "//nodejs/runtime:gen",
     ],
 )
 

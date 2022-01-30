@@ -48,7 +48,7 @@ def _nodejs_binary_implementation(ctx):
     env = ctx.attr.env
     include_sources = ctx.attr.include_sources
     manifest = ctx.attr._manifest[DefaultInfo]
-    js_info = ctx.attr.dep[JsInfo]
+    js_info = ctx.attr.dep[0][JsInfo]
     js_deps = [js_info] + [dep[JsInfo] for dep in ctx.attr.global_deps + ctx.attr.other_deps]
     js_globals = [dep[JsInfo] for dep in ctx.attr.global_deps]
     name = ctx.attr.name
@@ -123,6 +123,15 @@ def _nodejs_binary_implementation(ctx):
 
     return [default_info]
 
+def _nodejs_transition_impl(settings, attrs):
+    return {"//javascript:module": "node"}
+
+_node_transition = transition(
+    implementation = _nodejs_transition_impl,
+    inputs = [],
+    outputs = ["//javascript:module"],
+)
+
 nodejs_binary = rule(
     attrs = {
         "data": attr.label_list(
@@ -130,8 +139,8 @@ nodejs_binary = rule(
             providers = [DefaultInfo],
             doc = "Runtime data",
         ),
-        "dep": attr.label(mandatory = True, providers = [JsInfo]),
-        "global_deps": attr.label_list(providers = [JsInfo]),
+        "dep": attr.label(cfg = _node_transition, mandatory = True, providers = [JsInfo]),
+        "global_deps": attr.label_list(cfg = _node_transition, providers = [JsInfo]),
         "env": attr.string_dict(
             doc = "Environment variables",
         ),
@@ -143,7 +152,7 @@ nodejs_binary = rule(
         "include_sources": attr.bool(
             default = True,
         ),
-        "other_deps": attr.label_list(providers = [JsInfo]),
+        "other_deps": attr.label_list(cfg = _node_transition, providers = [JsInfo]),
         "preload": attr.label_list(
             allow_files = [".js"],
             doc = "Preload modules",
@@ -168,6 +177,9 @@ nodejs_binary = rule(
         "_runtime": attr.label(
             allow_single_file = [".js"],
             default = "//nodejs/runtime:file",
+        ),
+        "_allowlist_function_transition": attr.label(
+            default = "@bazel_tools//tools/allowlists/function_transition_allowlist",
         ),
     },
     doc = "Node.js binary",

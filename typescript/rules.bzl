@@ -1,4 +1,5 @@
 load("@bazel_skylib//lib:paths.bzl", "paths")
+load("@bazel_skylib//rules:common_settings.bzl", "BuildSettingInfo")
 load("//commonjs:providers.bzl", "CjsEntries", "CjsInfo", "create_dep", "create_global", "create_package", "default_strip_prefix", "gen_manifest", "output_name", "output_root", "package_path")
 load("//commonjs:rules.bzl", "cjs_root")
 load("//nodejs:rules.bzl", "nodejs_binary")
@@ -20,6 +21,11 @@ def configure_ts_simple_compiler(name, ts, tslib = None, visibility = None):
         tslib = tslib,
         visibility = visibility,
     )
+
+def _module(module):
+    if module == "node":
+        return "commonjs"
+    return module
 
 def _ts_simple_compiler_impl(ctx):
     tslib_js = ctx.attr.tslib[JsInfo] if ctx.attr.tslib else None
@@ -54,6 +60,7 @@ def _ts_simple_library_impl(ctx):
     fs_linker = ctx.file._fs_linker
     js_deps = compiler.js_deps + [dep[JsInfo] for dep in ctx.attr.deps if JsInfo in dep]
     js_prefix = ctx.attr.js_prefix
+    module = ctx.attr.module or _module(ctx.attr._module[BuildSettingInfo].value)
     output_ = output(ctx.label, actions)
     src_prefix = ctx.attr.src_prefix
     srcs = ctx.files.srcs
@@ -170,6 +177,7 @@ def _ts_simple_library_impl(ctx):
         args.add("--pretty")
         args.add("--declaration", "true")
         args.add("--declarationDir", declaration_root)
+        args.add("--module", module)
         args.add("--rootDir", src_root)
         args.add("--sourceMap", "true")
         args.add("--typeRoots", "%s/node_modules/@types" % cjs_info.package.path)
@@ -257,6 +265,16 @@ ts_simple_library = rule(
             doc = "Dependencies",
             providers = [[JsInfo], [TsInfo]],
         ),
+        "module": attr.string(
+            values = [
+                "commonjs",
+                "es2015",
+                "es2020",
+                "esnext",
+                "node",
+                "nodenext",
+            ],
+        ),
         "root": attr.label(
             doc = "CommonJS root.",
             mandatory = True,
@@ -276,12 +294,16 @@ ts_simple_library = rule(
         ),
         "_fs_linker": attr.label(
             allow_single_file = True,
-            default = "@better_rules_javascript//nodejs/fs-linker:file",
+            default = "//nodejs/fs-linker:file",
         ),
         "_manifest": attr.label(
             cfg = "exec",
             executable = True,
-            default = "@better_rules_javascript//commonjs/manifest:bin",
+            default = "//commonjs/manifest:bin",
+        ),
+        "_module": attr.label(
+            default = "//javascript:module",
+            providers = [BuildSettingInfo],
         ),
     },
 )
@@ -292,7 +314,7 @@ def configure_ts_compiler(name, ts, tslib = None, visibility = None):
     Args:
         name: Name to use for targets.
         ts: Typescript library.
-        tslib: Tslib library. If set, importHelpers is true.
+        tslib: Tslib library.
         descriptors: List of package descriptors.
         visibility: Visibility.
     """
@@ -311,7 +333,7 @@ def configure_ts_compiler(name, ts, tslib = None, visibility = None):
         srcs = ["@better_rules_javascript//typescript/js-compiler:src"],
         compiler = "@better_rules_javascript//rules:simple_tsc",
         root = ":%s.root" % name,
-        compiler_options = ["--esModuleInterop", "--lib", "dom,es2019", "--module", "commonjs", "--target", "es2019", "--types", "node"],
+        compiler_options = ["--esModuleInterop", "--lib", "dom,es2019", "--target", "es2019", "--types", "node"],
         strip_prefix = "better_rules_javascript/typescript/js-compiler",
         deps = [
             ts,
@@ -374,7 +396,7 @@ ts_compiler = rule(
             mandatory = True,
         ),
         "runtime": attr.label(
-            doc = "Runtime library. If set, importHelpers will be used.",
+            doc = "Runtime library.",
             providers = [JsInfo],
         ),
     },
@@ -471,6 +493,7 @@ def _ts_library_impl(ctx):
     js_deps = compiler.js_deps + [dep[JsInfo] for dep in ctx.attr.deps if JsInfo in dep]
     js_prefix = ctx.attr.js_prefix
     label = ctx.label
+    module = ctx.attr.module or _module(ctx.attr._module[BuildSettingInfo].value)
     output_ = output(ctx.label, actions)
     src_prefix = ctx.attr.src_prefix
     srcs = ctx.files.srcs
@@ -486,6 +509,7 @@ def _ts_library_impl(ctx):
     args = actions.args()
     if tsconfig_info:
         args.add("--config", tsconfig_info.file)
+    args.add("--module", module)
     args.add("--out-dir", js_root)
     args.add("--root-dir", src_root)
     args.add(transpile_tsconfig)
@@ -617,6 +641,7 @@ def _ts_library_impl(ctx):
             args.add("--config", tsconfig_info.file)
         declaration_root = output_root(root = cjs_info.package, package_output = output_, prefix = declaration_prefix)
         args.add("--declaration-dir", declaration_root)
+        args.add("--module", module)
         args.add("--root-dir", src_root)
         args.add("--type-root", ("%s/node_modules/@types") % cjs_info.package.path)
         args.add(tsconfig)
@@ -676,7 +701,7 @@ def _ts_library_impl(ctx):
         name = cjs_info.name,
         package = cjs_info.package,
         transitive_deps = depset(
-            js_target_deps(cjs_info.package, ctx.attr.deps),
+            js_target_deps(cjs_info.package, ctx.attr.deps) + js_create_deps(cjs_info.package, label, compiler.js_deps),
             transitive = [js_info.transitive_deps for js_info in js_deps],
         ),
         transitive_files = depset(
@@ -713,17 +738,21 @@ ts_library = rule(
     attrs = {
         "_config": attr.label(
             cfg = "exec",
+            default = "//typescript/config:bin",
             executable = True,
-            default = "@better_rules_javascript//typescript/config:bin",
         ),
         "_fs_linker": attr.label(
             allow_single_file = [".js"],
-            default = "@better_rules_javascript//nodejs/fs-linker:file",
+            default = "//nodejs/fs-linker:file",
         ),
         "_manifest": attr.label(
             cfg = "exec",
+            default = "//commonjs/manifest:bin",
             executable = True,
-            default = "@better_rules_javascript//commonjs/manifest:bin",
+        ),
+        "_module": attr.label(
+            default = "//javascript:module",
+            providers = [BuildSettingInfo],
         ),
         "extra_deps": attr.string_dict(
             doc = "Extra dependencies.",
@@ -731,6 +760,16 @@ ts_library = rule(
         "global_deps": attr.label_list(
             doc = "Types",
             providers = [[TsInfo]],
+        ),
+        "module": attr.string(
+            values = [
+                "commonjs",
+                "es2015",
+                "es2020",
+                "esnext",
+                "node",
+                "nodenext",
+            ],
         ),
         "srcs": attr.label_list(
             allow_files = True,

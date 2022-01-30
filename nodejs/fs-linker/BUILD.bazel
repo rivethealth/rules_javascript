@@ -1,3 +1,4 @@
+load("@rules_file//generate:rules.bzl", "generate")
 load("//commonjs:rules.bzl", "cjs_root")
 load("//javascript:rules.bzl", "js_file", "js_library")
 load("//nodejs:rules.bzl", "nodejs_simple_binary")
@@ -11,6 +12,14 @@ filegroup(
     srcs = ["dist/bundle.js"],
 )
 
+generate(
+    name = "gen",
+    srcs = ["dist/bundle.js"],
+    data = [":bundle"],
+    data_prefix = "nodejs/fs-linker/dist",
+    data_strip_prefix = "nodejs/fs-linker/bundle",
+)
+
 cjs_root(
     name = "root",
     package_name = "@better-rules-javascript/nodejs-fs-linker",
@@ -22,7 +31,6 @@ js_file(
     src = "rollup.config.cjs",
     root = ":root",
     deps = [
-        "@better_rules_javascript_npm//@rollup/plugin-commonjs:lib",
         "@better_rules_javascript_npm//@rollup/plugin-node-resolve:lib",
     ],
 )
@@ -34,8 +42,6 @@ ts_simple_library(
     compiler_options = [
         "--lib",
         "es2019",
-        "--module",
-        "commonjs",
         "--moduleResolution",
         "node",
         "--target",

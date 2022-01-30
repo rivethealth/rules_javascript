@@ -1,19 +1,4 @@
-'use strict';var path=require('path'),fs=require('fs'),Module=require('module');function _interopDefaultLegacy(e){return e&&typeof e==='object'&&'default'in e?e:{'default':e}}function _interopNamespace(e){if(e&&e.__esModule)return e;var n=Object.create(null);if(e){Object.keys(e).forEach(function(k){if(k!=='default'){var d=Object.getOwnPropertyDescriptor(e,k);Object.defineProperty(n,k,d.get?d:{enumerable:true,get:function(){return e[k]}});}})}n["default"]=e;return Object.freeze(n)}var path__default=/*#__PURE__*/_interopDefaultLegacy(path);var fs__namespace=/*#__PURE__*/_interopNamespace(fs);var Module__default=/*#__PURE__*/_interopDefaultLegacy(Module);function createCommonjsModule(fn, basedir, module) {
-	return module = {
-		path: basedir,
-		exports: {},
-		require: function (path, base) {
-			return commonjsRequire(path, (base === undefined || base === null) ? module.path : base);
-		}
-	}, fn(module, module.exports), module.exports;
-}
-
-function commonjsRequire () {
-	throw new Error('Dynamic requires are not currently supported by @rollup/plugin-commonjs');
-}var collection = createCommonjsModule(function (module, exports) {
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.Trie = void 0;
-class Trie {
+'use strict';var path=require('path'),fs=require('fs'),Module=require('module');function _interopDefaultLegacy(e){return e&&typeof e==='object'&&'default'in e?e:{'default':e}}function _interopNamespace(e){if(e&&e.__esModule)return e;var n=Object.create(null);if(e){Object.keys(e).forEach(function(k){if(k!=='default'){var d=Object.getOwnPropertyDescriptor(e,k);Object.defineProperty(n,k,d.get?d:{enumerable:true,get:function(){return e[k]}});}})}n["default"]=e;return Object.freeze(n)}var path__namespace=/*#__PURE__*/_interopNamespace(path);var fs__namespace=/*#__PURE__*/_interopNamespace(fs);var Module__default=/*#__PURE__*/_interopDefaultLegacy(Module);class Trie {
     constructor() {
         this.data = { children: new Map() };
     }
@@ -42,19 +27,11 @@ class Trie {
         }
         data.value = value;
     }
-}
-exports.Trie = Trie;
-
-});var resolve = createCommonjsModule(function (module, exports) {
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.Resolver = void 0;
-
-
-function moduleParts(path_) {
+}function moduleParts(path_) {
     return path_ ? path_.split("/") : [];
 }
 function pathParts(path_) {
-    path_ = path__default["default"].resolve(path_);
+    path_ = path__namespace.resolve(path_);
     return path_.split("/").slice(1);
 }
 class Resolver {
@@ -76,11 +53,13 @@ class Resolver {
         return { package: dep, inner: depRest.join("/") };
     }
     static create(packageTree, runfiles) {
-        const resolve = (path_) => runfiles ? path__default["default"].resolve(process.env.RUNFILES_DIR, path_) : path__default["default"].resolve(path_);
-        const packages = new collection.Trie();
+        const resolve = (path_) => runfiles
+            ? path__namespace.resolve(process.env.RUNFILES_DIR, path_)
+            : path__namespace.resolve(path_);
+        const packages = new Trie();
         for (const [id, package_] of packageTree.entries()) {
             const path_ = pathParts(resolve(package_.path));
-            const deps = new collection.Trie();
+            const deps = new Trie();
             for (const [name, dep] of package_.deps.entries()) {
                 const package_ = packageTree.get(dep);
                 if (!package_) {
@@ -93,12 +72,7 @@ class Resolver {
         }
         return new Resolver(packages);
     }
-}
-exports.Resolver = Resolver;
-
-});var src$1 = createCommonjsModule(function (module, exports) {
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.JsonFormat = void 0;
+}var JsonFormat;
 (function (JsonFormat) {
     function parse(format, string) {
         return format.fromJson(JSON.parse(string));
@@ -108,7 +82,7 @@ exports.JsonFormat = void 0;
         return JSON.stringify(format.toJson(value));
     }
     JsonFormat.stringify = stringify;
-})(exports.JsonFormat || (exports.JsonFormat = {}));
+})(JsonFormat || (JsonFormat = {}));
 (function (JsonFormat) {
     function array(elementFormat) {
         return new ArrayJsonFormat(elementFormat);
@@ -153,7 +127,7 @@ exports.JsonFormat = void 0;
         return new IdentityJsonFormat();
     }
     JsonFormat.string = string;
-})(exports.JsonFormat || (exports.JsonFormat = {}));
+})(JsonFormat || (JsonFormat = {}));
 class ArrayJsonFormat {
     constructor(elementFormat) {
         this.elementFormat = elementFormat;
@@ -241,33 +215,25 @@ class SetJsonFormat {
     toJson(value) {
         return [...value].map((element) => this.format.toJson(element));
     }
+}class Package {
 }
-
-});var src = createCommonjsModule(function (module, exports) {
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.PackageTree = exports.Package = void 0;
-
-class Package {
-}
-exports.Package = Package;
 (function (Package) {
     function json() {
-        return src$1.JsonFormat.object({
-            id: src$1.JsonFormat.string(),
-            deps: src$1.JsonFormat.map(src$1.JsonFormat.string(), src$1.JsonFormat.string()),
-            path: src$1.JsonFormat.string(),
+        return JsonFormat.object({
+            id: JsonFormat.string(),
+            deps: JsonFormat.map(JsonFormat.string(), JsonFormat.string()),
+            path: JsonFormat.string(),
         });
     }
     Package.json = json;
-})(Package = exports.Package || (exports.Package = {}));
+})(Package || (Package = {}));
+var PackageTree;
 (function (PackageTree) {
     function json() {
-        return src$1.JsonFormat.map(src$1.JsonFormat.string(), Package.json());
+        return JsonFormat.map(JsonFormat.string(), Package.json());
     }
     PackageTree.json = json;
-})(exports.PackageTree || (exports.PackageTree = {}));
-
-});function resolveFilename(resolver, delegate) {
+})(PackageTree || (PackageTree = {}));function resolveFilename(resolver, delegate) {
     return function (request, parent, isMain) {
         if (Module__default["default"].builtinModules.includes(request) ||
             !parent ||
@@ -298,6 +264,6 @@ function patchModule(resolver, delegate) {
 if (!manifestPath) {
     throw new Error("NODE_PACKAGE_MANIFEST is not set");
 }
-const packageTree = src$1.JsonFormat.parse(src.PackageTree.json(), fs__namespace.readFileSync(manifestPath, "utf8"));
-const resolver = resolve.Resolver.create(packageTree, true);
+const packageTree = JsonFormat.parse(PackageTree.json(), fs__namespace.readFileSync(manifestPath, "utf8"));
+const resolver = Resolver.create(packageTree, true);
 patchModule(resolver, require("module"));

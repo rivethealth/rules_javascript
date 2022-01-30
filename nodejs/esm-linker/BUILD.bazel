@@ -1,3 +1,4 @@
+load("@rules_file//generate:rules.bzl", "generate")
 load("//commonjs:rules.bzl", "cjs_root")
 load("//javascript:rules.bzl", "js_file", "js_library")
 load("//rollup:rules.bzl", "configure_rollup", "rollup_bundle")
@@ -14,6 +15,14 @@ rollup_bundle(
 filegroup(
     name = "file",
     srcs = ["dist/bundle.js"],
+)
+
+generate(
+    name = "gen",
+    srcs = ["dist/bundle.js"],
+    data = [":bundle"],
+    data_prefix = "nodejs/esm-linker/dist",
+    data_strip_prefix = "nodejs/esm-linker/bundle",
 )
 
 ts_library(

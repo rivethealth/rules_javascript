@@ -12,6 +12,19 @@ resolution, see [Module Resolution](module.md).
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
+## Module type
+
+The module type is requested using the `//javascript:module` setting.
+
+Examples:
+
+- It is set via transform by `nodejs_binary` to be `node`
+- It is used by the `ts_library` to set the `module` compiler option.
+
+`js_library` does not enforce that files adhere to this requirement, or
+automatically transform them. Modules should already be in a format compatible
+with the final runtime/bundler.
+
 ## Example
 
 **package.json**

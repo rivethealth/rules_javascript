@@ -4,6 +4,7 @@
     "./*": "./src/*.js"
   },
   "main": "src/index.mjs",
+  "module": "true",
   "typesVersions": {
     "*": {
       "*": [

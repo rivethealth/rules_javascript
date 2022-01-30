@@ -6,6 +6,7 @@ ts_library(
     srcs = glob(["src/**/*.mts"]),
     compiler = "//rules:tsc",
     config = ":tsconfig",
+    module = "es2020",
     root = ":root",
     visibility = ["//visibility:public"],
     deps = ["//webpack/config:lib"],

@@ -24,8 +24,6 @@ ts_simple_library(
         "--esModuleInterop",
         "--lib",
         "es2019",
-        "--module",
-        "commonjs",
         "--moduleResolution",
         "node",
         "--target",

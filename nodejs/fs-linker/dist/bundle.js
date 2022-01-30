@@ -1,38 +1,31 @@
 'use strict';
 
 var fs = require('fs');
-var url_1 = require('url');
+var url = require('url');
 var path = require('path');
-var require$$0 = require('module');
 
-function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
-
-var fs__default = /*#__PURE__*/_interopDefaultLegacy(fs);
-var url_1__default = /*#__PURE__*/_interopDefaultLegacy(url_1);
-var path__default = /*#__PURE__*/_interopDefaultLegacy(path);
-var require$$0__default = /*#__PURE__*/_interopDefaultLegacy(require$$0);
-
-function getDefaultExportFromCjs (x) {
-	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
+function _interopNamespace(e) {
+    if (e && e.__esModule) return e;
+    var n = Object.create(null);
+    if (e) {
+        Object.keys(e).forEach(function (k) {
+            if (k !== 'default') {
+                var d = Object.getOwnPropertyDescriptor(e, k);
+                Object.defineProperty(n, k, d.get ? d : {
+                    enumerable: true,
+                    get: function () { return e[k]; }
+                });
+            }
+        });
+    }
+    n["default"] = e;
+    return Object.freeze(n);
 }
 
-function createCommonjsModule(fn, basedir, module) {
-	return module = {
-		path: basedir,
-		exports: {},
-		require: function (path, base) {
-			return commonjsRequire(path, (base === undefined || base === null) ? module.path : base);
-		}
-	}, fn(module, module.exports), module.exports;
-}
+var fs__namespace = /*#__PURE__*/_interopNamespace(fs);
+var path__namespace = /*#__PURE__*/_interopNamespace(path);
 
-function commonjsRequire () {
-	throw new Error('Dynamic requires are not currently supported by @rollup/plugin-commonjs');
-}
-
-var src$2 = createCommonjsModule(function (module, exports) {
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.JsonFormat = void 0;
+var JsonFormat;
 (function (JsonFormat) {
     function parse(format, string) {
         return format.fromJson(JSON.parse(string));
@@ -42,7 +35,7 @@ exports.JsonFormat = void 0;
         return JSON.stringify(format.toJson(value));
     }
     JsonFormat.stringify = stringify;
-})(exports.JsonFormat || (exports.JsonFormat = {}));
+})(JsonFormat || (JsonFormat = {}));
 (function (JsonFormat) {
     function array(elementFormat) {
         return new ArrayJsonFormat(elementFormat);
@@ -87,7 +80,7 @@ exports.JsonFormat = void 0;
         return new IdentityJsonFormat();
     }
     JsonFormat.string = string;
-})(exports.JsonFormat || (exports.JsonFormat = {}));
+})(JsonFormat || (JsonFormat = {}));
 class ArrayJsonFormat {
     constructor(elementFormat) {
         this.elementFormat = elementFormat;
@@ -177,42 +170,31 @@ class SetJsonFormat {
     }
 }
 
-});
-
-var src$1 = createCommonjsModule(function (module, exports) {
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.PackageTree = exports.Package = void 0;
-
 class Package {
 }
-exports.Package = Package;
 (function (Package) {
     function json() {
-        return src$2.JsonFormat.object({
-            id: src$2.JsonFormat.string(),
-            deps: src$2.JsonFormat.map(src$2.JsonFormat.string(), src$2.JsonFormat.string()),
-            path: src$2.JsonFormat.string(),
+        return JsonFormat.object({
+            id: JsonFormat.string(),
+            deps: JsonFormat.map(JsonFormat.string(), JsonFormat.string()),
+            path: JsonFormat.string(),
         });
     }
     Package.json = json;
-})(Package = exports.Package || (exports.Package = {}));
+})(Package || (Package = {}));
+var PackageTree;
 (function (PackageTree) {
     function json() {
-        return src$2.JsonFormat.map(src$2.JsonFormat.string(), Package.json());
+        return JsonFormat.map(JsonFormat.string(), Package.json());
     }
     PackageTree.json = json;
-})(exports.PackageTree || (exports.PackageTree = {}));
+})(PackageTree || (PackageTree = {}));
 
-});
-
-var vfs = createCommonjsModule(function (module, exports) {
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.WrapperVfs = exports.NoopVfs = exports.VfsImpl = exports.VfsNode = void 0;
 var VfsNode;
 (function (VfsNode) {
     VfsNode.PATH = Symbol("PATH");
     VfsNode.SYMLINK = Symbol("SYMLINK");
-})(VfsNode = exports.VfsNode || (exports.VfsNode = {}));
+})(VfsNode || (VfsNode = {}));
 class VfsImpl {
     constructor(root) {
         this.root = root;
@@ -354,56 +336,6 @@ class VfsImpl {
         })("", this.root, "");
     }
 }
-exports.VfsImpl = VfsImpl;
-class NoopVfs {
-    entry(path) {
-        return {
-            type: VfsNode.PATH,
-            extraChildren: new Map(),
-            hardenSymlinks: false,
-            path,
-        };
-    }
-    realpath(path) {
-        return {
-            hardenSymlinks: false,
-            path,
-        };
-    }
-    resolve(path) {
-        return {
-            type: VfsNode.PATH,
-            extraChildren: new Map(),
-            hardenSymlinks: false,
-            path,
-        };
-    }
-}
-exports.NoopVfs = NoopVfs;
-class WrapperVfs {
-    constructor() {
-        this.delegate = new NoopVfs();
-    }
-    entry(path) {
-        return this.delegate.entry(path);
-    }
-    realpath(path) {
-        return this.delegate.realpath(path);
-    }
-    resolve(path) {
-        return this.delegate.resolve(path);
-    }
-}
-exports.WrapperVfs = WrapperVfs;
-
-});
-
-var fs_1 = createCommonjsModule(function (module, exports) {
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.patchFs = exports.replaceArguments = exports.stringPath = void 0;
-
-
-
 
 /**
  * @filedescription Node.js fs implementation of Vfs
@@ -438,7 +370,7 @@ class LinkBigintStat {
         return false;
     }
     isDirectory() {
-        return this.entry.type === vfs.VfsNode.PATH;
+        return this.entry.type === VfsNode.PATH;
     }
     isBlockDevice() {
         return false;
@@ -447,7 +379,7 @@ class LinkBigintStat {
         return false;
     }
     isSymbolicLink() {
-        return this.entry.type === vfs.VfsNode.PATH;
+        return this.entry.type === VfsNode.PATH;
     }
     isFIFO() {
         return false;
@@ -490,7 +422,7 @@ class LinkStat {
         return false;
     }
     isDirectory() {
-        return this.entry.type === vfs.VfsNode.PATH;
+        return this.entry.type === VfsNode.PATH;
     }
     isBlockDevice() {
         return false;
@@ -499,7 +431,7 @@ class LinkStat {
         return false;
     }
     isSymbolicLink() {
-        return this.entry.type === vfs.VfsNode.SYMLINK;
+        return this.entry.type === VfsNode.SYMLINK;
     }
     isFIFO() {
         return false;
@@ -608,25 +540,24 @@ class VfsDir {
 }
 function dirent(name, entry) {
     switch (entry.type) {
-        case vfs.VfsNode.PATH:
-            return new fs__default["default"].Dirent(name, fs__default["default"].constants.UV_DIRENT_DIR);
-        case vfs.VfsNode.SYMLINK:
-            return new fs__default["default"].Dirent(name, fs__default["default"].constants.UV_DIRENT_LINK);
+        case VfsNode.PATH:
+            return new fs__namespace.Dirent(name, fs__namespace.constants.UV_DIRENT_DIR);
+        case VfsNode.SYMLINK:
+            return new fs__namespace.Dirent(name, fs__namespace.constants.UV_DIRENT_LINK);
     }
 }
 function stringPath(value) {
     if (value instanceof Buffer) {
         value = value.toString();
     }
-    if (value instanceof url_1__default["default"].URL) {
+    if (value instanceof url.URL) {
         if (value.protocol !== "file:") {
             throw new Error(`Invalid protocol: ${value.protocol}`);
         }
-        value = (0, url_1__default["default"].fileURLToPath)(value);
+        value = url.fileURLToPath(value);
     }
-    return path__default["default"].resolve(value);
+    return path__namespace.resolve(value);
 }
-exports.stringPath = stringPath;
 function replaceArguments(vfs, fn, indicies) {
     return function () {
         const args = [...arguments];
@@ -640,32 +571,31 @@ function replaceArguments(vfs, fn, indicies) {
         return fn.apply(this, args);
     };
 }
-exports.replaceArguments = replaceArguments;
-function access(vfs, delegate) {
+function access$1(vfs, delegate) {
     return replaceArguments(vfs, delegate, [0]);
 }
 function accessSync(vfs, delegate) {
     return replaceArguments(vfs, delegate, [0]);
 }
-function appendFile(vfs, delegate) {
+function appendFile$1(vfs, delegate) {
     return replaceArguments(vfs, delegate, [0]);
 }
 function appendFileSync(vfs, delegate) {
     return replaceArguments(vfs, delegate, [0]);
 }
-function chmod(vfs, delegate) {
+function chmod$1(vfs, delegate) {
     return replaceArguments(vfs, delegate, [0]);
 }
 function chmodSync(vfs, delegate) {
     return replaceArguments(vfs, delegate, [0]);
 }
-function chown(vfs, delegate) {
+function chown$1(vfs, delegate) {
     return replaceArguments(vfs, delegate, [0]);
 }
 function chownSync(vfs, delegate) {
     return replaceArguments(vfs, delegate, [0]);
 }
-function copyFile(vfs, delegate) {
+function copyFile$1(vfs, delegate) {
     return replaceArguments(vfs, delegate, [0, 1]);
 }
 function copyFileSync(vfs, delegate) {
@@ -689,22 +619,22 @@ function link(vfs, delegate) {
 function linkSync(vfs, delegate) {
     return replaceArguments(vfs, delegate, [0, 1]);
 }
-function lstat(vfs$1, delegate) {
+function lstat(vfs, delegate) {
     return (function (path, options, callback) {
         const filePath = stringPath(path);
-        const resolved = vfs$1.entry(filePath);
+        const resolved = vfs.entry(filePath);
         if (typeof options === "function") {
             callback = options;
             options = {};
         }
         if (resolved) {
-            if (resolved.type === vfs.VfsNode.SYMLINK || resolved.path === undefined) {
+            if (resolved.type === VfsNode.SYMLINK || resolved.path === undefined) {
                 setImmediate(() => callback(null, options.bigint
                     ? new LinkBigintStat(resolved)
                     : new LinkStat(resolved)));
             }
             else if (resolved.hardenSymlinks) {
-                fs__default["default"].stat(resolved.path, options, callback);
+                fs__namespace.stat(resolved.path, options, callback);
                 return;
             }
         }
@@ -712,18 +642,18 @@ function lstat(vfs$1, delegate) {
         return delegate.apply(this, arguments);
     });
 }
-function lstatSync(vfs$1, delegate) {
+function lstatSync(vfs, delegate) {
     return (function (path, options) {
         const filePath = stringPath(path);
-        const resolved = vfs$1.entry(filePath);
+        const resolved = vfs.entry(filePath);
         if (resolved) {
-            if (resolved.type === vfs.VfsNode.SYMLINK || resolved.path === undefined) {
+            if (resolved.type === VfsNode.SYMLINK || resolved.path === undefined) {
                 return options.bigint
                     ? new LinkBigintStat(resolved)
                     : new LinkStat(resolved);
             }
             else if (resolved.hardenSymlinks) {
-                return fs__default["default"].statSync(resolved.path, options);
+                return fs__namespace.statSync(resolved.path, options);
             }
         }
         if (resolved && filePath !== resolved.path) ;
@@ -846,11 +776,11 @@ function readdir(vfs, delegate) {
                 files = files.map((file) => {
                     if (file.isSymbolicLink()) {
                         try {
-                            const stat = fs__default["default"].statSync(`${filePath}/${file.name}`);
+                            const stat = fs__namespace.statSync(`${filePath}/${file.name}`);
                             if (stat.isDirectory()) {
-                                return new fs__default["default"].Dirent(file.name, fs__default["default"].constants.UV_DIRENT_DIR);
+                                return new fs__namespace.Dirent(file.name, fs__namespace.constants.UV_DIRENT_DIR);
                             }
-                            return new fs__default["default"].Dirent(file.name, fs__default["default"].constants.UV_DIRENT_FILE);
+                            return new fs__namespace.Dirent(file.name, fs__namespace.constants.UV_DIRENT_FILE);
                         }
                         catch { }
                     }
@@ -896,11 +826,11 @@ function readdirSync(vfs, delegate) {
             result = result.map((file) => {
                 if (file.isSymbolicLink()) {
                     try {
-                        const stat = fs__default["default"].statSync(`${filePath}/${file.name}`);
+                        const stat = fs__namespace.statSync(`${filePath}/${file.name}`);
                         if (stat.isDirectory()) {
-                            return new fs__default["default"].Dirent(file.name, fs__default["default"].constants.UV_DIRENT_DIR);
+                            return new fs__namespace.Dirent(file.name, fs__namespace.constants.UV_DIRENT_DIR);
                         }
-                        return new fs__default["default"].Dirent(file.name, fs__default["default"].constants.UV_DIRENT_FILE);
+                        return new fs__namespace.Dirent(file.name, fs__namespace.constants.UV_DIRENT_FILE);
                     }
                     catch { }
                 }
@@ -919,7 +849,7 @@ function readFile(vfs, delegate) {
 function readFileSync(vfs, delegate) {
     return replaceArguments(vfs, delegate, [0]);
 }
-function readlink(vfs$1, delegate) {
+function readlink(vfs, delegate) {
     return function (path, options, callback) {
         const filePath = stringPath(path);
         if (typeof options === "function") {
@@ -932,8 +862,8 @@ function readlink(vfs$1, delegate) {
         else {
             options = {};
         }
-        const resolved = vfs$1.entry(filePath);
-        if (resolved.type === vfs.VfsNode.SYMLINK) {
+        const resolved = vfs.entry(filePath);
+        if (resolved.type === VfsNode.SYMLINK) {
             if (options.encoding === "buffer") {
                 setImmediate(() => callback(null, Buffer.from(resolved.path)));
             }
@@ -953,7 +883,7 @@ function readlink(vfs$1, delegate) {
         return delegate.apply(this, args);
     };
 }
-function readlinkSync(vfs$1, delegate) {
+function readlinkSync(vfs, delegate) {
     return function (path, options) {
         const filePath = stringPath(path);
         if (typeof options === "string") {
@@ -962,8 +892,8 @@ function readlinkSync(vfs$1, delegate) {
         else {
             options = {};
         }
-        const resolved = vfs$1.entry(filePath);
-        if (resolved.type === vfs.VfsNode.SYMLINK) {
+        const resolved = vfs.entry(filePath);
+        if (resolved.type === VfsNode.SYMLINK) {
             if (options.encoding === "buffer") {
                 return Buffer.from(resolved.path);
             }
@@ -1151,15 +1081,15 @@ function writeFileSync(vfs, delegate) {
     return replaceArguments(vfs, delegate, [0]);
 }
 function patchFs(vfs, delegate) {
-    delegate.access = access(vfs, delegate.access);
+    delegate.access = access$1(vfs, delegate.access);
     delegate.accessSync = accessSync(vfs, delegate.accessSync);
-    delegate.appendFile = appendFile(vfs, delegate.appendFile);
+    delegate.appendFile = appendFile$1(vfs, delegate.appendFile);
     delegate.appendFileSync = appendFileSync(vfs, delegate.appendFileSync);
-    delegate.chmod = chmod(vfs, delegate.chmod);
+    delegate.chmod = chmod$1(vfs, delegate.chmod);
     delegate.chmodSync = chmodSync(vfs, delegate.chmodSync);
-    delegate.chown = chown(vfs, delegate.chown);
+    delegate.chown = chown$1(vfs, delegate.chown);
     delegate.chownSync = chownSync(vfs, delegate.chownSync);
-    delegate.copyFile = copyFile(vfs, delegate.copyFile);
+    delegate.copyFile = copyFile$1(vfs, delegate.copyFile);
     delegate.copyFileSync = copyFileSync(vfs, delegate.copyFileSync);
     delegate.createReadStream = createReadStream(vfs, delegate.createReadStream);
     delegate.createWriteStream = createWriteStream(vfs, delegate.createWriteStream);
@@ -1210,39 +1140,31 @@ function patchFs(vfs, delegate) {
     delegate.writeFile = writeFile(vfs, delegate.writeFile);
     delegate.writeFileSync = writeFileSync(vfs, delegate.writeFileSync);
 }
-exports.patchFs = patchFs;
-
-});
-
-var fsPromises = createCommonjsModule(function (module, exports) {
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.patchFsPromises = void 0;
-
 
 function access(vfs, delegate) {
-    return (0, fs_1.replaceArguments)(vfs, delegate, [0]);
+    return replaceArguments(vfs, delegate, [0]);
 }
 function appendFile(vfs, delegate) {
-    return (0, fs_1.replaceArguments)(vfs, delegate, [0]);
+    return replaceArguments(vfs, delegate, [0]);
 }
 function chmod(vfs, delegate) {
-    return (0, fs_1.replaceArguments)(vfs, delegate, [0]);
+    return replaceArguments(vfs, delegate, [0]);
 }
 function chown(vfs, delegate) {
-    return (0, fs_1.replaceArguments)(vfs, delegate, [0]);
+    return replaceArguments(vfs, delegate, [0]);
 }
 function copyFile(vfs, delegate) {
-    return (0, fs_1.replaceArguments)(vfs, delegate, [0, 1]);
+    return replaceArguments(vfs, delegate, [0, 1]);
 }
 function cp(vfs, delegate) {
-    return (0, fs_1.replaceArguments)(vfs, delegate, [0, 1]);
+    return replaceArguments(vfs, delegate, [0, 1]);
 }
 function lutimes(vfs, delegate) {
-    return (0, fs_1.replaceArguments)(vfs, delegate, [0]);
+    return replaceArguments(vfs, delegate, [0]);
 }
 function patchFsPromises(vfs, delegate) {
-    delegate.access = access(vfs, fs__default["default"].promises.access);
-    delegate.appendFile = appendFile(vfs, fs__default["default"].promises.appendFile);
+    delegate.access = access(vfs, fs.promises.access);
+    delegate.appendFile = appendFile(vfs, fs.promises.appendFile);
     delegate.chmod = chmod(vfs, delegate.chmod);
     delegate.chown = chown(vfs, delegate.chown);
     delegate.copyFile = copyFile(vfs, delegate.copyFile);
@@ -1251,13 +1173,7 @@ function patchFsPromises(vfs, delegate) {
     // delegate.lchown
     delegate.lutimes = lutimes(vfs, delegate.lutimes);
 }
-exports.patchFsPromises = patchFsPromises;
 
-});
-
-var module$1 = createCommonjsModule(function (module, exports) {
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.patchModule = void 0;
 function load(delegate) {
     return function (path) {
         const args = [...arguments];
@@ -1270,14 +1186,6 @@ function load(delegate) {
 function patchModule(delegate) {
     delegate._load = load(delegate._load);
 }
-exports.patchModule = patchModule;
-
-});
-
-var _package = createCommonjsModule(function (module, exports) {
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.createVfs = void 0;
-
 
 class DependencyConflictError extends Error {
 }
@@ -1287,7 +1195,7 @@ function addPackageNode(root, path) {
         let newRoot = root.extraChildren.get(parts[i]);
         if (!newRoot) {
             newRoot = {
-                type: vfs.VfsNode.PATH,
+                type: VfsNode.PATH,
                 hardenSymlinks: false,
                 extraChildren: new Map(),
                 path: "/" + parts.slice(0, i + 1).join("/"),
@@ -1305,27 +1213,29 @@ function addDep(root, name, path) {
         let newRoot = root.extraChildren.get(parts[i]);
         if (!newRoot) {
             newRoot = {
-                type: vfs.VfsNode.PATH,
+                type: VfsNode.PATH,
                 hardenSymlinks: false,
                 extraChildren: new Map(),
                 path: undefined,
             };
             root.extraChildren.set(parts[i], newRoot);
         }
-        else if (newRoot.type !== vfs.VfsNode.PATH) {
+        else if (newRoot.type !== VfsNode.PATH) {
             throw new DependencyConflictError();
         }
         root = newRoot;
     }
     root.extraChildren.set(parts[parts.length - 1], {
-        type: vfs.VfsNode.SYMLINK,
+        type: VfsNode.SYMLINK,
         path,
     });
 }
 function createVfs(packageTree, runfiles) {
-    const resolve = (path_) => runfiles ? path__default["default"].resolve(process.env.RUNFILES_DIR, path_) : path__default["default"].resolve(path_);
+    const resolve = (path_) => runfiles
+        ? path__namespace.resolve(process.env.RUNFILES_DIR, path_)
+        : path__namespace.resolve(path_);
     const root = {
-        type: vfs.VfsNode.PATH,
+        type: VfsNode.PATH,
         hardenSymlinks: false,
         extraChildren: new Map(),
         path: "/",
@@ -1333,7 +1243,7 @@ function createVfs(packageTree, runfiles) {
     for (const [id, package_] of packageTree.entries()) {
         const packageNode = addPackageNode(root, resolve(package_.path));
         const nodeModules = {
-            type: vfs.VfsNode.PATH,
+            type: VfsNode.PATH,
             hardenSymlinks: false,
             extraChildren: new Map(),
             path: undefined,
@@ -1355,36 +1265,18 @@ function createVfs(packageTree, runfiles) {
             }
         }
     }
-    return new vfs.VfsImpl(root);
+    return new VfsImpl(root);
 }
-exports.createVfs = createVfs;
-
-});
-
-var src = createCommonjsModule(function (module, exports) {
-Object.defineProperty(exports, "__esModule", { value: true });
-
-
-
-
-
-
 
 const manifestPath = process.env.NODE_FS_PACKAGE_MANIFEST;
 if (!manifestPath) {
     throw new Error("NODE_FS_PACKAGE_MANIFEST is not set");
 }
-const packageTree = src$2.JsonFormat.parse(src$1.PackageTree.json(), fs__default["default"].readFileSync(manifestPath, "utf8"));
-const vfs = (0, _package.createVfs)(packageTree, process.env.NODE_FS_RUNFILES === "true");
+const packageTree = JsonFormat.parse(PackageTree.json(), fs__namespace.readFileSync(manifestPath, "utf8"));
+const vfs = createVfs(packageTree, process.env.NODE_FS_RUNFILES === "true");
 if (process.env.NODE_FS_TRACE === "true") {
     process.stderr.write(vfs.print());
 }
-(0, fs_1.patchFs)(vfs, fs__default["default"]);
-(0, fsPromises.patchFsPromises)(vfs, fs__default["default"].promises);
-(0, module$1.patchModule)(require$$0__default["default"]);
-
-});
-
-var index = /*@__PURE__*/getDefaultExportFromCjs(src);
-
-module.exports = index;
+patchFs(vfs, require("fs"));
+patchFsPromises(vfs, require("fs").promises);
+patchModule(require("module"));

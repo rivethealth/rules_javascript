@@ -15,8 +15,6 @@ ts_simple_library(
     srcs = glob(["src/**/*.ts"]),
     compiler = "//rules:simple_tsc",
     compiler_options = [
-        "--module",
-        "commonjs",
         "--moduleResolution",
         "node",
         "--target",

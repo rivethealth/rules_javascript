@@ -1,4 +1,5 @@
 load("@rules_file//util:path.bzl", "runfile_path")
+load("@bazel_skylib//rules:common_settings.bzl", "BuildSettingInfo")
 load("//commonjs:providers.bzl", "CjsEntries", "CjsInfo", "create_dep", "create_global", "create_package", "default_strip_prefix", "gen_manifest", "output_name", "output_root", "package_path")
 load("//commonjs:rules.bzl", "cjs_root")
 load("//javascript:providers.bzl", "JsInfo", js_create_deps = "create_deps", js_target_deps = "target_deps")
@@ -7,6 +8,11 @@ load("//nodejs:rules.bzl", "nodejs_binary")
 load("//typescript:providers.bzl", "TsInfo", "TsconfigInfo", "create_deps", "declaration_path", "is_declaration", "is_directory", "is_json", "js_path", "map_path", "target_deps", "target_globals")
 load("//typescript:rules.bzl", "ts_library", "tsconfig")
 load(":providers.bzl", "AngularCompilerInfo", "resource_path")
+
+def _module(module):
+    if module == "node":
+        return "commonjs"
+    return module
 
 def configure_angular_compiler(name, core, compiler_cli, ts, tslib, reflect_metadata, ngc_main = "bundles/src/bin/ngc.js", visibility = None):
     cjs_root(
@@ -87,6 +93,7 @@ def _angular_library(ctx):
     fs_linker = ctx.file._fs_linker
     js_deps = compiler.js_deps + [dep[JsInfo] for dep in ctx.attr.deps + ctx.attr.global_deps if JsInfo in dep]
     js_prefix = ctx.attr.js_prefix
+    module = _module(ctx.attr._module[BuildSettingInfo].value)
     name = ctx.attr.name
     label = ctx.label
     output_ = output(ctx.label, actions)
@@ -157,6 +164,7 @@ def _angular_library(ctx):
         args = actions.args()
         if tsconfig_info:
             args.add("--config", tsconfig_info.file)
+        args.add("--module", module)
         args.add("--out-dir", "/dummy")  # force source maps
         args.add(transpile_tsconfig)
         actions.run(
@@ -188,6 +196,7 @@ def _angular_library(ctx):
         args = actions.args()
         if ctx.attr.config:
             args.add("--config", tsconfig_info.file)
+        args.add("--module", module)
         args.add("--out-dir", cjs_info.package.path)
         args.add("--root-dir", cjs_info.package.path)
         args.add(tsconfig)
@@ -448,6 +457,10 @@ angular_library = rule(
             cfg = "exec",
             executable = True,
             default = "//commonjs/manifest:bin",
+        ),
+        "_module": attr.label(
+            default = "//javascript:module",
+            providers = [BuildSettingInfo],
         ),
         "compiler": attr.label(
             doc = "Angular compiler.",

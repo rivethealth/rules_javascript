@@ -55,7 +55,7 @@ webpack = rule(
 
 _webpack = webpack
 
-def configure_webpack(name, cli, webpack, node_options, dev_server, config, global_deps = [], other_deps = [], visibility = None):
+def configure_webpack(name, cli, webpack, dev_server, config, global_deps = [], node_options = [], other_deps = [], visibility = None):
     """Set up webpack tools.
 
     Args:
