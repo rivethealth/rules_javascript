@@ -1,6 +1,6 @@
-import { run } from "@better-rules-javascript/bazel-worker";
+import { workerMain } from "@better-rules-javascript/bazel-worker";
 
-run(async () => {
+workerMain(async () => {
   const { ResourceWorker, ResourceWorkerError } = await import("./worker");
 
   const worker = new ResourceWorker();

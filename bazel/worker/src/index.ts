@@ -8,23 +8,41 @@ import { readFromStream } from "./protobuf";
 
 class CliError extends Error {}
 
+/**
+ * Worker factory.
+ */
 export interface WorkerFactory {
   /**
+   * Create a worker.
    * @param args Start-up args
    */
   (args: string[]): Promise<Worker>;
 }
 
+/**
+ * Worker.
+ */
 export interface Worker {
+  /**
+   * Perform work.
+   * @param args Arguments.
+   * @param inputs Inputs, if available.
+   * @param abort Abort signal, for canceling the work.
+   */
   (
     args: string[],
     inputs: Input[] | undefined,
     abort: AbortSignal,
-  ): Promise<Result>;
+  ): Promise<WorkResult>;
 }
 
-export interface Result {
+/**
+ * Work result.
+ */
+export interface WorkResult {
+  /** Exit code. */
   exitCode: number;
+  /** Output message. */
   output: string;
 }
 
@@ -34,11 +52,13 @@ async function runWorker(worker: Worker) {
   process.on("SIGTERM", () => abort?.abort());
   for await (const message of readFromStream(process.stdin, WorkRequest)) {
     if (message.requestId) {
-      throw new Error("Does not support multiplexed requests");
+      throw new CliError("Does not support multiplexed requests");
     }
     if (abort) {
       if (!message.cancel) {
-        throw new Error("Unexpected request while processing");
+        throw new CliError(
+          "Unexpected request while processing existing request",
+        );
       }
       abort.abort();
     } else {
@@ -57,7 +77,9 @@ async function runWorker(worker: Worker) {
           const buffer = WorkResponse.encode(response).ldelim().finish();
           process.stdout.write(buffer);
           abort = undefined;
-          // global.gc();
+          if (typeof gc !== "undefined") {
+            gc();
+          }
         },
         (e) => {
           console.error(e.stack);
@@ -68,9 +90,7 @@ async function runWorker(worker: Worker) {
   }
 }
 
-async function runOnce(worker: Worker, path: string) {
-  const file = fs.readFileSync(path, "utf-8");
-  const args = file.trim().split("\n");
+async function runOnce(worker: Worker, args: string[]) {
   const abort = new AbortController();
   process.on("SIGINT", () => abort.abort());
   process.on("SIGTERM", () => abort.abort());
@@ -79,7 +99,10 @@ async function runOnce(worker: Worker, path: string) {
   process.exitCode = result.exitCode;
 }
 
-export async function run(workerFactory: WorkerFactory) {
+/**
+ * Run program using the provided worker factory.
+ */
+export async function workerMain(workerFactory: WorkerFactory) {
   try {
     const args = process.argv.slice(2, -1);
     const worker = await workerFactory(args);
@@ -88,15 +111,17 @@ export async function run(workerFactory: WorkerFactory) {
       await runWorker(worker);
     } else if (last.startsWith("@")) {
       const path = last.slice(1);
-      await runOnce(worker, path);
+      const file = fs.readFileSync(path, "utf-8");
+      const args = file.trim().split("\n");
+      await runOnce(worker, args);
     } else {
-      throw new CliError("Invalid worker arguments");
+      await runOnce(worker, args);
     }
   } catch (e) {
     if (e instanceof CliError) {
       console.error(e.message);
     } else {
-      console.error(e.stack);
+      console.error(e?.stack || String(e));
     }
     process.exit(1);
   }

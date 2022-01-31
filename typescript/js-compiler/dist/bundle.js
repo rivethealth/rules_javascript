@@ -1766,11 +1766,11 @@ async function runWorker(worker) {
     process.on("SIGTERM", () => abort?.abort());
     for await (const message of readFromStream(process.stdin, worker_protocol.WorkRequest)) {
         if (message.requestId) {
-            throw new Error("Does not support multiplexed requests");
+            throw new CliError("Does not support multiplexed requests");
         }
         if (abort) {
             if (!message.cancel) {
-                throw new Error("Unexpected request while processing");
+                throw new CliError("Unexpected request while processing existing request");
             }
             abort.abort();
         }
@@ -1789,7 +1789,9 @@ async function runWorker(worker) {
                 const buffer = worker_protocol.WorkResponse.encode(response).ldelim().finish();
                 process.stdout.write(buffer);
                 abort = undefined;
-                // global.gc();
+                if (typeof gc !== "undefined") {
+                    gc();
+                }
             }, (e) => {
                 console.error(e.stack);
                 process.exit(1);
@@ -1797,9 +1799,7 @@ async function runWorker(worker) {
         }
     }
 }
-async function runOnce(worker, path) {
-    const file = fs__namespace.readFileSync(path, "utf-8");
-    const args = file.trim().split("\n");
+async function runOnce(worker, args) {
     const abort = new AbortController();
     process.on("SIGINT", () => abort.abort());
     process.on("SIGTERM", () => abort.abort());
@@ -1807,7 +1807,10 @@ async function runOnce(worker, path) {
     console.error(result.output);
     process.exitCode = result.exitCode;
 }
-async function run(workerFactory) {
+/**
+ * Run program using the provided worker factory.
+ */
+async function workerMain(workerFactory) {
     try {
         const args = process.argv.slice(2, -1);
         const worker = await workerFactory(args);
@@ -1817,10 +1820,12 @@ async function run(workerFactory) {
         }
         else if (last.startsWith("@")) {
             const path = last.slice(1);
-            await runOnce(worker, path);
+            const file = fs__namespace.readFileSync(path, "utf-8");
+            const args = file.trim().split("\n");
+            await runOnce(worker, args);
         }
         else {
-            throw new CliError("Invalid worker arguments");
+            await runOnce(worker, args);
         }
     }
     catch (e) {
@@ -1828,13 +1833,13 @@ async function run(workerFactory) {
             console.error(e.message);
         }
         else {
-            console.error(e.stack);
+            console.error(e?.stack || String(e));
         }
         process.exit(1);
     }
 }
 
-run(async () => {
+workerMain(async () => {
     const vfs = new WrapperVfs();
     patchFs(vfs, require("fs"));
     patchFsPromises(vfs, require("fs").promises);

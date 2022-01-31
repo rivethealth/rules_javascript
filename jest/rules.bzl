@@ -4,6 +4,15 @@ load("//nodejs:providers.bzl", "NODE_MODULES_PREFIX", "modules_links", "package_
 load("//javascript:providers.bzl", "JsFile", "JsInfo")
 load("//util:path.bzl", "output", "runfile_path")
 
+def _jest_transition_impl(settings, attrs):
+    return {"//javascript:module": "node"}
+
+_jest_transition = transition(
+    implementation = _jest_transition_impl,
+    inputs = [],
+    outputs = ["//javascript:module"],
+)
+
 def _jest_test_impl(ctx):
     actions = ctx.actions
     env = ctx.attr.env
@@ -120,37 +129,8 @@ def _jest_test_impl(ctx):
 
 jest_test = rule(
     attrs = {
-        "config": attr.label(
-            doc = "Jest config file.",
-            mandatory = True,
-            providers = [[JsFile, JsInfo]],
-        ),
-        "data": attr.label_list(
-            allow_files = True,
-            doc = "Runtime data.",
-        ),
-        "deps": attr.label_list(
-            doc = "Test dependencies.",
-            providers = [JsInfo],
-        ),
-        "env": attr.string_dict(
-            doc = "Environment variables.",
-        ),
-        "jest": attr.label(
-            doc = "Jest dependency.",
-            mandatory = True,
-            providers = [JsInfo],
-        ),
-        "jest_haste_map": attr.label(
-            doc = "Haste map.",
-            mandatory = True,
-            providers = [JsInfo],
-        ),
-        "global_deps": attr.label_list(
-            doc = "Global dependencies.",
-            providers = [JsInfo],
-        ),
-        "node_options": attr.string_list(
+        "_allowlist_function_transition": attr.label(
+            default = "@bazel_tools//tools/allowlists/function_transition_allowlist",
         ),
         "_config": attr.label(
             allow_single_file = [".js"],
@@ -168,14 +148,48 @@ jest_test = rule(
             allow_single_file = True,
             default = "//nodejs/fs-linker:file",
         ),
-        "_module_linker": attr.label(
-            allow_single_file = True,
-            default = "//nodejs/module-linker:file",
-        ),
         "_manifest": attr.label(
             cfg = "exec",
             executable = True,
             default = "//commonjs/manifest:bin",
+        ),
+        "_module_linker": attr.label(
+            allow_single_file = True,
+            default = "//nodejs/module-linker:file",
+        ),
+        "config": attr.label(
+            doc = "Jest config file.",
+            mandatory = True,
+            providers = [[JsFile, JsInfo]],
+        ),
+        "data": attr.label_list(
+            allow_files = True,
+            doc = "Runtime data.",
+        ),
+        "deps": attr.label_list(
+            cfg = _jest_transition,
+            doc = "Test dependencies.",
+            providers = [JsInfo],
+        ),
+        "env": attr.string_dict(
+            doc = "Environment variables.",
+        ),
+        "jest": attr.label(
+            doc = "Jest dependency.",
+            mandatory = True,
+            providers = [JsInfo],
+        ),
+        "jest_haste_map": attr.label(
+            doc = "Haste map.",
+            mandatory = True,
+            providers = [JsInfo],
+        ),
+        "global_deps": attr.label_list(
+            cfg = _jest_transition,
+            doc = "Global dependencies.",
+            providers = [JsInfo],
+        ),
+        "node_options": attr.string_list(
         ),
     },
     implementation = _jest_test_impl,

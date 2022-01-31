@@ -126,7 +126,7 @@ def _nodejs_binary_implementation(ctx):
 def _nodejs_transition_impl(settings, attrs):
     return {"//javascript:module": "node"}
 
-_node_transition = transition(
+_nodejs_transition = transition(
     implementation = _nodejs_transition_impl,
     inputs = [],
     outputs = ["//javascript:module"],
@@ -139,8 +139,8 @@ nodejs_binary = rule(
             providers = [DefaultInfo],
             doc = "Runtime data",
         ),
-        "dep": attr.label(cfg = _node_transition, mandatory = True, providers = [JsInfo]),
-        "global_deps": attr.label_list(cfg = _node_transition, providers = [JsInfo]),
+        "dep": attr.label(cfg = _nodejs_transition, mandatory = True, providers = [JsInfo]),
+        "global_deps": attr.label_list(cfg = _nodejs_transition, providers = [JsInfo]),
         "env": attr.string_dict(
             doc = "Environment variables",
         ),
@@ -152,10 +152,13 @@ nodejs_binary = rule(
         "include_sources": attr.bool(
             default = True,
         ),
-        "other_deps": attr.label_list(cfg = _node_transition, providers = [JsInfo]),
+        "other_deps": attr.label_list(cfg = _nodejs_transition, providers = [JsInfo]),
         "preload": attr.label_list(
             allow_files = [".js"],
             doc = "Preload modules",
+        ),
+        "_allowlist_function_transition": attr.label(
+            default = "@bazel_tools//tools/allowlists/function_transition_allowlist",
         ),
         "_esm_linker": attr.label(
             allow_single_file = [".js"],
@@ -177,9 +180,6 @@ nodejs_binary = rule(
         "_runtime": attr.label(
             allow_single_file = [".js"],
             default = "//nodejs/runtime:file",
-        ),
-        "_allowlist_function_transition": attr.label(
-            default = "@bazel_tools//tools/allowlists/function_transition_allowlist",
         ),
     },
     doc = "Node.js binary",
@@ -256,7 +256,11 @@ def _nodejs_archive_impl(ctx):
 nodejs_archive = rule(
     attrs = {
         "deps": attr.label_list(
+            cfg = _nodejs_transition,
             providers = [CjsEntries],
+        ),
+        "_allowlist_function_transition": attr.label(
+            default = "@bazel_tools//tools/allowlists/function_transition_allowlist",
         ),
         "_archive_linker": attr.label(
             cfg = "exec",
@@ -348,6 +352,7 @@ def _nodejs_binary_archive_impl(ctx):
 nodejs_binary_archive = rule(
     attrs = {
         "dep": attr.label(
+            cfg = _nodejs_transition,
             mandatory = True,
             providers = [JsInfo],
         ),
@@ -355,6 +360,7 @@ nodejs_binary_archive = rule(
             doc = "Environment variables",
         ),
         "global_deps": attr.label_list(
+            cfg = _nodejs_transition,
             providers = [JsInfo],
         ),
         "main": attr.string(
@@ -362,6 +368,9 @@ nodejs_binary_archive = rule(
         ),
         "node_options": attr.string_list(
             doc = "Node.js options",
+        ),
+        "_allowlist_function_transition": attr.label(
+            default = "@bazel_tools//tools/allowlists/function_transition_allowlist",
         ),
         "_archive_linker": attr.label(
             cfg = "exec",

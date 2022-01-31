@@ -1,5 +1,5 @@
 import { ArgumentParser } from "argparse";
-import { run } from "@better-rules-javascript/bazel-worker";
+import { workerMain } from "@better-rules-javascript/bazel-worker";
 import * as ts from "typescript";
 
 class DtsWorker {
@@ -64,7 +64,7 @@ class DtsWorker {
   }
 }
 
-run(async () => {
+workerMain(async () => {
   const worker = new DtsWorker();
 
   return async (a) => {

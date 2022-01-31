@@ -1,9 +1,9 @@
 import { patchFs } from "@better-rules-javascript/nodejs-fs-linker/fs";
 import { patchFsPromises } from "@better-rules-javascript/nodejs-fs-linker/fs-promises";
 import { WrapperVfs } from "@better-rules-javascript/nodejs-fs-linker/vfs";
-import { run } from "@better-rules-javascript/bazel-worker";
+import { workerMain } from "@better-rules-javascript/bazel-worker";
 
-run(async () => {
+workerMain(async () => {
   const vfs = new WrapperVfs();
   patchFs(vfs, require("fs"));
   patchFsPromises(vfs, require("fs").promises);

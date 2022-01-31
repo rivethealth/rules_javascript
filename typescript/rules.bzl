@@ -303,6 +303,7 @@ def _ts_library_impl(ctx):
                         [ts_, transpile_package_manifest, transpile_tsconfig],
                         transitive = [tsconfig_info.transitive_files] if tsconfig_info else [],
                     ),
+                    progress_message = "Transpiling %{input} to JavaScript",
                     mnemonic = "TypeScriptTranspile",
                     outputs = [js_, map],
                     tools = [compiler.transpile_bin.files_to_run],
@@ -366,6 +367,7 @@ def _ts_library_impl(ctx):
                 transitive = ([tsconfig_info.transitive_files] if tsconfig_info else []) + [target[TsInfo].transitive_files for target in ctx.attr.global_deps if TsInfo in target] + [dep.transitive_files for dep in ts_deps],
             ),
             mnemonic = "TypeScriptCompile",
+            progress_message = "Compiling %{label} TypeScript declarations",
             outputs = outputs,
             tools = [compiler.bin.files_to_run],
         )

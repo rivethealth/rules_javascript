@@ -7,7 +7,6 @@ cd "$(dirname "$0")"
 
 # TODO: %{env}
 exec node \
-  --enable-source-maps \
   %{node_options} \
   ./%{main_module} \
   "$@"
