@@ -44,7 +44,7 @@ def _webpack_impl(ctx):
     webpack_info = WebpackInfo(
         bin = bin,
         server = server,
-        config_path = "%s/%s" % (package_path_name(config_dep.package.id), config.path),
+        config_path = "%s/%s" % (package_path_name(config_dep.package.id), config),
         client = client,
     )
 
@@ -128,7 +128,6 @@ def configure_webpack(name, cli, webpack, dev_server, config, config_dep, global
         compiler = "@better_rules_javascript//rules:tsc",
         config = ":%s.server_tsconfig" % name,
         root = ":%s.server_root" % name,
-        visibility = ["//visibility:public"],
         deps = [
             "@better_rules_javascript//commonjs/package:lib",
             "@better_rules_javascript//ibazel/notification:lib",
