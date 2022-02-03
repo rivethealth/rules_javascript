@@ -82,6 +82,7 @@ mkdir -p "$out"
     args.add("--out-dir", js_output_path)
     args.add("--root-dir", src_output_path)
     args.add("--root-dirs", src_output_path)
+    args.add_all(ts, before_each = "--file")
     for path in depset(transitive = [dep.transitive_paths for dep in deps]).to_list():
         args.add("--root-dirs", "%s/%s"(path, ctx.attr._declaration_prefix) if ctx.attr.declaration_prefix != "_" else path)
     args.add(tsconfig)

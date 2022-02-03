@@ -1,12 +1,5 @@
 load("//commonjs:providers.bzl", "create_dep", "create_global")
 
-JsFile = provider(
-    doc = "JavaScript file",
-    fields = {
-        "path": "Path",
-    },
-)
-
 JsInfo = provider(
     doc = "JavaScript",
     fields = {
@@ -30,6 +23,12 @@ def target_deps(package, targets):
         create_dep(id = package.id, name = target[JsInfo].name, dep = target[JsInfo].package.id, label = target.label)
         for target in targets
         if JsInfo in target
+    ]
+
+def create_globals(label, js_infos):
+    return [
+        create_global(id = js_info.package.id, name = js_info.name)
+        for js_info in js_infos
     ]
 
 def target_globals(targets):

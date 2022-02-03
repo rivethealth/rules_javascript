@@ -1,5 +1,5 @@
 load("@better_rules_javascript//commonjs:rules.bzl", "cjs_root")
-load("@better_rules_javascript//javascript:rules.bzl", "js_file", "js_library")
+load("@better_rules_javascript//javascript:rules.bzl", "js_library")
 load("@better_rules_javascript//nodejs:rules.bzl", "nodejs_simple_binary")
 load("@better_rules_javascript//webpack:rules.bzl", "configure_webpack", "webpack_bundle")
 
@@ -18,16 +18,17 @@ js_library(
     root = ":root",
 )
 
-js_file(
+js_library(
     name = "webpack_config",
-    src = "webpack.config.js",
+    srcs = ["webpack.config.js"],
     root = ":root",
 )
 
 configure_webpack(
     name = "webpack",
     cli = "@better_rules_javascript_npm//webpack-cli:lib",
-    config = ":webpack_config",
+    config = "webpack.config.js",
+    config_dep = ":webpack_config",
     dev_server = "@better_rules_javascript_npm//webpack-dev-server:lib",
     other_deps = ["@better_rules_javascript_npm_webpack_cli_configtest1.1.0//:lib"],
     webpack = "@better_rules_javascript_npm//webpack:lib",

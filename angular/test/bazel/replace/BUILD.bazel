@@ -1,6 +1,5 @@
 load("@better_rules_javascript//angular:rules.bzl", "angular_library")
 load("@better_rules_javascript//commonjs:rules.bzl", "cjs_root")
-load("@better_rules_javascript//javascript:rules.bzl", "js_file")
 load("@better_rules_javascript//typescript:rules.bzl", "tsconfig")
 
 cjs_root(

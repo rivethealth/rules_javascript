@@ -3,7 +3,6 @@ import {
   IbazelStatus,
   readNotifications,
 } from "@better-rules-javascript/ibazel-notification";
-import { configure } from "@better-rules-javascript/webpack-config";
 import * as webpack from "webpack";
 import * as WebpackDevServer from "webpack-dev-server";
 import { JsonFormat } from "@better-rules-javascript/util-json";
@@ -27,7 +26,11 @@ export async function startServer(
   vfs: WrapperVfs,
   webpackManifestPath: string,
 ) {
-  const compiler = webpack(await configure());
+  const { default: configPromise } = await eval(
+    'import("@better-rules-javascript/webpack-load-config")',
+  );
+  const config = await configPromise;
+  const compiler = webpack(config);
 
   refreshPackageTree(vfs, webpackManifestPath);
 
@@ -39,7 +42,7 @@ export async function startServer(
   const watchFileSystem = new BazelWatchFileSystem(compiler.inputFileSystem);
   compiler.watchFileSystem = watchFileSystem;
 
-  const server = new WebpackDevServer({}, compiler);
+  const server = new WebpackDevServer(config.devServer, compiler);
 
   await server.start();
 

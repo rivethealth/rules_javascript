@@ -1,13 +1,13 @@
 load("//commonjs:rules.bzl", "cjs_root")
-load("//javascript:rules.bzl", "js_file")
+load("//javascript:rules.bzl", "js_library")
 load("//nodejs:rules.bzl", "nodejs_archive")
 load("//rules:npm_data.bzl", "ROOTS")
 
 package(default_visibility = ["//visibility:public"])
 
-js_file(
+js_library(
     name = "eslint_config",
-    src = ".eslintrc.js",
+    srcs = [".eslintrc.js"],
     root = ":root",
 )
 
@@ -18,9 +18,9 @@ nodejs_archive(
     ] + ["@better_rules_javascript_npm//%s:lib" % dep["name"] for dep in ROOTS],
 )
 
-js_file(
+js_library(
     name = "prettier_config",
-    src = "prettierrc.yml",
+    srcs = ["prettierrc.yml"],
     root = ":root",
 )
 

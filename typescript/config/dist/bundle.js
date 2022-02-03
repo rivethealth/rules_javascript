@@ -197,6 +197,7 @@ parser.add_argument("--config");
 parser.add_argument("--declaration-dir", { dest: "declarationDir" });
 parser.add_argument("--module");
 parser.add_argument("--root-dir", { dest: "rootDir" });
+parser.add_argument("--file", { action: 'append', default: [], dest: 'files' });
 parser.add_argument("--root-dirs", {
     action: "append",
     dest: "rootDirs",
@@ -225,6 +226,9 @@ parser.add_argument("output");
         compilerOptions: {
             typeRoots: args.typeRoots.map(relative),
         },
+        files: args.files.map(relative),
+        include: [],
+        exclude: [],
     };
     if (args.module) {
         tsconfig.compilerOptions.module = args.module;
@@ -241,11 +245,6 @@ parser.add_argument("output");
     }
     if (args.rootDir) {
         tsconfig.compilerOptions.rootDir = relative(args.rootDir);
-        tsconfig.include = [path__namespace.join(relative(args.rootDir), "**/*")];
-        tsconfig.exclude = [];
-    }
-    else {
-        tsconfig.files = [];
     }
     if (args.outDir) {
         tsconfig.compilerOptions.outDir = relative(args.outDir);

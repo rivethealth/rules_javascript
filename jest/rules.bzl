@@ -1,7 +1,7 @@
 load("@bazel_skylib//lib:shell.bzl", "shell")
 load("//commonjs:providers.bzl", "create_dep", "create_global", "create_package", "gen_manifest")
 load("//nodejs:providers.bzl", "NODE_MODULES_PREFIX", "modules_links", "package_path_name")
-load("//javascript:providers.bzl", "JsFile", "JsInfo")
+load("//javascript:providers.bzl", "JsInfo")
 load("//util:path.bzl", "output", "runfile_path")
 
 def _jest_transition_impl(settings, attrs):
@@ -17,12 +17,13 @@ def _jest_test_impl(ctx):
     actions = ctx.actions
     env = ctx.attr.env
     manifest_bin = ctx.attr._manifest[DefaultInfo]
-    config_dep = ctx.attr.config[JsInfo]
-    config = ctx.attr.config[JsFile]
+    config_dep = ctx.attr.config_dep[0][JsInfo]
+    config = ctx.attr.config
     name = ctx.attr.name
     node_options = ctx.attr.node_options
-    js_info = ctx.attr.jest[JsInfo]
-    js_deps = [js_info, ctx.attr.jest_haste_map[JsInfo]] + [dep[JsInfo] for dep in ctx.attr.deps + ctx.attr.global_deps + [ctx.attr.config]]
+    js_info = ctx.attr.jest[0][JsInfo]
+    jest_haste_map = ctx.attr.jest_haste_map[0][JsInfo]
+    js_deps = [config_dep, js_info, jest_haste_map] + [dep[JsInfo] for dep in ctx.attr.deps + ctx.attr.global_deps]
     js_globals = [dep[JsInfo] for dep in ctx.attr.global_deps]
     output_ = output(label = ctx.label, actions = actions)
 
@@ -50,7 +51,7 @@ def _jest_test_impl(ctx):
     deps = [create_dep(
         id = "_jestconfig",
         name = "jest-haste-map",
-        dep = ctx.attr.jest_haste_map[JsInfo].package.id,
+        dep = jest_haste_map.package.id,
         label = ctx.label,
     )]
 
@@ -78,7 +79,7 @@ def _jest_test_impl(ctx):
         output = config_file,
         substitutions = {
             '"%{config}"': json.encode(
-                "%s/%s/%s" % (NODE_MODULES_PREFIX, package_path_name(config_dep.package.id), config.path),
+                "%s/%s/%s" % (NODE_MODULES_PREFIX, package_path_name(config_dep.package.id), config),
             ),
             '"%{roots}"': json.encode(
                 json.encode(["%s/%s" % (NODE_MODULES_PREFIX, package_path_name(dep[JsInfo].package.id)) for dep in ctx.attr.deps]),
@@ -137,6 +138,7 @@ jest_test = rule(
             default = "//jest/config:bundle",
         ),
         "_haste_map": attr.label(
+            cfg = _jest_transition,
             allow_single_file = [".js"],
             default = "//jest:haste_map",
         ),
@@ -157,10 +159,14 @@ jest_test = rule(
             allow_single_file = True,
             default = "//nodejs/module-linker:file",
         ),
-        "config": attr.label(
+        "config": attr.string(
+            mandatory = True,
+        ),
+        "config_dep": attr.label(
+            cfg = _jest_transition,
             doc = "Jest config file.",
             mandatory = True,
-            providers = [[JsFile, JsInfo]],
+            providers = [JsInfo],
         ),
         "data": attr.label_list(
             allow_files = True,
@@ -175,11 +181,13 @@ jest_test = rule(
             doc = "Environment variables.",
         ),
         "jest": attr.label(
+            cfg = _jest_transition,
             doc = "Jest dependency.",
             mandatory = True,
             providers = [JsInfo],
         ),
         "jest_haste_map": attr.label(
+            cfg = _jest_transition,
             doc = "Haste map.",
             mandatory = True,
             providers = [JsInfo],

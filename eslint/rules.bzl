@@ -1,19 +1,20 @@
 load("@bazel_skylib//lib:shell.bzl", "shell")
 load("@rules_file//generate:providers.bzl", "FormatterInfo")
 load("//commonjs:rules.bzl", "cjs_root")
-load("//javascript:providers.bzl", "JsFile", "JsInfo")
+load("//javascript:providers.bzl", "JsInfo")
 load("//nodejs:rules.bzl", "nodejs_binary")
 load("//nodejs:providers.bzl", "NODE_MODULES_PREFIX", "package_path_name")
 load("//typescript:rules.bzl", "ts_library", "tsconfig")
 load("//util:path.bzl", "runfile_path")
 
-def configure_eslint(name, dep, config, plugins = [], visibility = None):
+def configure_eslint(name, dep, config, config_dep, plugins = [], visibility = None):
     cjs_root(
         name = "%s.root" % name,
         package_name = "@better-rules-javascript/eslint-format",
         descriptors = ["@better_rules_javascript//eslint/linter:descriptors"],
         sealed = True,
         strip_prefix = "better_rules_javascript/eslint/linter",
+        visibility = ["//visibility:private"],
     )
 
     tsconfig(
@@ -22,6 +23,7 @@ def configure_eslint(name, dep, config, plugins = [], visibility = None):
         src = "@better_rules_javascript//eslint/linter:tsconfig",
         dep = "@better_rules_javascript//rules:tsconfig",
         path = "tsconfig.json",
+        visibility = ["//visibility:private"],
     )
 
     ts_library(
@@ -41,13 +43,14 @@ def configure_eslint(name, dep, config, plugins = [], visibility = None):
             "@better_rules_javascript_npm//@types/eslint:lib",
         ],
         root = "%s.root" % name,
+        visibility = ["//visibility:private"],
     )
 
     nodejs_binary(
         name = "%s.bin" % name,
         dep = ":%s.lib" % name,
         global_deps = plugins,
-        other_deps = [config],
+        other_deps = [config_dep],
         main = "src/main.js",
         visibility = ["//visibility:private"],
     )
@@ -55,6 +58,7 @@ def configure_eslint(name, dep, config, plugins = [], visibility = None):
     eslint(
         name = name,
         config = config,
+        config_dep = config_dep,
         bin = ":%s.bin" % name,
         visibility = visibility,
     )
@@ -83,10 +87,10 @@ def _eslint_format(ctx, name, src, out, bin, config):
 
 def _eslint_impl(ctx):
     bin = ctx.attr.bin[DefaultInfo]
-    config = ctx.attr.config[JsFile]
-    config_dep = ctx.attr.config[JsInfo]
+    config = ctx.attr.config
+    config_dep = ctx.attr.config_dep[JsInfo]
 
-    config_path = "%s/%s" % (package_path_name(config_dep.package.id), config.path)
+    config_path = "%s/%s" % (package_path_name(config_dep.package.id), config)
     config = "./%s.runfiles/%s/%s" % (bin.files_to_run.executable.path, NODE_MODULES_PREFIX, config_path)
 
     def format(ctx, name, src, out):
@@ -107,10 +111,13 @@ eslint = rule(
             executable = True,
             cfg = "exec",
         ),
-        "config": attr.label(
+        "config": attr.string(
+            mandatory = True,
+        ),
+        "config_dep": attr.label(
             doc = "Configuration file",
             mandatory = True,
-            providers = [[JsFile, JsInfo]],
+            providers = [JsInfo],
         ),
     },
 )

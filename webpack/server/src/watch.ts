@@ -67,25 +67,25 @@ export class BazelWatchFileSystem implements WatchFileSystem {
       }
     }
     for (const path_ of this._directories) {
-      (function visit(path_: string) {
+      (function visit(this: BazelWatchFileSystem, path_: string) {
         const stat = maybeStat(path_);
         if (stat) {
           if (this._start <= stat.mtimeMs) {
             this._change(path_, stat.mtimeMs);
           }
-          this.timestamps.set(path_, {
+          this._timestamps.set(path_, {
             isFile: stat.isFile(),
             timestamp: Math.floor(stat.mtimeMs),
           });
-        } else if (init || this.timestamps.delete(path_)) {
+        } else if (init || this._timestamps.delete(path_)) {
           this._remove(path_);
         }
         if (stat.isDirectory()) {
           for (const child of fs.readdirSync(path_)) {
-            visit(path.join(path_, child));
+            visit.call(this, path.join(path_, child));
           }
         }
-      })(path_);
+      }.call(this, path_));
     }
     for (const path of this._missing) {
       const stat = maybeStat(path);
@@ -171,7 +171,7 @@ export class BazelWatchFileSystem implements WatchFileSystem {
     return entries;
   }
 
-  watch(
+  watch = (
     files: Iterable<string>,
     directories: Iterable<string>,
     missing: Iterable<string>,
@@ -185,7 +185,7 @@ export class BazelWatchFileSystem implements WatchFileSystem {
       arg4: Set<string>,
     ) => void,
     callbackUndelayed: (arg0: string, arg1: number) => void,
-  ): Watcher {
+  ): Watcher => {
     this._callback = <any>callback;
     this._immediateCallback = callbackUndelayed;
     this._start = startTime;
@@ -230,5 +230,5 @@ export class BazelWatchFileSystem implements WatchFileSystem {
         };
       },
     };
-  }
+  };
 }

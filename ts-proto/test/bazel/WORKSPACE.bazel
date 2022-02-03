@@ -47,6 +47,17 @@ rules_proto_grpc_toolchains()
 
 rules_proto_grpc_repos()
 
+# File
+
+FILE_VERSION = "550c0019ea1af5b7bd7804162e26cd25680f210f"
+
+http_archive(
+    name = "rules_file",
+    sha256 = "2d6264a8163ca827c3cd6b12ef8f5c02bd228b54740dfe85b883ea3c9e24a0d9",
+    strip_prefix = "rules_file-%s" % FILE_VERSION,
+    url = "https://github.com/rivethealth/rules_file/archive/%s.tar.gz" % FILE_VERSION,
+)
+
 # JavaScript
 
 local_repository(

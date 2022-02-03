@@ -1,5 +1,5 @@
 load("@better_rules_javascript//commonjs:rules.bzl", "cjs_root")
-load("@better_rules_javascript//javascript:rules.bzl", "js_file", "js_library")
+load("@better_rules_javascript//javascript:rules.bzl", "js_library")
 load("@better_rules_javascript//jest:rules.bzl", "jest_test")
 
 cjs_root(
@@ -13,15 +13,16 @@ js_library(
     root = ":root",
 )
 
-js_file(
+js_library(
     name = "jest_config",
-    src = "jest.config.js",
+    srcs = ["jest.config.js"],
     root = ":root",
 )
 
 jest_test(
     name = "test",
-    config = ":jest_config",
+    config = "jest.config.js",
+    config_dep = ":jest_config",
     data = [":bin"],
     global_deps = [
         "@better_rules_javascript_npm_source_map_support0.5.21//:lib",

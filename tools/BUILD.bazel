@@ -17,7 +17,8 @@ format(
 
 configure_eslint(
     name = "eslint",
-    config = "//:eslint_config",
+    config = ".eslintrc.js",
+    config_dep = "//:eslint_config",
     dep = "@better_rules_javascript_npm//eslint:lib",
     plugins = [
         "@better_rules_javascript_npm//typescript:lib",
@@ -98,7 +99,8 @@ alias(
 
 configure_prettier(
     name = "prettier",
-    config = "//:prettier_config",
+    config = "prettierrc.yml",
+    config_dep = "//:prettier_config",
     dep = "@better_rules_javascript_npm//prettier:lib",
 )
 

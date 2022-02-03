@@ -1,18 +1,18 @@
 load("@bazel_skylib//lib:shell.bzl", "shell")
 load("//commonjs:providers.bzl", "gen_manifest", "package_path")
-load("//javascript:providers.bzl", "JsFile", "JsInfo")
+load("//javascript:providers.bzl", "JsInfo")
 load("//nodejs:rules.bzl", "nodejs_binary")
 load("//nodejs:providers.bzl", "NODE_MODULES_PREFIX", "package_path_name")
 load("//util:path.bzl", "runfile_path")
 load(":providers.bzl", "RollupInfo")
 
 def _rollup_impl(ctx):
-    config = ctx.attr.config[JsFile]
-    config_dep = ctx.attr.config[JsInfo]
+    config = ctx.attr.config
+    config_dep = ctx.attr.config_dep[JsInfo]
 
     rollup_info = RollupInfo(
         bin = ctx.attr.bin[DefaultInfo].files_to_run,
-        config_path = "%s/%s" % (package_path_name(config_dep.package.id), config.path),
+        config_path = "%s/%s" % (package_path_name(config_dep.package.id), config),
     )
 
     return [rollup_info]
@@ -25,17 +25,20 @@ rollup = rule(
             mandatory = True,
             cfg = "exec",
         ),
-        "config": attr.label(
+        "config": attr.string(
+            mandatory = True,
+        ),
+        "config_dep": attr.label(
             cfg = "exec",
             mandatory = True,
-            providers = [[JsFile, JsInfo]],
+            providers = [JsInfo],
         ),
     },
     doc = "Rollup tools",
     implementation = _rollup_impl,
 )
 
-def configure_rollup(name, dep, config, visibility = None):
+def configure_rollup(name, dep, config, config_dep, visibility = None):
     """Set up rollup tools.
 
     Args:
@@ -48,13 +51,14 @@ def configure_rollup(name, dep, config, visibility = None):
         main = "dist/bin/rollup",
         name = "%s_bin" % name,
         dep = dep,
-        other_deps = [config],
-        visibility = visibility,
+        other_deps = [config_dep],
+        visibility = ["//visibility:private"],
     )
 
     rollup(
         name = name,
         config = config,
+        config_dep = config_dep,
         bin = "%s_bin" % name,
         visibility = visibility,
     )

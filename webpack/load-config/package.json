@@ -1,9 +1,8 @@
 {
   "exports": {
     ".": "./src/index.mjs",
-    "./*": "./src/*.js"
+    "./*": "./src/*.mjs"
   },
-  "main": "src/index.mjs",
   "module": "true",
   "typesVersions": {
     "*": {

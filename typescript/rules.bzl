@@ -182,7 +182,7 @@ def _ts_library_impl(ctx):
     src_prefix = ctx.attr.src_prefix
     srcs = ctx.files.srcs
     strip_prefix = ctx.attr.strip_prefix or default_strip_prefix(ctx)
-    target = _target(ctx.attr._language[BuildSettingInfo].value)
+    target = ctx.attr.target or _target(ctx.attr._language[BuildSettingInfo].value)
     ts_deps = compiler.ts_deps + [dep[TsInfo] for dep in ctx.attr.deps if TsInfo in dep]
     tsconfig_info = ctx.attr.config[TsconfigInfo] if ctx.attr.config else None
     workspace_name = ctx.workspace_name
@@ -303,7 +303,7 @@ def _ts_library_impl(ctx):
                         [ts_, transpile_package_manifest, transpile_tsconfig],
                         transitive = [tsconfig_info.transitive_files] if tsconfig_info else [],
                     ),
-                    progress_message = "Transpiling %{input} to JavaScript",
+                    progress_message = "Transpiling %s to JavaScript" % file.path,
                     mnemonic = "TypeScriptTranspile",
                     outputs = [js_, map],
                     tools = [compiler.transpile_bin.files_to_run],
@@ -332,6 +332,7 @@ def _ts_library_impl(ctx):
         args.add("--root-dir", src_root)
         args.add("--target", target)
         args.add("--type-root", ("%s/node_modules/@types") % cjs_info.package.path)
+        args.add_all(inputs, before_each = "--file")
         args.add(tsconfig)
         actions.run(
             arguments = [args],

@@ -1,7 +1,7 @@
 load("//commonjs:rules.bzl", "cjs_root")
 load("//nodejs:rules.bzl", "nodejs_binary")
 load("//rollup:rules.bzl", "configure_rollup", "rollup_bundle")
-load("//javascript:rules.bzl", "js_file")
+load("//javascript:rules.bzl", "js_library")
 load("//typescript:rules.bzl", "ts_library", "tsconfig")
 
 package(default_visibility = ["//visibility:public"])
@@ -17,9 +17,9 @@ cjs_root(
     package_name = "@better-rules-javascript/jest-config",
 )
 
-js_file(
+js_library(
     name = "rollup_config",
-    src = "rollup.config.cjs",
+    srcs = ["rollup.config.cjs"],
     root = ":root",
     deps = [
         "@better_rules_javascript_npm//@rollup/plugin-node-resolve:lib",
@@ -48,6 +48,7 @@ ts_library(
 
 configure_rollup(
     name = "rollup",
-    config = ":rollup_config",
+    config = "rollup.config.cjs",
+    config_dep = ":rollup_config",
     dep = "@better_rules_javascript_npm//rollup:lib",
 )

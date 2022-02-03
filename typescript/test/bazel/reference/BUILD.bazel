@@ -1,5 +1,5 @@
 load("@better_rules_javascript//commonjs:rules.bzl", "cjs_root")
-load("@better_rules_javascript//typescript:rules.bzl", "ts_library")
+load("@better_rules_javascript//typescript:rules.bzl", "ts_library", "tsconfig")
 
 cjs_root(
     name = "dep_root",
@@ -27,7 +27,14 @@ ts_library(
     name = "lib",
     srcs = glob(["src/**/*.ts"]),
     compiler = "//:ts",
+    config = ":tsconfig",
     root = ":root",
     strip_prefix = "better_rules_javascript_test/reference/src",
     deps = [":dep_lib"],
+)
+
+tsconfig(
+    name = "tsconfig",
+    src = "tsconfig.json",
+    root = ":root",
 )
