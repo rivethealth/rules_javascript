@@ -1,5 +1,5 @@
-load("//commonjs:providers.bzl", "CjsEntries", "CjsInfo", "create_dep", "default_strip_prefix", "output_name")
-load("//util:path.bzl", "output", "runfile_path")
+load("//commonjs:providers.bzl", "CjsEntries", "CjsInfo", "create_dep")
+load("//util:path.bzl", "output", "output_name", "runfile_path")
 load(":providers.bzl", "JsInfo", "create_extra_deps", "target_deps")
 
 def _js_library_impl(ctx):
@@ -8,7 +8,7 @@ def _js_library_impl(ctx):
     js_deps = [dep[JsInfo] for dep in ctx.attr.deps]
     output_ = output(label = ctx.label, actions = actions)
     prefix = ctx.attr.prefix
-    strip_prefix = ctx.attr.strip_prefix or default_strip_prefix(ctx)
+    strip_prefix = ctx.attr.strip_prefix
     workspace_name = ctx.workspace_name
     label = ctx.label
 
@@ -16,11 +16,9 @@ def _js_library_impl(ctx):
     for file in ctx.files.srcs:
         path = output_name(
             file = file,
-            package_output = output_,
+            label = label,
             prefix = prefix,
-            root = cjs_info.package,
             strip_prefix = strip_prefix,
-            workspace_name = workspace_name,
         )
         if file.path == "%s/%s" % (output_.path, path):
             js_ = file

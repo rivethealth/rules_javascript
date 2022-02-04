@@ -21,7 +21,6 @@ js_library(
     deps = {deps},
     extra_deps = {extra_deps},
     srcs = [":files"],
-    strip_prefix = "%s/root" % repository_name()[1:],
 )
     """.strip().format(
         deps = json.encode([js_npm_label(dep) for dep in package.deps]),
@@ -40,7 +39,6 @@ js_library(
     deps = {deps},
     extra_deps = {extra_deps},
     srcs = glob(["npm/**/*"], ["npm/**/package.json"] + {excludes}),
-    strip_prefix = "%s/npm" % repository_name()[1:],
 )
     """.strip().format(
         deps = json.encode([js_npm_label(dep) for dep in package.deps]),

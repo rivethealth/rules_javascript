@@ -13,7 +13,7 @@ def configure_eslint(name, dep, config, config_dep, plugins = [], visibility = N
         package_name = "@better-rules-javascript/eslint-format",
         descriptors = ["@better_rules_javascript//eslint/linter:descriptors"],
         path = "%s.root" % name,
-        strip_prefix = "better_rules_javascript/eslint/linter",
+        strip_prefix = "/eslint/linter",
         visibility = ["//visibility:private"],
     )
 
@@ -22,14 +22,14 @@ def configure_eslint(name, dep, config, config_dep, plugins = [], visibility = N
         root = ":%s.root" % name,
         src = "@better_rules_javascript//eslint/linter:tsconfig",
         dep = "@better_rules_javascript//rules:tsconfig",
-        path = "tsconfig.json",
+        path = "%s.root/tsconfig.json" % name,
         visibility = ["//visibility:private"],
     )
 
     ts_library(
         name = "%s.lib" % name,
         srcs = ["@better_rules_javascript//eslint/linter:src"],
-        strip_prefix = "better_rules_javascript/eslint/linter",
+        strip_prefix = "/eslint/linter",
         compiler = "@better_rules_javascript//rules:tsc",
         config = ":%s.config" % name,
         deps = [
@@ -42,6 +42,9 @@ def configure_eslint(name, dep, config, config_dep, plugins = [], visibility = N
         global_deps = [
             "@better_rules_javascript_npm//@types/eslint:lib",
         ],
+        declaration_prefix = "%s.root" % name,
+        js_prefix = "%s.root" % name,
+        src_prefix = "%s.root" % name,
         root = "%s.root" % name,
         visibility = ["//visibility:private"],
     )

@@ -1,6 +1,6 @@
-load("//commonjs:providers.bzl", "CjsInfo", "create_dep", "output_name")
+load("//commonjs:providers.bzl", "CjsInfo", "create_dep")
 load("//javascript:providers.bzl", "JsInfo")
-load("//util:path.bzl", "output")
+load("//util:path.bzl", "output_name")
 load(":aspects.bzl", "js_proto_aspect")
 load(":providers.bzl", "JsProtoInfo", "JsProtobuf")
 
@@ -25,8 +25,8 @@ js_protoc = rule(
 def _js_proto_libraries_impl(ctx):
     actions = ctx.actions
     cjs_info = ctx.attr.root[CjsInfo]
+    label = ctx.label
     prefix = ctx.attr.prefix
-    output_ = output(ctx.label, actions)
     workspace_name = ctx.workspace_name
 
     libs = depset(
@@ -39,12 +39,10 @@ def _js_proto_libraries_impl(ctx):
         js = []
         for file in lib.js:
             path = output_name(
-                package_output = output_,
                 file = js_,
                 prefix = prefix,
-                root = cjs_info.package,
                 strip_prefix = lib.path,
-                workspace_name = workspace_name,
+                label = label,
             )
             js_ = actions.declare_file(path)
             actions.symlink(

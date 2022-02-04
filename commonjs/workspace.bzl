@@ -17,7 +17,6 @@ cjs_root(
     package_name = {package_name},
     path = "root",
     id = {package_id},
-    strip_prefix = "%s/root" % repository_name()[1:],
 )
     """.strip().format(
         package_id = json.encode(package.id),
@@ -32,7 +31,7 @@ cjs_root(
     name = "root",
     descriptors = glob(["npm/**/package.json"]),
     package_name = {package_name},
-    strip_prefix = "%s/npm" % repository_name()[1:],
+    strip_prefix = "npm",
 )
     """.strip().format(
         package_name = json.encode(package.name),

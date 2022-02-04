@@ -1,8 +1,8 @@
 load("@rules_proto//proto:defs.bzl", "ProtoInfo")
-load("//commonjs:providers.bzl", "CjsInfo", "create_dep", "create_package", "output_name")
+load("//commonjs:providers.bzl", "CjsInfo", "create_dep", "create_package")
 load("//javascript:providers.bzl", "JsInfo")
 load("//nodejs:rules.bzl", "nodejs_binary")
-load("//util:path.bzl", "output")
+load("//util:path.bzl", "output", "output_name")
 load(":providers.bzl", "JsProtobuf")
 
 def _js_proto_impl(ctx):
@@ -51,16 +51,7 @@ def _js_proto_library_impl(ctx):
     runtime_package = js_proto.runtime
     workspace_name = ctx.workspace_name
 
-    output_name_ = output_name(
-        workspace_name = workspace_name,
-        file = struct(short_path = ctx.attr.output),
-        root = cjs_info.package,
-        package_output = output_,
-        prefix = "",
-        strip_prefix = "",
-    )
-
-    output = actions.declare_file(output_name_)
+    output = ctx.outputs.output
 
     args = actions.args()
     for dep in ctx.attr.deps:
@@ -130,7 +121,7 @@ js_proto_library = rule(
             mandatory = True,
             providers = [ProtoInfo],
         ),
-        "output": attr.string(
+        "output": attr.output(
             mandatory = True,
         ),
     },

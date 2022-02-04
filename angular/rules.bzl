@@ -1,9 +1,9 @@
 load("@rules_file//util:path.bzl", "runfile_path")
 load("@bazel_skylib//rules:common_settings.bzl", "BuildSettingInfo")
-load("//commonjs:providers.bzl", "CjsEntries", "CjsInfo", "create_dep", "create_global", "create_package", "default_strip_prefix", "gen_manifest", "output_name", "output_root", "package_path")
+load("//commonjs:providers.bzl", "CjsEntries", "CjsInfo", "create_dep", "create_global", "create_package", "gen_manifest", "output_root", "package_path")
 load("//commonjs:rules.bzl", "cjs_root")
 load("//javascript:providers.bzl", "JsInfo", js_create_deps = "create_deps", js_target_deps = "target_deps")
-load("//util:path.bzl", "output")
+load("//util:path.bzl", "output", "output_name")
 load("//nodejs:rules.bzl", "nodejs_binary")
 load("//typescript:providers.bzl", "TsInfo", "TsconfigInfo", "create_deps", "declaration_path", "is_declaration", "is_directory", "is_json", "js_path", "map_path", "target_deps", "target_globals")
 load("//typescript:rules.bzl", "ts_library", "tsconfig")
@@ -20,7 +20,7 @@ def configure_angular_compiler(name, core, compiler_cli, ts, tslib, reflect_meta
         package_name = "@better-rules-javascript/angular-js-compiler",
         descriptors = ["@better_rules_javascript//angular/js-compiler:descriptors"],
         path = "%s.root" % name,
-        strip_prefix = "better_rules_javascript/angular/js-compiler",
+        strip_prefix = "/angular/js-compiler",
         visibility = ["//visibility:private"],
     )
 
@@ -36,7 +36,7 @@ def configure_angular_compiler(name, core, compiler_cli, ts, tslib, reflect_meta
         src = "@better_rules_javascript//angular/js-compiler:tsconfig",
         dep = "@better_rules_javascript//rules:tsconfig",
         root = ":%s.root" % name,
-        path = "tsconfig.json",
+        path = "%s.root/tsconfig.json" % name,
     )
 
     ts_library(
@@ -45,7 +45,10 @@ def configure_angular_compiler(name, core, compiler_cli, ts, tslib, reflect_meta
         compiler = "@better_rules_javascript//rules:tsc",
         root = ":%s.root" % name,
         config = ":%s.tsconfig" % name,
-        strip_prefix = "better_rules_javascript/angular/js-compiler",
+        strip_prefix = "/angular/js-compiler",
+        src_prefix = "%s.root" % name,
+        js_prefix = "%s.root" % name,
+        declaration_prefix = "%s.root" % name,
         deps = [
             ts,
             "@better_rules_javascript//bazel/worker:lib",
@@ -98,7 +101,7 @@ def _angular_library(ctx):
     label = ctx.label
     output_ = output(ctx.label, actions)
     src_prefix = ctx.attr.src_prefix
-    strip_prefix = ctx.attr.strip_prefix or default_strip_prefix(ctx)
+    strip_prefix = ctx.attr.strip_prefix
     ts_deps = compiler.ts_deps + [dep[TsInfo] for dep in ctx.attr.deps + ctx.attr.global_deps if TsInfo in dep]
     tsconfig_info = ctx.attr.config[TsconfigInfo] if ctx.attr.config else None
     workspace_name = ctx.workspace_name
@@ -114,10 +117,8 @@ def _angular_library(ctx):
 
     for file in ctx.files.resources:
         path = output_name(
-            workspace_name = ctx.workspace_name,
             file = file,
-            root = cjs_info.package,
-            package_output = output_,
+            label = label,
             prefix = js_prefix,
             strip_prefix = strip_prefix,
         )
@@ -135,11 +136,9 @@ def _angular_library(ctx):
         else:
             js_path_ = output_name(
                 file = file,
-                package_output = output_,
+                label = label,
                 prefix = js_prefix,
-                root = cjs_info.package,
                 strip_prefix = strip_prefix,
-                workspace_name = workspace_name,
             )
             if not file.is_directory:
                 js_path_ = resource_path(js_path_)
@@ -217,11 +216,9 @@ def _angular_library(ctx):
     for file in ctx.files.srcs:
         path = output_name(
             file = file,
-            package_output = output_,
+            label = label,
             prefix = src_prefix,
-            root = cjs_info.package,
             strip_prefix = strip_prefix,
-            workspace_name = workspace_name,
         )
         if file.path == "%s/%s" % (output_.path, path):
             ts_ = file
@@ -238,19 +235,15 @@ def _angular_library(ctx):
         if not is_declaration(path):
             js_path_ = output_name(
                 file = file,
-                package_output = output_,
+                label = label,
                 prefix = js_prefix,
-                root = cjs_info.package,
                 strip_prefix = strip_prefix,
-                workspace_name = workspace_name,
             )
             declaration_path_ = output_name(
                 file = file,
-                package_output = output_,
+                label = label,
                 prefix = declaration_prefix,
-                root = cjs_info.package,
                 strip_prefix = strip_prefix,
-                workspace_name = workspace_name,
             )
             if is_directory(file.path):
                 js_ = actions.declare_directory(js_path_)

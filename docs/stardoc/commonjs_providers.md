@@ -121,20 +121,6 @@ Create package struct.
 | <a id="create_package-short_path"></a>short_path | Short path to directory | none          |
 | <a id="create_package-label"></a>label           | Source label            | none          |
 
-<a id="#default_strip_prefix"></a>
-
-## default_strip_prefix
-
-<pre>
-default_strip_prefix(<a href="#default_strip_prefix-ctx">ctx</a>)
-</pre>
-
-**PARAMETERS**
-
-| Name                                     | Description               | Default Value |
-| :--------------------------------------- | :------------------------ | :------------ |
-| <a id="default_strip_prefix-ctx"></a>ctx | <p align="center"> - </p> | none          |
-
 <a id="#gen_manifest"></a>
 
 ## gen_manifest
@@ -154,27 +140,6 @@ gen_manifest(<a href="#gen_manifest-actions">actions</a>, <a href="#gen_manifest
 | <a id="gen_manifest-deps"></a>deps                 | <p align="center"> - </p> | none          |
 | <a id="gen_manifest-globals"></a>globals           | <p align="center"> - </p> | none          |
 | <a id="gen_manifest-package_path"></a>package_path | <p align="center"> - </p> | none          |
-
-<a id="#output_name"></a>
-
-## output_name
-
-<pre>
-output_name(<a href="#output_name-workspace_name">workspace_name</a>, <a href="#output_name-file">file</a>, <a href="#output_name-root">root</a>, <a href="#output_name-package_output">package_output</a>, <a href="#output_name-prefix">prefix</a>, <a href="#output_name-strip_prefix">strip_prefix</a>)
-</pre>
-
-    Computes the output name for a file.
-
-**PARAMETERS**
-
-| Name                                                  | Description               | Default Value |
-| :---------------------------------------------------- | :------------------------ | :------------ |
-| <a id="output_name-workspace_name"></a>workspace_name | Workspace name            | none          |
-| <a id="output_name-file"></a>file                     | Source file               | none          |
-| <a id="output_name-root"></a>root                     | Output root               | none          |
-| <a id="output_name-package_output"></a>package_output | Bazel package output path | none          |
-| <a id="output_name-prefix"></a>prefix                 | Path segments to prepend  | none          |
-| <a id="output_name-strip_prefix"></a>strip_prefix     | Path segments to remove   | none          |
 
 <a id="#output_root"></a>
 

@@ -1,10 +1,10 @@
 load("@bazel_skylib//lib:paths.bzl", "paths")
 load("@bazel_skylib//rules:common_settings.bzl", "BuildSettingInfo")
-load("//commonjs:providers.bzl", "CjsEntries", "CjsInfo", "create_dep", "create_global", "create_package", "default_strip_prefix", "gen_manifest", "output_name", "output_root", "package_path")
+load("//commonjs:providers.bzl", "CjsEntries", "CjsInfo", "create_dep", "create_global", "create_package", "gen_manifest", "output_root", "package_path")
 load("//commonjs:rules.bzl", "cjs_root")
 load("//nodejs:rules.bzl", "nodejs_binary")
 load("//javascript:providers.bzl", "JsInfo", js_create_deps = "create_deps", js_create_extra_deps = "create_extra_deps", js_target_deps = "target_deps")
-load("//util:path.bzl", "output", "runfile_path")
+load("//util:path.bzl", "output", "output_name", "runfile_path")
 load(":providers.bzl", "TsCompilerInfo", "TsInfo", "TsconfigInfo", "create_deps", "create_extra_deps", "declaration_path", "is_declaration", "is_directory", "is_json", "js_path", "map_path", "target_deps", "target_globals")
 
 def _module(module):
@@ -90,23 +90,15 @@ def _tsconfig_impl(ctx):
     actions = ctx.actions
     cjs_info = ctx.attr.root[CjsInfo]
     deps = [ctx.attr.dep[TsconfigInfo]] if ctx.attr.dep else []
+    label = ctx.label
     src = ctx.file.src
     output_ = output(label = ctx.label, actions = actions)
-    if ctx.attr.path:
-        strip_prefix = runfile_path(ctx.workspace_name, ctx.file.src)
-        prefix = ctx.attr.path
-    else:
-        strip_prefix = default_strip_prefix(ctx)
-        prefix = ""
+
     workspace_name = ctx.workspace_name
 
-    tsconfig_name = output_name(
+    tsconfig_name = ctx.attr.path or output_name(
         file = src,
-        package_output = output_,
-        prefix = prefix,
-        root = cjs_info.package,
-        strip_prefix = strip_prefix,
-        workspace_name = workspace_name,
+        label = label,
     )
 
     if src.path == "%s/%s" % (output_.path, tsconfig_name):
@@ -181,7 +173,7 @@ def _ts_library_impl(ctx):
     output_ = output(ctx.label, actions)
     src_prefix = ctx.attr.src_prefix
     srcs = ctx.files.srcs
-    strip_prefix = ctx.attr.strip_prefix or default_strip_prefix(ctx)
+    strip_prefix = ctx.attr.strip_prefix
     target = ctx.attr.target or _target(ctx.attr._language[BuildSettingInfo].value)
     ts_deps = compiler.ts_deps + [dep[TsInfo] for dep in ctx.attr.deps if TsInfo in dep]
     tsconfig_info = ctx.attr.config[TsconfigInfo] if ctx.attr.config else None
@@ -231,11 +223,9 @@ def _ts_library_impl(ctx):
     for file in ctx.files.srcs:
         path = output_name(
             file = file,
-            package_output = output_,
             prefix = src_prefix,
-            root = cjs_info.package,
             strip_prefix = strip_prefix,
-            workspace_name = workspace_name,
+            label = label,
         )
         if file.path == "%s/%s" % (output_.path, path):
             ts_ = file
@@ -250,19 +240,15 @@ def _ts_library_impl(ctx):
         if not is_declaration(path):
             js_path_ = output_name(
                 file = file,
-                package_output = output_,
+                label = label,
                 prefix = js_prefix,
-                root = cjs_info.package,
                 strip_prefix = strip_prefix,
-                workspace_name = workspace_name,
             )
             declaration_path_ = output_name(
                 file = file,
-                package_output = output_,
+                label = label,
                 prefix = declaration_prefix,
-                root = cjs_info.package,
                 strip_prefix = strip_prefix,
-                workspace_name = workspace_name,
             )
             if is_directory(file.path):
                 js_ = actions.declare_directory(js_path_)
@@ -500,7 +486,7 @@ def _ts_import_impl(ctx):
     js_prefix = ctx.attr.js_prefix
     label = ctx.label
     output_ = output(label = ctx.label, actions = actions)
-    strip_prefix = ctx.attr.strip_prefix or default_strip_prefix(ctx)
+    strip_prefix = ctx.attr.strip_prefix
     ts_deps = [dep[TsInfo] for dep in ctx.attr.deps if TsInfo in dep]
     workspace_name = ctx.workspace_name
 
@@ -508,11 +494,9 @@ def _ts_import_impl(ctx):
     for file in ctx.files.declarations:
         path = output_name(
             file = file,
-            package_output = output_,
             prefix = declaration_prefix,
-            root = cjs_info.package,
             strip_prefix = strip_prefix,
-            workspace_name = workspace_name,
+            label = label,
         )
         if file.path == "%s/%s" % (output_.path, path):
             declaration = file
@@ -528,11 +512,9 @@ def _ts_import_impl(ctx):
     for file in ctx.files.js:
         path = output_name(
             file = file,
-            package_output = output_,
+            label = label,
             prefix = js_prefix,
-            root = cjs_info.package,
             strip_prefix = strip_prefix,
-            workspace_name = workspace_name,
         )
         if file.path == "%s/%s" % (output_.path, path):
             js_ = file

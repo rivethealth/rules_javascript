@@ -12,7 +12,7 @@ def configure_prettier(name, dep, config, config_dep, plugins = [], visibility =
         package_name = "@better-rules-javascript/prettier-format",
         descriptors = ["@better_rules_javascript//prettier/format:descriptors"],
         path = "%s.root" % name,
-        strip_prefix = "better_rules_javascript/prettier/format",
+        strip_prefix = "/prettier/format",
         visibility = ["//visibility:private"],
     )
 
@@ -21,14 +21,14 @@ def configure_prettier(name, dep, config, config_dep, plugins = [], visibility =
         root = ":%s.root" % name,
         src = "@better_rules_javascript//prettier/format:tsconfig",
         dep = "@better_rules_javascript//rules:tsconfig",
-        path = "tsconfig.json",
+        path = "%s.root/tsconfig.json" % name,
         visibility = ["//visibility:private"],
     )
 
     ts_library(
         name = "%s.lib" % name,
         srcs = ["@better_rules_javascript//prettier/format:src"],
-        strip_prefix = "better_rules_javascript/prettier/format",
+        strip_prefix = "/prettier/format",
         compiler = "@better_rules_javascript//rules:tsc",
         config = ":%s.config" % name,
         deps = [
@@ -39,6 +39,9 @@ def configure_prettier(name, dep, config, config_dep, plugins = [], visibility =
             "@better_rules_javascript_npm//@types/prettier:lib",
             "@better_rules_javascript_npm//argparse:lib",
         ],
+        declaration_prefix = "%s.root" % name,
+        js_prefix = "%s.root" % name,
+        src_prefix = "%s.root" % name,
         root = ":%s.root" % name,
         visibility = ["//visibility:private"],
     )

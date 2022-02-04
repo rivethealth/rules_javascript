@@ -116,7 +116,7 @@ def configure_webpack(name, cli, webpack, dev_server, config, config_dep, global
         name = "%s.server_root" % name,
         package_name = "@better-rules-javascript//webpack-server",
         descriptors = ["@better_rules_javascript//webpack/server:descriptors"],
-        strip_prefix = "better_rules_javascript/webpack/server",
+        strip_prefix = "/webpack/server",
         path = "%s.root" % name,
         visibility = ["//visibility:private"],
     )
@@ -124,7 +124,7 @@ def configure_webpack(name, cli, webpack, dev_server, config, config_dep, global
     ts_library(
         name = "%s.server_lib" % name,
         srcs = ["@better_rules_javascript//webpack/server:src"],
-        strip_prefix = "better_rules_javascript/webpack/server",
+        strip_prefix = "/webpack/server",
         compiler = "@better_rules_javascript//rules:tsc",
         config = ":%s.server_tsconfig" % name,
         root = ":%s.server_root" % name,
@@ -141,6 +141,9 @@ def configure_webpack(name, cli, webpack, dev_server, config, config_dep, global
             webpack,
             dev_server,
         ],
+        declaration_prefix = "%s.root" % name,
+        js_prefix = "%s.root" % name,
+        src_prefix = "%s.root" % name,
         visibility = ["//visibility:private"],
     )
 
@@ -149,7 +152,7 @@ def configure_webpack(name, cli, webpack, dev_server, config, config_dep, global
         src = "@better_rules_javascript//webpack/server:tsconfig",
         dep = "@better_rules_javascript//rules:tsconfig",
         root = ":%s.server_root" % name,
-        path = "tsconfig.json",
+        path = "%s.root/tsconfig.json" % name,
         visibility = ["//visibility:private"],
     )
 

@@ -1,9 +1,8 @@
-load("//commonjs:providers.bzl", "CjsEntries", "CjsInfo", "output_name")
+load("//commonjs:providers.bzl", "CjsEntries", "CjsInfo")
 load("//javascript:providers.bzl", "JsInfo", js_create_deps = "create_deps")
 load("//nodejs:rules.bzl", "nodejs_binary")
-load("//util:path.bzl", "runfile_path")
 load("//typescript:providers.bzl", "TsCompilerInfo", "TsInfo", "create_deps")
-load("//util:path.bzl", "output")
+load("//util:path.bzl", "output_name", "runfile_path")
 load(":aspects.bzl", _ts_proto_aspect = "ts_proto_aspect")
 load(":providers.bzl", "TsProtoInfo", "TsProtobuf", "TsProtosInfo")
 
@@ -59,7 +58,7 @@ def configure_ts_protoc(name, compiler, ts_proto, deps, visibility = None):
 def _ts_proto_libraries_impl(ctx):
     actions = ctx.actions
     cjs_info = ctx.attr.root[CjsInfo]
-    output_ = output(ctx.label, actions)
+    label = ctx.label
     workspace_name = ctx.workspace_name
 
     libs = depset(
@@ -71,15 +70,13 @@ def _ts_proto_libraries_impl(ctx):
     ts_infos = {}
     default_infos = {}
     for lib in libs.to_list():
+        lib_path = "/" + "/".join(lib.runfile_path.split("/")[1:])
         js = []
         for file in lib.js:
             path = output_name(
                 file = file,
-                package_output = output_,
-                prefix = "",
-                root = cjs_info.package,
-                strip_prefix = lib.runfile_path,
-                workspace_name = workspace_name,
+                strip_prefix = lib_path,
+                label = label,
             )
             js_ = actions.declare_file(path)
             actions.symlink(
@@ -91,11 +88,8 @@ def _ts_proto_libraries_impl(ctx):
         for file in lib.declarations:
             path = output_name(
                 file = file,
-                package_output = output_,
-                prefix = "",
-                root = cjs_info.package,
-                strip_prefix = lib.runfile_path,
-                workspace_name = workspace_name,
+                label = label,
+                strip_prefix = lib_path,
             )
             declaration = actions.declare_file(path)
             actions.symlink(
@@ -107,11 +101,8 @@ def _ts_proto_libraries_impl(ctx):
         for src in lib.srcs:
             path = output_name(
                 file = file,
-                package_output = output_,
-                prefix = "",
-                root = cjs_info.package,
-                strip_prefix = lib.runfile_path,
-                workspace_name = workspace_name,
+                label = label,
+                strip_prefix = lib_path,
             )
             src = actions.declare_file(path)
             actions.symlink(

@@ -1,44 +1,5 @@
 <!-- Generated with Stardoc: http://skydoc.bazel.build -->
 
-<a id="#js_export_file"></a>
-
-## js_export_file
-
-<pre>
-js_export_file(<a href="#js_export_file-name">name</a>, <a href="#js_export_file-dep">dep</a>, <a href="#js_export_file-path">path</a>)
-</pre>
-
-Export file from JS library.
-
-**ATTRIBUTES**
-
-| Name                                 | Description                    | Type                                                               | Mandatory | Default |
-| :----------------------------------- | :----------------------------- | :----------------------------------------------------------------- | :-------- | :------ |
-| <a id="js_export_file-name"></a>name | A unique name for this target. | <a href="https://bazel.build/docs/build-ref.html#name">Name</a>    | required  |         |
-| <a id="js_export_file-dep"></a>dep   | Dependency.                    | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a> | required  |         |
-| <a id="js_export_file-path"></a>path | Path.                          | String                                                             | required  |         |
-
-<a id="#js_file"></a>
-
-## js_file
-
-<pre>
-js_file(<a href="#js_file-name">name</a>, <a href="#js_file-deps">deps</a>, <a href="#js_file-extra_deps">extra_deps</a>, <a href="#js_file-path">path</a>, <a href="#js_file-root">root</a>, <a href="#js_file-src">src</a>)
-</pre>
-
-Create JS file.
-
-**ATTRIBUTES**
-
-| Name                                      | Description                    | Type                                                                                      | Mandatory | Default |
-| :---------------------------------------- | :----------------------------- | :---------------------------------------------------------------------------------------- | :-------- | :------ |
-| <a id="js_file-name"></a>name             | A unique name for this target. | <a href="https://bazel.build/docs/build-ref.html#name">Name</a>                           | required  |         |
-| <a id="js_file-deps"></a>deps             | Dependencies.                  | <a href="https://bazel.build/docs/build-ref.html#labels">List of labels</a>               | optional  | []      |
-| <a id="js_file-extra_deps"></a>extra_deps | Extra dependencies.            | <a href="https://bazel.build/docs/skylark/lib/dict.html">Dictionary: String -> String</a> | optional  | {}      |
-| <a id="js_file-path"></a>path             | Path                           | String                                                                                    | optional  | ""      |
-| <a id="js_file-root"></a>root             | CommonJS root                  | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a>                        | required  |         |
-| <a id="js_file-src"></a>src               | -                              | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a>                        | required  |         |
-
 <a id="#js_library"></a>
 
 ## js_library

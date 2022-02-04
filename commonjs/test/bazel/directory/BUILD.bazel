@@ -7,8 +7,7 @@ cjs_root(
     name = "root",
     package_name = "@better-rules-javascript-test/nodejs-binary",
     descriptors = [":src"],
-    sealed = True,
-    strip_prefix = "better_rules_javascript_test/directory/root",
+    path = "root",
 )
 
 directory(
@@ -25,7 +24,7 @@ js_library(
     name = "lib",
     srcs = [":src"],
     root = ":root",
-    strip_prefix = "better_rules_javascript_test/directory/root",
+    strip_prefix = "root",
 )
 
 nodejs_binary(

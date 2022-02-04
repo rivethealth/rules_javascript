@@ -1,6 +1,6 @@
 load("@rules_file//util:path.bzl", "runfile_path")
-load("//util:path.bzl", "output")
-load(":providers.bzl", "CjsEntries", "CjsInfo", "create_package", "default_strip_prefix", "output_name")
+load("//util:path.bzl", "output", "output_name")
+load(":providers.bzl", "CjsEntries", "CjsInfo", "create_package")
 
 def _default_package_name(ctx):
     workspace = ctx.label.workspace_name or ctx.workspace_name
@@ -24,8 +24,9 @@ cjs_descriptors = rule(
 
 def _cjs_root_impl(ctx):
     actions = ctx.actions
+    label = ctx.label
     name = ctx.attr.package_name or _default_package_name(ctx)
-    strip_prefix = ctx.attr.strip_prefix or default_strip_prefix(ctx)
+    strip_prefix = ctx.attr.strip_prefix
     output_ = output(ctx.label, actions)
     workspace_name = ctx.workspace_name
 
@@ -42,11 +43,8 @@ def _cjs_root_impl(ctx):
     descriptors = []
     for file in ctx.files.descriptors:
         path = output_name(
-            workspace_name = workspace_name,
             file = file,
-            root = root,
-            package_output = output_,
-            prefix = "",
+            label = label,
             strip_prefix = strip_prefix,
         )
         if file.path == "%s/%s" % (output_.path, path):

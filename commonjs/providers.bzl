@@ -94,13 +94,6 @@ def _package_arg(package, package_path):
     )
     return json.encode(data)
 
-def default_strip_prefix(ctx):
-    workspace = ctx.label.workspace_name or ctx.workspace_name
-    parts = [workspace]
-    if ctx.label.package:
-        parts.append(ctx.label.package)
-    return "/".join(parts)
-
 def gen_manifest(actions, manifest_bin, manifest, packages, deps, globals, package_path):
     def package_arg(package):
         return _package_arg(package, package_path)
@@ -128,35 +121,6 @@ def output_root(root, package_output, prefix):
     elif root.path != package_output.path:
         fail("Output %s cannot write to %s" % (package_output.path, root))
     return root.path
-
-def output_name(workspace_name, file, root, package_output, prefix, strip_prefix):
-    """
-    Computes the output name for a file.
-
-    Args:
-      workspace_name: Workspace name
-      file: Source file
-      root: Output root
-      package_output: Bazel package output path
-      prefix: Path segments to prepend
-      strip_prefix: Path segments to remove
-    """
-    path = runfile_path(workspace_name, file)
-    if strip_prefix:
-        if path == strip_prefix:
-            path = ""
-        elif path.startswith(strip_prefix + "/"):
-            path = path[len(strip_prefix + "/"):]
-        else:
-            fail("File %s does not have prefix %s" % (path, strip_prefix))
-    if prefix:
-        path = "%s/%s" % (prefix, path) if path else prefix
-    if root.path.startswith(package_output.path + "/"):
-        output = root.path[len(package_output.path + "/"):]
-        path = "%s/%s" % (output, path) if path else output
-    elif root.path != package_output.path:
-        fail("Output %s cannot write to %s" % (package_output.path, root.path))
-    return path
 
 def package_path(package):
     return package.path

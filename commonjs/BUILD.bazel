@@ -11,5 +11,6 @@ bzl_library(
     srcs = glob(["**/*.bzl"]),
     deps = [
         "//util:bzl",
+        "@rules_file//util:bzl",
     ],
 )

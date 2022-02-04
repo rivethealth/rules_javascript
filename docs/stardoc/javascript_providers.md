@@ -1,21 +1,5 @@
 <!-- Generated with Stardoc: http://skydoc.bazel.build -->
 
-<a id="#JsFile"></a>
-
-## JsFile
-
-<pre>
-JsFile(<a href="#JsFile-path">path</a>)
-</pre>
-
-JavaScript file
-
-**FIELDS**
-
-| Name                         | Description |
-| :--------------------------- | :---------- |
-| <a id="JsFile-path"></a>path | Path        |
-
 <a id="#JsInfo"></a>
 
 ## JsInfo
@@ -68,6 +52,21 @@ create_extra_deps(<a href="#create_extra_deps-package">package</a>, <a href="#cr
 | <a id="create_extra_deps-package"></a>package       | <p align="center"> - </p> | none          |
 | <a id="create_extra_deps-label"></a>label           | <p align="center"> - </p> | none          |
 | <a id="create_extra_deps-extra_deps"></a>extra_deps | <p align="center"> - </p> | none          |
+
+<a id="#create_globals"></a>
+
+## create_globals
+
+<pre>
+create_globals(<a href="#create_globals-label">label</a>, <a href="#create_globals-js_infos">js_infos</a>)
+</pre>
+
+**PARAMETERS**
+
+| Name                                         | Description               | Default Value |
+| :------------------------------------------- | :------------------------ | :------------ |
+| <a id="create_globals-label"></a>label       | <p align="center"> - </p> | none          |
+| <a id="create_globals-js_infos"></a>js_infos | <p align="center"> - </p> | none          |
 
 <a id="#js_npm_label"></a>
 
