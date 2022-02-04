@@ -12,7 +12,7 @@ def configure_eslint(name, dep, config, config_dep, plugins = [], visibility = N
         name = "%s.root" % name,
         package_name = "@better-rules-javascript/eslint-format",
         descriptors = ["@better_rules_javascript//eslint/linter:descriptors"],
-        sealed = True,
+        path = "%s.root" % name,
         strip_prefix = "better_rules_javascript/eslint/linter",
         visibility = ["//visibility:private"],
     )

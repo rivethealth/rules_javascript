@@ -4,7 +4,7 @@ load("@io_bazel_stardoc//stardoc:stardoc.bzl", _stardoc = "stardoc")
 def stardoc(name, lib, files):
     stardocs = []
     for file in files:
-        file_name = file.replace("@", "").replace("//", "").replace("/", "_").replace(":", "_")
+        file_name = file.replace("/", "_").replace(":", "_")
         rule_name = file_name.replace(".bzl", "_doc")
         stardocs.append(rule_name)
         _stardoc(

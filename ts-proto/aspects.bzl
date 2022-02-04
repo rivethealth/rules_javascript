@@ -94,9 +94,8 @@ mkdir -p "$out"
     )
 
     # create package manifest
-    package_id = str(ctx.label)
     package = create_package(
-        id = package_id,
+        id = runfile_path(workspace_name, output_),
         name = "",
         label = ctx.label,
         path = output_.path,
@@ -105,7 +104,7 @@ mkdir -p "$out"
     package_deps = [
         create_dep(
             dep = ts_info.package.id,
-            id = package_id,
+            id = package.id,
             label = ctx.label,
             name = ts_info.name,
         )

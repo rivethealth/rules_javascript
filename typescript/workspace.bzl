@@ -26,7 +26,7 @@ js_library(
 )
         """.strip().format(
             deps = json.encode([js_npm_label(dep) for dep in package.deps]),
-            extra_deps = json.encode({name: cjs_npm_label(dep) for name, dep in package.extra_deps.items()}),
+            extra_deps = json.encode(package.extra_deps),
         )
 
     return """
@@ -43,7 +43,7 @@ ts_import(
 )
     """.strip().format(
         deps = json.encode([js_npm_label(dep) for dep in package.deps]),
-        extra_deps = json.encode({name: cjs_npm_label(dep) for name, dep in package.extra_deps.items()}),
+        extra_deps = json.encode(package.extra_deps),
     )
 
 def _ts_npm_package_build(exclude_suffixes, package, files):
@@ -64,7 +64,7 @@ js_library(
         """.strip().format(
             deps = json.encode([js_npm_label(dep) for dep in package.deps]),
             excludes = excludes,
-            extra_deps = json.encode({name: cjs_npm_label(dep) for name, dep in package.extra_deps.items()}),
+            extra_deps = json.encode(package.extra_deps),
         )
 
     return """
@@ -82,7 +82,7 @@ ts_import(
     """.strip().format(
         deps = json.encode([js_npm_label(dep) for dep in package.deps]),
         excludes = excludes,
-        extra_deps = json.encode({name: cjs_npm_label(dep) for name, dep in package.extra_deps.items()}),
+        extra_deps = json.encode(package.extra_deps),
     )
 
 def ts_directory_npm_plugin():

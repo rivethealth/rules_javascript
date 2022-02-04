@@ -25,7 +25,7 @@ js_library(
 )
     """.strip().format(
         deps = json.encode([js_npm_label(dep) for dep in package.deps]),
-        extra_deps = json.encode({name: cjs_npm_label(dep) for name, dep in package.extra_deps.items()}),
+        extra_deps = json.encode(package.extra_deps),
     )
 
 def _js_npm_package_build(exclude_suffixes, package):
@@ -45,7 +45,7 @@ js_library(
     """.strip().format(
         deps = json.encode([js_npm_label(dep) for dep in package.deps]),
         excludes = excludes,
-        extra_deps = json.encode({name: cjs_npm_label(dep) for name, dep in package.extra_deps.items()}),
+        extra_deps = json.encode(package.extra_deps),
     )
 
 def js_directory_npm_plugin():

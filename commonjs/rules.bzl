@@ -1,3 +1,4 @@
+load("@rules_file//util:path.bzl", "runfile_path")
 load("//util:path.bzl", "output")
 load(":providers.bzl", "CjsEntries", "CjsInfo", "create_package", "default_strip_prefix", "output_name")
 
@@ -24,18 +25,19 @@ cjs_descriptors = rule(
 def _cjs_root_impl(ctx):
     actions = ctx.actions
     name = ctx.attr.package_name or _default_package_name(ctx)
-    label = ctx.label
     strip_prefix = ctx.attr.strip_prefix or default_strip_prefix(ctx)
     output_ = output(ctx.label, actions)
     workspace_name = ctx.workspace_name
 
-    if ctx.attr.sealed:
+    if ctx.attr.path:
         root = struct(
-            path = "%s/%s" % (output_.path, label.name),
-            short_path = "%s/%s" % (output_.short_path, label.name) if output_.short_path else label.name,
+            path = "%s/%s" % (output_.path, ctx.attr.path),
+            short_path = "%s/%s" % (output_.short_path, ctx.attr.path) if output_.short_path else ctx.attr.path,
         )
     else:
         root = output_
+
+    id = ctx.attr.id or runfile_path(workspace_name, root)
 
     descriptors = []
     for file in ctx.files.descriptors:
@@ -58,7 +60,7 @@ def _cjs_root_impl(ctx):
         descriptors.append(descriptor)
 
     package = create_package(
-        id = str(ctx.label),
+        id = id,
         name = name,
         label = ctx.label,
         path = root.path,
@@ -95,11 +97,11 @@ cjs_root = rule(
             allow_files = True,
             doc = "package.json descriptors",
         ),
+        "id": attr.string(),
         "package_name": attr.string(
             doc = "Package name",
         ),
-        "sealed": attr.bool(
-            doc = "Whether to add prefix",
+        "path": attr.string(
         ),
         "strip_prefix": attr.string(),
     },

@@ -5,6 +5,7 @@ def npm_import_external_rule(plugins):
     def impl(ctx):
         deps = ctx.attr.deps
         extra_deps = ctx.attr.extra_deps
+        id = ctx.attr.id
         package_name = ctx.attr.package_name
 
         ctx.download_and_extract(
@@ -51,6 +52,7 @@ def npm_import_external_rule(plugins):
         build += "\n"
 
         package = struct(
+            id = id,
             deps = deps,
             extra_deps = extra_deps,
             name = package_name,
@@ -72,6 +74,9 @@ def npm_import_external_rule(plugins):
             ),
             "extra_deps": attr.string_dict(
                 doc = "Extra dependencies.",
+            ),
+            "id": attr.string(
+                mandatory = True,
             ),
             "package_name": attr.string(
                 mandatory = True,
@@ -114,9 +119,10 @@ def npm_import_rule(plugins):
     )
 
 def package_repo_name(name):
-    name = name.replace("@", "")
+    if name.startswith("@"):
+        name = name[len("@"):]
+    name = name.replace("@", "_")
     name = name.replace("/", "_")
-    name = name.replace("-", "_")
     return name
 
 DEFAULT_PLUGINS = [
@@ -129,10 +135,12 @@ def npm(name, packages, roots, plugins = DEFAULT_PLUGINS):
     npm_import = npm_import_rule(plugins)
 
     for package in packages:
+        repo_name = package_repo_name(package["id"])
         npm_import_external(
-            name = "%s_%s" % (name, package_repo_name(package["id"])),
+            name = "%s_%s" % (name, repo_name),
             package_name = package["name"],
             deps = ["%s_%s" % (name, package_repo_name(dep["dep"])) for dep in package["deps"]],
+            id = "%s_%s" % (name, repo_name),
             extra_deps = {n: "%s_%s" % (name, package_repo_name(id)) for n, id in package.get("extra_deps", {}).items()},
             urls = [package["url"]],
             integrity = package["integrity"] if "integrity" in package and not package["integrity"].startswith("sha1-") else None,

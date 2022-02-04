@@ -19,7 +19,7 @@ def configure_angular_compiler(name, core, compiler_cli, ts, tslib, reflect_meta
         name = "%s.root" % name,
         package_name = "@better-rules-javascript/angular-js-compiler",
         descriptors = ["@better_rules_javascript//angular/js-compiler:descriptors"],
-        sealed = True,
+        path = "%s.root" % name,
         strip_prefix = "better_rules_javascript/angular/js-compiler",
         visibility = ["//visibility:private"],
     )
@@ -105,6 +105,7 @@ def _angular_library(ctx):
 
     declarations = []
     inputs = []
+    ts = []
     js = []
     js_srcs = []
     outputs = []
@@ -231,6 +232,7 @@ def _angular_library(ctx):
                 output = ts_,
             )
         inputs.append(ts_)
+        ts.append(ts_)
         js_srcs.append(ts_)
 
         if not is_declaration(path):
@@ -335,6 +337,7 @@ def _angular_library(ctx):
         args.add("--declaration-dir", declaration_root)
         args.add("--root-dir", src_root)
         args.add("--type-root", "%s/node_modules/@types" % cjs_info.package.path)
+        args.add_all(ts, before_each = "--file")
         args.add(tsconfig)
         actions.run(
             arguments = [args],

@@ -117,7 +117,7 @@ def configure_webpack(name, cli, webpack, dev_server, config, config_dep, global
         package_name = "@better-rules-javascript//webpack-server",
         descriptors = ["@better_rules_javascript//webpack/server:descriptors"],
         strip_prefix = "better_rules_javascript/webpack/server",
-        sealed = True,
+        path = "%s.root" % name,
         visibility = ["//visibility:private"],
     )
 

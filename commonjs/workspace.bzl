@@ -15,10 +15,12 @@ cjs_root(
     name = "root",
     descriptors = [":files"],
     package_name = {package_name},
-    sealed = True,
+    path = "root",
+    id = {package_id},
     strip_prefix = "%s/root" % repository_name()[1:],
 )
     """.strip().format(
+        package_id = json.encode(package.id),
         package_name = json.encode(package.name),
     )
 
