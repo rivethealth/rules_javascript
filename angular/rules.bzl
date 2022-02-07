@@ -21,6 +21,7 @@ def configure_angular_compiler(name, core, compiler_cli, ts, tslib, reflect_meta
         descriptors = ["@better_rules_javascript//angular/js-compiler:descriptors"],
         path = "%s.root" % name,
         strip_prefix = "/angular/js-compiler",
+        prefix = "%s.root" % name,
         visibility = ["//visibility:private"],
     )
 

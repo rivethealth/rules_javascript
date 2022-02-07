@@ -26,6 +26,7 @@ def _cjs_root_impl(ctx):
     actions = ctx.actions
     label = ctx.label
     name = ctx.attr.package_name or _default_package_name(ctx)
+    prefix = ctx.attr.prefix
     strip_prefix = ctx.attr.strip_prefix
     output_ = output(ctx.label, actions)
     workspace_name = ctx.workspace_name
@@ -45,6 +46,7 @@ def _cjs_root_impl(ctx):
         path = output_name(
             file = file,
             label = label,
+            prefix = prefix,
             strip_prefix = strip_prefix,
         )
         if file.path == "%s/%s" % (output_.path, path):
@@ -101,6 +103,7 @@ cjs_root = rule(
         ),
         "path": attr.string(
         ),
+        "prefix": attr.string(),
         "strip_prefix": attr.string(),
     },
 )

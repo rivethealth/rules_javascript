@@ -12,6 +12,7 @@ def configure_prettier(name, dep, config, config_dep, plugins = [], visibility =
         package_name = "@better-rules-javascript/prettier-format",
         descriptors = ["@better_rules_javascript//prettier/format:descriptors"],
         path = "%s.root" % name,
+        prefix = "%s.root" % name,
         strip_prefix = "/prettier/format",
         visibility = ["//visibility:private"],
     )
