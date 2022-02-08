@@ -42,9 +42,15 @@ interface Args {
     buffer?: string | Buffer,
   ) => Promise<void> = promisify(tar.entry).bind(tar);
   const copyFile = async (name: string, path: string) => {
-    const content = fs.readFileSync(path);
-    const stat = fs.statSync(path);
-    await write({ name, mode: stat.mode }, content);
+    const stat = await fs.promises.stat(path);
+    if (stat.isDirectory()) {
+      for (const child of await fs.promises.readdir(path)) {
+        await copyFile(`${name}/${child}`, `${path}/${child}`);
+      }
+    } else {
+      const content = fs.readFileSync(path);
+      await write({ name, mode: stat.mode }, content);
+    }
   };
 
   const packagePathName = (id: string): string =>
