@@ -11,8 +11,6 @@ import { formatDiagnostics } from "./diagnostic";
 interface JsArgs {
   config: string;
   manifest: string;
-  map: string;
-  js: string;
   src: string;
 }
 
@@ -28,8 +26,6 @@ export class JsWorker {
   constructor(private readonly vfs: WrapperVfs) {
     this.parser.add_argument("--config", { required: true });
     this.parser.add_argument("--manifest", { required: true });
-    this.parser.add_argument("--map", { required: true });
-    this.parser.add_argument("--js", { required: true });
     this.parser.add_argument("src");
   }
 
@@ -38,7 +34,7 @@ export class JsWorker {
   private parseConfig(config: string) {
     const parsed = ts.getParsedCommandLineOfConfigFile(
       config,
-      {},
+      { files: [] },
       {
         ...ts.sys,
         onUnRecoverableConfigFileDiagnostic: (error) => {
@@ -64,26 +60,72 @@ export class JsWorker {
     this.vfs.delegate = vfs;
   }
 
-  run(a: string[]) {
+  async run(a: string[]) {
     const args: JsArgs = this.parser.parse_args(a);
 
     this.setupVfs(args.manifest);
 
     const options = this.parseConfig(args.config);
+    await fs.promises.mkdir(options.outDir, { recursive: true });
 
-    const input = fs.readFileSync(args.src, "utf8");
-    const result = ts.transpileModule(input, {
-      fileName: path.relative(path.dirname(args.map), args.src),
-      compilerOptions: options,
-    });
-    if (result.diagnostics.length) {
-      throw new JsWorkerError(formatDiagnostics(result.diagnostics));
-    }
+    await (async function process(src: string): Promise<void> {
+      const stat = await fs.promises.stat(src);
 
-    fs.mkdirSync(path.dirname(args.js), { recursive: true });
-    fs.writeFileSync(args.js, result.outputText, "utf8");
+      if (stat.isDirectory()) {
+        for (const child of await fs.promises.readdir(src)) {
+          await process(path.join(src, child));
+        }
+      } else {
+        await transpileFile(src, options);
+      }
+    })(args.src);
+  }
+}
 
-    fs.mkdirSync(path.dirname(args.map), { recursive: true });
-    fs.writeFileSync(args.map, result.sourceMapText, "utf8");
+async function transpileFile(src: string, options: ts.CompilerOptions) {
+  let name: string;
+  const resolvedSrc = path.resolve(src);
+  if (resolvedSrc === options.rootDir) {
+    name = "";
+  } else if (resolvedSrc.startsWith(`${options.rootDir}/`)) {
+    name = resolvedSrc.slice(`${options.rootDir}/`.length);
+  } else {
+    throw new Error(`File ${resolvedSrc} not in ${options.rootDir}`);
+  }
+
+  const outputPath = outputName(
+    name ? path.join(options.outDir, name) : options.outDir,
+  );
+
+  const input = fs.readFileSync(src, "utf8");
+  const result = ts.transpileModule(input, {
+    fileName: path.relative(path.dirname(outputPath), src),
+    compilerOptions: options,
+  });
+  if (result.diagnostics.length) {
+    throw new JsWorkerError(formatDiagnostics(result.diagnostics));
+  }
+
+  await fs.promises.mkdir(path.dirname(outputPath), { recursive: true });
+  await fs.promises.writeFile(outputPath, result.outputText, "utf8");
+  await fs.promises.writeFile(
+    `${outputPath}.map`,
+    result.sourceMapText,
+    "utf8",
+  );
+}
+
+function outputName(path: string): string | undefined {
+  if (path.endsWith(".cts")) {
+    return path.slice(0, -".cts".length) + ".cjs";
+  }
+  if (path.endsWith(".ts")) {
+    return path.slice(0, -".ts".length) + ".js";
+  }
+  if (path.endsWith(".tsx")) {
+    return path.slice(0, -".tsx".length) + ".jsx";
+  }
+  if (path.endsWith(".mts")) {
+    return path.slice(0, -".mts".length) + ".mjs";
   }
 }

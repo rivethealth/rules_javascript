@@ -1,6 +1,6 @@
 load("@bazel_skylib//lib:paths.bzl", "paths")
 load("@bazel_skylib//rules:common_settings.bzl", "BuildSettingInfo")
-load("//commonjs:providers.bzl", "CjsEntries", "CjsInfo", "create_dep", "create_global", "create_package", "gen_manifest", "output_root", "package_path")
+load("//commonjs:providers.bzl", "CjsEntries", "CjsInfo", "create_dep", "create_global", "create_package", "gen_manifest", "package_path")
 load("//commonjs:rules.bzl", "cjs_root")
 load("//nodejs:rules.bzl", "nodejs_binary")
 load("//javascript:providers.bzl", "JsInfo", js_create_deps = "create_deps", js_create_extra_deps = "create_extra_deps", js_target_deps = "target_deps")
@@ -179,16 +179,13 @@ def _ts_library_impl(ctx):
     tsconfig_info = ctx.attr.config[TsconfigInfo] if ctx.attr.config else None
     workspace_name = ctx.workspace_name
 
-    src_root = output_root(root = cjs_info.package, package_output = output_, prefix = src_prefix)
-    js_root = output_root(root = cjs_info.package, package_output = output_, prefix = js_prefix)
-
-    transpile_tsconfig = actions.declare_file("%s/js-tsconfig.json" % ctx.attr.name)
+    transpile_tsconfig = actions.declare_file("%s.js-tsconfig.json" % ctx.attr.name)
     args = actions.args()
     if tsconfig_info:
         args.add("--config", tsconfig_info.file)
     args.add("--module", module)
-    args.add("--out-dir", js_root)
-    args.add("--root-dir", src_root)
+    args.add("--out-dir", "%s/%s" % (output_.path, js_prefix) if js_prefix else output_.path)
+    args.add("--root-dir", "%s/%s" % (output_.path, src_prefix) if src_prefix else output_.path)
     args.add("--target", target)
     args.add(transpile_tsconfig)
     actions.run(
@@ -198,7 +195,7 @@ def _ts_library_impl(ctx):
         outputs = [transpile_tsconfig],
     )
 
-    transpile_package_manifest = actions.declare_file("%s/js-package-manifest.json" % ctx.attr.name)
+    transpile_package_manifest = actions.declare_file("%s.js-package-manifest.json" % ctx.attr.name)
     gen_manifest(
         actions = actions,
         manifest_bin = ctx.attr._manifest[DefaultInfo],
@@ -250,13 +247,7 @@ def _ts_library_impl(ctx):
                 prefix = declaration_prefix,
                 strip_prefix = strip_prefix,
             )
-            if is_directory(file.path):
-                js_ = actions.declare_directory(js_path_)
-                js.append(js_)
-                declaration = actions.declare_directory(declaration_path_)
-                declarations.append(declaration)
-                outputs.append(declaration)
-            elif is_json(path):
+            if is_json(path):
                 if path == js_path_:
                     js_ = ts_
                 else:
@@ -265,20 +256,29 @@ def _ts_library_impl(ctx):
                 js.append(js_)
                 declarations.append(js_)
             else:
-                js_ = actions.declare_file(js_path(js_path_))
-                js.append(js_)
-                map = actions.declare_file(map_path(js_path(js_path_)))
-                js_srcs.append(map)
-                declaration = actions.declare_file(declaration_path(declaration_path_))
-                declarations.append(declaration)
-                outputs.append(declaration)
+                js_outputs = []
+                if is_directory(file.path):
+                    js_ = actions.declare_directory(js_path_)
+                    js.append(js_)
+                    js_outputs.append(js_)
+                    declaration = actions.declare_directory(declaration_path_)
+                    declarations.append(declaration)
+                    outputs.append(declaration)
+                else:
+                    js_ = actions.declare_file(js_path(js_path_))
+                    js.append(js_)
+                    js_outputs.append(js_)
+                    map = actions.declare_file(map_path(js_path(js_path_)))
+                    js_srcs.append(map)
+                    js_outputs.append(map)
+                    declaration = actions.declare_file(declaration_path(declaration_path_))
+                    declarations.append(declaration)
+                    outputs.append(declaration)
 
                 args = actions.args()
                 args.add("--config", transpile_tsconfig)
                 args.add("--manifest", transpile_package_manifest)
-                args.add("--js", js_)
-                args.add("--map", map)
-                args.add(ts_)
+                args.add(ts_.path)
                 args.set_param_file_format("multiline")
                 args.use_param_file("@%s", use_always = True)
                 actions.run(
@@ -291,7 +291,7 @@ def _ts_library_impl(ctx):
                     ),
                     progress_message = "Transpiling %s to JavaScript" % file.path,
                     mnemonic = "TypeScriptTranspile",
-                    outputs = [js_, map],
+                    outputs = js_outputs,
                     tools = [compiler.transpile_bin.files_to_run],
                 )
 
@@ -308,17 +308,15 @@ def _ts_library_impl(ctx):
     # compile
     if outputs:
         # create tsconfig
-        tsconfig = actions.declare_file("%s/tsconfig.json" % ctx.attr.name)
+        tsconfig = actions.declare_file("%s.tsconfig.json" % ctx.attr.name)
         args = actions.args()
         if tsconfig_info:
             args.add("--config", tsconfig_info.file)
-        declaration_root = output_root(root = cjs_info.package, package_output = output_, prefix = declaration_prefix)
-        args.add("--declaration-dir", declaration_root)
+        args.add("--declaration-dir", "%s/%s" % (output_.path, declaration_prefix) if declaration_prefix else output_.path)
         args.add("--module", module)
-        args.add("--root-dir", src_root)
+        args.add("--root-dir", "%s/%s" % (output_.path, src_prefix) if src_prefix else output_.path)
         args.add("--target", target)
         args.add("--type-root", ("%s/node_modules/@types") % cjs_info.package.path)
-        args.add_all(inputs, before_each = "--file")
         args.add(tsconfig)
         actions.run(
             arguments = [args],
@@ -327,7 +325,7 @@ def _ts_library_impl(ctx):
             outputs = [tsconfig],
         )
 
-        package_manifest = actions.declare_file("%s/package-manifest.json" % ctx.attr.name)
+        package_manifest = actions.declare_file("%s.package-manifest.json" % ctx.attr.name)
         gen_manifest(
             actions = actions,
             manifest_bin = ctx.attr._manifest[DefaultInfo],

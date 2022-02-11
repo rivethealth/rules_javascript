@@ -1,6 +1,6 @@
 load("@rules_file//util:path.bzl", "runfile_path")
 load("@bazel_skylib//rules:common_settings.bzl", "BuildSettingInfo")
-load("//commonjs:providers.bzl", "CjsEntries", "CjsInfo", "create_dep", "create_global", "create_package", "gen_manifest", "output_root", "package_path")
+load("//commonjs:providers.bzl", "CjsEntries", "CjsInfo", "create_dep", "create_global", "create_package", "gen_manifest", "package_path")
 load("//commonjs:rules.bzl", "cjs_root")
 load("//javascript:providers.bzl", "JsInfo", js_create_deps = "create_deps", js_target_deps = "target_deps")
 load("//util:path.bzl", "output", "output_name")
@@ -109,7 +109,6 @@ def _angular_library(ctx):
 
     declarations = []
     inputs = []
-    ts = []
     js = []
     js_srcs = []
     outputs = []
@@ -198,8 +197,8 @@ def _angular_library(ctx):
         if ctx.attr.config:
             args.add("--config", tsconfig_info.file)
         args.add("--module", module)
-        args.add("--out-dir", cjs_info.package.path)
-        args.add("--root-dir", cjs_info.package.path)
+        args.add("--out-dir", "%s/%s" % (output_.path, js_prefix) if js_prefix else output_.path)
+        args.add("--root-dir", "%s/%s" % (output_.path, src_prefix) if src_prefix else output_.path)
         args.add(tsconfig)
         actions.run(
             arguments = [args],
@@ -230,7 +229,6 @@ def _angular_library(ctx):
                 output = ts_,
             )
         inputs.append(ts_)
-        ts.append(ts_)
         js_srcs.append(ts_)
 
         if not is_declaration(path):
@@ -246,7 +244,7 @@ def _angular_library(ctx):
                 prefix = declaration_prefix,
                 strip_prefix = strip_prefix,
             )
-            if is_directory(file.path):
+            if file.is_directory:
                 js_ = actions.declare_directory(js_path_)
                 js.append(js_)
                 declaration = actions.declare_directory(declaration_path_)
@@ -307,31 +305,14 @@ def _angular_library(ctx):
     # compile
     if outputs:
         # create tsconfig
-        js_root = output_root(
-            root = cjs_info.package,
-            package_output = output_,
-            prefix = js_prefix,
-        )
-        src_root = output_root(
-            root = cjs_info.package,
-            package_output = output_,
-            prefix = src_prefix,
-        )
-        declaration_root = output_root(
-            root = cjs_info.package,
-            package_output = output_,
-            prefix = declaration_prefix,
-        )
-
         tsconfig = actions.declare_file("%s.tsconfig.json" % ctx.attr.name)
         args = actions.args()
         if ctx.attr.config:
             args.add("--config", tsconfig_info.file)
-        args.add("--out-dir", js_root)
-        args.add("--declaration-dir", declaration_root)
-        args.add("--root-dir", src_root)
+        args.add("--out-dir", "%s/%s" % (output_.path, js_prefix) if js_prefix else output_.path)
+        args.add("--declaration-dir", "%s/%s" % (output_.path, declaration_prefix) if declaration_prefix else output_.path)
+        args.add("--root-dir", "%s/%s" % (output_.path, src_prefix) if src_prefix else output_.path)
         args.add("--type-root", "%s/node_modules/@types" % cjs_info.package.path)
-        args.add_all(ts, before_each = "--file")
         args.add(tsconfig)
         actions.run(
             arguments = [args],

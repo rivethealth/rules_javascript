@@ -115,13 +115,6 @@ def gen_manifest(actions, manifest_bin, manifest, packages, deps, globals, packa
 def _output_name(root, package_output, prefix):
     path = prefix
 
-def output_root(root, package_output, prefix):
-    if root.path.startswith(package_output.path + "/"):
-        return "%s/%s" % (root.path, prefix) if prefix else root.path
-    elif root.path != package_output.path:
-        fail("Output %s cannot write to %s" % (package_output.path, root))
-    return root.path
-
 def package_path(package):
     return package.path
 

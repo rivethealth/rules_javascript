@@ -1847,7 +1847,7 @@ workerMain(async () => {
     const worker$1 = new JsWorker(vfs);
     return async (a) => {
         try {
-            worker$1.run(a);
+            await worker$1.run(a);
         }
         catch (e) {
             if (e instanceof JsWorkerError) {
@@ -2153,12 +2153,10 @@ class JsWorker {
         this.parser = new JsArgumentParser();
         this.parser.add_argument("--config", { required: true });
         this.parser.add_argument("--manifest", { required: true });
-        this.parser.add_argument("--map", { required: true });
-        this.parser.add_argument("--js", { required: true });
         this.parser.add_argument("src");
     }
     parseConfig(config) {
-        const parsed = ts__namespace.getParsedCommandLineOfConfigFile(config, {}, {
+        const parsed = ts__namespace.getParsedCommandLineOfConfigFile(config, { files: [] }, {
             ...ts__namespace.sys,
             onUnRecoverableConfigFileDiagnostic: (error) => {
                 throw new JsWorkerError(formatDiagnostics([error]));
@@ -2175,22 +2173,61 @@ class JsWorker {
         const vfs = createVfs(packageTree, false);
         this.vfs.delegate = vfs;
     }
-    run(a) {
+    async run(a) {
         const args = this.parser.parse_args(a);
         this.setupVfs(args.manifest);
         const options = this.parseConfig(args.config);
-        const input = fs__namespace.readFileSync(args.src, "utf8");
-        const result = ts__namespace.transpileModule(input, {
-            fileName: path__namespace.relative(path__namespace.dirname(args.map), args.src),
-            compilerOptions: options,
-        });
-        if (result.diagnostics.length) {
-            throw new JsWorkerError(formatDiagnostics(result.diagnostics));
-        }
-        fs__namespace.mkdirSync(path__namespace.dirname(args.js), { recursive: true });
-        fs__namespace.writeFileSync(args.js, result.outputText, "utf8");
-        fs__namespace.mkdirSync(path__namespace.dirname(args.map), { recursive: true });
-        fs__namespace.writeFileSync(args.map, result.sourceMapText, "utf8");
+        await fs__namespace.promises.mkdir(options.outDir, { recursive: true });
+        await (async function process(src) {
+            const stat = await fs__namespace.promises.stat(src);
+            if (stat.isDirectory()) {
+                for (const child of await fs__namespace.promises.readdir(src)) {
+                    await process(path__namespace.join(src, child));
+                }
+            }
+            else {
+                await transpileFile(src, options);
+            }
+        })(args.src);
+    }
+}
+async function transpileFile(src, options) {
+    let name;
+    const resolvedSrc = path__namespace.resolve(src);
+    if (resolvedSrc === options.rootDir) {
+        name = "";
+    }
+    else if (resolvedSrc.startsWith(`${options.rootDir}/`)) {
+        name = resolvedSrc.slice(`${options.rootDir}/`.length);
+    }
+    else {
+        throw new Error(`File ${resolvedSrc} not in ${options.rootDir}`);
+    }
+    const outputPath = outputName(name ? path__namespace.join(options.outDir, name) : options.outDir);
+    const input = fs__namespace.readFileSync(src, "utf8");
+    const result = ts__namespace.transpileModule(input, {
+        fileName: path__namespace.relative(path__namespace.dirname(outputPath), src),
+        compilerOptions: options,
+    });
+    if (result.diagnostics.length) {
+        throw new JsWorkerError(formatDiagnostics(result.diagnostics));
+    }
+    await fs__namespace.promises.mkdir(path__namespace.dirname(outputPath), { recursive: true });
+    await fs__namespace.promises.writeFile(outputPath, result.outputText, "utf8");
+    await fs__namespace.promises.writeFile(`${outputPath}.map`, result.sourceMapText, "utf8");
+}
+function outputName(path) {
+    if (path.endsWith(".cts")) {
+        return path.slice(0, -".cts".length) + ".cjs";
+    }
+    if (path.endsWith(".ts")) {
+        return path.slice(0, -".ts".length) + ".js";
+    }
+    if (path.endsWith(".tsx")) {
+        return path.slice(0, -".tsx".length) + ".jsx";
+    }
+    if (path.endsWith(".mts")) {
+        return path.slice(0, -".mts".length) + ".mjs";
     }
 }
 

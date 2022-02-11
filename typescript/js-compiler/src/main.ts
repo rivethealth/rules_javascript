@@ -12,7 +12,7 @@ workerMain(async () => {
   const worker = new JsWorker(vfs);
   return async (a) => {
     try {
-      worker.run(a);
+      await worker.run(a);
     } catch (e) {
       if (e instanceof JsWorkerError) {
         return { exitCode: 2, output: e.message };

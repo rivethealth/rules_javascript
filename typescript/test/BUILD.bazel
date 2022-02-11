@@ -32,6 +32,13 @@ sh_test(
 )
 
 sh_test(
+    name = "directory",
+    srcs = ["test_directory.sh"],
+    data = [":bazel"],
+    tags = ["local"],
+)
+
+sh_test(
     name = "tslib",
     srcs = ["test_tslib.sh"],
     data = [":bazel"],
