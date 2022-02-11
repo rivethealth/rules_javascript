@@ -165,7 +165,8 @@ def _angular_library(ctx):
         if tsconfig_info:
             args.add("--config", tsconfig_info.file)
         args.add("--module", module)
-        args.add("--out-dir", "/dummy")  # force source maps
+        args.add("--out-dir", "%s/%s" % (output_.path, js_prefix) if js_prefix else output_.path)
+        args.add("--root-dir", "%s/%s" % (output_.path, src_prefix) if src_prefix else output_.path)
         args.add(transpile_tsconfig)
         actions.run(
             arguments = [args],

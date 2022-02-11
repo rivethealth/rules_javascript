@@ -10,7 +10,7 @@ const parser = new ArgumentParser({
 parser.add_argument("--config");
 parser.add_argument("--declaration-dir", { dest: "declarationDir" });
 parser.add_argument("--module");
-parser.add_argument("--root-dir", { dest: "rootDir" });
+parser.add_argument("--root-dir", { dest: "rootDir", required: true });
 parser.add_argument("--root-dirs", {
   action: "append",
   dest: "rootDirs",
@@ -29,7 +29,7 @@ interface Args {
   config?: string;
   declarationDir?: string;
   module?: string;
-  rootDir?: string;
+  rootDir: string;
   rootDirs: string[];
   outDir?: string;
   target?: string;
@@ -55,6 +55,9 @@ interface Args {
       typeRoots: args.typeRoots.map(relative),
     },
   };
+  tsconfig.compilerOptions.rootDir = relative(args.rootDir);
+  tsconfig.include = [`${tsconfig.compilerOptions.rootDir}/**/*`];
+  tsconfig.exclude = [];
 
   if (args.module) {
     tsconfig.compilerOptions.module = args.module;
@@ -72,12 +75,6 @@ interface Args {
     if (!args.outDir) {
       tsconfig.compilerOptions.emitDeclarationOnly = true;
     }
-  }
-
-  if (args.rootDir) {
-    tsconfig.compilerOptions.rootDir = relative(args.rootDir);
-    tsconfig.include = [`${tsconfig.compilerOptions.rootDir}/**/*`];
-    tsconfig.exclude = [];
   }
 
   if (args.outDir) {

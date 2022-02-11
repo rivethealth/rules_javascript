@@ -196,7 +196,7 @@ const parser = new argparse.ArgumentParser({
 parser.add_argument("--config");
 parser.add_argument("--declaration-dir", { dest: "declarationDir" });
 parser.add_argument("--module");
-parser.add_argument("--root-dir", { dest: "rootDir" });
+parser.add_argument("--root-dir", { dest: "rootDir", required: true });
 parser.add_argument("--root-dirs", {
     action: "append",
     dest: "rootDirs",
@@ -226,6 +226,9 @@ parser.add_argument("output");
             typeRoots: args.typeRoots.map(relative),
         },
     };
+    tsconfig.compilerOptions.rootDir = relative(args.rootDir);
+    tsconfig.include = [`${tsconfig.compilerOptions.rootDir}/**/*`];
+    tsconfig.exclude = [];
     if (args.module) {
         tsconfig.compilerOptions.module = args.module;
     }
@@ -238,13 +241,6 @@ parser.add_argument("output");
         if (!args.outDir) {
             tsconfig.compilerOptions.emitDeclarationOnly = true;
         }
-    }
-    if (args.rootDir) {
-        tsconfig.compilerOptions.rootDir = relative(args.rootDir);
-        tsconfig.include = [
-            `${tsconfig.compilerOptions.rootDir}/**/*`,
-        ];
-        tsconfig.exclude = [];
     }
     if (args.outDir) {
         tsconfig.compilerOptions.outDir = relative(args.outDir);
