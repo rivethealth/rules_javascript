@@ -285,7 +285,7 @@ def _nodejs_binary_archive_impl(ctx):
     manifest = ctx.attr._manifest[DefaultInfo]
     js_globals = [dep[JsInfo] for dep in ctx.attr.global_deps]
     archive_runner = ctx.file._archive_runner
-    js_info = ctx.attr.dep[JsInfo]
+    js_info = ctx.attr.dep[0][JsInfo]
     deps = [js_info] + js_globals
 
     transitive_deps = depset(
