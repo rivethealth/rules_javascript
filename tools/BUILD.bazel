@@ -1,6 +1,7 @@
 load("@rules_file//buildifier:rules.bzl", "buildifier")
 load("@rules_file//generate:rules.bzl", "format", "generate_test", "multi_generate")
 load("//eslint:rules.bzl", "configure_eslint")
+load("//nodejs:rules.bzl", "nodejs_install")
 load("//prettier:rules.bzl", "configure_prettier")
 load("//npm:rules.bzl", "yarn_resolve")
 
@@ -76,15 +77,15 @@ multi_generate(
     ],
 )
 
-sh_binary(
-    name = "install_npm",
-    srcs = ["install-npm.sh"],
-    data = [":install_npm_data"],
+nodejs_install(
+    name = "install_node_modules0",
+    archive = "//:nodejs_archive",
 )
 
-filegroup(
-    name = "install_npm_data",
-    srcs = ["//:nodejs_archive"],
+sh_binary(
+    name = "install_node_modules",
+    srcs = ["install-node-modules.sh"],
+    data = [":install_node_modules0"],
 )
 
 alias(

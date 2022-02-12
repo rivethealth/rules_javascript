@@ -5,6 +5,7 @@ cjs_root(
     name = "root",
     package_name = "@better-rules-javascript/ibazel-notification",
     descriptors = ["package.json"],
+    visibility = ["//visibility:public"],
 )
 
 tsconfig(

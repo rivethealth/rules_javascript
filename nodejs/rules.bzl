@@ -1,5 +1,5 @@
 load("@bazel_skylib//lib:shell.bzl", "shell")
-load("//commonjs:providers.bzl", "CjsEntries", "create_dep", "create_global", "create_package", "gen_manifest", "package_path")
+load("//commonjs:providers.bzl", "CjsEntries", "CjsInfo", "create_dep", "create_global", "create_package", "gen_manifest", "package_path")
 load("//javascript:providers.bzl", "JsInfo")
 load("//util:path.bzl", "output", "runfile_path")
 load(":providers.bzl", "NODE_MODULES_PREFIX", "modules_links", "package_path_name")
@@ -193,6 +193,7 @@ def _nodejs_archive_impl(ctx):
     archive_linker = ctx.attr._archive_linker[DefaultInfo]
     manifest = ctx.attr._manifest[DefaultInfo]
     deps = [dep[CjsEntries] for dep in ctx.attr.deps]
+    links = [dep[CjsInfo] for dep in ctx.attr.links]
     name = ctx.attr.name
 
     package = create_package(
@@ -206,6 +207,9 @@ def _nodejs_archive_impl(ctx):
     package_deps = [
         create_dep(id = "_", dep = dep[CjsEntries].package.id, name = dep[CjsEntries].name, label = dep.label)
         for dep in ctx.attr.deps
+    ] + [
+        create_dep(id = "_", dep = dep[CjsInfo].package.id, name = dep[CjsInfo].name, label = dep.label)
+        for dep in ctx.attr.links
     ]
 
     transitive_deps = depset(
@@ -216,7 +220,7 @@ def _nodejs_archive_impl(ctx):
         transitive = [cjs_entries.transitive_files for cjs_entries in deps],
     )
     transitive_packages = depset(
-        [package],
+        [package] + [dep.package for dep in links],
         transitive = [cjs_entries.transitive_packages for cjs_entries in deps],
     )
 
@@ -236,6 +240,9 @@ def _nodejs_archive_impl(ctx):
     args = actions.args()
     args.use_param_file("@%s")
     args.set_param_file_format("multiline")
+    for dep in links:
+        args.add("--link", dep.package.id)
+        args.add("../%s" % dep.package.short_path)
     args.add("--manifest", package_manifest)
     args.add("--root", "_")
     args.add("--output", archive)
@@ -259,6 +266,10 @@ nodejs_archive = rule(
             cfg = _nodejs_transition,
             providers = [CjsEntries],
         ),
+        "links": attr.label_list(
+            cfg = _nodejs_transition,
+            providers = [CjsInfo],
+        ),
         "_allowlist_function_transition": attr.label(
             default = "@bazel_tools//tools/allowlists/function_transition_allowlist",
         ),
@@ -274,6 +285,57 @@ nodejs_archive = rule(
         ),
     },
     implementation = _nodejs_archive_impl,
+)
+
+def _nodejs_install_impl(ctx):
+    actions = ctx.actions
+    archive = ctx.file.archive
+    bash_runfiles = ctx.attr._bash_runfiles[DefaultInfo]
+    name = ctx.attr.name
+    path = ctx.attr.path
+    runner = ctx.file._runner
+    workspace_name = ctx.workspace_name
+
+    bin = actions.declare_file(name)
+    node_modules = "%s/node_modules" % path if path else "node_modules"
+    actions.expand_template(
+        template = runner,
+        output = bin,
+        substitutions = {
+            "%{archive}": shell.quote(runfile_path(workspace_name, archive)),
+            "%{path}": shell.quote(node_modules),
+        },
+        is_executable = True,
+    )
+
+    runfiles = ctx.runfiles(files = [archive])
+    runfiles = runfiles.merge(bash_runfiles.default_runfiles)
+    default_info = DefaultInfo(
+        executable = bin,
+        runfiles = runfiles,
+    )
+
+    return [default_info]
+
+nodejs_install = rule(
+    attrs = {
+        "_bash_runfiles": attr.label(
+            default = "@bazel_tools//tools/bash/runfiles",
+        ),
+        "_runner": attr.label(
+            allow_single_file = True,
+            default = ":install_runner",
+        ),
+        "archive": attr.label(
+            allow_single_file = [".tar"],
+            mandatory = True,
+        ),
+        "path": attr.label(
+            doc = "Path from root of workspace",
+        ),
+    },
+    executable = True,
+    implementation = _nodejs_install_impl,
 )
 
 def _nodejs_binary_archive_impl(ctx):

@@ -18,6 +18,7 @@ cjs_root(
     name = "root",
     package_name = "@better-rules-javascript/webpack-config",
     descriptors = ["package.json"],
+    visibility = ["//visibility:public"],
 )
 
 tsconfig(

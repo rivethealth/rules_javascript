@@ -11,6 +11,7 @@ interface Args {
   manifest: string;
   output: string;
   root?: string;
+  links: [string, string][];
   files: string[];
 }
 
@@ -20,6 +21,12 @@ interface Args {
     fromfile_prefix_chars: "@",
   });
   parser.add_argument("--bin");
+  parser.add_argument("--link", {
+    default: [],
+    action: "append",
+    dest: "links",
+    nargs: 2,
+  });
   parser.add_argument("--manifest", { required: true });
   parser.add_argument("--output", { required: true });
   parser.add_argument("--root", { help: "Root package ID" });
@@ -37,10 +44,12 @@ interface Args {
 
   const tar = tarStream.pack();
   tar.pipe(output);
+
   const write: (
     headers: tarStream.Headers,
     buffer?: string | Buffer,
   ) => Promise<void> = promisify(tar.entry).bind(tar);
+
   const copyFile = async (name: string, path: string) => {
     const stat = await fs.promises.stat(path);
     if (stat.isDirectory()) {
@@ -53,6 +62,8 @@ interface Args {
     }
   };
 
+  const linkPaths = new Map(args.links);
+
   const packagePathName = (id: string): string =>
     (args.root || "") +
     id.replace(/@/g, "").replace(/:/g, "_").replace(/\//g, "_");
@@ -62,6 +73,13 @@ interface Args {
     packagesByPath.set(package_.path, id);
 
     const packagePath = packagePathName(id);
+
+    const linkPath = linkPaths.get(id);
+    if (linkPath !== undefined) {
+      console.log("LINK", packagePath, linkPath);
+      await write({ type: "symlink", name: packagePath, linkname: linkPath });
+      continue;
+    }
     if (id !== args.root) {
       await write({ type: "directory", name: packagePath });
     }
@@ -88,10 +106,12 @@ interface Args {
       const path = parts.slice(0, i).join("/");
       const packageId = packagesByPath.get(path);
       if (packageId !== undefined) {
-        await copyFile(
-          `${packagePathName(packageId)}/${parts.slice(i).join("/")}`,
-          file,
-        );
+        if (!linkPaths.has(packageId)) {
+          await copyFile(
+            `${packagePathName(packageId)}/${parts.slice(i).join("/")}`,
+            file,
+          );
+        }
         break;
       }
     }

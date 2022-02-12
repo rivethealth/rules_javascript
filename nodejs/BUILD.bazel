@@ -10,6 +10,11 @@ filegroup(
 )
 
 filegroup(
+    name = "install_runner",
+    srcs = ["install-runner.sh.tpl"],
+)
+
+filegroup(
     name = "simple_runner",
     srcs = ["simple-runner.sh.tpl"],
 )

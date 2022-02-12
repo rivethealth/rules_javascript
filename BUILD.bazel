@@ -13,6 +13,18 @@ js_library(
 
 nodejs_archive(
     name = "nodejs_archive",
+    links = [
+        "//angular/resource-compiler:root",
+        "//bazel/runfiles:root",
+        "//bazel/worker:root",
+        "//commonjs/package:root",
+        "//ibazel/notification:root",
+        "//nodejs/fs-linker:root",
+        "//rules:root",
+        "//util/json:root",
+        "//webpack/config:root",
+    ],
+    tags = ["no-cache"],
     deps = [
         "//bazel/worker:worker_proto_lib",
     ] + ["@better_rules_javascript_npm//%s:lib" % dep["name"] for dep in ROOTS],
