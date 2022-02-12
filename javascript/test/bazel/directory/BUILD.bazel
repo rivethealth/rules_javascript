@@ -1,7 +1,6 @@
 load("@better_rules_javascript//commonjs:rules.bzl", "cjs_root")
-load("@better_rules_javascript//files:rules.bzl", "")
 load("@better_rules_javascript//javascript:rules.bzl", "js_library")
-load("@better_rules_javascript//nodejs:rules.bzl", "nodejs_binary")
+load("@rules_file//file:rules.bzl", "directory")
 
 cjs_root(
     name = "root",
@@ -9,15 +8,15 @@ cjs_root(
     descriptors = ["package.json"],
 )
 
-js_library(
-    name = "main",
-    srcs = ["main.js"],
-    root = ":root",
-    deps = ["//dep/other:lib"],
+directory(
+    name = "src",
+    srcs = ["src/main.js"],
+    output = "src",
+    strip_prefix = "directory/src",
 )
 
-nodejs_binary(
-    name = "bin",
-    dep = ":main",
-    main = "main.js",
+js_library(
+    name = "lib",
+    srcs = [":src"],
+    root = ":root",
 )

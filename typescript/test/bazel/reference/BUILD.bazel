@@ -19,9 +19,7 @@ ts_library(
     name = "dep_lib",
     srcs = glob(["dep/**/*.ts"]),
     compiler = "//:ts",
-    prefix = "dep",
     root = ":dep_root",
-    strip_prefix = "dep",
 )
 
 ts_library(
@@ -29,9 +27,7 @@ ts_library(
     srcs = glob(["src/**/*.ts"]),
     compiler = "//:ts",
     config = ":tsconfig",
-    prefix = "src",
     root = ":root",
-    strip_prefix = "src",
     deps = [":dep_lib"],
 )
 

@@ -17,12 +17,12 @@ jest_test(
     name = "test_fail",
     config = ":jest_config",
     global_deps = [
-        "@better_rules_javascript_npm_source-map-support_0.5.21//:lib",
-        "@better_rules_javascript_npm_babel_helper-compilation-targets_7.16.3//:lib",
-        "@better_rules_javascript_npm//jest-junit:lib",
+        "@npm_source-map-support_0.5.21//:lib",
+        "@npm_babel_helper-compilation-targets_7.16.3//:lib",
+        "@npm//jest-junit:lib",
     ],
-    jest = "@better_rules_javascript_npm//jest:lib",
-    jest_haste_map = "@better_rules_javascript_npm//jest-haste-map:lib",
+    jest = "@npm//jest:lib",
+    jest_haste_map = "@npm//jest-haste-map:lib",
     deps = [":test_fail_lib"],
 )
 
@@ -44,12 +44,12 @@ jest_test(
     config = "jest.config.js",
     config_dep = ":jest_config",
     global_deps = [
-        "@better_rules_javascript_npm_source-map-support_0.5.21//:lib",
-        "@better_rules_javascript_npm_babel_helper-compilation-targets_7.16.3//:lib",
-        "@better_rules_javascript_npm//jest-junit:lib",
+        "@npm_source-map-support_0.5.21//:lib",
+        "@npm_babel_helper-compilation-targets_7.16.3//:lib",
+        "@npm//jest-junit:lib",
     ],
-    jest = "@better_rules_javascript_npm//jest:lib",
-    jest_haste_map = "@better_rules_javascript_npm//jest-haste-map:lib",
+    jest = "@npm//jest:lib",
+    jest_haste_map = "@npm//jest-haste-map:lib",
     deps = [":test_lib"],
 )
 

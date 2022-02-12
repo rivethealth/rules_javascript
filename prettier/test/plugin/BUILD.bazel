@@ -4,7 +4,7 @@ load("@rules_format//format:rules.bzl", "format")
 configure_prettier(
     name = "prettier",
     config = "prettierrc.yml",
-    dep = "@better_rules_javascript_npm//prettier:lib",
+    dep = "@npm//prettier:lib",
     plugins = ["@npm//@prettier/plugin-xml:lib"],
 )
 

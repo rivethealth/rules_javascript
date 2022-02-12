@@ -1,7 +1,7 @@
 load("//commonjs:rules.bzl", "cjs_root")
 load("//javascript:rules.bzl", "js_library")
 load("//nodejs:rules.bzl", "nodejs_archive")
-load("//rules:npm_data.bzl", "ROOTS")
+load(":npm_data.bzl", "ROOTS")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -27,7 +27,7 @@ nodejs_archive(
     tags = ["no-cache"],
     deps = [
         "//bazel/worker:worker_proto_lib",
-    ] + ["@better_rules_javascript_npm//%s:lib" % dep["name"] for dep in ROOTS],
+    ] + ["@npm//%s:lib" % dep["name"] for dep in ROOTS],
 )
 
 js_library(

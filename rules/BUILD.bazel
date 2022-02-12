@@ -1,5 +1,6 @@
 load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
 load("//commonjs:rules.bzl", "cjs_root")
+load("//npm:rules.bzl", "yarn_resolve")
 load("//ts-proto:rules.bzl", "configure_ts_protoc")
 load("//typescript:rules.bzl", "configure_ts_compiler", "tsconfig")
 
@@ -43,4 +44,10 @@ configure_ts_protoc(
         "@better_rules_javascript_npm//long:lib",
         "@better_rules_javascript_npm//protobufjs:lib",
     ],
+)
+
+yarn_resolve(
+    name = "resolve_npm",
+    output = "rules/npm_data.bzl",
+    path = "test",
 )

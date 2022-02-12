@@ -40,6 +40,6 @@ pkg_tar(
 
 nodejs_binary(
     name = "doctoc",
-    dep = "@better_rules_javascript_npm//doctoc:lib",
+    dep = "@npm//doctoc:lib",
     main = "doctoc.js",
 )

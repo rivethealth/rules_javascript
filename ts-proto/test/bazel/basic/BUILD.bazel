@@ -36,7 +36,7 @@ ts_library(
     root = ":root",
     deps = [
         ":proto_lib",
-        "@better_rules_javascript_npm//protobufjs:lib",
+        "@npm//protobufjs:lib",
     ],
 )
 

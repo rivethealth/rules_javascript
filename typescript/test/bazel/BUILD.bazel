@@ -5,11 +5,11 @@ package(default_visibility = ["//visibility:public"])
 
 configure_ts_compiler(
     name = "ts",
-    ts = "@better_rules_javascript_npm//typescript:lib",
-    tslib = "@better_rules_javascript_npm//tslib:lib",
+    ts = "@npm//typescript:lib",
+    tslib = "@npm//tslib:lib",
 )
 
 configure_ts_compiler(
     name = "ts_nolib",
-    ts = "@better_rules_javascript_npm//typescript:lib",
+    ts = "@npm//typescript:lib",
 )

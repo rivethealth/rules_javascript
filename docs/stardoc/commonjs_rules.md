@@ -22,7 +22,7 @@ cjs_descriptors(<a href="#cjs_descriptors-name">name</a>, <a href="#cjs_descript
 ## cjs_root
 
 <pre>
-cjs_root(<a href="#cjs_root-name">name</a>, <a href="#cjs_root-deps">deps</a>, <a href="#cjs_root-descriptors">descriptors</a>, <a href="#cjs_root-id">id</a>, <a href="#cjs_root-package_name">package_name</a>, <a href="#cjs_root-path">path</a>, <a href="#cjs_root-strip_prefix">strip_prefix</a>)
+cjs_root(<a href="#cjs_root-name">name</a>, <a href="#cjs_root-deps">deps</a>, <a href="#cjs_root-descriptors">descriptors</a>, <a href="#cjs_root-id">id</a>, <a href="#cjs_root-package_name">package_name</a>, <a href="#cjs_root-path">path</a>, <a href="#cjs_root-prefix">prefix</a>, <a href="#cjs_root-strip_prefix">strip_prefix</a>)
 </pre>
 
 CommonJS-style root
@@ -37,4 +37,5 @@ CommonJS-style root
 | <a id="cjs_root-id"></a>id                     | -                              | String                                                                      | optional  | ""      |
 | <a id="cjs_root-package_name"></a>package_name | Package name                   | String                                                                      | optional  | ""      |
 | <a id="cjs_root-path"></a>path                 | -                              | String                                                                      | optional  | ""      |
+| <a id="cjs_root-prefix"></a>prefix             | -                              | String                                                                      | optional  | ""      |
 | <a id="cjs_root-strip_prefix"></a>strip_prefix | -                              | String                                                                      | optional  | ""      |

@@ -28,8 +28,8 @@ angular_library(
     ],
     root = ":root",
     deps = [
-        "@better_rules_javascript_npm//@angular/common:lib",
-        "@better_rules_javascript_npm//@angular/compiler:lib",
-        "@better_rules_javascript_npm//rxjs:lib",
+        "@npm//@angular/common:lib",
+        "@npm//@angular/compiler:lib",
+        "@npm//rxjs:lib",
     ],
 )

@@ -76,7 +76,6 @@ interface Args {
 
     const linkPath = linkPaths.get(id);
     if (linkPath !== undefined) {
-      console.log("LINK", packagePath, linkPath);
       await write({ type: "symlink", name: packagePath, linkname: linkPath });
       continue;
     }

@@ -27,11 +27,11 @@ angular_library(
     resources = ["example.component.html"],
     root = ":root",
     deps = [
-        "@better_rules_javascript_npm//@angular/common:lib",
-        "@better_rules_javascript_npm//@angular/material:lib",
-        "@better_rules_javascript_npm//@angular/platform-browser:lib",
-        "@better_rules_javascript_npm//@types/node:lib",
-        "@better_rules_javascript_npm//rxjs:lib",
+        "@npm//@angular/common:lib",
+        "@npm//@angular/material:lib",
+        "@npm//@angular/platform-browser:lib",
+        "@npm//@types/node:lib",
+        "@npm//rxjs:lib",
     ],
 )
 
@@ -46,11 +46,11 @@ ts_library(
     root = ":root",
     deps = [
         ":lib",
-        "@better_rules_javascript_npm//@angular/compiler:lib",
-        "@better_rules_javascript_npm//@angular/platform-browser:lib",
-        "@better_rules_javascript_npm//@angular/platform-browser-dynamic:lib",
-        "@better_rules_javascript_npm//reflect-metadata:lib",
-        "@better_rules_javascript_npm//zone.js:lib",
+        "@npm//@angular/compiler:lib",
+        "@npm//@angular/platform-browser:lib",
+        "@npm//@angular/platform-browser-dynamic:lib",
+        "@npm//reflect-metadata:lib",
+        "@npm//zone.js:lib",
     ],
 )
 
@@ -59,10 +59,10 @@ js_library(
     srcs = ["webpack.config.mjs"],
     root = ":root",
     deps = [
-        "@better_rules_javascript_npm//@angular-devkit/build-optimizer:lib",
-        "@better_rules_javascript_npm//@angular/compiler-cli:lib",
-        "@better_rules_javascript_npm//babel-loader:lib",
-        "@better_rules_javascript_npm//webpack:lib",
+        "@npm//@angular-devkit/build-optimizer:lib",
+        "@npm//@angular/compiler-cli:lib",
+        "@npm//babel-loader:lib",
+        "@npm//webpack:lib",
     ],
 )
 
@@ -74,15 +74,15 @@ js_library(
 
 configure_webpack(
     name = "webpack",
-    cli = "@better_rules_javascript_npm//webpack-cli:lib",
+    cli = "@npm//webpack-cli:lib",
     config = "webpack.config.mjs",
     config_dep = ":webpack_config",
-    dev_server = "@better_rules_javascript_npm//webpack-dev-server:lib",
+    dev_server = "@npm//webpack-dev-server:lib",
     other_deps = [
-        "@better_rules_javascript_npm_webpack-cli_configtest_1.1.0//:lib",
-        "@better_rules_javascript_npm_babel_helper-compilation-targets_7.16.3//:lib",
+        "@npm_webpack-cli_configtest_1.1.0//:lib",
+        "@npm_babel_helper-compilation-targets_7.16.3//:lib",
     ],
-    webpack = "@better_rules_javascript_npm//webpack:lib",
+    webpack = "@npm//webpack:lib",
 )
 
 webpack_bundle(

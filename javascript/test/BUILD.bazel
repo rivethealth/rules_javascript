@@ -5,22 +5,8 @@ filegroup(
 )
 
 sh_test(
-    name = "binary",
-    srcs = ["test_binary.sh"],
-    data = [":bazel"],
-    tags = ["local"],
-)
-
-sh_test(
-    name = "dep",
-    srcs = ["test_dep.sh"],
-    data = [":bazel"],
-    tags = ["local"],
-)
-
-sh_test(
-    name = "esm",
-    srcs = ["test_esm.sh"],
+    name = "directory",
+    srcs = ["test_directory.sh"],
     data = [":bazel"],
     tags = ["local"],
 )

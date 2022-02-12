@@ -141,22 +141,6 @@ gen_manifest(<a href="#gen_manifest-actions">actions</a>, <a href="#gen_manifest
 | <a id="gen_manifest-globals"></a>globals           | <p align="center"> - </p> | none          |
 | <a id="gen_manifest-package_path"></a>package_path | <p align="center"> - </p> | none          |
 
-<a id="#output_root"></a>
-
-## output_root
-
-<pre>
-output_root(<a href="#output_root-root">root</a>, <a href="#output_root-package_output">package_output</a>, <a href="#output_root-prefix">prefix</a>)
-</pre>
-
-**PARAMETERS**
-
-| Name                                                  | Description               | Default Value |
-| :---------------------------------------------------- | :------------------------ | :------------ |
-| <a id="output_root-root"></a>root                     | <p align="center"> - </p> | none          |
-| <a id="output_root-package_output"></a>package_output | <p align="center"> - </p> | none          |
-| <a id="output_root-prefix"></a>prefix                 | <p align="center"> - </p> | none          |
-
 <a id="#package_path"></a>
 
 ## package_path

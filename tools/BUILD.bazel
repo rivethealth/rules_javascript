@@ -20,11 +20,11 @@ configure_eslint(
     name = "eslint",
     config = ".eslintrc.js",
     config_dep = "//:eslint_config",
-    dep = "@better_rules_javascript_npm//eslint:lib",
+    dep = "@npm//eslint:lib",
     plugins = [
-        "@better_rules_javascript_npm//typescript:lib",
-        "@better_rules_javascript_npm//@typescript-eslint/eslint-plugin:lib",
-        "@better_rules_javascript_npm//@typescript-eslint/parser:lib",
+        "@npm//typescript:lib",
+        "@npm//@typescript-eslint/eslint-plugin:lib",
+        "@npm//@typescript-eslint/parser:lib",
     ],
 )
 
@@ -102,7 +102,7 @@ configure_prettier(
     name = "prettier",
     config = "prettierrc.yml",
     config_dep = "//:prettier_config",
-    dep = "@better_rules_javascript_npm//prettier:lib",
+    dep = "@npm//prettier:lib",
 )
 
 format(
@@ -113,6 +113,12 @@ format(
 )
 
 yarn_resolve(
-    name = "resolve_npm",
+    name = "resolve_rules_npm",
     output = "rules/npm_data.bzl",
+    path = "rules",
+)
+
+yarn_resolve(
+    name = "resolve_npm",
+    output = "npm_data.bzl",
 )
