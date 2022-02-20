@@ -1,15 +1,15 @@
 load("@better_rules_javascript//angular:rules.bzl", "angular_library")
 load("@better_rules_javascript//commonjs:rules.bzl", "cjs_root")
-load("@better_rules_javascript//typescript:rules.bzl", "tsconfig")
+load("@better_rules_javascript//javascript:rules.bzl", "js_library")
 
 cjs_root(
     name = "root",
     package_name = "@better-rules-javascript-test/angular-replace",
 )
 
-tsconfig(
+js_library(
     name = "tsconfig",
-    src = "tsconfig.json",
+    srcs = ["tsconfig.json"],
     root = ":root",
 )
 
@@ -21,7 +21,8 @@ angular_library(
         "service.ts",
     ],
     compiler = "//:ngc",
-    config = ":tsconfig",
+    config = "tsconfig.json",
+    config_dep = ":tsconfig",
     resources = [
         "example.component.css",
         "example.component.html",

@@ -12,6 +12,17 @@ def test_repositories0():
         urls = ["https://github.com/bazelbuild/bazel-skylib/archive/%s.tar.gz" % SKYLIB_VERSION],
     )
 
+    # File
+
+    FILE_VERSION = "d97911bed8e3b90499c5daec7e5485f50c008322"
+
+    http_archive(
+        name = "rules_file",
+        sha256 = "d22158e37b0ace1d7ad6623be6b5aa31232499174a21ee1776f3a39e7e252b4c",
+        strip_prefix = "rules_file-%s" % FILE_VERSION,
+        url = "https://github.com/rivethealth/rules_file/archive/%s.tar.gz" % FILE_VERSION,
+    )
+
     # Protobuf
 
     PROTO_VERSION = "7e4afce6fe62dbff0a4a03450143146f9f2d7488"
@@ -32,15 +43,4 @@ def test_repositories0():
         sha256 = "d771584bbff98698e7cb3cb31c132ee206a972569f4dc8b65acbdd934d156b33",
         strip_prefix = "rules_proto_grpc-%s" % PROTO_GRPC_VERSION,
         urls = ["https://github.com/rules-proto-grpc/rules_proto_grpc/archive/%s.tar.gz" % PROTO_GRPC_VERSION],
-    )
-
-    # File
-
-    FILE_VERSION = "550c0019ea1af5b7bd7804162e26cd25680f210f"
-
-    http_archive(
-        name = "rules_file",
-        sha256 = "2d6264a8163ca827c3cd6b12ef8f5c02bd228b54740dfe85b883ea3c9e24a0d9",
-        strip_prefix = "rules_file-%s" % FILE_VERSION,
-        url = "https://github.com/rivethealth/rules_file/archive/%s.tar.gz" % FILE_VERSION,
     )

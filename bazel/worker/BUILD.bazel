@@ -1,6 +1,7 @@
-load("@better_rules_javascript//ts-proto:rules.bzl", "ts_proto_export")
-load("@better_rules_javascript//typescript:rules.bzl", "ts_library", "tsconfig")
 load("//commonjs:rules.bzl", "cjs_root")
+load("//javascript:rules.bzl", "js_library")
+load("//ts-proto:rules.bzl", "ts_proto_export")
+load("//typescript:rules.bzl", "ts_library")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -20,7 +21,8 @@ ts_library(
     name = "lib",
     srcs = glob(["src/**/*.ts"]),
     compiler = "//rules:tsc",
-    config = ":tsconfig",
+    config = "tsconfig.json",
+    config_dep = ":tsconfig",
     root = ":root",
     deps = [
         ":worker_proto_lib",
@@ -29,9 +31,9 @@ ts_library(
     ],
 )
 
-tsconfig(
+js_library(
     name = "tsconfig",
-    src = "tsconfig.json",
-    dep = "//rules:tsconfig",
+    srcs = ["tsconfig.json"],
     root = ":root",
+    deps = ["//rules:tsconfig"],
 )

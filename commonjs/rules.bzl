@@ -1,6 +1,6 @@
 load("@rules_file//util:path.bzl", "runfile_path")
 load("//util:path.bzl", "output", "output_name")
-load(":providers.bzl", "CjsEntries", "CjsInfo", "create_package")
+load(":providers.bzl", "CjsRootInfo", "create_package")
 
 def _default_package_name(ctx):
     workspace = ctx.label.workspace_name or ctx.workspace_name
@@ -8,17 +8,49 @@ def _default_package_name(ctx):
     return "@%s/%s" % (workspace, name)
 
 def _cjs_descriptors_impl_(ctx):
-    fail("TODO")
+    actions = ctx.actions
+    label = ctx.label
+    output_ = output(label, actions)
+    prefix = ctx.attr.prefix
+    srcs = ctx.files.srcs
+    strip_prefix = ctx.attr.strip_prefix
+
+    descriptors = []
+    for file in srcs:
+        path = output_name(
+            file = file,
+            label = label,
+            prefix = prefix,
+            strip_prefix = strip_prefix,
+        )
+        if file.path == "%s/%s" % (output_.path, path):
+            descriptors.append(file)
+        else:
+            descriptor = actions.declare_file(path)
+            actions.symlink(
+                output = descriptor,
+                target_file = file,
+            )
+
+    default_info = DefaultInfo(files = depset(descriptors))
+
+    return [default_info]
 
 cjs_descriptors = rule(
     attrs = {
         "srcs": attr.label_list(
             allow_files = [".json"],
+            doc = "Descriptors.",
             mandatory = True,
         ),
-        "prefix": attr.string(),
-        "strip_prefix": attr.string(),
+        "prefix": attr.string(
+            doc = "Prefix to add.",
+        ),
+        "strip_prefix": attr.string(
+            doc = "Package-relative prefix to remove.",
+        ),
     },
+    doc = "CommonJS descriptors.",
     implementation = _cjs_descriptors_impl_,
 )
 
@@ -39,8 +71,6 @@ def _cjs_root_impl(ctx):
     else:
         root = output_
 
-    id = ctx.attr.id or runfile_path(workspace_name, root)
-
     descriptors = []
     for file in ctx.files.descriptors:
         path = output_name(
@@ -60,48 +90,37 @@ def _cjs_root_impl(ctx):
         descriptors.append(descriptor)
 
     package = create_package(
-        id = id,
         name = name,
         label = ctx.label,
         path = root.path,
         short_path = root.short_path,
     )
-    cjs_info = CjsInfo(
+
+    cjs_root_info = CjsRootInfo(
         descriptors = descriptors,
         package = package,
         name = name,
-    )
-
-    cjs_entries = CjsEntries(
-        name = name,
-        package = package,
-        transitive_files = depset(descriptors),
-        transitive_packages = depset([package]),
-        transitive_deps = depset([]),
     )
 
     default_info = DefaultInfo(
         files = depset(descriptors),
     )
 
-    return [cjs_entries, cjs_info, default_info]
+    return [cjs_root_info, default_info]
 
 cjs_root = rule(
-    doc = "CommonJS-style root",
+    doc = "CommonJS-style package root.",
     implementation = _cjs_root_impl,
     attrs = {
-        "deps": attr.label_list(
-            doc = "Dependencies",
-        ),
         "descriptors": attr.label_list(
             allow_files = True,
-            doc = "package.json descriptors",
+            doc = "package.json descriptors.",
         ),
-        "id": attr.string(),
         "package_name": attr.string(
-            doc = "Package name",
+            doc = "Package name. By default, @workspace_name/path-to-directory",
         ),
         "path": attr.string(
+            doc = "Root path, relative to package",
         ),
         "prefix": attr.string(),
         "strip_prefix": attr.string(),

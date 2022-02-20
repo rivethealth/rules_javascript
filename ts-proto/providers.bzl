@@ -1,23 +1,24 @@
 TsProtobuf = provider(
+    doc = "TypeScript Protobuf compiler",
     fields = {
         "bin": "Plugin",
         "compiler": "TypeScript compiler",
-        "js_deps": "Runtime JsInfo",
-        "ts_deps": "Declarations",
+        "cjs_deps": "List of CjsInfo",
+        "js_deps": "List of JsInfo",
+        "ts_deps": "List of TsInfo",
     },
 )
 
 TsProtoInfo = provider(
+    doc = "TS proto info",
     fields = {
         "transitive_libs": "Transitive library structs",
-        "transitive_packages": "Transitive packages",
         "transitive_paths": "Paths of dependencies",
         "transitive_files": "Transitive declarations",
-        "transitive_deps": "Transitive deps",
     },
 )
 
-def create_lib(label, path, runfile_path, deps, js, declarations, srcs, js_deps, ts_deps):
+def create_lib(label, path, deps, js, declarations):
     """
     Create library struct
 
@@ -27,23 +28,19 @@ def create_lib(label, path, runfile_path, deps, js, declarations, srcs, js_deps,
         js: List of declaration files
         label: Label
         path: Directory path
-        srcs: List of source files
     """
     return struct(
         declarations = tuple(declarations),
         deps = tuple(deps),
         js = tuple(js),
-        js_deps = tuple(js_deps),
         label = label,
         path = path,
-        runfile_path = runfile_path,
-        srcs = tuple(srcs),
-        ts_deps = tuple(ts_deps),
     )
 
 TsProtosInfo = provider(
     doc = "",
     fields = {
+        "cjs": "CjsInfo",
         "js": "Dict of JsInfo by label",
         "ts": "Dict of TsInfo by label",
         "default": "Dict of DefaultInfo by label",

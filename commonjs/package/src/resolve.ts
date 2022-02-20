@@ -4,11 +4,7 @@ import { Trie } from "./collection";
 
 export interface ResolverPackage {
   id: string;
-  deps: Trie<string, string>;
-}
-
-function moduleParts(path_: string) {
-  return path_ ? path_.split("/") : [];
+  deps: Map<string, string>;
 }
 
 function pathParts(path_: string): string[] {
@@ -36,38 +32,33 @@ export class Resolver {
       throw new Error(`File "${parent}" is not part of any known package`);
     }
 
-    const { rest: depRest, value: dep } = package_.deps.getClosest(
-      moduleParts(request),
-    );
+    const parts = request.split("/");
+    const i = request.startsWith("@") ? 2 : 1;
+    const dep = package_.deps.get(parts.slice(0, i).join("/"));
     if (!dep) {
       throw new Error(
-        `Package "${package_.id}" does not have any dependency for "${request}"`,
+        `Package "${package_.id}" does not have any dependency for "${request}", requested by ${parent}`,
       );
     }
 
-    return { package: dep, inner: depRest.join("/") };
+    return { package: dep, inner: parts.slice(i).join("/") };
   }
 
-  static create(packageTree: PackageTree, runfiles: boolean): Resolver {
-    const resolve = (path_: string) =>
-      runfiles
-        ? path.resolve(process.env.RUNFILES_DIR, path_)
-        : path.resolve(path_);
+  static create(packageTree: PackageTree, baseDir: string = "/"): Resolver {
+    const resolve = (path_: string) => path.resolve(baseDir, path_);
     const packages = new Trie<string, ResolverPackage>();
-    for (const [id, package_] of packageTree.entries()) {
-      const path_ = pathParts(resolve(package_.path));
-      const deps = new Trie<string, string>();
+    for (const [path, package_] of packageTree.packages.entries()) {
+      const resolvedPath = pathParts(resolve(path));
+      const deps = new Map<string, string>();
       for (const [name, dep] of package_.deps.entries()) {
-        const package_ = packageTree.get(dep);
-        if (!package_) {
-          throw new Error(
-            `Package "${dep}" referenced by "${id}" does not exist`,
-          );
-        }
-        const path_ = resolve(package_.path);
-        deps.put(moduleParts(name), path_);
+        deps.set(name, resolve(dep));
       }
-      packages.put(path_, { id: id, deps });
+      for (const [name, dep] of packageTree.globals.entries()) {
+        if (!package_.deps.has(name)) {
+          deps.set(name, resolve(dep));
+        }
+      }
+      packages.put(resolvedPath, { id: path, deps });
     }
     return new Resolver(packages);
   }

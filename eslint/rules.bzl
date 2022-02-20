@@ -1,10 +1,12 @@
 load("@bazel_skylib//lib:shell.bzl", "shell")
 load("@rules_file//generate:providers.bzl", "FormatterInfo")
+load("//commonjs:providers.bzl", "CjsInfo")
 load("//commonjs:rules.bzl", "cjs_root")
+load("//javascript:rules.bzl", "js_export", "js_library")
 load("//javascript:providers.bzl", "JsInfo")
 load("//nodejs:rules.bzl", "nodejs_binary")
 load("//nodejs:providers.bzl", "NODE_MODULES_PREFIX", "package_path_name")
-load("//typescript:rules.bzl", "ts_library", "tsconfig")
+load("//typescript:rules.bzl", "ts_library")
 load("//util:path.bzl", "runfile_path")
 
 def configure_eslint(name, dep, config, config_dep, plugins = [], visibility = None):
@@ -18,12 +20,13 @@ def configure_eslint(name, dep, config, config_dep, plugins = [], visibility = N
         visibility = ["//visibility:private"],
     )
 
-    tsconfig(
+    js_library(
         name = "%s.config" % name,
         root = ":%s.root" % name,
-        src = "@better_rules_javascript//eslint/linter:tsconfig",
-        dep = "@better_rules_javascript//rules:tsconfig",
-        path = "%s.root/tsconfig.json" % name,
+        srcs = ["@better_rules_javascript//eslint/linter:tsconfig"],
+        deps = ["@better_rules_javascript//rules:tsconfig"],
+        strip_prefix = "/eslint/linter",
+        prefix = "%s.root" % name,
         visibility = ["//visibility:private"],
     )
 
@@ -32,16 +35,15 @@ def configure_eslint(name, dep, config, config_dep, plugins = [], visibility = N
         srcs = ["@better_rules_javascript//eslint/linter:src"],
         strip_prefix = "/eslint/linter",
         compiler = "@better_rules_javascript//rules:tsc",
-        config = ":%s.config" % name,
+        config = "tsconfig.json",
+        config_dep = ":%s.config" % name,
         deps = [
             dep,
             "@better_rules_javascript//bazel/worker:lib",
             "@better_rules_javascript_npm//argparse:lib",
             "@better_rules_javascript_npm//@types/argparse:lib",
-            "@better_rules_javascript_npm//@types/node:lib",
-        ],
-        global_deps = [
             "@better_rules_javascript_npm//@types/eslint:lib",
+            "@better_rules_javascript_npm//@types/node:lib",
         ],
         declaration_prefix = "%s.root" % name,
         js_prefix = "%s.root" % name,
@@ -50,10 +52,16 @@ def configure_eslint(name, dep, config, config_dep, plugins = [], visibility = N
         visibility = ["//visibility:private"],
     )
 
-    nodejs_binary(
-        name = "%s.bin" % name,
+    js_export(
+        name = "%s.main" % name,
         dep = ":%s.lib" % name,
         global_deps = plugins,
+        visibility = ["//visibility:private"],
+    )
+
+    nodejs_binary(
+        name = "%s.bin" % name,
+        dep = ":%s.main" % name,
         other_deps = [config_dep],
         main = "src/main.js",
         visibility = ["//visibility:private"],
@@ -92,9 +100,11 @@ def _eslint_format(ctx, name, src, out, bin, config):
 def _eslint_impl(ctx):
     bin = ctx.attr.bin[DefaultInfo]
     config = ctx.attr.config
-    config_dep = ctx.attr.config_dep[JsInfo]
+    config_js = ctx.attr.config_dep[JsInfo]
+    config_cjs = ctx.attr.config_dep[CjsInfo]
+    workspace_name = ctx.workspace_name
 
-    config_path = "%s/%s" % (package_path_name(config_dep.package.id), config)
+    config_path = "%s/%s" % (package_path_name(workspace_name, config_cjs.package.short_path), config)
     config = "./%s.runfiles/%s/%s" % (bin.files_to_run.executable.path, NODE_MODULES_PREFIX, config_path)
 
     def format(ctx, name, src, out):
@@ -121,7 +131,8 @@ eslint = rule(
         "config_dep": attr.label(
             doc = "Configuration file",
             mandatory = True,
-            providers = [JsInfo],
+            providers = [CjsInfo, JsInfo],
         ),
     },
+    provides = [FormatterInfo],
 )

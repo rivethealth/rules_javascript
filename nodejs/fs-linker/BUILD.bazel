@@ -3,7 +3,7 @@ load("//commonjs:rules.bzl", "cjs_root")
 load("//javascript:rules.bzl", "js_library")
 load("//nodejs:rules.bzl", "nodejs_simple_binary")
 load("//rollup:rules.bzl", "configure_rollup", "rollup_bundle")
-load("//typescript:rules.bzl", "ts_library", "tsconfig")
+load("//typescript:rules.bzl", "ts_library")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -16,8 +16,8 @@ generate(
     name = "gen",
     srcs = ["dist/bundle.js"],
     data = [":bundle"],
-    data_prefix = "nodejs/fs-linker/dist",
-    data_strip_prefix = "nodejs/fs-linker/bundle",
+    data_prefix = "dist",
+    data_strip_prefix = "bundle",
 )
 
 cjs_root(
@@ -39,6 +39,8 @@ ts_library(
     name = "lib",
     srcs = glob(["src/**/*.ts"]),
     compiler = "//rules:tsc",
+    config = "tsconfig.json",
+    config_dep = ":tsconfig",
     root = ":root",
     deps = [
         "//commonjs/package:lib",
@@ -47,11 +49,11 @@ ts_library(
     ],
 )
 
-tsconfig(
+js_library(
     name = "tsconfig",
-    src = "tsconfig.json",
-    dep = "//rules:tsconfig",
+    srcs = ["tsconfig.json"],
     root = ":root",
+    deps = ["//rules:tsconfig"],
 )
 
 configure_rollup(

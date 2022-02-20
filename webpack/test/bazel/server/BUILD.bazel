@@ -37,6 +37,7 @@ configure_webpack(
 webpack_server(
     name = "server",
     dep = ":lib",
+    root = ":root",
     tags = ["ibazel_notify_changes"],
     webpack = ":webpack",
 )

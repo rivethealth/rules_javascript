@@ -1,20 +1,21 @@
 import { ArgumentParser } from "argparse";
 import * as fs from "fs";
 import * as childProcess from "child_process";
-import { BzlPackages, BzlRoots } from "./bzl";
+import { toStarlarkFile } from "./bzl";
 import { JsonFormat } from "@better-rules-javascript/util-json";
 import { YarnLocator, YarnPackageInfo, YarnVersion } from "./yarn";
 import * as path from "path";
-import { resolvePackages } from "./resolve";
-import { NpmPackage, NpmRegistryClient } from "./npm";
+import { getPackage, ResolvedNpmPackage, resolvePackages } from "./resolve";
+import { NpmRegistryClient, NpmSpecifier } from "./npm";
+import { printStarlark } from "./starlark";
 
 const RUNFILES_DIR = process.env.RUNFILES_DIR!;
-const YARN_BIN = path.resolve(RUNFILES_DIR, "better_rules_javascript/npm/yarn");
+const YARN_BIN = path.join(RUNFILES_DIR, "better_rules_javascript/npm/yarn");
 
 (async () => {
   // parse args
   const parser = new ArgumentParser({
-    description: "Generate Starlark from yarn resolutions.",
+    description: "Generate JSON package tree from yarn resolutions.",
     prog: "yarn-resolve",
   });
   parser.add_argument("--dir", {
@@ -25,7 +26,7 @@ const YARN_BIN = path.resolve(RUNFILES_DIR, "better_rules_javascript/npm/yarn");
     action: "store_true",
     help: "Run yarn to refresh yarn.lock.",
   });
-  parser.add_argument("output", { help: "Path to Starlark output." });
+  parser.add_argument("output", { help: "Path to JSON output." });
 
   const args = parser.parse_args();
 
@@ -41,46 +42,64 @@ const YARN_BIN = path.resolve(RUNFILES_DIR, "better_rules_javascript/npm/yarn");
 
   // load cache
   const cachePath = path.join(args.dir, ".bazel-npm-cache.json");
-  let cacheContent: string;
+  let cacheContent: string | undefined;
   try {
     cacheContent = fs.readFileSync(cachePath, "utf-8");
-  } catch (e) {
-    cacheContent = "[]";
+  } catch (e) {}
+  if (
+    cacheContent !== undefined &&
+    !cacheContent.startsWith('{"_version":"1"')
+  ) {
+    cacheContent = undefined;
   }
-  const cache = JsonFormat.parse(Cache.json(), cacheContent);
-  const newCache = new Map<string, NpmPackage>();
+  const newCache: Cache = {
+    _version: "1",
+    packages: new Map(),
+  };
+  const cache: Cache = cacheContent
+    ? JsonFormat.parse(Cache.json(), cacheContent)
+    : newCache;
 
   // resolve
   const npmClient = new NpmRegistryClient();
   const { packages: bzlPackages, roots: bzlRoots } = await resolvePackages(
     packageInfos,
     async (specifier) => {
-      const id = `${specifier.name}@${specifier.version}`;
+      const id = NpmSpecifier.stringify(specifier);
       const package_ =
-        cache.get(id) || (await npmClient.getPackageVersion(specifier));
-      newCache.set(id, package_);
+        cache.packages.get(id) || (await getPackage(npmClient, specifier));
+      newCache.packages.set(id, package_);
       return package_;
     },
     (message) => console.error(message),
   );
 
   // save cache
-  fs.writeFileSync(cachePath, JsonFormat.stringify(Cache.json(), newCache));
+  fs.promises.writeFile(
+    cachePath,
+    JsonFormat.stringify(Cache.json(), newCache),
+  );
 
   // output
-  bzlPackages.sort((a, b) => +(a.id > b.id) - +(a.id < b.id));
-  fs.writeFileSync(args.output, serializeBzl(bzlRoots, bzlPackages));
-  console.error(`Created ${bzlPackages.length} packages`);
+  const starlarkFile = toStarlarkFile(bzlPackages, bzlRoots);
+  fs.writeFileSync(args.output, printStarlark(starlarkFile));
+  console.error(`Created ${bzlPackages.size} packages`);
 })().catch((e) => {
   console.error(e);
   process.exit(1);
 });
 
-type Cache = Map<string, NpmPackage>;
+interface Cache {
+  _version: "1";
+  packages: Map<string, ResolvedNpmPackage>;
+}
 
 namespace Cache {
   export function json(): JsonFormat<Cache> {
-    return JsonFormat.map(JsonFormat.string(), JsonFormat.identity());
+    return JsonFormat.object({
+      _version: JsonFormat.identity(),
+      packages: JsonFormat.map(JsonFormat.string(), ResolvedNpmPackage.json()),
+    });
   }
 }
 
@@ -150,11 +169,4 @@ function refreshYarn(dir: string) {
   if (installResult.status) {
     throw new Error(`Yarn install failed with code ${installResult.status}`);
   }
-}
-
-function serializeBzl(roots: BzlRoots, packages: BzlPackages): string {
-  let bzl = "";
-  bzl += `PACKAGES = ${BzlPackages.serialize(packages)}\n\n`;
-  bzl += `ROOTS = ${BzlRoots.serialize(roots)}\n\n`;
-  return bzl;
 }

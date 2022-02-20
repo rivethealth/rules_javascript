@@ -1,21 +1,55 @@
-import { BzlDep, BzlPackage } from "./bzl";
-import { NpmSpecifier, NpmPackage } from "./npm";
+import { JsonFormat } from "@better-rules-javascript/util-json";
+import { BzlDeps, BzlExtraDeps, BzlPackage, BzlPackages } from "./bzl";
+import { NpmRegistryClient, NpmSpecifier } from "./npm";
 import {
   YarnDependencyInfo,
   YarnLocator,
   YarnPackageInfo,
   YarnVersion,
 } from "./yarn";
+import { getIntegrity } from "./sri";
+import { getOrSet } from "./collection";
+
+export interface ResolvedNpmPackage {
+  contentIntegrity: string;
+  contentUrl: string;
+}
+
+export namespace ResolvedNpmPackage {
+  export function json(): JsonFormat<ResolvedNpmPackage> {
+    return JsonFormat.object({
+      contentIntegrity: JsonFormat.string(),
+      contentUrl: JsonFormat.string(),
+    });
+  }
+}
+
+export async function getPackage(
+  client: NpmRegistryClient,
+  specifier: NpmSpecifier,
+): Promise<ResolvedNpmPackage> {
+  const package_ = await client.getPackage(specifier);
+  let integrity: string;
+  if (package_.dist.integrity) {
+    integrity = package_.dist.integrity;
+  } else {
+    const content = await client.getPackageContent(package_.dist.tarball);
+    integrity = getIntegrity(content);
+  }
+
+  return {
+    contentIntegrity: integrity,
+    contentUrl: package_.dist.tarball,
+  };
+}
 
 export async function resolvePackages(
   packageInfos: YarnPackageInfo[],
-  getPackage: (specifier: NpmSpecifier) => Promise<NpmPackage>,
+  getPackage: (specifier: NpmSpecifier) => Promise<ResolvedNpmPackage>,
   progress: (message: string) => void,
-) {
-  progress(`Resolving ${packageInfos.length} packages`);
-
-  const bzlPackages: BzlPackage[] = [];
-  let bzlRoots: BzlDep[] | undefined;
+): Promise<{ packages: BzlPackages; roots: BzlDeps }> {
+  const bzlPackages: BzlPackages = new Map();
+  let bzlRoots: BzlDeps | undefined;
 
   let finished = 0;
   let lastReported = 0;
@@ -34,21 +68,20 @@ export async function resolvePackages(
       const specifier = npmSpecifier(packageInfo.value);
       if (id && specifier) {
         const npmPackage = await getPackage(specifier);
-        bzlPackages.push({
+        bzlPackages.set(id, {
           deps,
-          extra_deps: {},
-          id,
-          integrity: npmPackage.dist.integrity,
+          extraDeps: new Map(),
+          integrity: npmPackage.contentIntegrity,
           name: packageInfo.value.name,
-          url: npmPackage.dist.tarball,
+          url: npmPackage.contentUrl,
         });
+        finished++;
       } else if (
         packageInfo.value.version.type === YarnVersion.WORKSPACE &&
         packageInfo.value.version.path === "."
       ) {
         bzlRoots = deps;
       }
-      finished++;
       const now = process.hrtime.bigint();
       if (reported + BigInt(2 * 1e9) < now) {
         reported = now;
@@ -62,6 +95,7 @@ export async function resolvePackages(
     throw new Error("Could not find root workspace");
   }
 
+  removeNames(bzlPackages);
   fixCycles(bzlPackages);
 
   return { roots: bzlRoots, packages: bzlPackages };
@@ -100,41 +134,57 @@ function bzlId(locator: YarnLocator): string | undefined {
   }
 }
 
-function bzlDeps(yarnDependencies: YarnDependencyInfo[]) {
-  const result: BzlDep[] = [];
+function bzlDeps(yarnDependencies: YarnDependencyInfo[]): BzlDeps {
+  const result: BzlDeps = [];
   for (const yarnDependency of yarnDependencies) {
     if (!yarnDependency.locator) {
       continue;
     }
     const id = bzlId(yarnDependency.locator);
     if (id) {
-      result.push({ dep: id, name: yarnDependency.descriptor.name });
+      result.push({ name: yarnDependency.descriptor.name, id });
     }
   }
   return result;
 }
 
-function fixCycles(bzlPackages: BzlPackage[]) {
-  const bzlPackagesById = new Map<string, BzlPackage>(
-    bzlPackages.map((package_) => [package_.id, package_]),
-  );
+function removeNames(bzlPackages: BzlPackages) {
+  for (const package_ of bzlPackages.values()) {
+    for (const dep of package_.deps) {
+      const depPackage = bzlPackages.get(dep.id);
+      if (dep.name === depPackage.name) {
+        dep.name = null;
+      }
+    }
+  }
+}
+
+function fixCycles(bzlPackages: BzlPackages) {
   const visited = new Set<string>();
   const visit = (id: string) => {
-    const package_ = bzlPackagesById.get(id);
-    if (!package_) {
-      throw new Error(`Missing package ${id}`);
+    const package_ = bzlPackages.get(id);
+    if (visited.has(id)) {
+      for (const id of visited) {
+        const package_ = bzlPackages.get(id);
+        package_.deps = package_.deps.filter((dep) => {
+          if (!visited.has(dep.id)) {
+            return true;
+          }
+          for (const packageId of visited) {
+            const package_ = bzlPackages.get(packageId);
+            getOrSet(package_.extraDeps, id, Array).push(dep);
+          }
+        });
+      }
+      return;
     }
     visited.add(id);
-    package_.deps = package_.deps.filter((dep) => {
-      if (!visited.has(dep.dep)) {
-        visit(dep.dep);
-        return true;
-      }
-      package_.extra_deps[dep.name] = dep.dep;
-    });
+    for (const dep of package_.deps) {
+      visit(dep.id);
+    }
     visited.delete(id);
   };
-  for (const id of bzlPackagesById.keys()) {
+  for (const id of bzlPackages.keys()) {
     visit(id);
   }
 }

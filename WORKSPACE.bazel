@@ -2,6 +2,19 @@ workspace(name = "better_rules_javascript")
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
+# File
+
+FILE_VERSION = "dfd8ba74af217a640f64605a9cfe08bcf1cc885a"
+
+http_archive(
+    name = "rules_file",
+    sha256 = "f6440ee964428778dc5a99044e8a876c2a87e4fb9a3b15aa17d8ebecea66708a",
+    strip_prefix = "rules_file-%s" % FILE_VERSION,
+    url = "https://github.com/rivethealth/rules_file/archive/%s.tar.gz" % FILE_VERSION,
+)
+
+load("@rules_file//file:workspace.bzl", "files")
+
 # Go
 GO_VERSION = "v0.24.5"
 
@@ -134,19 +147,6 @@ http_archive(
 load("//rules:workspace.bzl", javascript_repositories = "repositories")
 
 javascript_repositories()
-
-# File
-
-FILE_VERSION = "550c0019ea1af5b7bd7804162e26cd25680f210f"
-
-http_archive(
-    name = "rules_file",
-    sha256 = "2d6264a8163ca827c3cd6b12ef8f5c02bd228b54740dfe85b883ea3c9e24a0d9",
-    strip_prefix = "rules_file-%s" % FILE_VERSION,
-    url = "https://github.com/rivethealth/rules_file/archive/%s.tar.gz" % FILE_VERSION,
-)
-
-load("@rules_file//file:workspace.bzl", "files")
 
 files(
     name = "better_rules_javascript_files",

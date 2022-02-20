@@ -5,7 +5,7 @@ package(default_visibility = ["//visibility:public"])
 
 cjs_root(
     name = "root",
-    package_name = "@bazel_tools",
+    package_name = "bazel_tools",
     descriptors = ["package.json"],
 )
 

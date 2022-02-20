@@ -27,10 +27,7 @@
         }
         data.value = value;
     }
-}function moduleParts(path_) {
-    return path_ ? path_.split("/") : [];
-}
-function pathParts(path_) {
+}function pathParts(path_) {
     path_ = path__namespace.resolve(path_);
     return path_.split("/").slice(1);
 }
@@ -46,29 +43,29 @@ class Resolver {
         if (!package_) {
             throw new Error(`File "${parent}" is not part of any known package`);
         }
-        const { rest: depRest, value: dep } = package_.deps.getClosest(moduleParts(request));
+        const parts = request.split("/");
+        const i = request.startsWith("@") ? 2 : 1;
+        const dep = package_.deps.get(parts.slice(0, i).join("/"));
         if (!dep) {
-            throw new Error(`Package "${package_.id}" does not have any dependency for "${request}"`);
+            throw new Error(`Package "${package_.id}" does not have any dependency for "${request}", requested by ${parent}`);
         }
-        return { package: dep, inner: depRest.join("/") };
+        return { package: dep, inner: parts.slice(i).join("/") };
     }
-    static create(packageTree, runfiles) {
-        const resolve = (path_) => runfiles
-            ? path__namespace.resolve(process.env.RUNFILES_DIR, path_)
-            : path__namespace.resolve(path_);
+    static create(packageTree, baseDir = "/") {
+        const resolve = (path_) => path__namespace.resolve(baseDir, path_);
         const packages = new Trie();
-        for (const [id, package_] of packageTree.entries()) {
-            const path_ = pathParts(resolve(package_.path));
-            const deps = new Trie();
+        for (const [path, package_] of packageTree.packages.entries()) {
+            const resolvedPath = pathParts(resolve(path));
+            const deps = new Map();
             for (const [name, dep] of package_.deps.entries()) {
-                const package_ = packageTree.get(dep);
-                if (!package_) {
-                    throw new Error(`Package "${dep}" referenced by "${id}" does not exist`);
-                }
-                const path_ = resolve(package_.path);
-                deps.put(moduleParts(name), path_);
+                deps.set(name, resolve(dep));
             }
-            packages.put(path_, { id: id, deps });
+            for (const [name, dep] of packageTree.globals.entries()) {
+                if (!package_.deps.has(name)) {
+                    deps.set(name, resolve(dep));
+                }
+            }
+            packages.put(resolvedPath, { id: path, deps });
         }
         return new Resolver(packages);
     }
@@ -88,6 +85,10 @@ class Resolver {
         return new ArrayJsonFormat(elementFormat);
     }
     JsonFormat.array = array;
+    function arrayBuffer() {
+        return new ArrayBufferFormat();
+    }
+    JsonFormat.arrayBuffer = arrayBuffer;
     function map(keyFormat, valueFormat) {
         return new MapJsonFormat(keyFormat, valueFormat);
     }
@@ -234,14 +235,22 @@ class SetJsonFormat {
     toJson(value) {
         return [...value].map((element) => this.format.toJson(element));
     }
-}class Package {
+}var PackageDeps;
+(function (PackageDeps) {
+    function json() {
+        return JsonFormat.map(JsonFormat.string(), JsonFormat.string());
+    }
+    PackageDeps.json = json;
+})(PackageDeps || (PackageDeps = {}));
+/**
+ * Package
+ */
+class Package {
 }
 (function (Package) {
     function json() {
         return JsonFormat.object({
-            id: JsonFormat.string(),
-            deps: JsonFormat.map(JsonFormat.string(), JsonFormat.string()),
-            path: JsonFormat.string(),
+            deps: PackageDeps.json(),
         });
     }
     Package.json = json;
@@ -249,7 +258,10 @@ class SetJsonFormat {
 var PackageTree;
 (function (PackageTree) {
     function json() {
-        return JsonFormat.map(JsonFormat.string(), Package.json());
+        return JsonFormat.object({
+            globals: PackageDeps.json(),
+            packages: JsonFormat.map(JsonFormat.string(), Package.json()),
+        });
     }
     PackageTree.json = json;
 })(PackageTree || (PackageTree = {}));const manifestPath = process.env.NODE_PACKAGE_MANIFEST;
@@ -257,7 +269,7 @@ if (!manifestPath) {
     throw new Error("NODE_PACKAGE_MANIFEST is not set");
 }
 const packageTree = JsonFormat.parse(PackageTree.json(), fs__namespace.readFileSync(manifestPath, "utf8"));
-const resolver = Resolver.create(packageTree, true);
+const resolver = Resolver.create(packageTree, process.env.RUNFILES_DIR);
 function resolve(specifier, context, defaultResolve) {
     if (!context.parentURL && path__namespace.extname(specifier) == "") {
         return { format: "commonjs", url: specifier };

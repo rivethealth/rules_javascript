@@ -1,17 +1,24 @@
-load("//commonjs:providers.bzl", "CjsEntries", "CjsInfo")
-load("//javascript:providers.bzl", "JsInfo", js_create_deps = "create_deps")
+load("//commonjs:providers.bzl", "CjsInfo", "CjsRootInfo", "create_cjs_info")
+load("//javascript:providers.bzl", "JsInfo", "create_js_info")
 load("//nodejs:rules.bzl", "nodejs_binary")
-load("//typescript:providers.bzl", "TsCompilerInfo", "TsInfo", "create_deps")
+load("//typescript:providers.bzl", "TsCompilerInfo", "TsInfo", "create_ts_info")
 load("//util:path.bzl", "output_name", "runfile_path")
 load(":aspects.bzl", _ts_proto_aspect = "ts_proto_aspect")
 load(":providers.bzl", "TsProtoInfo", "TsProtobuf", "TsProtosInfo")
 
 def _ts_protoc_impl(ctx):
+    bin = ctx.attr.bin[DefaultInfo]
+    compiler = ctx.attr.compiler[TsCompilerInfo]
+    cjs_deps = [target[CjsInfo] for target in ctx.attr.deps]
+    js_deps = [dep[JsInfo] for dep in ctx.attr.deps if JsInfo in dep]
+    ts_deps = [dep[TsInfo] for dep in ctx.attr.deps if TsInfo in dep]
+
     ts_protobuf = TsProtobuf(
-        bin = ctx.attr.bin[DefaultInfo].files_to_run,
-        compiler = ctx.attr.compiler[TsCompilerInfo],
-        js_deps = [dep[JsInfo] for dep in ctx.attr.deps if JsInfo in dep],
-        ts_deps = [dep[TsInfo] for dep in ctx.attr.deps if TsInfo in dep],
+        bin = bin.files_to_run,
+        compiler = compiler,
+        cjs_deps = cjs_deps,
+        js_deps = js_deps,
+        ts_deps = ts_deps,
     )
 
     return [ts_protobuf]
@@ -41,7 +48,9 @@ ts_protoc = rule(
 def configure_ts_protoc(name, compiler, ts_proto, deps, visibility = None):
     nodejs_binary(
         name = "%s.bin" % name,
-        node_options = ["--no-deprecation"],  # https://github.com/protobufjs/protobuf.js/issues/1411
+        node_options = [
+            "--no-deprecation",  # https://github.com/protobufjs/protobuf.js/issues/1411
+        ],
         dep = ts_proto,
         main = "build/plugin.js",
         visibility = ["//visibility:private"],
@@ -57,7 +66,9 @@ def configure_ts_protoc(name, compiler, ts_proto, deps, visibility = None):
 
 def _ts_proto_libraries_impl(ctx):
     actions = ctx.actions
-    cjs_info = ctx.attr.root[CjsInfo]
+    ts_proto = ctx.attr._ts_protoc[TsProtobuf]
+    cjs_root = ctx.attr.root[CjsRootInfo]
+    prefix = ctx.attr.prefix
     label = ctx.label
     workspace_name = ctx.workspace_name
 
@@ -66,18 +77,16 @@ def _ts_proto_libraries_impl(ctx):
         transitive = [dep[TsProtoInfo].transitive_libs for dep in ctx.attr.deps],
     )
 
+    cjs_infos = {}
     js_infos = {}
     ts_infos = {}
     default_infos = {}
     for lib in libs.to_list():
-        lib_path = "/" + "/".join(lib.runfile_path.split("/")[1:])
         js = []
         for file in lib.js:
-            path = output_name(
-                file = file,
-                strip_prefix = lib_path,
-                label = label,
-            )
+            path = file.path[len(lib.path + "/"):]
+            if prefix:
+                path = "%s/%s" % (prefix, path)
             js_ = actions.declare_file(path)
             actions.symlink(
                 output = js_,
@@ -86,128 +95,85 @@ def _ts_proto_libraries_impl(ctx):
             js.append(js_)
         declarations = []
         for file in lib.declarations:
-            path = output_name(
-                file = file,
-                label = label,
-                strip_prefix = lib_path,
-            )
+            path = file.path[len(lib.path + "/"):]
+            if prefix:
+                path = "%s/%s" % (prefix, path)
             declaration = actions.declare_file(path)
             actions.symlink(
                 output = declaration,
                 target_file = file,
             )
             declarations.append(declaration)
-        srcs = []
-        for src in lib.srcs:
-            path = output_name(
-                file = file,
-                label = label,
-                strip_prefix = lib_path,
-            )
-            src = actions.declare_file(path)
-            actions.symlink(
-                output = src,
-                target_file = file,
-            )
-            srcs.append(src)
 
-        js_deps = list(lib.js_deps) + [js_infos[label] for label in lib.deps]
-        ts_deps = list(lib.ts_deps) + [ts_infos[label] for label in lib.deps]
-
-        transitive_deps = depset(
-            js_create_deps(cjs_info.package, lib.label, js_deps),
-            transitive = [js_info.transitive_deps for js_info in js_deps],
-        )
-        transitive_packages = depset(
-            [cjs_info.package],
-            transitive = [js_info.transitive_packages for js_info in js_deps],
-        )
-        transitive_files = depset(
-            cjs_info.descriptors + js,
-            transitive = [js_info.transitive_files for js_info in js_deps],
-        )
-        transitive_srcs = depset(
-            srcs,
-            transitive = [js_info.transitive_srcs for js_info in js_deps],
-        )
-        js_infos[lib.label] = JsInfo(
-            name = cjs_info.name,
-            package = cjs_info.package,
-            transitive_deps = transitive_deps,
-            transitive_files = transitive_files,
-            transitive_srcs = transitive_srcs,
-            transitive_packages = transitive_packages,
+        js_deps = [js_infos[label] for label in lib.deps]
+        js_infos[lib.label] = create_js_info(
+            files = js,
+            deps = js_deps,
         )
 
-        transitive_deps = depset(
-            create_deps(cjs_info.package, lib.label, ts_deps),
-            transitive = [ts_info.transitive_deps for ts_info in ts_deps],
-        )
-        transitive_files = depset(
-            cjs_info.descriptors + declarations,
-            transitive = [ts_info.transitive_files for ts_info in ts_deps],
-        )
-        transitive_packages = depset(
-            [cjs_info.package],
-            transitive = [ts_info.transitive_packages for ts_info in ts_deps],
-        )
-        ts_infos[lib.label] = TsInfo(
-            name = cjs_info.name,
-            package = cjs_info.package,
-            transitive_deps = transitive_deps,
-            transitive_files = transitive_files,
-            transitive_packages = transitive_packages,
-            transitive_srcs = depset(),
+        ts_deps = [ts_infos[label] for label in lib.deps]
+        ts_infos[lib.label] = create_ts_info(
+            files = declarations,
+            deps = ts_deps,
         )
 
         default_infos[lib.label] = DefaultInfo(
-            files = depset(js + declarations + srcs),
+            files = depset(js),
         )
 
+    cjs_info = create_cjs_info(
+        cjs_root = cjs_root,
+        label = label,
+        deps = ts_proto.cjs_deps + ts_proto.compiler.runtime_cjs,
+    )
+
     ts_protos_info = TsProtosInfo(
+        cjs = cjs_info,
         js = {dep.label: js_infos[dep.label] for dep in ctx.attr.deps},
         ts = {dep.label: ts_infos[dep.label] for dep in ctx.attr.deps},
         default = {dep.label: default_infos[dep.label] for dep in ctx.attr.deps},
     )
 
-    return [ts_protos_info]
+    return [cjs_info, ts_protos_info]
 
-def ts_proto_libraries_rule(aspect):
+def ts_proto_libraries_rule(aspect, compiler):
     return rule(
         implementation = _ts_proto_libraries_impl,
         attrs = {
+            "_ts_protoc": attr.label(
+                default = compiler,
+                providers = [TsProtobuf],
+            ),
             "deps": attr.label_list(
                 providers = [ProtoInfo],
                 aspects = [aspect],
             ),
+            "prefix": attr.string(
+                doc = "Prefix to add.",
+            ),
             "root": attr.label(
-                providers = [CjsInfo],
+                providers = [CjsRootInfo],
             ),
         },
+        provides = [CjsInfo, TsProtosInfo],
     )
 
 def _ts_proto_export_impl(ctx):
-    ts_protos_info = ctx.attr.lib[TsProtosInfo]
     dep = ctx.attr.dep.label
+    ts_protos = ctx.attr.lib[TsProtosInfo]
 
-    if not dep in ts_protos_info.js:
+    if dep not in ts_protos.js:
         fail('Dep "%s" not in "%s"' % (dep, ctx.attr.lib.label))
 
-    js_info = ts_protos_info.js[dep]
-    ts_info = ts_protos_info.ts[dep]
-    default_info = ts_protos_info.default[dep]
+    default_info = ts_protos.default[dep]
 
-    cjs_entries = CjsEntries(
-        name = ts_info.name,
-        package = ts_info.package,
-        transitive_packages = depset(transitive = [js_info.transitive_packages, ts_info.transitive_packages]),
-        transitive_deps = depset(transitive = [js_info.transitive_deps, ts_info.transitive_deps]),
-        transitive_files = depset(
-            transitive = [ts_info.transitive_files, js_info.transitive_files, js_info.transitive_srcs],
-        ),
-    )
+    cjs_info = ts_protos.cjs
 
-    return [cjs_entries, default_info, js_info, ts_info]
+    js_info = ts_protos.js[dep]
+
+    ts_info = ts_protos.ts[dep]
+
+    return [cjs_info, default_info, js_info, ts_info]
 
 ts_proto_export = rule(
     doc = "TypeScript protobuf library",
@@ -217,7 +183,8 @@ ts_proto_export = rule(
             providers = [ProtoInfo],
         ),
         "lib": attr.label(
-            providers = [TsProtosInfo],
+            providers = [CjsInfo, TsProtosInfo],
         ),
     },
+    provides = [CjsInfo, JsInfo, TsInfo],
 )

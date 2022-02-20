@@ -1,6 +1,7 @@
 load("//commonjs:rules.bzl", "cjs_root")
 load("//nodejs:rules.bzl", "nodejs_binary")
-load("//typescript:rules.bzl", "ts_library", "tsconfig")
+load("//javascript:rules.bzl", "js_library")
+load("//typescript:rules.bzl", "ts_library")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -10,18 +11,19 @@ cjs_root(
     descriptors = ["package.json"],
 )
 
-tsconfig(
+js_library(
     name = "tsconfig",
-    src = "tsconfig.json",
-    dep = "//rules:tsconfig",
+    srcs = ["tsconfig.json"],
     root = ":root",
+    deps = ["//rules:tsconfig"],
 )
 
 ts_library(
     name = "lib",
     srcs = glob(["src/**/*.ts"]),
     compiler = "//rules:tsc",
-    config = ":tsconfig",
+    config = "tsconfig.json",
+    config_dep = ":tsconfig",
     root = ":root",
     deps = [
         "//bazel/worker:lib",

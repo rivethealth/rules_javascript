@@ -13,7 +13,7 @@ format(
     name = "buildifier_format",
     srcs = ["@better_rules_javascript_files//:buildifier_files"],
     formatter = ":buildifier",
-    strip_prefix = "files",
+    strip_prefix = "/files",
 )
 
 configure_eslint(
@@ -32,7 +32,7 @@ format(
     name = "eslint_lint",
     srcs = ["@better_rules_javascript_files//:eslint_files"],
     formatter = ":eslint",
-    strip_prefix = "files",
+    strip_prefix = "/files",
 )
 
 generate_test(
@@ -109,16 +109,11 @@ format(
     name = "prettier_format",
     srcs = ["@better_rules_javascript_files//:prettier_files"],
     formatter = ":prettier",
-    strip_prefix = "files",
-)
-
-yarn_resolve(
-    name = "resolve_rules_npm",
-    output = "rules/npm_data.bzl",
-    path = "rules",
+    strip_prefix = "/files",
 )
 
 yarn_resolve(
     name = "resolve_npm",
-    output = "npm_data.bzl",
+    output = "/npm_data.bzl",
+    path = "/",
 )

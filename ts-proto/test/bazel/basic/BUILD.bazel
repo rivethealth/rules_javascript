@@ -1,7 +1,8 @@
 load("@better_rules_javascript//commonjs:rules.bzl", "cjs_root")
 load("@better_rules_javascript//nodejs:rules.bzl", "nodejs_binary")
+load("@better_rules_javascript//javascript:rules.bzl", "js_library")
 load("@better_rules_javascript//ts-proto:rules.bzl", "ts_proto_export")
-load("@better_rules_javascript//typescript:rules.bzl", "ts_library", "tsconfig")
+load("@better_rules_javascript//typescript:rules.bzl", "ts_library")
 load("//:rules.bzl", "ts_proto_libraries")
 
 cjs_root(
@@ -10,9 +11,9 @@ cjs_root(
     descriptors = ["package.json"],
 )
 
-tsconfig(
-    name = "config",
-    src = "tsconfig.json",
+js_library(
+    name = "tsconfig",
+    srcs = ["tsconfig.json"],
     root = ":root",
 )
 
@@ -32,7 +33,8 @@ ts_library(
     name = "lib",
     srcs = ["index.ts"],
     compiler = "//:tsc",
-    config = ":config",
+    config = "tsconfig.json",
+    config_dep = ":tsconfig",
     root = ":root",
     deps = [
         ":proto_lib",

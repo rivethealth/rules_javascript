@@ -3,8 +3,8 @@
 var url = require('url');
 var fs = require('fs');
 var path = require('path');
-var require$$0 = require('long');
-var require$$1 = require('protobufjs/minimal');
+var Long = require('long');
+var _m0 = require('protobufjs/minimal');
 var protobufjs = require('protobufjs');
 var argparse = require('argparse');
 var ts = require('typescript');
@@ -31,8 +31,8 @@ function _interopNamespace(e) {
 
 var fs__namespace = /*#__PURE__*/_interopNamespace(fs);
 var path__namespace = /*#__PURE__*/_interopNamespace(path);
-var require$$0__default = /*#__PURE__*/_interopDefaultLegacy(require$$0);
-var require$$1__default = /*#__PURE__*/_interopDefaultLegacy(require$$1);
+var Long__default = /*#__PURE__*/_interopDefaultLegacy(Long);
+var _m0__default = /*#__PURE__*/_interopDefaultLegacy(_m0);
 var ts__namespace = /*#__PURE__*/_interopNamespace(ts);
 
 var VfsNode;
@@ -1057,303 +1057,10 @@ function patchFsPromises(vfs, delegate) {
     delegate.lutimes = lutimes(vfs, delegate.lutimes);
 }
 
-var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
-
-function createCommonjsModule(fn, basedir, module) {
-	return module = {
-		path: basedir,
-		exports: {},
-		require: function (path, base) {
-			return commonjsRequire(path, (base === undefined || base === null) ? module.path : base);
-		}
-	}, fn(module, module.exports), module.exports;
-}
-
-function getAugmentedNamespace(n) {
-	if (n.__esModule) return n;
-	var a = Object.defineProperty({}, '__esModule', {value: true});
-	Object.keys(n).forEach(function (k) {
-		var d = Object.getOwnPropertyDescriptor(n, k);
-		Object.defineProperty(a, k, d.get ? d : {
-			enumerable: true,
-			get: function () {
-				return n[k];
-			}
-		});
-	});
-	return a;
-}
-
-function commonjsRequire () {
-	throw new Error('Dynamic requires are not currently supported by @rollup/plugin-commonjs');
-}
-
-/*! *****************************************************************************
-Copyright (c) Microsoft Corporation.
-
-Permission to use, copy, modify, and/or distribute this software for any
-purpose with or without fee is hereby granted.
-
-THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
-REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
-AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
-INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
-LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
-OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
-PERFORMANCE OF THIS SOFTWARE.
-***************************************************************************** */
-/* global Reflect, Promise */
-
-var extendStatics = function(d, b) {
-    extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-    return extendStatics(d, b);
-};
-
-function __extends(d, b) {
-    extendStatics(d, b);
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-}
-
-var __assign = function() {
-    __assign = Object.assign || function __assign(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
-
-function __rest(s, e) {
-    var t = {};
-    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
-        t[p] = s[p];
-    if (s != null && typeof Object.getOwnPropertySymbols === "function")
-        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
-            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
-                t[p[i]] = s[p[i]];
-        }
-    return t;
-}
-
-function __decorate(decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-}
-
-function __param(paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-}
-
-function __metadata(metadataKey, metadataValue) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(metadataKey, metadataValue);
-}
-
-function __awaiter(thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-}
-
-function __generator(thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
-    function verb(n) { return function (v) { return step([n, v]); }; }
-    function step(op) {
-        if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
-            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [op[0] & 2, t.value];
-            switch (op[0]) {
-                case 0: case 1: t = op; break;
-                case 4: _.label++; return { value: op[1], done: false };
-                case 5: _.label++; y = op[1]; op = [0]; continue;
-                case 7: op = _.ops.pop(); _.trys.pop(); continue;
-                default:
-                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
-                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
-                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
-                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
-                    if (t[2]) _.ops.pop();
-                    _.trys.pop(); continue;
-            }
-            op = body.call(thisArg, _);
-        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
-        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
-    }
-}
-
-var __createBinding = Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-});
-
-function __exportStar(m, o) {
-    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(o, p)) __createBinding(o, m, p);
-}
-
-function __values(o) {
-    var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
-    if (m) return m.call(o);
-    if (o && typeof o.length === "number") return {
-        next: function () {
-            if (o && i >= o.length) o = void 0;
-            return { value: o && o[i++], done: !o };
-        }
-    };
-    throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
-}
-
-function __read(o, n) {
-    var m = typeof Symbol === "function" && o[Symbol.iterator];
-    if (!m) return o;
-    var i = m.call(o), r, ar = [], e;
-    try {
-        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
-    }
-    catch (error) { e = { error: error }; }
-    finally {
-        try {
-            if (r && !r.done && (m = i["return"])) m.call(i);
-        }
-        finally { if (e) throw e.error; }
-    }
-    return ar;
-}
-
-function __spread() {
-    for (var ar = [], i = 0; i < arguments.length; i++)
-        ar = ar.concat(__read(arguments[i]));
-    return ar;
-}
-
-function __spreadArrays() {
-    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
-    for (var r = Array(s), k = 0, i = 0; i < il; i++)
-        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
-            r[k] = a[j];
-    return r;
-}
-function __await(v) {
-    return this instanceof __await ? (this.v = v, this) : new __await(v);
-}
-
-function __asyncGenerator(thisArg, _arguments, generator) {
-    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
-    var g = generator.apply(thisArg, _arguments || []), i, q = [];
-    return i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i;
-    function verb(n) { if (g[n]) i[n] = function (v) { return new Promise(function (a, b) { q.push([n, v, a, b]) > 1 || resume(n, v); }); }; }
-    function resume(n, v) { try { step(g[n](v)); } catch (e) { settle(q[0][3], e); } }
-    function step(r) { r.value instanceof __await ? Promise.resolve(r.value.v).then(fulfill, reject) : settle(q[0][2], r); }
-    function fulfill(value) { resume("next", value); }
-    function reject(value) { resume("throw", value); }
-    function settle(f, v) { if (f(v), q.shift(), q.length) resume(q[0][0], q[0][1]); }
-}
-
-function __asyncDelegator(o) {
-    var i, p;
-    return i = {}, verb("next"), verb("throw", function (e) { throw e; }), verb("return"), i[Symbol.iterator] = function () { return this; }, i;
-    function verb(n, f) { i[n] = o[n] ? function (v) { return (p = !p) ? { value: __await(o[n](v)), done: n === "return" } : f ? f(v) : v; } : f; }
-}
-
-function __asyncValues(o) {
-    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
-    var m = o[Symbol.asyncIterator], i;
-    return m ? m.call(o) : (o = typeof __values === "function" ? __values(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i);
-    function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
-    function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
-}
-
-function __makeTemplateObject(cooked, raw) {
-    if (Object.defineProperty) { Object.defineProperty(cooked, "raw", { value: raw }); } else { cooked.raw = raw; }
-    return cooked;
-}
-var __setModuleDefault = Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-};
-
-function __importStar(mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-}
-
-function __importDefault(mod) {
-    return (mod && mod.__esModule) ? mod : { default: mod };
-}
-
-function __classPrivateFieldGet(receiver, privateMap) {
-    if (!privateMap.has(receiver)) {
-        throw new TypeError("attempted to get private field on non-instance");
-    }
-    return privateMap.get(receiver);
-}
-
-function __classPrivateFieldSet(receiver, privateMap, value) {
-    if (!privateMap.has(receiver)) {
-        throw new TypeError("attempted to set private field on non-instance");
-    }
-    privateMap.set(receiver, value);
-    return value;
-}
-
-var tslib_es6 = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    __extends: __extends,
-    get __assign () { return __assign; },
-    __rest: __rest,
-    __decorate: __decorate,
-    __param: __param,
-    __metadata: __metadata,
-    __awaiter: __awaiter,
-    __generator: __generator,
-    __createBinding: __createBinding,
-    __exportStar: __exportStar,
-    __values: __values,
-    __read: __read,
-    __spread: __spread,
-    __spreadArrays: __spreadArrays,
-    __await: __await,
-    __asyncGenerator: __asyncGenerator,
-    __asyncDelegator: __asyncDelegator,
-    __asyncValues: __asyncValues,
-    __makeTemplateObject: __makeTemplateObject,
-    __importStar: __importStar,
-    __importDefault: __importDefault,
-    __classPrivateFieldGet: __classPrivateFieldGet,
-    __classPrivateFieldSet: __classPrivateFieldSet
-});
-
-var tslib_1 = /*@__PURE__*/getAugmentedNamespace(tslib_es6);
-
-var worker_protocol = createCommonjsModule(function (module, exports) {
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.WorkResponse = exports.WorkRequest = exports.Input = exports.protobufPackage = void 0;
-
 /* eslint-disable */
-const long_1 = (0, tslib_1.__importDefault)(require$$0__default["default"]);
-const minimal_1 = (0, tslib_1.__importDefault)(require$$1__default["default"]);
-exports.protobufPackage = "blaze.worker";
 const baseInput = { path: "" };
-exports.Input = {
-    encode(message, writer = minimal_1.default.Writer.create()) {
+const Input = {
+    encode(message, writer = _m0__default["default"].Writer.create()) {
         if (message.path !== "") {
             writer.uint32(10).string(message.path);
         }
@@ -1363,7 +1070,7 @@ exports.Input = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof minimal_1.default.Reader ? input : new minimal_1.default.Reader(input);
+        const reader = input instanceof _m0__default["default"].Reader ? input : new _m0__default["default"].Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseInput };
         message.digest = new Uint8Array();
@@ -1427,13 +1134,13 @@ const baseWorkRequest = {
     cancel: false,
     verbosity: 0,
 };
-exports.WorkRequest = {
-    encode(message, writer = minimal_1.default.Writer.create()) {
+const WorkRequest = {
+    encode(message, writer = _m0__default["default"].Writer.create()) {
         for (const v of message.arguments) {
             writer.uint32(10).string(v);
         }
         for (const v of message.inputs) {
-            exports.Input.encode(v, writer.uint32(18).fork()).ldelim();
+            Input.encode(v, writer.uint32(18).fork()).ldelim();
         }
         if (message.requestId !== 0) {
             writer.uint32(24).int32(message.requestId);
@@ -1447,7 +1154,7 @@ exports.WorkRequest = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof minimal_1.default.Reader ? input : new minimal_1.default.Reader(input);
+        const reader = input instanceof _m0__default["default"].Reader ? input : new _m0__default["default"].Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseWorkRequest };
         message.arguments = [];
@@ -1459,7 +1166,7 @@ exports.WorkRequest = {
                     message.arguments.push(reader.string());
                     break;
                 case 2:
-                    message.inputs.push(exports.Input.decode(reader, reader.uint32()));
+                    message.inputs.push(Input.decode(reader, reader.uint32()));
                     break;
                 case 3:
                     message.requestId = reader.int32();
@@ -1488,7 +1195,7 @@ exports.WorkRequest = {
         }
         if (object.inputs !== undefined && object.inputs !== null) {
             for (const e of object.inputs) {
-                message.inputs.push(exports.Input.fromJSON(e));
+                message.inputs.push(Input.fromJSON(e));
             }
         }
         if (object.requestId !== undefined && object.requestId !== null) {
@@ -1520,7 +1227,7 @@ exports.WorkRequest = {
             obj.arguments = [];
         }
         if (message.inputs) {
-            obj.inputs = message.inputs.map((e) => (e ? exports.Input.toJSON(e) : undefined));
+            obj.inputs = message.inputs.map((e) => (e ? Input.toJSON(e) : undefined));
         }
         else {
             obj.inputs = [];
@@ -1541,7 +1248,7 @@ exports.WorkRequest = {
         }
         if (object.inputs !== undefined && object.inputs !== null) {
             for (const e of object.inputs) {
-                message.inputs.push(exports.Input.fromPartial(e));
+                message.inputs.push(Input.fromPartial(e));
             }
         }
         if (object.requestId !== undefined && object.requestId !== null) {
@@ -1571,8 +1278,8 @@ const baseWorkResponse = {
     requestId: 0,
     wasCancelled: false,
 };
-exports.WorkResponse = {
-    encode(message, writer = minimal_1.default.Writer.create()) {
+const WorkResponse = {
+    encode(message, writer = _m0__default["default"].Writer.create()) {
         if (message.exitCode !== 0) {
             writer.uint32(8).int32(message.exitCode);
         }
@@ -1588,7 +1295,7 @@ exports.WorkResponse = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof minimal_1.default.Reader ? input : new minimal_1.default.Reader(input);
+        const reader = input instanceof _m0__default["default"].Reader ? input : new _m0__default["default"].Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseWorkResponse };
         while (reader.pos < end) {
@@ -1686,8 +1393,8 @@ var globalThis = (() => {
         return self;
     if (typeof window !== "undefined")
         return window;
-    if (typeof commonjsGlobal !== "undefined")
-        return commonjsGlobal;
+    if (typeof global !== "undefined")
+        return global;
     throw "Unable to locate global object";
 })();
 const atob = globalThis.atob ||
@@ -1709,12 +1416,10 @@ function base64FromBytes(arr) {
     }
     return btoa(bin.join(""));
 }
-if (minimal_1.default.util.Long !== long_1.default) {
-    minimal_1.default.util.Long = long_1.default;
-    minimal_1.default.configure();
+if (_m0__default["default"].util.Long !== Long__default["default"]) {
+    _m0__default["default"].util.Long = Long__default["default"];
+    _m0__default["default"].configure();
 }
-
-});
 
 function concat(buffers) {
     const length = buffers.reduce((sum, buffer) => sum + buffer.byteLength, 0);
@@ -1764,7 +1469,7 @@ async function runWorker(worker) {
     let abort;
     process.on("SIGINT", () => abort?.abort());
     process.on("SIGTERM", () => abort?.abort());
-    for await (const message of readFromStream(process.stdin, worker_protocol.WorkRequest)) {
+    for await (const message of readFromStream(process.stdin, WorkRequest)) {
         if (message.requestId) {
             throw new CliError("Does not support multiplexed requests");
         }
@@ -1786,7 +1491,7 @@ async function runWorker(worker) {
                     requestId: 0,
                     wasCancelled: abort.signal.aborted,
                 };
-                const buffer = worker_protocol.WorkResponse.encode(response).ldelim().finish();
+                const buffer = WorkResponse.encode(response).ldelim().finish();
                 process.stdout.write(buffer);
                 abort = undefined;
                 if (typeof gc !== "undefined") {
@@ -1875,6 +1580,10 @@ var JsonFormat;
         return new ArrayJsonFormat(elementFormat);
     }
     JsonFormat.array = array;
+    function arrayBuffer() {
+        return new ArrayBufferFormat();
+    }
+    JsonFormat.arrayBuffer = arrayBuffer;
     function map(keyFormat, valueFormat) {
         return new MapJsonFormat(keyFormat, valueFormat);
     }
@@ -2023,14 +1732,22 @@ class SetJsonFormat {
     }
 }
 
+var PackageDeps;
+(function (PackageDeps) {
+    function json() {
+        return JsonFormat.map(JsonFormat.string(), JsonFormat.string());
+    }
+    PackageDeps.json = json;
+})(PackageDeps || (PackageDeps = {}));
+/**
+ * Package
+ */
 class Package {
 }
 (function (Package) {
     function json() {
         return JsonFormat.object({
-            id: JsonFormat.string(),
-            deps: JsonFormat.map(JsonFormat.string(), JsonFormat.string()),
-            path: JsonFormat.string(),
+            deps: PackageDeps.json(),
         });
     }
     Package.json = json;
@@ -2038,7 +1755,10 @@ class Package {
 var PackageTree;
 (function (PackageTree) {
     function json() {
-        return JsonFormat.map(JsonFormat.string(), Package.json());
+        return JsonFormat.object({
+            globals: PackageDeps.json(),
+            packages: JsonFormat.map(JsonFormat.string(), Package.json()),
+        });
     }
     PackageTree.json = json;
 })(PackageTree || (PackageTree = {}));
@@ -2096,8 +1816,8 @@ function createVfs(packageTree, runfiles) {
         extraChildren: new Map(),
         path: "/",
     };
-    for (const [id, package_] of packageTree.entries()) {
-        const packageNode = addPackageNode(root, resolve(package_.path));
+    for (const [path, package_] of packageTree.packages.entries()) {
+        const packageNode = addPackageNode(root, resolve(path));
         const nodeModules = {
             type: VfsNode.PATH,
             hardenSymlinks: false,
@@ -2106,18 +1826,24 @@ function createVfs(packageTree, runfiles) {
         };
         packageNode.extraChildren.set("node_modules", nodeModules);
         for (const [name, dep] of package_.deps) {
-            const packageDep = packageTree.get(dep);
-            if (!packageDep) {
-                throw new Error(`Package ${dep} required by ${id} does not exist`);
-            }
             try {
-                addDep(nodeModules, name, resolve(packageDep.path));
+                addDep(nodeModules, name, resolve(dep));
             }
             catch (e) {
                 if (!(e instanceof DependencyConflictError)) {
                     throw e;
                 }
-                throw new Error(`Dependency "${name}" of "${id}" conflicts with another`);
+                throw new Error(`Dependency "${name}" of "${path}" conflicts with another`);
+            }
+        }
+        for (const [name, dep] of packageTree.globals.entries()) {
+            try {
+                addDep(nodeModules, name, resolve(dep));
+            }
+            catch (e) {
+                if (!(e instanceof DependencyConflictError)) {
+                    throw e;
+                }
             }
         }
     }

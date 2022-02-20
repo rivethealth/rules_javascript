@@ -1,15 +1,17 @@
-load("//commonjs:providers.bzl", "CjsEntries", "CjsInfo", "create_dep")
+load("//commonjs:providers.bzl", "CjsInfo", "CjsRootInfo", "create_cjs_info")
 load("//util:path.bzl", "output", "output_name", "runfile_path")
-load(":providers.bzl", "JsInfo", "create_extra_deps", "target_deps")
+load(":providers.bzl", "JsInfo", "create_js_info")
 
 def _js_library_impl(ctx):
     actions = ctx.actions
-    cjs_info = ctx.attr.root[CjsInfo]
-    js_deps = [dep[JsInfo] for dep in ctx.attr.deps]
+    cjs_root = ctx.attr.root[CjsRootInfo]
+    cjs_deps = [dep[CjsInfo] for dep in ctx.attr.deps]
+    cjs_globals = [dep[CjsInfo] for dep in ctx.attr.global_deps]
+    js_deps = [dep[JsInfo] for dep in ctx.attr.deps + ctx.attr.global_deps]
+    default_deps = [target[DefaultInfo] for target in ctx.attr.deps + ctx.attr.data]
     output_ = output(label = ctx.label, actions = actions)
     prefix = ctx.attr.prefix
     strip_prefix = ctx.attr.strip_prefix
-    workspace_name = ctx.workspace_name
     label = ctx.label
 
     js = []
@@ -30,69 +32,117 @@ def _js_library_impl(ctx):
             )
         js.append(js_)
 
-    transitive_deps = depset(
-        target_deps(cjs_info.package, ctx.attr.deps) + create_extra_deps(cjs_info.package, label, ctx.attr.extra_deps),
-        transitive = [js_info.transitive_deps for js_info in js_deps],
-    )
-    transitive_files = depset(
-        cjs_info.descriptors + js,
-        transitive = [js_info.transitive_files for js_info in js_deps],
-    )
-    transitive_packages = depset(
-        [cjs_info.package],
-        transitive = [js_info.transitive_packages for js_info in js_deps],
-    )
-    transitive_srcs = depset(
-        transitive = [js_info.transitive_srcs for js_info in js_deps],
+    cjs_info = create_cjs_info(
+        cjs_root = cjs_root,
+        deps = cjs_deps,
+        globals = cjs_globals,
+        label = label,
     )
 
-    js_info = JsInfo(
-        name = cjs_info.name,
-        package = cjs_info.package,
-        transitive_deps = transitive_deps,
-        transitive_files = transitive_files,
-        transitive_packages = transitive_packages,
-        transitive_srcs = transitive_srcs,
+    js_info = create_js_info(
+        files = cjs_root.descriptors + js,
+        deps = js_deps,
     )
 
-    cjs_entries = CjsEntries(
-        name = cjs_info.name,
-        package = cjs_info.package,
-        transitive_packages = transitive_packages,
-        transitive_deps = transitive_deps,
-        transitive_files = depset(
-            transitive = [transitive_files, transitive_srcs],
-        ),
-    )
+    runfiles = ctx.runfiles()
+    runfiles = runfiles.merge_all([default_info.default_runfiles for default_info in default_deps])
+    default_info = DefaultInfo(files = depset(js), runfiles = runfiles)
 
-    default_info = DefaultInfo(files = depset(js))
-
-    return [cjs_entries, default_info, js_info]
+    return [cjs_info, default_info, js_info]
 
 js_library = rule(
     attrs = {
+        "data": attr.label_list(
+            allow_files = True,
+            doc = "Runfile files. These are added to normal runfiles tree, not CommonJS packages.",
+        ),
         "deps": attr.label_list(
             doc = "Dependencies.",
-            providers = [JsInfo],
+            providers = [CjsInfo],
         ),
-        "extra_deps": attr.string_dict(
-            doc = "Extra dependencies.",
+        "global_deps": attr.label_list(
+            doc = "Global dependencies.",
+            providers = [CjsInfo],
         ),
+        "extra_deps": attr.string_dict(),
         "prefix": attr.string(
-            doc = "Prefix to add. Defaults to empty.",
+            doc = "Prefix to add.",
         ),
         "root": attr.label(
             mandatory = True,
-            providers = [CjsInfo],
+            providers = [CjsRootInfo],
         ),
         "srcs": attr.label_list(
             allow_files = True,
             doc = "JavaScript files and data.",
         ),
         "strip_prefix": attr.string(
-            doc = "Remove prefix, based on runfile path. Defaults to <workspace>/<package>.",
+            doc = "Package-relative prefix to remove.",
         ),
     },
     doc = "JavaScript library",
     implementation = _js_library_impl,
+)
+
+def _js_export_impl(ctx):
+    cjs_dep = ctx.attr.dep[CjsInfo]
+    cjs_deps = [target[CjsInfo] for target in ctx.attr.deps]
+    cjs_extra = [target[CjsInfo] for target in ctx.attr.extra_deps]
+    cjs_globals = [target[CjsInfo] for target in ctx.attr.global_deps]
+    default_dep = ctx.attr.dep[DefaultInfo]
+    package_name = ctx.attr.package_name
+    js_dep = ctx.attr.dep[JsInfo]
+    js_deps = [target[JsInfo] for target in ctx.attr.global_deps + ctx.attr.deps + ctx.attr.extra_deps]
+    label = ctx.label
+
+    default_info = default_dep
+
+    cjs_info = create_cjs_info(
+        cjs_root = struct(
+            package = cjs_dep.package,
+            name = package_name,
+        ),
+        deps = cjs_deps,
+        globals = cjs_globals,
+        label = label,
+    )
+    cjs_info = CjsInfo(
+        name = cjs_dep.name,
+        package = cjs_info.package,
+        transitive_links = depset(transitive = [c.transitive_links for c in [cjs_dep, cjs_info] + cjs_extra]),
+        transitive_packages = depset(transitive = [c.transitive_packages for c in [cjs_dep, cjs_info] + cjs_extra]),
+    )
+
+    js_info = create_js_info(
+        deps = [js_dep] + js_deps,
+    )
+
+    return [cjs_info, default_info, js_info]
+
+js_export = rule(
+    attrs = {
+        "deps": attr.label_list(
+            doc = "Dependencies to add.",
+            providers = [CjsInfo, JsInfo],
+        ),
+        "extra_deps": attr.label_list(
+            doc = "Extra dependencies to add.",
+            providers = [CjsInfo, JsInfo],
+        ),
+        "global_deps": attr.label_list(
+            doc = "Global dependencies to add.",
+            providers = [CjsInfo, JsInfo],
+        ),
+        "package_name": attr.string(
+            doc = "Dependency name. Defaults to root's name.",
+        ),
+        "dep": attr.label(
+            doc = "JavaScript library.",
+            mandatory = True,
+            providers = [CjsInfo, JsInfo],
+        ),
+    },
+    doc = "Add dependencies, or use alias.",
+    implementation = _js_export_impl,
+    provides = [CjsInfo, JsInfo],
 )

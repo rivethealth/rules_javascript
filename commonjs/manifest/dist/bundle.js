@@ -47,6 +47,10 @@ var JsonFormat;
         return new ArrayJsonFormat(elementFormat);
     }
     JsonFormat.array = array;
+    function arrayBuffer() {
+        return new ArrayBufferFormat();
+    }
+    JsonFormat.arrayBuffer = arrayBuffer;
     function map(keyFormat, valueFormat) {
         return new MapJsonFormat(keyFormat, valueFormat);
     }
@@ -195,14 +199,22 @@ class SetJsonFormat {
     }
 }
 
+var PackageDeps;
+(function (PackageDeps) {
+    function json() {
+        return JsonFormat.map(JsonFormat.string(), JsonFormat.string());
+    }
+    PackageDeps.json = json;
+})(PackageDeps || (PackageDeps = {}));
+/**
+ * Package
+ */
 class Package {
 }
 (function (Package) {
     function json() {
         return JsonFormat.object({
-            id: JsonFormat.string(),
-            deps: JsonFormat.map(JsonFormat.string(), JsonFormat.string()),
-            path: JsonFormat.string(),
+            deps: PackageDeps.json(),
         });
     }
     Package.json = json;
@@ -210,7 +222,10 @@ class Package {
 var PackageTree;
 (function (PackageTree) {
     function json() {
-        return JsonFormat.map(JsonFormat.string(), Package.json());
+        return JsonFormat.object({
+            globals: PackageDeps.json(),
+            packages: JsonFormat.map(JsonFormat.string(), Package.json()),
+        });
     }
     PackageTree.json = json;
 })(PackageTree || (PackageTree = {}));
@@ -4427,22 +4442,12 @@ async function main() {
     function depArg(value) {
         return JSON.parse(value);
     }
-    function globalArg(value) {
-        return JSON.parse(value);
-    }
     function packageArg(value) {
         return JSON.parse(value);
     }
     const parser = new argparse.ArgumentParser({
-        description: "Create package manifest",
+        description: "Create package manifest.",
         prog: "package-manifest",
-    });
-    parser.add_argument("--global", {
-        action: "append",
-        default: [],
-        dest: "globals",
-        help: "Global dependencies",
-        type: globalArg,
     });
     parser.add_argument("--package", {
         action: "append",
@@ -4460,51 +4465,83 @@ async function main() {
     });
     parser.add_argument("output", { help: "Output" });
     const args = parser.parse_args();
-    const packages = new Map();
-    for (const package_ of args.packages) {
-        const existingPackage = packages.get(package_.id);
-        if (existingPackage) {
-            throw new Error(`Multiple instances of package ${package_.id} from ${existingPackage.label} and ${package_.label}`);
-        }
-        const p = {
-            label: package_.label,
-            deps: new Map(),
-            path: package_.path,
-        };
-        if (package_.id && package_.name) {
-            p.deps.set(package_.name, { label: p.label, id: package_.id });
-        }
-        packages.set(package_.id, p);
-    }
-    for (const dep of args.deps) {
-        const package_ = packages.get(dep.id);
-        if (!package_) {
-            throw new Error(`Package ${dep.id} does not exist, but is referenced by ${dep.label}`);
-        }
-        const existingDep = package_.deps.get(dep.name);
-        if (existingDep && existingDep.id !== dep.dep) {
-            throw new Error(`Multiple dependencies ${existingDep.id} (${existingDep.label}) and ${dep.dep} (${dep.label}) for ${dep.name} in ${dep.id}`);
-        }
-        package_.deps.set(dep.name, { label: dep.label, id: dep.dep });
-    }
-    for (const package_ of packages.values()) {
-        for (const dep of args.globals) {
-            const existingDep = package_.deps.get(dep.name);
-            if (!existingDep) {
-                package_.deps.set(dep.name, { label: "", id: dep.id });
-            }
-        }
-    }
-    const tree = new Map([...packages.entries()].map(([id, package_]) => [
-        id,
-        {
-            path: package_.path,
-            deps: new Map([...package_.deps.entries()].map(([name, dep]) => [name, dep.id])),
-        },
-    ]));
+    const packages = getPackages(args.packages);
+    const globals = new Map();
+    addDeps(args.deps, packages, globals);
+    const tree = getPackageTree(packages, globals);
     await fs__namespace.promises.writeFile(args.output, JsonFormat.stringify(PackageTree.json(), tree));
 }
 main().catch((e) => {
     console.error(e.stack);
     process.exit(1);
 });
+function getPackages(packageArgs) {
+    const packages = new Map();
+    const packageIdByPath = new Map();
+    for (const packageArg of packageArgs) {
+        const existingPackage = packages.get(packageArg.id);
+        if (existingPackage) {
+            throw new Error(`Multiple instances of package ID ${packageArg.id} from ${existingPackage.label} and ${packageArg.label}`);
+        }
+        packages.set(packageArg.id, {
+            label: packageArg.label,
+            name: packageArg.name,
+            deps: new Map(),
+            path: packageArg.path,
+        });
+        const existingId = packageIdByPath.get(packageArg.path);
+        if (existingId) {
+            const existingPackage = packages.get(existingId);
+            throw new Error(`Multiple instances of package path ${packageArg.id} from ${existingPackage.label} and ${packageArg.label}`);
+        }
+    }
+    return packages;
+}
+function addDeps(depArgs, packages, globals) {
+    for (const depArg of depArgs) {
+        if (depArg.id == null) {
+            const depPackage = packages.get(depArg.dep);
+            if (!depPackage) {
+                throw new Error(`Package ${depArg.dep} does not exist, but is referenced globally (${depArg.label})`);
+            }
+            const existingDep = globals.get(depArg.name);
+            if (!existingDep) {
+                globals.set(depArg.name, {
+                    label: depArg.label,
+                    path: depPackage.path,
+                });
+            }
+            else if (existingDep.path !== depArg.dep) {
+                throw new Error(`Multiple globals for ${depArg.name}: ${existingDep.path} (via ${existingDep.label}) and ${depArg.dep} (via ${depArg.label})`);
+            }
+            continue;
+        }
+        const package_ = packages.get(depArg.id);
+        if (!package_) {
+            throw new Error(`Package ${depArg.id} does not exist, but is referenced (${depArg.label})`);
+        }
+        const depPackage = packages.get(depArg.dep);
+        if (!depPackage) {
+            throw new Error(`Package ${depArg.dep} does not exist, but is referenced by ${depArg.id} (${depArg.label})`);
+        }
+        const existingDep = depPackage.deps.get(depArg.name);
+        if (existingDep && existingDep.path !== depArg.dep) {
+            throw new Error(`Package ${depArg.id} has multiple dependencies for ${depArg.name}: ${existingDep.path} (via ${existingDep.label}) and ${depArg.dep} (via ${depArg.label})`);
+        }
+        package_.deps.set(depArg.name, {
+            label: depArg.label,
+            path: depPackage.path,
+        });
+    }
+}
+function getPackageTree(packages, globals) {
+    const resultGlobals = new Map([...globals.entries()].map(([name, dep]) => [name, dep.path]));
+    const resultPackages = new Map([...packages.values()].map((package_) => [
+        package_.path,
+        {
+            name: package_.name,
+            deps: new Map([...package_.deps.entries()].map(([name, dep]) => [name, dep.path])),
+        },
+    ]));
+    return { globals: resultGlobals, packages: resultPackages };
+}

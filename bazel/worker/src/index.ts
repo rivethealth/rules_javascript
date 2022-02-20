@@ -3,7 +3,7 @@ import {
   Input,
   WorkRequest,
   WorkResponse,
-} from "@bazel_tools/src/main/protobuf/worker_protocol";
+} from "bazel_tools/src/main/protobuf/worker_protocol";
 import { readFromStream } from "./protobuf";
 
 class CliError extends Error {}

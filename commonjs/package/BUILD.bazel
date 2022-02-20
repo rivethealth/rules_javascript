@@ -1,6 +1,6 @@
 load("//commonjs:rules.bzl", "cjs_root")
 load("//javascript:rules.bzl", "js_library")
-load("//typescript:rules.bzl", "ts_library", "tsconfig")
+load("//typescript:rules.bzl", "ts_library")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -14,7 +14,8 @@ ts_library(
     name = "lib",
     srcs = glob(["src/**/*.ts"]),
     compiler = "//rules:tsc",
-    config = ":tsconfig",
+    config = "tsconfig.json",
+    config_dep = ":tsconfig",
     root = ":root",
     deps = [
         "//util/json:lib",
@@ -22,9 +23,9 @@ ts_library(
     ],
 )
 
-tsconfig(
+js_library(
     name = "tsconfig",
-    src = "tsconfig.json",
-    dep = "//rules:tsconfig",
+    srcs = ["tsconfig.json"],
     root = ":root",
+    deps = ["//rules:tsconfig"],
 )

@@ -1,4 +1,4 @@
-load("//commonjs:providers.bzl", "CjsInfo", "create_dep")
+load("//commonjs:providers.bzl", "CjsInfo", "create_link")
 load("//javascript:providers.bzl", "JsInfo")
 load("//util:path.bzl", "output_name")
 load(":aspects.bzl", "js_proto_aspect")
@@ -53,9 +53,9 @@ def _js_proto_libraries_impl(ctx):
 
         js_deps = list(lib.js_deps) + [js_infos[label] for label in lib.deps]
 
-        transitive_deps = depset(
-            [create_dep(id = cjs_info.package.id, name = js_info.name, dep = js_info.package.id, label = lib.label) for js_info in js_deps],
-            transitive = [js_info.transitive_deps for js_info in js_deps],
+        transitive_links = depset(
+            [create_link(id = cjs_info.package.id, name = js_info.name, dep = js_info.package.id, label = lib.label) for js_info in js_deps],
+            transitive = [js_info.transitive_links for js_info in js_deps],
         )
         transitive_packages = depset(
             [cjs_info.package],
@@ -72,7 +72,7 @@ def _js_proto_libraries_impl(ctx):
         js_infos[lib.label] = JsInfo(
             name = cjs_info.name,
             package = cjs_info.package,
-            transitive_deps = transitive_deps,
+            transitive_links = transitive_links,
             transitive_files = transitive_files,
             transitive_srcs = transitive_srcs,
             transitive_packages = transitive_packages,

@@ -4,8 +4,7 @@ load("//javascript:workspace.bzl", "js_npm_plugin")
 def npm_import_external_rule(plugins):
     def impl(ctx):
         deps = ctx.attr.deps
-        extra_deps = ctx.attr.extra_deps
-        id = ctx.attr.id
+        extra_deps = {id: [json.decode(d) for d in deps] for id, deps in ctx.attr.extra_deps}
         package_name = ctx.attr.package_name
 
         ctx.download_and_extract(
@@ -23,8 +22,6 @@ def npm_import_external_rule(plugins):
         if files_result.return_code:
             fail("Could not list files")
         files = files_result.stdout.split("\n")
-        sass = False and any([file.endswith(".scss") for file in files])
-        typescript = any([file.endswith(".d.ts") for file in files])
 
         # if ctx.name.startswith("npm_protobufjs"):
         #     # protobufjs attempts to run npm install dependencies(!!)
@@ -46,13 +43,9 @@ def npm_import_external_rule(plugins):
         #     deps.append("@npm_uglify_js3.11.6//:lib")
         #     deps.append("@npm_estraverse5.2.0//:lib")
 
-        build = """
-    package(default_visibility = ["//visibility:public"])
-        """.strip()
-        build += "\n"
+        build = ""
 
         package = struct(
-            id = id,
             deps = deps,
             extra_deps = extra_deps,
             name = package_name,
@@ -70,23 +63,21 @@ def npm_import_external_rule(plugins):
         implementation = impl,
         attrs = {
             "deps": attr.string_list(
-                doc = "Dependencies",
+                doc = "Dependencies.",
             ),
-            "extra_deps": attr.string_dict(
+            "extra_deps": attr.string_list_dict(
                 doc = "Extra dependencies.",
             ),
-            "id": attr.string(
-                mandatory = True,
+            "integrity": attr.string(
+                doc = "Integrity",
             ),
             "package_name": attr.string(
+                doc = "Package name.",
                 mandatory = True,
             ),
             "urls": attr.string_list(
                 doc = "URLs",
                 mandatory = True,
-            ),
-            "integrity": attr.string(
-                doc = "Integrity",
             ),
         },
     )
@@ -96,10 +87,7 @@ def npm_import_rule(plugins):
         packages = ctx.attr.packages
 
         for package_name, repo in packages.items():
-            build = """
-    package(default_visibility = ["//visibility:public"])
-            """.strip()
-            build += "\n"
+            build = ""
 
             for plugin in plugins:
                 content = plugin.alias_build(repo)
@@ -113,17 +101,18 @@ def npm_import_rule(plugins):
         implementation = impl,
         attrs = {
             "packages": attr.string_dict(
-                doc = "Packages",
+                mandatory = True,
+                doc = "Packages.",
             ),
         },
     )
 
-def package_repo_name(name):
+def package_repo_name(prefix, name):
     if name.startswith("@"):
         name = name[len("@"):]
     name = name.replace("@", "_")
     name = name.replace("/", "_")
-    return name
+    return "%s_%s" % (prefix, name)
 
 DEFAULT_PLUGINS = [
     cjs_npm_plugin(),
@@ -134,16 +123,17 @@ def npm(name, packages, roots, plugins = DEFAULT_PLUGINS):
     npm_import_external = npm_import_external_rule(plugins)
     npm_import = npm_import_rule(plugins)
 
-    for package in packages:
-        repo_name = package_repo_name(package["id"])
+    for id, package in packages.items():
+        repo_name = package_repo_name(name, id)
+
+        extra_deps = {id: [json.encode(d) for d in deps] for id, deps in package["extra_deps"].items()}
         npm_import_external(
-            name = "%s_%s" % (name, repo_name),
+            name = repo_name,
             package_name = package["name"],
-            deps = ["%s_%s" % (name, package_repo_name(dep["dep"])) for dep in package["deps"]],
-            id = "%s_%s" % (name, repo_name),
-            extra_deps = {n: "%s_%s" % (name, package_repo_name(id)) for n, id in package.get("extra_deps", {}).items()},
+            deps = [package_repo_name(name, dep["id"]) for dep in package["deps"]],
+            extra_deps = extra_deps,
             urls = [package["url"]],
-            integrity = package["integrity"] if "integrity" in package and not package["integrity"].startswith("sha1-") else None,
+            integrity = package.get("integrity"),
         )
-    root_packages = {root["name"]: "%s_%s" % (name, package_repo_name(root["dep"])) for root in roots}
+    root_packages = {root["name"]: package_repo_name(name, root["id"]) for root in roots}
     npm_import(name = name, packages = root_packages)

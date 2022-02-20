@@ -62,8 +62,8 @@ export function createVfs(
     path: "/",
   };
 
-  for (const [id, package_] of packageTree.entries()) {
-    const packageNode = addPackageNode(root, resolve(package_.path));
+  for (const [path, package_] of packageTree.packages.entries()) {
+    const packageNode = addPackageNode(root, resolve(path));
     const nodeModules: VfsNode.Path = {
       type: VfsNode.PATH,
       hardenSymlinks: false,
@@ -72,19 +72,24 @@ export function createVfs(
     };
     packageNode.extraChildren.set("node_modules", nodeModules);
     for (const [name, dep] of package_.deps) {
-      const packageDep = packageTree.get(dep);
-      if (!packageDep) {
-        throw new Error(`Package ${dep} required by ${id} does not exist`);
-      }
       try {
-        addDep(nodeModules, name, resolve(packageDep.path));
+        addDep(nodeModules, name, resolve(dep));
       } catch (e) {
         if (!(e instanceof DependencyConflictError)) {
           throw e;
         }
         throw new Error(
-          `Dependency "${name}" of "${id}" conflicts with another`,
+          `Dependency "${name}" of "${path}" conflicts with another`,
         );
+      }
+    }
+    for (const [name, dep] of packageTree.globals.entries()) {
+      try {
+        addDep(nodeModules, name, resolve(dep));
+      } catch (e) {
+        if (!(e instanceof DependencyConflictError)) {
+          throw e;
+        }
       }
     }
   }

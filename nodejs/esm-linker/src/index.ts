@@ -15,7 +15,7 @@ const packageTree = JsonFormat.parse(
   fs.readFileSync(manifestPath, "utf8"),
 );
 
-const resolver = Resolver.create(packageTree, true);
+const resolver = Resolver.create(packageTree, process.env.RUNFILES_DIR);
 
 export function resolve(
   specifier: string,

@@ -1,69 +1,19 @@
-load("//commonjs:providers.bzl", "create_dep", "create_global")
-
 TsInfo = provider(
     doc = "TypeScript",
     fields = {
-        "name": "Package name",
-        "package": "CommonJS package",
-        "transitive_deps": "Depset of extra links",
         "transitive_files": "Depset of files (descriptors, declarations)",
-        "transitive_packages": "Depset of packages",
-        "transitive_srcs": "Depset of sources",
     },
 )
 
 TsCompilerInfo = provider(
     doc = "TypeScript compiler",
     fields = {
-        "bin": "Executable",
-        "transpile_bin": "Executable",
-        "js_deps": "JS deps",
-        "ts_deps": "TS deps",
+        "bin": "Compile executable.",
+        "transpile_bin": "JS transpile executable.",
+        "runtime_cjs": "List of runtime CjsInfo.",
+        "runtime_js": "Runtime files.",
     },
 )
-
-TsconfigInfo = provider(
-    doc = "TypeScript config file",
-    fields = {
-        "file": "Config file",
-        "name": "Package name",
-        "package": "Package",
-        "transitive_deps": "Depset of extra links",
-        "transitive_files": "Depset of files (descriptors, config files)",
-        "transitive_packages": "Depset of packages",
-    },
-)
-
-def target_deps(package, targets):
-    return [
-        create_dep(id = package.id, name = target[TsInfo].name, dep = target[TsInfo].package.id, label = target.label)
-        for target in targets
-        if TsInfo in target
-    ]
-
-def create_deps(package, label, ts_infos):
-    return [
-        create_dep(id = package.id, name = ts_info.name, dep = ts_info.package.id, label = label)
-        for ts_info in ts_infos
-    ]
-
-def target_globals(targets):
-    return [
-        create_global(id = target[TsInfo].package.id, name = target[TsInfo].name)
-        for target in targets
-        if TsInfo in target
-    ]
-
-def create_extra_deps(package, label, extra_deps):
-    return [
-        create_dep(
-            dep = id,
-            id = package.id,
-            label = label,
-            name = name,
-        )
-        for name, id in extra_deps.items()
-    ]
 
 def is_declaration(path):
     return path.endswith(".d.ts") or path.endswith(".d.cts") or path.endswith(".d.mts")
@@ -112,3 +62,13 @@ def js_path(path):
 
 def map_path(path):
     return path + ".map"
+
+def module(module):
+    if module == "node":
+        return "commonjs"
+    return module
+
+def create_ts_info(files = [], deps = []):
+    return TsInfo(
+        transitive_files = depset(files, transitive = [ts_info.transitive_files for ts_info in deps]),
+    )

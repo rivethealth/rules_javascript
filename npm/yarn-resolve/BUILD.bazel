@@ -1,6 +1,7 @@
 load("//commonjs:rules.bzl", "cjs_root")
+load("//javascript:rules.bzl", "js_library")
 load("//nodejs:rules.bzl", "nodejs_binary")
-load("//typescript:rules.bzl", "ts_library", "tsconfig")
+load("//typescript:rules.bzl", "ts_library")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -10,18 +11,19 @@ cjs_root(
     descriptors = ["package.json"],
 )
 
-tsconfig(
+js_library(
     name = "config",
-    src = "tsconfig.json",
-    dep = "//rules:tsconfig",
+    srcs = ["tsconfig.json"],
     root = ":root",
+    deps = ["//rules:tsconfig"],
 )
 
 ts_library(
     name = "lib",
     srcs = glob(["src/**/*.ts"]),
     compiler = "//rules:tsc",
-    config = ":config",
+    config = "tsconfig.json",
+    config_dep = ":config",
     root = ":root",
     deps = [
         "//util/json:lib",
@@ -38,4 +40,5 @@ nodejs_binary(
     data = ["//npm:yarn"],
     dep = ":lib",
     main = "src/main.js",
+    node_options = ["--enable-source-maps"],
 )

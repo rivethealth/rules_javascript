@@ -37,5 +37,6 @@ configure_webpack(
 webpack_bundle(
     name = "bundle",
     dep = ":lib",
+    root = ":root",
     webpack = ":webpack",
 )

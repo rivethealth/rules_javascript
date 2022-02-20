@@ -1,6 +1,6 @@
 load("@bazel_skylib//lib:shell.bzl", "shell")
-load("//commonjs:providers.bzl", "CjsEntries", "CjsInfo", "create_dep", "create_global", "create_package", "gen_manifest", "package_path")
-load("//javascript:providers.bzl", "JsInfo")
+load("//commonjs:providers.bzl", "CjsInfo", "create_package", "gen_manifest", "package_path")
+load("//javascript:providers.bzl", "JsInfo", "create_js_info")
 load("//util:path.bzl", "output", "runfile_path")
 load(":providers.bzl", "NODE_MODULES_PREFIX", "modules_links", "package_path_name")
 
@@ -46,20 +46,26 @@ nodejs_simple_binary = rule(
 def _nodejs_binary_implementation(ctx):
     actions = ctx.actions
     env = ctx.attr.env
-    include_sources = ctx.attr.include_sources
     manifest = ctx.attr._manifest[DefaultInfo]
-    js_info = ctx.attr.dep[0][JsInfo]
-    js_deps = [js_info] + [dep[JsInfo] for dep in ctx.attr.global_deps + ctx.attr.other_deps]
-    js_globals = [dep[JsInfo] for dep in ctx.attr.global_deps]
+    js_dep = ctx.attr.dep[0][JsInfo]
+    js_deps = [js_dep] + [dep[JsInfo] for dep in ctx.attr.other_deps]
+    cjs_dep = ctx.attr.dep[0][CjsInfo]
+    cjs_deps = [cjs_dep] + [dep[CjsInfo] for dep in ctx.attr.other_deps]
+    module_linker = ctx.file._module_linker
     name = ctx.attr.name
     node_options = ctx.attr.node_options
+    preload = ctx.files.preload
+    esm_linker = ctx.file._esm_linker
+    runner = ctx.file._runner
+    runtime = ctx.file._runtime
+    workspace_name = ctx.workspace_name
 
     nodejs_toolchain = ctx.toolchains["@better_rules_javascript//nodejs:toolchain_type"]
 
-    transitive_packages = depset(transitive = [dep.transitive_packages for dep in js_deps])
+    transitive_packages = depset(transitive = [dep.transitive_packages for dep in cjs_deps])
 
     def package_path(package):
-        return "%s/%s" % (NODE_MODULES_PREFIX, package_path_name(package.id))
+        return "%s/%s" % (NODE_MODULES_PREFIX, package_path_name(workspace_name, package.short_path))
 
     package_manifest = actions.declare_file("%s.packages.json" % name)
     gen_manifest(
@@ -67,54 +73,54 @@ def _nodejs_binary_implementation(ctx):
         manifest_bin = manifest,
         manifest = package_manifest,
         packages = transitive_packages,
-        deps = depset(transitive = [dep.transitive_deps for dep in js_deps]),
-        globals = [create_global(id = dep.package.id, name = dep.name) for dep in js_globals],
+        deps = depset(transitive = [dep.transitive_links for dep in cjs_deps]),
         package_path = package_path,
     )
 
-    main_module = "%s/%s/%s" % (NODE_MODULES_PREFIX, package_path_name(js_info.package.id), ctx.attr.main)
+    main_module = "%s/%s/%s" % (NODE_MODULES_PREFIX, package_path_name(workspace_name, cjs_dep.package.short_path), ctx.attr.main)
 
     bin = actions.declare_file(name)
-    for file in ctx.files.preload:
+    for file in preload:
         node_options.append("-r")
         node_options.append("./%s" % file.short_path)
 
     actions.expand_template(
-        template = ctx.file._runner,
+        template = runner,
         output = bin,
         substitutions = {
             "%{env}": " ".join(["%s=%s" % (name, shell.quote(value)) for name, value in env.items()]),
-            "%{esm_loader}": shell.quote(runfile_path(ctx.workspace_name, ctx.file._esm_linker)),
+            "%{esm_loader}": shell.quote(runfile_path(workspace_name, esm_linker)),
             "%{main_module}": shell.quote(main_module),
-            "%{node}": shell.quote(runfile_path(ctx.workspace_name, nodejs_toolchain.nodejs.bin)),
-            "%{node_options}": " ".join([shell.quote(option) for option in ctx.attr.node_options]),
-            "%{package_manifest}": shell.quote(runfile_path(ctx.workspace_name, package_manifest)),
-            "%{module_linker}": shell.quote(runfile_path(ctx.workspace_name, ctx.file._module_linker)),
-            "%{runtime}": shell.quote(runfile_path(ctx.workspace_name, ctx.file._runtime)),
+            "%{node}": shell.quote(runfile_path(workspace_name, nodejs_toolchain.nodejs.bin)),
+            "%{node_options}": " ".join([shell.quote(option) for option in node_options]),
+            "%{package_manifest}": shell.quote(runfile_path(workspace_name, package_manifest)),
+            "%{module_linker}": shell.quote(runfile_path(workspace_name, module_linker)),
+            "%{runtime}": shell.quote(runfile_path(workspace_name, runtime)),
         },
         is_executable = True,
     )
 
+    js_info = create_js_info(deps = js_deps)
     symlinks = modules_links(
-        prefix = NODE_MODULES_PREFIX,
+        files = js_info.transitive_files.to_list(),
         packages = transitive_packages.to_list(),
-        files = depset(
-            transitive =
-                [js_info_.transitive_files for js_info_ in js_deps] +
-                [js_info_.transitive_srcs for js_info_ in js_deps if include_sources],
-        ).to_list(),
+        prefix = NODE_MODULES_PREFIX,
+        workspace_name = workspace_name,
     )
 
     runfiles = ctx.runfiles(
-        files = [nodejs_toolchain.nodejs.bin, ctx.file._runtime, ctx.file._esm_linker, ctx.file._module_linker, package_manifest] + ctx.files.preload + ctx.files.data,
+        files =
+            [
+                nodejs_toolchain.nodejs.bin,
+                runtime,
+                esm_linker,
+                module_linker,
+                package_manifest,
+            ] +
+            preload,
         root_symlinks = symlinks,
     )
-
-    for dep in ctx.attr.data:
-        if DefaultInfo not in dep:
-            continue
-        if dep[DefaultInfo].default_runfiles != None:
-            runfiles = runfiles.merge(dep[DefaultInfo].default_runfiles)
+    runfiles = runfiles.merge_all([dep[DefaultInfo].default_runfiles for dep in ctx.attr.data if dep[DefaultInfo].default_runfiles != None])
 
     default_info = DefaultInfo(
         executable = bin,
@@ -135,12 +141,15 @@ _nodejs_transition = transition(
 nodejs_binary = rule(
     attrs = {
         "data": attr.label_list(
-            allow_files = True,
-            providers = [DefaultInfo],
             doc = "Runtime data",
+            allow_files = True,
         ),
-        "dep": attr.label(cfg = _nodejs_transition, mandatory = True, providers = [JsInfo]),
-        "global_deps": attr.label_list(cfg = _nodejs_transition, providers = [JsInfo]),
+        "dep": attr.label(
+            cfg = _nodejs_transition,
+            doc = "JavaScript library.",
+            mandatory = True,
+            providers = [CjsInfo, JsInfo],
+        ),
         "env": attr.string_dict(
             doc = "Environment variables",
         ),
@@ -148,9 +157,6 @@ nodejs_binary = rule(
             mandatory = True,
         ),
         "node_options": attr.string_list(
-        ),
-        "include_sources": attr.bool(
-            default = True,
         ),
         "other_deps": attr.label_list(cfg = _nodejs_transition, providers = [JsInfo]),
         "preload": attr.label_list(
@@ -188,6 +194,10 @@ nodejs_binary = rule(
     toolchains = ["@better_rules_javascript//nodejs:toolchain_type"],
 )
 
+CjsEntries = provider()  # TODO: remove
+create_link = None
+create_global = None
+
 def _nodejs_archive_impl(ctx):
     actions = ctx.actions
     archive_linker = ctx.attr._archive_linker[DefaultInfo]
@@ -197,7 +207,6 @@ def _nodejs_archive_impl(ctx):
     name = ctx.attr.name
 
     package = create_package(
-        id = "_",
         name = "",
         path = "_",
         short_path = "_",
@@ -205,16 +214,16 @@ def _nodejs_archive_impl(ctx):
     )
 
     package_deps = [
-        create_dep(id = "_", dep = dep[CjsEntries].package.id, name = dep[CjsEntries].name, label = dep.label)
+        create_link(id = "_", dep = dep[CjsEntries].package.id, name = dep[CjsEntries].name, label = dep.label)
         for dep in ctx.attr.deps
     ] + [
-        create_dep(id = "_", dep = dep[CjsInfo].package.id, name = dep[CjsInfo].name, label = dep.label)
+        create_link(id = "_", dep = dep[CjsInfo].package.id, name = dep[CjsInfo].name, label = dep.label)
         for dep in ctx.attr.links
     ]
 
-    transitive_deps = depset(
+    transitive_links = depset(
         package_deps,
-        transitive = [cjs_entries.transitive_deps for cjs_entries in deps],
+        transitive = [cjs_entries.transitive_links for cjs_entries in deps],
     )
     transitive_files = depset(
         transitive = [cjs_entries.transitive_files for cjs_entries in deps],
@@ -230,7 +239,7 @@ def _nodejs_archive_impl(ctx):
         manifest_bin = manifest,
         manifest = package_manifest,
         packages = transitive_packages,
-        deps = transitive_deps,
+        deps = transitive_links,
         globals = [],
         package_path = package_path,
     )
@@ -349,9 +358,10 @@ def _nodejs_binary_archive_impl(ctx):
     archive_runner = ctx.file._archive_runner
     js_info = ctx.attr.dep[0][JsInfo]
     deps = [js_info] + js_globals
+    workspace_name = workspace_name
 
-    transitive_deps = depset(
-        transitive = [js_info.transitive_deps for js_info in deps],
+    transitive_links = depset(
+        transitive = [js_info.transitive_links for js_info in deps],
     )
     transitive_files = depset(
         transitive = [js_info.transitive_files for js_info in deps],
@@ -363,7 +373,7 @@ def _nodejs_binary_archive_impl(ctx):
         transitive = [js_info.transitive_srcs for js_info in deps],
     )
 
-    main_module = "%s/%s" % (package_path_name(js_info.package.id), ctx.attr.main)
+    main_module = "%s/%s" % (package_path_name(workspace_name, js_info.package.id), ctx.attr.main)
 
     bin = actions.declare_file(name)
     actions.expand_template(
@@ -383,7 +393,7 @@ def _nodejs_binary_archive_impl(ctx):
         manifest_bin = manifest,
         manifest = package_manifest,
         packages = transitive_packages,
-        deps = transitive_deps,
+        deps = transitive_links,
         globals = [create_global(id = dep.package.id, name = dep.name) for dep in js_globals],
         package_path = package_path,
     )

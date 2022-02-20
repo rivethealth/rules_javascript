@@ -8,6 +8,7 @@ module.exports = {
     "protobufjs",
     "protobufjs/minimal",
     "long",
+    "tslib",
     "typescript",
   ],
   inlineDynamicImports: true,

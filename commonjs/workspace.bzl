@@ -13,10 +13,8 @@ cjs_root(
     descriptors = [":files"],
     package_name = {package_name},
     path = "npm",
-    id = {package_id},
 )
     """.strip().format(
-        package_id = json.encode(package.id),
         package_name = json.encode(package.name),
     )
 

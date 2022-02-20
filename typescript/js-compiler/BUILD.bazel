@@ -2,7 +2,7 @@ load("@rules_file//generate:rules.bzl", "generate")
 load("//commonjs:rules.bzl", "cjs_root")
 load("//javascript:rules.bzl", "js_library")
 load("//rollup:rules.bzl", "configure_rollup", "rollup_bundle")
-load("//typescript:rules.bzl", "ts_library", "tsconfig")
+load("//typescript:rules.bzl", "ts_library")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -26,8 +26,8 @@ generate(
     name = "gen",
     srcs = ["dist/bundle.js"],
     data = [":bundle"],
-    data_prefix = "typescript/js-compiler/dist",
-    data_strip_prefix = "typescript/js-compiler/bundle",
+    data_prefix = "dist",
+    data_strip_prefix = "bundle",
 )
 
 cjs_root(
@@ -40,6 +40,8 @@ ts_library(
     name = "lib",
     srcs = glob(["src/**/*.ts"]),
     compiler = "//rules:tsc",
+    config = "tsconfig.json",
+    config_dep = ":tsconfig",
     root = ":root",
     deps = [
         "@better_rules_javascript//bazel/worker:lib",
@@ -53,11 +55,11 @@ ts_library(
     ],
 )
 
-tsconfig(
+js_library(
     name = "tsconfig",
-    src = "tsconfig.json",
-    dep = "//rules:tsconfig",
+    srcs = ["tsconfig.json"],
     root = ":root",
+    deps = ["//rules:tsconfig"],
 )
 
 js_library(

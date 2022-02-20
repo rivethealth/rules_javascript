@@ -41,6 +41,10 @@ var JsonFormat;
         return new ArrayJsonFormat(elementFormat);
     }
     JsonFormat.array = array;
+    function arrayBuffer() {
+        return new ArrayBufferFormat();
+    }
+    JsonFormat.arrayBuffer = arrayBuffer;
     function map(keyFormat, valueFormat) {
         return new MapJsonFormat(keyFormat, valueFormat);
     }
@@ -189,14 +193,22 @@ class SetJsonFormat {
     }
 }
 
+var PackageDeps;
+(function (PackageDeps) {
+    function json() {
+        return JsonFormat.map(JsonFormat.string(), JsonFormat.string());
+    }
+    PackageDeps.json = json;
+})(PackageDeps || (PackageDeps = {}));
+/**
+ * Package
+ */
 class Package {
 }
 (function (Package) {
     function json() {
         return JsonFormat.object({
-            id: JsonFormat.string(),
-            deps: JsonFormat.map(JsonFormat.string(), JsonFormat.string()),
-            path: JsonFormat.string(),
+            deps: PackageDeps.json(),
         });
     }
     Package.json = json;
@@ -204,7 +216,10 @@ class Package {
 var PackageTree;
 (function (PackageTree) {
     function json() {
-        return JsonFormat.map(JsonFormat.string(), Package.json());
+        return JsonFormat.object({
+            globals: PackageDeps.json(),
+            packages: JsonFormat.map(JsonFormat.string(), Package.json()),
+        });
     }
     PackageTree.json = json;
 })(PackageTree || (PackageTree = {}));
@@ -1259,8 +1274,8 @@ function createVfs(packageTree, runfiles) {
         extraChildren: new Map(),
         path: "/",
     };
-    for (const [id, package_] of packageTree.entries()) {
-        const packageNode = addPackageNode(root, resolve(package_.path));
+    for (const [path, package_] of packageTree.packages.entries()) {
+        const packageNode = addPackageNode(root, resolve(path));
         const nodeModules = {
             type: VfsNode.PATH,
             hardenSymlinks: false,
@@ -1269,18 +1284,24 @@ function createVfs(packageTree, runfiles) {
         };
         packageNode.extraChildren.set("node_modules", nodeModules);
         for (const [name, dep] of package_.deps) {
-            const packageDep = packageTree.get(dep);
-            if (!packageDep) {
-                throw new Error(`Package ${dep} required by ${id} does not exist`);
-            }
             try {
-                addDep(nodeModules, name, resolve(packageDep.path));
+                addDep(nodeModules, name, resolve(dep));
             }
             catch (e) {
                 if (!(e instanceof DependencyConflictError)) {
                     throw e;
                 }
-                throw new Error(`Dependency "${name}" of "${id}" conflicts with another`);
+                throw new Error(`Dependency "${name}" of "${path}" conflicts with another`);
+            }
+        }
+        for (const [name, dep] of packageTree.globals.entries()) {
+            try {
+                addDep(nodeModules, name, resolve(dep));
+            }
+            catch (e) {
+                if (!(e instanceof DependencyConflictError)) {
+                    throw e;
+                }
             }
         }
     }

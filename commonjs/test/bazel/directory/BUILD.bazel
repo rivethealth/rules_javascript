@@ -1,7 +1,7 @@
 load("@better_rules_javascript//commonjs:rules.bzl", "cjs_root")
-load("@better_rules_javascript//file:rules.bzl", "directory")
 load("@better_rules_javascript//javascript:rules.bzl", "js_library")
 load("@better_rules_javascript//nodejs:rules.bzl", "nodejs_binary")
+load("@rules_file//file:rules.bzl", "directory")
 
 cjs_root(
     name = "root",
@@ -24,7 +24,6 @@ js_library(
     name = "lib",
     srcs = [":src"],
     root = ":root",
-    strip_prefix = "root",
 )
 
 nodejs_binary(
