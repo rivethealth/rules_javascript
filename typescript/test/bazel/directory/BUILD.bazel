@@ -15,7 +15,7 @@ directory(
         "src/main.ts",
     ],
     output = "src",
-    strip_prefix = "directory/src",
+    strip_prefix = "src",
 )
 
 ts_library(

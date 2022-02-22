@@ -12,6 +12,8 @@ if [ -z "${RUNFILES_DIR-}" ]; then
   fi
 fi
 
+export JEST_CONFIG="$RUNFILES_DIR"/%{config}
+export JEST_ROOTS=%{roots}
 export NODE_PACKAGE_MANIFEST="$RUNFILES_DIR"/%{package_manifest}
 export NODE_FS_PACKAGE_MANIFEST="$RUNFILES_DIR"/%{package_manifest}
 export NODE_FS_RUNFILES=true
@@ -30,7 +32,7 @@ fi
   --preserve-symlinks-main \
   %{node_options} \
   "$(realpath -s "$RUNFILES_DIR"/%{main_module})" \
-  --config="$RUNFILES_DIR"/%{config} \
+  --config="$RUNFILES_DIR"/%{config_loader} \
   --no-cache \
   --no-watchman \
   --runInBand \

@@ -52,16 +52,23 @@ def configure_prettier(name, dep, config, config_dep, plugins = [], visibility =
     )
 
     js_export(
+        name = "%s.prettier" % name,
+        dep = dep,
+        deps = plugins,
+        visibility = ["//visibility:private"],
+    )
+
+    js_export(
         name = "%s.main" % name,
         dep = ":%s.lib" % name,
-        global_deps = plugins,
+        extra_deps = [config_dep, ":%s.prettier" % name],
+        visibility = ["//visibility:private"],
     )
 
     nodejs_binary(
         main = "src/index.js",
         name = "%s.bin" % name,
         dep = ":%s.main" % name,
-        other_deps = [config_dep],
         visibility = ["//visibility:private"],
     )
 

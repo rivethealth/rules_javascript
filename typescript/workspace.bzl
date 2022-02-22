@@ -39,6 +39,7 @@ ts_export(
         deps = json.encode([js_npm_label(dep) for dep in package.deps]),
         extra_deps = json.encode([":lib.export.%s" % i for i in range(len(package.extra_deps))]),
     )
+    result += "\n"
 
     for i, (id, deps) in enumerate(package.extra_deps.items()):
         result += """
@@ -50,8 +51,9 @@ ts_export(
         """.strip().format(
             name = json.encode("lib.export.%s" % i),
             dep = json.encode(js_npm_inner_label(id)),
-            deps = json.encode([js_npm_label(dep) for dep in deps]),
+            deps = json.encode([js_npm_inner_label(dep["id"]) for dep in deps]),
         )
+        result += "\n"
 
     return result
 

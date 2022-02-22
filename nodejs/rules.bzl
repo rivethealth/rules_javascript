@@ -48,13 +48,12 @@ def _nodejs_binary_implementation(ctx):
     env = ctx.attr.env
     manifest = ctx.attr._manifest[DefaultInfo]
     js_dep = ctx.attr.dep[0][JsInfo]
-    js_deps = [js_dep] + [dep[JsInfo] for dep in ctx.attr.other_deps]
+    js_deps = [js_dep]
     cjs_dep = ctx.attr.dep[0][CjsInfo]
-    cjs_deps = [cjs_dep] + [dep[CjsInfo] for dep in ctx.attr.other_deps]
+    cjs_deps = [cjs_dep]
     module_linker = ctx.file._module_linker
     name = ctx.attr.name
     node_options = ctx.attr.node_options
-    preload = ctx.files.preload
     esm_linker = ctx.file._esm_linker
     runner = ctx.file._runner
     runtime = ctx.file._runtime
@@ -80,10 +79,6 @@ def _nodejs_binary_implementation(ctx):
     main_module = "%s/%s/%s" % (NODE_MODULES_PREFIX, package_path_name(workspace_name, cjs_dep.package.short_path), ctx.attr.main)
 
     bin = actions.declare_file(name)
-    for file in preload:
-        node_options.append("-r")
-        node_options.append("./%s" % file.short_path)
-
     actions.expand_template(
         template = runner,
         output = bin,
@@ -100,6 +95,10 @@ def _nodejs_binary_implementation(ctx):
         is_executable = True,
     )
 
+    # TODO: remove once scripts are cjs
+    package_json = actions.declare_file("%s.package.json" % ctx.attr.name)
+    ctx.actions.write(package_json, "{}")
+
     js_info = create_js_info(deps = js_deps)
     symlinks = modules_links(
         files = js_info.transitive_files.to_list(),
@@ -107,6 +106,7 @@ def _nodejs_binary_implementation(ctx):
         prefix = NODE_MODULES_PREFIX,
         workspace_name = workspace_name,
     )
+    symlinks["package.json"] = package_json
 
     runfiles = ctx.runfiles(
         files =
@@ -116,8 +116,7 @@ def _nodejs_binary_implementation(ctx):
                 esm_linker,
                 module_linker,
                 package_manifest,
-            ] +
-            preload,
+            ],
         root_symlinks = symlinks,
     )
     runfiles = runfiles.merge_all([dep[DefaultInfo].default_runfiles for dep in ctx.attr.data if dep[DefaultInfo].default_runfiles != None])
@@ -157,11 +156,7 @@ nodejs_binary = rule(
             mandatory = True,
         ),
         "node_options": attr.string_list(
-        ),
-        "other_deps": attr.label_list(cfg = _nodejs_transition, providers = [JsInfo]),
-        "preload": attr.label_list(
-            allow_files = [".js"],
-            doc = "Preload modules",
+            doc = "Node.js options",
         ),
         "_allowlist_function_transition": attr.label(
             default = "@bazel_tools//tools/allowlists/function_transition_allowlist",
@@ -169,10 +164,6 @@ nodejs_binary = rule(
         "_esm_linker": attr.label(
             allow_single_file = [".js"],
             default = "//nodejs/esm-linker:file",
-        ),
-        "_runner": attr.label(
-            allow_single_file = True,
-            default = "//nodejs:runner",
         ),
         "_module_linker": attr.label(
             allow_single_file = True,
@@ -182,6 +173,10 @@ nodejs_binary = rule(
             cfg = "exec",
             executable = True,
             default = "//commonjs/manifest:bin",
+        ),
+        "_runner": attr.label(
+            allow_single_file = True,
+            default = "//nodejs:runner",
         ),
         "_runtime": attr.label(
             allow_single_file = [".js"],

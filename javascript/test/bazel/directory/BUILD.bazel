@@ -12,7 +12,7 @@ directory(
     name = "src",
     srcs = ["src/main.js"],
     output = "src",
-    strip_prefix = "directory/src",
+    strip_prefix = "src",
 )
 
 js_library(

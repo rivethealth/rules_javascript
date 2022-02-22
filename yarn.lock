@@ -5201,30 +5201,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-haste-map@npm:~27.4.0":
-  version: 27.4.5
-  resolution: "jest-haste-map@npm:27.4.5"
-  dependencies:
-    "@jest/types": ^27.4.2
-    "@types/graceful-fs": ^4.1.2
-    "@types/node": "*"
-    anymatch: ^3.0.3
-    fb-watchman: ^2.0.0
-    fsevents: ^2.3.2
-    graceful-fs: ^4.2.4
-    jest-regex-util: ^27.4.0
-    jest-serializer: ^27.4.0
-    jest-util: ^27.4.2
-    jest-worker: ^27.4.5
-    micromatch: ^4.0.4
-    walker: ^1.0.7
-  dependenciesMeta:
-    fsevents:
-      optional: true
-  checksum: acd593ec33b028169c7bf753a5c92eabdb05f87ba9f14e33fe24a4adc1e0a1ff4be0c4757a57a82413263ebbb6b567708b4f3019cb4df899d2d07fcec64bd75a
-  languageName: node
-  linkType: hard
-
 "jest-jasmine2@npm:^27.4.4":
   version: 27.4.4
   resolution: "jest-jasmine2@npm:27.4.4"
@@ -5248,18 +5224,6 @@ __metadata:
     pretty-format: ^27.4.2
     throat: ^6.0.1
   checksum: ddd9edf6ac0b0fcc40b2dbcc29f58fed47310fea2a31094592567e1c06eaee6d2680049775b6eb26152e514149d898b5a3c19e0a30d671cf0ae3d8f1fb3f0088
-  languageName: node
-  linkType: hard
-
-"jest-junit@npm:~13.0.0":
-  version: 13.0.0
-  resolution: "jest-junit@npm:13.0.0"
-  dependencies:
-    mkdirp: ^1.0.4
-    strip-ansi: ^6.0.1
-    uuid: ^8.3.2
-    xml: ^1.0.1
-  checksum: d3a1bf6e98250837d1a9939cd54f29a7bd4fb835af30e92d0d544300fbe634eb86d2b018c79a7a35b123d933bf3e6c96ba13c0161cdefbf66fc3ab771707572e
   languageName: node
   linkType: hard
 
@@ -5528,17 +5492,6 @@ __metadata:
     merge-stream: ^2.0.0
     supports-color: ^8.0.0
   checksum: e4a383d587f9e0fbe247a6c2e3a0dbe7b5cc0f9fe8583d6ffdc9257591563e62ecd6ef4c987dc44ca43a97d430395e36221427325bc839312a7ea62a4b1baedd
-  languageName: node
-  linkType: hard
-
-"jest-worker@npm:^27.4.5":
-  version: 27.4.5
-  resolution: "jest-worker@npm:27.4.5"
-  dependencies:
-    "@types/node": "*"
-    merge-stream: ^2.0.0
-    supports-color: ^8.0.0
-  checksum: eb0b6be412103299c3d8643ad26daf862826ca841bd2a3ff47d2d931804ab7d7f0db2fcdea7dbf47ce8eacb7742b3f2586c2d6ebdaa8d0ac77c65f7b698e7683
   languageName: node
   linkType: hard
 
@@ -7010,8 +6963,6 @@ __metadata:
     eslint: ~8.3.0
     html-webpack-plugin: ~5.5.0
     jest: ~27.4.0
-    jest-haste-map: ~27.4.0
-    jest-junit: ~13.0.0
     long: ~4.0.0
     node-fetch: ^2.0.0
     prettier: ~2.5.0
@@ -8497,13 +8448,6 @@ __metadata:
   version: 3.0.0
   resolution: "xml-name-validator@npm:3.0.0"
   checksum: b3ac459afed783c285bb98e4960bd1f3ba12754fd4f2320efa0f9181ca28928c53cc75ca660d15d205e81f92304419afe94c531c7cfb3e0649aa6d140d53ecb0
-  languageName: node
-  linkType: hard
-
-"xml@npm:^1.0.1":
-  version: 1.0.1
-  resolution: "xml@npm:1.0.1"
-  checksum: 11b5545ef3f8fec3fa29ce251f50ad7b6c97c103ed4d851306ec23366f5fa4699dd6a942262df52313a0cd1840ab26256da253c023bad3309d8ce46fe6020ca0
   languageName: node
   linkType: hard
 

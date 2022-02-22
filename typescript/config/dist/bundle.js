@@ -236,9 +236,7 @@ parser.add_argument("output");
     if (args.module) {
         tsconfig.compilerOptions.module = args.module;
     }
-    if (args.rootDirs.length) {
-        tsconfig.compilerOptions.rootDirs = (args.rootDirs.length ? args.rootDirs : [args.rootDir]).map(relative);
-    }
+    tsconfig.compilerOptions.rootDirs = (args.rootDirs.length ? args.rootDirs : [args.rootDir]).map(relative);
     if (args.declarationDir) {
         tsconfig.compilerOptions.declaration = true;
         tsconfig.compilerOptions.declarationDir = relative(args.declarationDir);

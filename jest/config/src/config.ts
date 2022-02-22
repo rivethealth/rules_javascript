@@ -12,8 +12,8 @@ export class Configuration {
       config.haste = {};
     }
 
-    config.haste.hasteMapModulePath = path.join(__dirname, "./haste-map.js");
     config.haste.forceNodeFilesystemAPI = true;
+    config.haste.hasteMapModulePath = require.resolve("./haste-map.js");
   }
 
   configureJunit(config: Config.InitialOptions) {
@@ -22,7 +22,7 @@ export class Configuration {
       config.reporters = ["default"];
     }
     config.reporters.push([
-      "jest-junit",
+      require.resolve("jest-junit"),
       {
         suiteName: process.env.TEST_TARGET,
         includeConsoleOutput: true,

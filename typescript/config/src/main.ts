@@ -63,11 +63,9 @@ interface Args {
     tsconfig.compilerOptions.module = args.module;
   }
 
-  if (args.rootDirs.length) {
-    tsconfig.compilerOptions.rootDirs = (
-      args.rootDirs.length ? args.rootDirs : [args.rootDir]
-    ).map(relative);
-  }
+  tsconfig.compilerOptions.rootDirs = (
+    args.rootDirs.length ? args.rootDirs : [args.rootDir]
+  ).map(relative);
 
   if (args.declarationDir) {
     tsconfig.compilerOptions.declaration = true;

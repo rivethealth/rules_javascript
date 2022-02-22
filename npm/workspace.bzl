@@ -4,7 +4,7 @@ load("//javascript:workspace.bzl", "js_npm_plugin")
 def npm_import_external_rule(plugins):
     def impl(ctx):
         deps = ctx.attr.deps
-        extra_deps = {id: [json.decode(d) for d in deps] for id, deps in ctx.attr.extra_deps}
+        extra_deps = {id: [json.decode(d) for d in deps] for id, deps in ctx.attr.extra_deps.items()}
         package_name = ctx.attr.package_name
 
         ctx.download_and_extract(
@@ -126,7 +126,10 @@ def npm(name, packages, roots, plugins = DEFAULT_PLUGINS):
     for id, package in packages.items():
         repo_name = package_repo_name(name, id)
 
-        extra_deps = {id: [json.encode(d) for d in deps] for id, deps in package["extra_deps"].items()}
+        extra_deps = {
+            package_repo_name(name, id): [json.encode({"id": package_repo_name(name, d["id"]), "name": d.get("name")}) for d in deps]
+            for id, deps in package["extra_deps"].items()
+        }
         npm_import_external(
             name = repo_name,
             package_name = package["name"],

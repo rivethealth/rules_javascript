@@ -1,6 +1,12 @@
 load("@better_rules_javascript//commonjs:rules.bzl", "cjs_root")
-load("@better_rules_javascript//javascript:rules.bzl", "js_library")
+load("@better_rules_javascript//javascript:rules.bzl", "js_export", "js_library")
 load("@better_rules_javascript//jest:rules.bzl", "jest_test")
+
+js_export(
+    name = "babel",
+    dep = "@npm_babel_core_7.16.0//:lib",
+    deps = ["@npm//@babel/plugin-transform-modules-commonjs:lib"],
+)
 
 cjs_root(
     name = "root",
@@ -26,18 +32,17 @@ js_library(
     root = ":root",
 )
 
+js_export(
+    name = "main",
+    dep = ":test_lib",
+    extra_deps = [":babel"],
+)
+
 jest_test(
     name = "test",
     config = "jest.config.js",
     config_dep = ":jest_config",
     data = ["//:babel_config"],
-    global_deps = [
-        "@npm//@babel/plugin-transform-modules-commonjs:lib",
-        "@npm//jest-junit:lib",
-        "@npm_babel_helper-compilation-targets_7.16.3//:lib",
-        "@npm_source-map-support_0.5.21//:lib",
-    ],
     jest = "@npm//jest:lib",
-    jest_haste_map = "@npm//jest-haste-map:lib",
-    deps = [":test_lib"],
+    deps = [":main"],
 )

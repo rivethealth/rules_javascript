@@ -251,6 +251,7 @@ class Package {
     function json() {
         return JsonFormat.object({
             deps: PackageDeps.json(),
+            name: JsonFormat.string(),
         });
     }
     Package.json = json;

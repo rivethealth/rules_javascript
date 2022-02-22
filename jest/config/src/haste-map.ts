@@ -1,8 +1,8 @@
-const { default: HasteMap } = require("jest-haste-map");
+import HasteMap from "jest-haste-map";
 
-// https://github.com/facebook/jest/issues/11781
-class CustomHasteMap extends HasteMap {
-  _ignore(filePath) {
+// https://github.com/facebook/jest/issues/2145
+class CustomHasteMap extends (<any>HasteMap) {
+  _ignore(filePath: string) {
     const ignorePattern = this._options.ignorePattern;
     const ignoreMatched =
       ignorePattern instanceof RegExp
@@ -12,4 +12,4 @@ class CustomHasteMap extends HasteMap {
   }
 }
 
-module.exports = CustomHasteMap;
+export = CustomHasteMap;

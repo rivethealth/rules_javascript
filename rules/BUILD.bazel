@@ -38,8 +38,12 @@ configure_ts_compiler(
 
 configure_ts_protoc(
     name = "ts_protoc",
-    compiler = ":tsc",
+    options = [
+        "--ts_proto_opt=esModuleInterop=true",
+        "--ts_proto_opt=forceLong=long",
+    ],
     ts_proto = "@better_rules_javascript_npm//ts-proto:lib",
+    tsc = ":tsc",
     deps = [
         "@better_rules_javascript_npm//@types/long:lib",
         "@better_rules_javascript_npm//long:lib",

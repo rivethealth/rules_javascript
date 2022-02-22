@@ -215,6 +215,7 @@ class Package {
     function json() {
         return JsonFormat.object({
             deps: PackageDeps.json(),
+            name: JsonFormat.string(),
         });
     }
     Package.json = json;
@@ -4525,8 +4526,8 @@ function addDeps(depArgs, packages, globals) {
             throw new Error(`Package ${depArg.dep} does not exist, but is referenced by ${depArg.id} (${depArg.label})`);
         }
         const existingDep = depPackage.deps.get(depArg.name);
-        if (existingDep && existingDep.path !== depArg.dep) {
-            throw new Error(`Package ${depArg.id} has multiple dependencies for ${depArg.name}: ${existingDep.path} (via ${existingDep.label}) and ${depArg.dep} (via ${depArg.label})`);
+        if (existingDep && existingDep.path !== depPackage.path) {
+            throw new Error(`Package ${depArg.id} has multiple dependencies for ${depArg.name}: ${existingDep.path} (via ${existingDep.label}) and ${depPackage.path} (via ${depArg.label})`);
         }
         package_.deps.set(depArg.name, {
             label: depArg.label,

@@ -6,10 +6,7 @@ load("//javascript:providers.bzl", "JsInfo", "create_js_info")
 load("//javascript:rules.bzl", "js_export")
 load("//nodejs:rules.bzl", "nodejs_binary")
 load("//util:path.bzl", "output", "output_name", "runfile_path")
-load(":providers.bzl", "TsCompilerInfo", "TsInfo", "create_ts_info", "declaration_path", "is_declaration", "is_directory", "is_json", "js_path", "map_path", "module")
-
-def _target(language):
-    return language
+load(":providers.bzl", "TsCompilerInfo", "TsInfo", "create_ts_info", "declaration_path", "is_declaration", "is_directory", "is_json", "js_path", "map_path", "module", "target")
 
 def configure_ts_compiler(name, ts, tslib = None, visibility = None):
     """Configure TypeScript compiler.
@@ -109,7 +106,7 @@ def _ts_library_impl(ctx):
     src_prefix = ctx.attr.src_prefix
     srcs = ctx.files.srcs
     strip_prefix = ctx.attr.strip_prefix
-    target = ctx.attr.target or _target(ctx.attr._language[BuildSettingInfo].value)
+    target_ = ctx.attr.target or target(ctx.attr._language[BuildSettingInfo].value)
     ts_deps = [target[TsInfo] for target in ctx.attr.compile_deps + ctx.attr.deps if TsInfo in target]
     tsconfig_js = ctx.attr.config_dep and ctx.attr.config_dep[JsInfo]
     tsconfig_path = ctx.attr.config
@@ -126,7 +123,7 @@ def _ts_library_impl(ctx):
     args.add("--module", module_)
     args.add("--out-dir", "%s/%s" % (output_.path, js_prefix) if js_prefix else output_.path)
     args.add("--root-dir", "%s/%s" % (output_.path, src_prefix) if src_prefix else output_.path)
-    args.add("--target", target)
+    args.add("--target", target_)
     args.add(transpile_tsconfig)
     actions.run(
         arguments = [args],
@@ -240,7 +237,7 @@ def _ts_library_impl(ctx):
         args.add("--declaration-dir", "%s/%s" % (output_.path, declaration_prefix) if declaration_prefix else output_.path)
         args.add("--module", module_)
         args.add("--root-dir", "%s/%s" % (output_.path, src_prefix) if src_prefix else output_.path)
-        args.add("--target", target)
+        args.add("--target", target_)
         args.add("--type-root", "%s/node_modules/@types" % cjs_root.package.path)
         args.add(tsconfig)
         actions.run(
@@ -297,8 +294,6 @@ def _ts_library_impl(ctx):
         cjs_root = cjs_root,
         deps = cjs_deps,
     )
-    # if ctx.attr.name == "prettier.lib":
-    #     print(cjs_info.transitive_packages.to_list())
 
     js_info = create_js_info(
         files = cjs_root.descriptors + js,
@@ -372,6 +367,7 @@ ts_library = rule(
         ),
         "_fs_linker": attr.label(
             allow_single_file = [".js"],
+            cfg = "exec",
             default = "//nodejs/fs-linker:file",
         ),
         "_language": attr.label(
@@ -493,20 +489,21 @@ ts_import = rule(
         ),
     },
     doc = "TypeScript library with pre-existing declaration files.",
+    provides = [CjsInfo, JsInfo, TsInfo],
 )
 
 def _ts_export_impl(ctx):
     cjs_dep = ctx.attr.dep[CjsInfo]
     cjs_deps = [target[CjsInfo] for target in ctx.attr.deps]
-    cjs_extra = [target[CjsInfo] for target in ctx.attr.deps]
+    cjs_extra = [target[CjsInfo] for target in ctx.attr.extra_deps]
     cjs_globals = [target[CjsInfo] for target in ctx.attr.global_deps]
     default_dep = ctx.attr.dep[DefaultInfo]
     package_name = ctx.attr.package_name
-    js_dep = ctx.attr.dep[JsInfo]
-    js_deps = [target[JsInfo] for target in ctx.attr.global_deps + ctx.attr.deps if JsInfo in target]
+    js_dep = ctx.attr.dep[JsInfo] if JsInfo in ctx.attr.dep else None
+    js_deps = [target[JsInfo] for target in ctx.attr.global_deps + ctx.attr.deps + ctx.attr.extra_deps if JsInfo in target]
     label = ctx.label
-    ts_dep = ctx.attr.dep[TsInfo]
-    ts_deps = [target[TsInfo] for target in ctx.attr.global_deps + ctx.attr.deps if TsInfo in target]
+    ts_dep = ctx.attr.dep[TsInfo] if TsInfo in ctx.attr.dep else None
+    ts_deps = [target[TsInfo] for target in ctx.attr.global_deps + ctx.attr.deps + ctx.attr.extra_deps if TsInfo in target]
 
     default_info = default_dep
 
@@ -527,11 +524,11 @@ def _ts_export_impl(ctx):
     )
 
     js_info = create_js_info(
-        deps = [js_dep] + js_deps,
+        deps = ([js_dep] if js_dep else []) + js_deps,
     )
 
     ts_info = create_ts_info(
-        deps = [ts_dep] + ts_deps,
+        deps = ([ts_dep] if ts_dep else []) + ts_deps,
     )
 
     return [cjs_info, default_info, js_info, ts_info]
@@ -556,7 +553,7 @@ ts_export = rule(
         "dep": attr.label(
             doc = "JavaScript library.",
             mandatory = True,
-            providers = [CjsInfo, JsInfo, TsInfo],
+            providers = [[CjsInfo, JsInfo], [CjsInfo, TsInfo]],
         ),
     },
     doc = "Add dependencies, or use alias.",

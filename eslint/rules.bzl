@@ -55,6 +55,7 @@ def configure_eslint(name, dep, config, config_dep, plugins = [], visibility = N
     js_export(
         name = "%s.main" % name,
         dep = ":%s.lib" % name,
+        extra_deps = [config_dep],
         global_deps = plugins,
         visibility = ["//visibility:private"],
     )
@@ -62,7 +63,6 @@ def configure_eslint(name, dep, config, config_dep, plugins = [], visibility = N
     nodejs_binary(
         name = "%s.bin" % name,
         dep = ":%s.main" % name,
-        other_deps = [config_dep],
         main = "src/main.js",
         visibility = ["//visibility:private"],
     )

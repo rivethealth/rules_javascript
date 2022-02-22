@@ -30,14 +30,12 @@ configure_webpack(
     config = "webpack.config.js",
     config_dep = ":webpack_config",
     dev_server = "@npm//webpack-dev-server:lib",
-    other_deps = ["@npm_webpack-cli_configtest_1.1.0//:lib"],
     webpack = "@npm//webpack:lib",
 )
 
 webpack_server(
     name = "server",
     dep = ":lib",
-    root = ":root",
     tags = ["ibazel_notify_changes"],
     webpack = ":webpack",
 )

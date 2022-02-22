@@ -23,7 +23,8 @@ angular_library(
         "service.ts",
     ],
     compiler = "//:ngc",
-    config = ":tsconfig",
+    config = "tsconfig.json",
+    config_dep = ":tsconfig",
     resources = ["example.component.html"],
     root = ":root",
     deps = [
@@ -79,15 +80,12 @@ configure_webpack(
     config = "webpack.config.mjs",
     config_dep = ":webpack_config",
     dev_server = "@npm//webpack-dev-server:lib",
-    other_deps = [
-        "@npm_webpack-cli_configtest_1.1.0//:lib",
-        "@npm_babel_helper-compilation-targets_7.16.3//:lib",
-    ],
     webpack = "@npm//webpack:lib",
 )
 
 webpack_bundle(
     name = "bundle",
     dep = ":main",
+    root = ":root",
     webpack = ":webpack",
 )

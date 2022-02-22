@@ -6,23 +6,29 @@ cjs_root(
     name = "main_root",
     package_name = "@better-rules-javascript-test/esm-main",
     descriptors = ["package.json"],
+    path = "main",
+    prefix = "main",
 )
 
 cjs_root(
     name = "lib_root",
     package_name = "@better-rules-javascript-test/esm-lib",
     descriptors = ["package.json"],
+    path = "lib",
+    prefix = "lib",
 )
 
 js_library(
     name = "lib",
     srcs = ["lib.js"],
+    prefix = "lib",
     root = ":lib_root",
 )
 
 js_library(
     name = "main",
     srcs = ["main.js"],
+    prefix = "main",
     root = ":main_root",
     deps = [":lib"],
 )

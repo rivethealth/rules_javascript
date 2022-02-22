@@ -3,7 +3,8 @@ WebpackInfo = provider(
     fields = {
         "bin": "Webpack executable",
         "server": "Webpack server executable",
-        "client": "Webpack dev server lib",
+        "client_cjs": "Webpack dev server lib",
+        "client_js": "Webpack dev server lib",
         "config_path": "Config path",
     },
 )

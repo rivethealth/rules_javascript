@@ -3,13 +3,11 @@
 var url = require('url');
 var fs = require('fs');
 var path = require('path');
+var minimal = require('protobufjs/minimal');
 var Long = require('long');
-var _m0 = require('protobufjs/minimal');
 var protobufjs = require('protobufjs');
 var argparse = require('argparse');
 var ts = require('typescript');
-
-function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
 function _interopNamespace(e) {
     if (e && e.__esModule) return e;
@@ -31,8 +29,7 @@ function _interopNamespace(e) {
 
 var fs__namespace = /*#__PURE__*/_interopNamespace(fs);
 var path__namespace = /*#__PURE__*/_interopNamespace(path);
-var Long__default = /*#__PURE__*/_interopDefaultLegacy(Long);
-var _m0__default = /*#__PURE__*/_interopDefaultLegacy(_m0);
+var Long__namespace = /*#__PURE__*/_interopNamespace(Long);
 var ts__namespace = /*#__PURE__*/_interopNamespace(ts);
 
 var VfsNode;
@@ -1060,7 +1057,7 @@ function patchFsPromises(vfs, delegate) {
 /* eslint-disable */
 const baseInput = { path: "" };
 const Input = {
-    encode(message, writer = _m0__default["default"].Writer.create()) {
+    encode(message, writer = minimal.Writer.create()) {
         if (message.path !== "") {
             writer.uint32(10).string(message.path);
         }
@@ -1070,7 +1067,7 @@ const Input = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof _m0__default["default"].Reader ? input : new _m0__default["default"].Reader(input);
+        const reader = input instanceof minimal.Reader ? input : new minimal.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseInput };
         message.digest = new Uint8Array();
@@ -1135,7 +1132,7 @@ const baseWorkRequest = {
     verbosity: 0,
 };
 const WorkRequest = {
-    encode(message, writer = _m0__default["default"].Writer.create()) {
+    encode(message, writer = minimal.Writer.create()) {
         for (const v of message.arguments) {
             writer.uint32(10).string(v);
         }
@@ -1154,7 +1151,7 @@ const WorkRequest = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof _m0__default["default"].Reader ? input : new _m0__default["default"].Reader(input);
+        const reader = input instanceof minimal.Reader ? input : new minimal.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseWorkRequest };
         message.arguments = [];
@@ -1279,7 +1276,7 @@ const baseWorkResponse = {
     wasCancelled: false,
 };
 const WorkResponse = {
-    encode(message, writer = _m0__default["default"].Writer.create()) {
+    encode(message, writer = minimal.Writer.create()) {
         if (message.exitCode !== 0) {
             writer.uint32(8).int32(message.exitCode);
         }
@@ -1295,7 +1292,7 @@ const WorkResponse = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof _m0__default["default"].Reader ? input : new _m0__default["default"].Reader(input);
+        const reader = input instanceof minimal.Reader ? input : new minimal.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseWorkResponse };
         while (reader.pos < end) {
@@ -1416,9 +1413,11 @@ function base64FromBytes(arr) {
     }
     return btoa(bin.join(""));
 }
-if (_m0__default["default"].util.Long !== Long__default["default"]) {
-    _m0__default["default"].util.Long = Long__default["default"];
-    _m0__default["default"].configure();
+// If you get a compile-error about 'Constructor<Long> and ... have no overlap',
+// add '--ts_proto_opt=esModuleInterop=true' as a flag when calling 'protoc'.
+if (minimal.util.Long !== Long__namespace) {
+    minimal.util.Long = Long__namespace;
+    minimal.configure();
 }
 
 function concat(buffers) {
@@ -1748,6 +1747,7 @@ class Package {
     function json() {
         return JsonFormat.object({
             deps: PackageDeps.json(),
+            name: JsonFormat.string(),
         });
     }
     Package.json = json;
@@ -1825,6 +1825,7 @@ function createVfs(packageTree, runfiles) {
             path: undefined,
         };
         packageNode.extraChildren.set("node_modules", nodeModules);
+        addDep(nodeModules, package_.name, resolve(path));
         for (const [name, dep] of package_.deps) {
             try {
                 addDep(nodeModules, name, resolve(dep));

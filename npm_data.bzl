@@ -28,80 +28,11 @@ PACKAGES = {
             {
                 "id": "typescript@4.5.3",
             },
+            {
+                "id": "webpack@5.64.4-dc3fc578",
+            },
         ],
         "extra_deps": {
-            "@angular-devkit/build-optimizer@0.1301.2-dc3fc578": [
-                {
-                    "id": "webpack@5.64.4-dc3fc578",
-                },
-            ],
-            "webpack@5.64.4-dc3fc578": [
-                {
-                    "id": "terser-webpack-plugin@5.2.5-e30e60ed",
-                },
-                {
-                    "id": "webpack-cli@4.9.1-dc3fc578",
-                },
-            ],
-            "terser-webpack-plugin@5.2.5-e30e60ed": [
-                {
-                    "id": "webpack@5.64.4-dc3fc578",
-                },
-            ],
-            "webpack-cli@4.9.1-dc3fc578": [
-                {
-                    "id": "@webpack-cli/configtest@1.1.0-4e0fd822",
-                },
-                {
-                    "id": "@webpack-cli/info@1.4.0-4e0fd822",
-                },
-                {
-                    "id": "@webpack-cli/serve@1.6.0-4e0fd822",
-                },
-                {
-                    "id": "webpack-dev-server@4.7.2-dc3fc578",
-                },
-                {
-                    "id": "webpack@5.64.4-dc3fc578",
-                },
-            ],
-            "@webpack-cli/configtest@1.1.0-4e0fd822": [
-                {
-                    "id": "webpack-cli@4.9.1-dc3fc578",
-                },
-                {
-                    "id": "webpack@5.64.4-dc3fc578",
-                },
-            ],
-            "@webpack-cli/info@1.4.0-4e0fd822": [
-                {
-                    "id": "webpack-cli@4.9.1-dc3fc578",
-                },
-            ],
-            "@webpack-cli/serve@1.6.0-4e0fd822": [
-                {
-                    "id": "webpack-cli@4.9.1-dc3fc578",
-                },
-                {
-                    "id": "webpack-dev-server@4.7.2-dc3fc578",
-                },
-            ],
-            "webpack-dev-server@4.7.2-dc3fc578": [
-                {
-                    "id": "webpack-cli@4.9.1-dc3fc578",
-                },
-                {
-                    "id": "webpack-dev-middleware@5.3.0-48473bb5",
-                },
-                {
-                    "id": "webpack@5.64.4-dc3fc578",
-                },
-            ],
-            "webpack-dev-middleware@5.3.0-48473bb5": [
-                {
-                    "id": "webpack@5.64.4-dc3fc578",
-                },
-            ],
         },
         "integrity": "sha512-HnFAabI/VFhQoGeMPEbcZ4COXrRVW0cfFZGv2DqvJTp7G8gqyIt+J1MjMcIuml7s6FoefGM5lMoVBSl/I9tpOw==",
         "name": "@angular-devkit/build-optimizer",
@@ -206,6 +137,9 @@ PACKAGES = {
     "@angular/compiler-cli@13.1.1": {
         "deps": [
             {
+                "id": "@babel/core@7.16.5",
+            },
+            {
                 "id": "canonical-path@1.0.0",
             },
             {
@@ -237,21 +171,6 @@ PACKAGES = {
             },
         ],
         "extra_deps": {
-            "@angular/compiler-cli@13.1.1": [
-                {
-                    "id": "@babel/core@7.16.5",
-                },
-            ],
-            "@babel/core@7.16.5": [
-                {
-                    "id": "@babel/helper-compilation-targets@7.16.3-f5f395bc",
-                },
-            ],
-            "@babel/helper-compilation-targets@7.16.3-f5f395bc": [
-                {
-                    "id": "@babel/core@7.16.5",
-                },
-            ],
         },
         "integrity": "sha512-ycdXN2urBZepbXn2xx1oxF1i6g0Dq/Rb8ySQeELdL9qr6hiZF9fkvIwd91d8uhFG2PvoM4O8/U/3x4yA2bXzew==",
         "name": "@angular/compiler-cli",
@@ -646,11 +565,6 @@ PACKAGES = {
             },
         ],
         "extra_deps": {
-            "@angular/compiler-cli@13.1.1": [
-                {
-                    "id": "@babel/core@7.16.5",
-                },
-            ],
             "@babel/core@7.16.5": [
                 {
                     "id": "@babel/helper-compilation-targets@7.16.3-f5f395bc",
@@ -849,11 +763,6 @@ PACKAGES = {
             },
         ],
         "extra_deps": {
-            "@angular/compiler-cli@13.1.1": [
-                {
-                    "id": "@babel/core@7.16.5",
-                },
-            ],
             "@babel/core@7.16.5": [
                 {
                     "id": "@babel/helper-compilation-targets@7.16.3-f5f395bc",
@@ -2364,6 +2273,9 @@ PACKAGES = {
                 "id": "@jest/console@27.4.2",
             },
             {
+                "id": "@jest/reporters@27.4.4",
+            },
+            {
                 "id": "@jest/test-result@27.4.2",
             },
             {
@@ -2409,6 +2321,9 @@ PACKAGES = {
                 "id": "jest-resolve-dependencies@27.4.4",
             },
             {
+                "id": "jest-resolve@27.4.4",
+            },
+            {
                 "id": "jest-runner@27.4.4",
             },
             {
@@ -2440,29 +2355,6 @@ PACKAGES = {
             },
         ],
         "extra_deps": {
-            "@jest/core@27.4.4": [
-                {
-                    "id": "@jest/reporters@27.4.4",
-                },
-                {
-                    "id": "jest-resolve@27.4.4",
-                },
-            ],
-            "@jest/reporters@27.4.4": [
-                {
-                    "id": "jest-resolve@27.4.4",
-                },
-            ],
-            "jest-resolve@27.4.4": [
-                {
-                    "id": "jest-pnp-resolver@1.2.2-9fda8d19",
-                },
-            ],
-            "jest-pnp-resolver@1.2.2-9fda8d19": [
-                {
-                    "id": "jest-resolve@27.4.4",
-                },
-            ],
         },
         "integrity": "sha512-xBNPVqYAdAiAMXnb4ugx9Cdmr0S52lBsLbQMR/sGBRO0810VSPKiuSDtuup6qdkK1e9vxbv3KK3IAP1QFAp8mw==",
         "name": "@jest/core",
@@ -2681,6 +2573,9 @@ PACKAGES = {
                 "id": "jest-haste-map@27.4.4",
             },
             {
+                "id": "jest-resolve@27.4.4",
+            },
+            {
                 "id": "jest-util@27.4.2",
             },
             {
@@ -2703,29 +2598,6 @@ PACKAGES = {
             },
         ],
         "extra_deps": {
-            "@jest/core@27.4.4": [
-                {
-                    "id": "@jest/reporters@27.4.4",
-                },
-                {
-                    "id": "jest-resolve@27.4.4",
-                },
-            ],
-            "@jest/reporters@27.4.4": [
-                {
-                    "id": "jest-resolve@27.4.4",
-                },
-            ],
-            "jest-resolve@27.4.4": [
-                {
-                    "id": "jest-pnp-resolver@1.2.2-9fda8d19",
-                },
-            ],
-            "jest-pnp-resolver@1.2.2-9fda8d19": [
-                {
-                    "id": "jest-resolve@27.4.4",
-                },
-            ],
         },
         "integrity": "sha512-ssyJSw9B9Awb1QaxDhIPSs4de1b7SE2kv7tqFehQL13xpn5HUkMYZK/ufTOXiCAnXFOZS+XDl1GaQ/LmJAzI1A==",
         "name": "@jest/reporters",
@@ -3892,6 +3764,9 @@ PACKAGES = {
                 "id": "@types/eslint@7.28.2",
             },
             {
+                "id": "@typescript-eslint/experimental-utils@5.5.0-cbaac96a",
+            },
+            {
                 "id": "@typescript-eslint/parser@5.5.0-dc3fc578",
             },
             {
@@ -3899,6 +3774,9 @@ PACKAGES = {
             },
             {
                 "id": "debug@4.3.3-97196aaf",
+            },
+            {
+                "id": "eslint@8.3.0",
             },
             {
                 "id": "functional-red-black-tree@1.0.1",
@@ -3920,37 +3798,6 @@ PACKAGES = {
             },
         ],
         "extra_deps": {
-            "@typescript-eslint/eslint-plugin@5.5.0-dc3fc578": [
-                {
-                    "id": "@typescript-eslint/experimental-utils@5.5.0-cbaac96a",
-                },
-                {
-                    "id": "eslint@8.3.0",
-                },
-            ],
-            "@typescript-eslint/experimental-utils@5.5.0-cbaac96a": [
-                {
-                    "id": "eslint-utils@3.0.0-6eddf08b",
-                },
-                {
-                    "id": "eslint@8.3.0",
-                },
-            ],
-            "eslint-utils@3.0.0-6eddf08b": [
-                {
-                    "id": "eslint@8.3.0",
-                },
-            ],
-            "eslint@8.3.0": [
-                {
-                    "id": "eslint-utils@3.0.0-19231e7a",
-                },
-            ],
-            "eslint-utils@3.0.0-19231e7a": [
-                {
-                    "id": "eslint@8.3.0",
-                },
-            ],
         },
         "integrity": "sha512-4bV6fulqbuaO9UMXU0Ia0o6z6if+kmMRW8rMRyfqXj/eGrZZRGedS4n0adeGNnjr8LKAM495hrQ7Tea52UWmQA==",
         "name": "@typescript-eslint/eslint-plugin",
@@ -4003,39 +3850,14 @@ PACKAGES = {
             {
                 "id": "eslint-scope@5.1.1",
             },
+            {
+                "id": "eslint-utils@3.0.0-6eddf08b",
+            },
+            {
+                "id": "eslint@8.3.0",
+            },
         ],
         "extra_deps": {
-            "@typescript-eslint/eslint-plugin@5.5.0-dc3fc578": [
-                {
-                    "id": "@typescript-eslint/experimental-utils@5.5.0-cbaac96a",
-                },
-                {
-                    "id": "eslint@8.3.0",
-                },
-            ],
-            "@typescript-eslint/experimental-utils@5.5.0-cbaac96a": [
-                {
-                    "id": "eslint-utils@3.0.0-6eddf08b",
-                },
-                {
-                    "id": "eslint@8.3.0",
-                },
-            ],
-            "eslint-utils@3.0.0-6eddf08b": [
-                {
-                    "id": "eslint@8.3.0",
-                },
-            ],
-            "eslint@8.3.0": [
-                {
-                    "id": "eslint-utils@3.0.0-19231e7a",
-                },
-            ],
-            "eslint-utils@3.0.0-19231e7a": [
-                {
-                    "id": "eslint@8.3.0",
-                },
-            ],
         },
         "integrity": "sha512-kjWeeVU+4lQ1SLYErRKV5yDXbWDPkpbzTUUlfAUifPYvpX0qZlrcCZ96/6oWxt3QxtK5WVhXz+KsnwW9cIW+3A==",
         "name": "@typescript-eslint/experimental-utils",
@@ -4480,11 +4302,6 @@ PACKAGES = {
         "deps": [
         ],
         "extra_deps": {
-            "webpack@5.64.4-dc3fc578": [
-                {
-                    "id": "webpack-cli@4.9.1-dc3fc578",
-                },
-            ],
             "webpack-cli@4.9.1-dc3fc578": [
                 {
                     "id": "@webpack-cli/configtest@1.1.0-4e0fd822",
@@ -4499,6 +4316,11 @@ PACKAGES = {
                 },
                 {
                     "id": "webpack@5.64.4-dc3fc578",
+                },
+            ],
+            "webpack@5.64.4-dc3fc578": [
+                {
+                    "id": "webpack-cli@4.9.1-dc3fc578",
                 },
             ],
         },
@@ -4560,6 +4382,9 @@ PACKAGES = {
                 {
                     "id": "webpack-dev-server@4.7.2-dc3fc578",
                 },
+                {
+                    "id": "webpack@5.64.4-dc3fc578",
+                },
             ],
             "@webpack-cli/serve@1.6.0-4e0fd822": [
                 {
@@ -4578,6 +4403,11 @@ PACKAGES = {
                 },
                 {
                     "id": "webpack@5.64.4-dc3fc578",
+                },
+            ],
+            "webpack@5.64.4-dc3fc578": [
+                {
+                    "id": "webpack-cli@4.9.1-dc3fc578",
                 },
             ],
             "webpack-dev-middleware@5.3.0-48473bb5": [
@@ -7177,27 +7007,6 @@ PACKAGES = {
             },
         ],
         "extra_deps": {
-            "@typescript-eslint/eslint-plugin@5.5.0-dc3fc578": [
-                {
-                    "id": "@typescript-eslint/experimental-utils@5.5.0-cbaac96a",
-                },
-                {
-                    "id": "eslint@8.3.0",
-                },
-            ],
-            "@typescript-eslint/experimental-utils@5.5.0-cbaac96a": [
-                {
-                    "id": "eslint-utils@3.0.0-6eddf08b",
-                },
-                {
-                    "id": "eslint@8.3.0",
-                },
-            ],
-            "eslint-utils@3.0.0-6eddf08b": [
-                {
-                    "id": "eslint@8.3.0",
-                },
-            ],
             "eslint@8.3.0": [
                 {
                     "id": "eslint-utils@3.0.0-19231e7a",
@@ -7221,39 +7030,11 @@ PACKAGES = {
             {
                 "id": "eslint-visitor-keys@2.1.0",
             },
+            {
+                "id": "eslint@8.3.0",
+            },
         ],
         "extra_deps": {
-            "@typescript-eslint/eslint-plugin@5.5.0-dc3fc578": [
-                {
-                    "id": "@typescript-eslint/experimental-utils@5.5.0-cbaac96a",
-                },
-                {
-                    "id": "eslint@8.3.0",
-                },
-            ],
-            "@typescript-eslint/experimental-utils@5.5.0-cbaac96a": [
-                {
-                    "id": "eslint-utils@3.0.0-6eddf08b",
-                },
-                {
-                    "id": "eslint@8.3.0",
-                },
-            ],
-            "eslint-utils@3.0.0-6eddf08b": [
-                {
-                    "id": "eslint@8.3.0",
-                },
-            ],
-            "eslint@8.3.0": [
-                {
-                    "id": "eslint-utils@3.0.0-19231e7a",
-                },
-            ],
-            "eslint-utils@3.0.0-19231e7a": [
-                {
-                    "id": "eslint@8.3.0",
-                },
-            ],
         },
         "integrity": "sha512-uuQC43IGctw68pJA1RgbQS8/NP7rch6Cwd4j3ZBtgo4/8Flj4eGE7ZYSZRN3iq5pVUv6GPdW5Z1RFleo84uLDA==",
         "name": "eslint-utils",
@@ -7392,27 +7173,6 @@ PACKAGES = {
             },
         ],
         "extra_deps": {
-            "@typescript-eslint/eslint-plugin@5.5.0-dc3fc578": [
-                {
-                    "id": "@typescript-eslint/experimental-utils@5.5.0-cbaac96a",
-                },
-                {
-                    "id": "eslint@8.3.0",
-                },
-            ],
-            "@typescript-eslint/experimental-utils@5.5.0-cbaac96a": [
-                {
-                    "id": "eslint-utils@3.0.0-6eddf08b",
-                },
-                {
-                    "id": "eslint@8.3.0",
-                },
-            ],
-            "eslint-utils@3.0.0-6eddf08b": [
-                {
-                    "id": "eslint@8.3.0",
-                },
-            ],
             "eslint@8.3.0": [
                 {
                     "id": "eslint-utils@3.0.0-19231e7a",
@@ -9822,54 +9582,6 @@ PACKAGES = {
         "name": "jest-haste-map",
         "url": "https://registry.npmjs.org/jest-haste-map/-/jest-haste-map-27.4.4.tgz",
     },
-    "jest-haste-map@27.4.5": {
-        "deps": [
-            {
-                "id": "@jest/types@27.4.2",
-            },
-            {
-                "id": "@types/graceful-fs@4.1.5",
-            },
-            {
-                "id": "@types/node@16.11.11",
-            },
-            {
-                "id": "anymatch@3.1.2",
-            },
-            {
-                "id": "fb-watchman@2.0.1",
-            },
-            {
-                "id": "fsevents@2.3.2",
-            },
-            {
-                "id": "graceful-fs@4.2.8",
-            },
-            {
-                "id": "jest-regex-util@27.4.0",
-            },
-            {
-                "id": "jest-serializer@27.4.0",
-            },
-            {
-                "id": "jest-util@27.4.2",
-            },
-            {
-                "id": "jest-worker@27.4.5",
-            },
-            {
-                "id": "micromatch@4.0.4",
-            },
-            {
-                "id": "walker@1.0.8",
-            },
-        ],
-        "extra_deps": {
-        },
-        "integrity": "sha512-oJm1b5qhhPs78K24EDGifWS0dELYxnoBiDhatT/FThgB9yxqUm5F6li3Pv+Q+apMBmmPNzOBnZ7ZxWMB1Leq1Q==",
-        "name": "jest-haste-map",
-        "url": "https://registry.npmjs.org/jest-haste-map/-/jest-haste-map-27.4.5.tgz",
-    },
     "jest-jasmine2@27.4.4": {
         "deps": [
             {
@@ -9932,27 +9644,6 @@ PACKAGES = {
         "integrity": "sha512-ygk2tUgtLeN3ouj4KEYw9p81GLI1EKrnvourPULN5gdgB482PH5op9gqaRG0IenbJhBbbRwiSvh5NoBoQZSqdA==",
         "name": "jest-jasmine2",
         "url": "https://registry.npmjs.org/jest-jasmine2/-/jest-jasmine2-27.4.4.tgz",
-    },
-    "jest-junit@13.0.0": {
-        "deps": [
-            {
-                "id": "mkdirp@1.0.4",
-            },
-            {
-                "id": "strip-ansi@6.0.1",
-            },
-            {
-                "id": "uuid@8.3.2",
-            },
-            {
-                "id": "xml@1.0.1",
-            },
-        ],
-        "extra_deps": {
-        },
-        "integrity": "sha512-JSHR+Dhb32FGJaiKkqsB7AR3OqWKtldLd6ZH2+FJ8D4tsweb8Id8zEVReU4+OlrRO1ZluqJLQEETm+Q6/KilBg==",
-        "name": "jest-junit",
-        "url": "https://registry.npmjs.org/jest-junit/-/jest-junit-13.0.0.tgz",
     },
     "jest-leak-detector@27.4.2": {
         "deps": [
@@ -10054,19 +9745,6 @@ PACKAGES = {
         "deps": [
         ],
         "extra_deps": {
-            "@jest/core@27.4.4": [
-                {
-                    "id": "@jest/reporters@27.4.4",
-                },
-                {
-                    "id": "jest-resolve@27.4.4",
-                },
-            ],
-            "@jest/reporters@27.4.4": [
-                {
-                    "id": "jest-resolve@27.4.4",
-                },
-            ],
             "jest-resolve@27.4.4": [
                 {
                     "id": "jest-pnp-resolver@1.2.2-9fda8d19",
@@ -10140,19 +9818,6 @@ PACKAGES = {
             },
         ],
         "extra_deps": {
-            "@jest/core@27.4.4": [
-                {
-                    "id": "@jest/reporters@27.4.4",
-                },
-                {
-                    "id": "jest-resolve@27.4.4",
-                },
-            ],
-            "@jest/reporters@27.4.4": [
-                {
-                    "id": "jest-resolve@27.4.4",
-                },
-            ],
             "jest-resolve@27.4.4": [
                 {
                     "id": "jest-pnp-resolver@1.2.2-9fda8d19",
@@ -10545,24 +10210,6 @@ PACKAGES = {
         "integrity": "sha512-jfwxYJvfua1b1XkyuyPh01ATmgg4e5fPM/muLmhy9Qc6dmiwacQB0MLHaU6IjEsv/+nAixHGxTn8WllA27Pn0w==",
         "name": "jest-worker",
         "url": "https://registry.npmjs.org/jest-worker/-/jest-worker-27.4.4.tgz",
-    },
-    "jest-worker@27.4.5": {
-        "deps": [
-            {
-                "id": "@types/node@16.11.11",
-            },
-            {
-                "id": "merge-stream@2.0.0",
-            },
-            {
-                "id": "supports-color@8.1.1",
-            },
-        ],
-        "extra_deps": {
-        },
-        "integrity": "sha512-f2s8kEdy15cv9r7q4KkzGXvlY0JTcmCbMHZBfSQDwW77REr45IDWwd0lksDFeVHH2jJ5pqb90T77XscrjeGzzg==",
-        "name": "jest-worker",
-        "url": "https://registry.npmjs.org/jest-worker/-/jest-worker-27.4.5.tgz",
     },
     "jest@27.4.4": {
         "deps": [
@@ -13604,11 +13251,6 @@ PACKAGES = {
             },
         ],
         "extra_deps": {
-            "@angular-devkit/build-optimizer@0.1301.2-dc3fc578": [
-                {
-                    "id": "webpack@5.64.4-dc3fc578",
-                },
-            ],
             "webpack@5.64.4-dc3fc578": [
                 {
                     "id": "terser-webpack-plugin@5.2.5-e30e60ed",
@@ -14498,11 +14140,6 @@ PACKAGES = {
             },
         ],
         "extra_deps": {
-            "webpack@5.64.4-dc3fc578": [
-                {
-                    "id": "webpack-cli@4.9.1-dc3fc578",
-                },
-            ],
             "webpack-cli@4.9.1-dc3fc578": [
                 {
                     "id": "@webpack-cli/configtest@1.1.0-4e0fd822",
@@ -14526,6 +14163,11 @@ PACKAGES = {
                 },
                 {
                     "id": "webpack@5.64.4-dc3fc578",
+                },
+            ],
+            "webpack@5.64.4-dc3fc578": [
+                {
+                    "id": "webpack-cli@4.9.1-dc3fc578",
                 },
             ],
             "@webpack-cli/info@1.4.0-4e0fd822": [
@@ -14605,9 +14247,39 @@ PACKAGES = {
             },
         ],
         "extra_deps": {
+            "webpack@5.64.4-dc3fc578": [
+                {
+                    "id": "webpack-cli@4.9.1-dc3fc578",
+                },
+            ],
+            "webpack-cli@4.9.1-dc3fc578": [
+                {
+                    "id": "@webpack-cli/serve@1.6.0-4e0fd822",
+                },
+                {
+                    "id": "webpack-dev-server@4.7.2-dc3fc578",
+                },
+                {
+                    "id": "webpack@5.64.4-dc3fc578",
+                },
+            ],
+            "@webpack-cli/serve@1.6.0-4e0fd822": [
+                {
+                    "id": "webpack-cli@4.9.1-dc3fc578",
+                },
+                {
+                    "id": "webpack-dev-server@4.7.2-dc3fc578",
+                },
+            ],
             "webpack-dev-server@4.7.2-dc3fc578": [
                 {
+                    "id": "webpack-cli@4.9.1-dc3fc578",
+                },
+                {
                     "id": "webpack-dev-middleware@5.3.0-48473bb5",
+                },
+                {
+                    "id": "webpack@5.64.4-dc3fc578",
                 },
             ],
             "webpack-dev-middleware@5.3.0-48473bb5": [
@@ -14806,10 +14478,19 @@ PACKAGES = {
         "extra_deps": {
             "webpack-cli@4.9.1-dc3fc578": [
                 {
+                    "id": "@webpack-cli/serve@1.6.0-4e0fd822",
+                },
+                {
                     "id": "webpack-dev-server@4.7.2-dc3fc578",
+                },
+                {
+                    "id": "webpack@5.64.4-dc3fc578",
                 },
             ],
             "@webpack-cli/serve@1.6.0-4e0fd822": [
+                {
+                    "id": "webpack-cli@4.9.1-dc3fc578",
+                },
                 {
                     "id": "webpack-dev-server@4.7.2-dc3fc578",
                 },
@@ -14823,6 +14504,11 @@ PACKAGES = {
                 },
                 {
                     "id": "webpack@5.64.4-dc3fc578",
+                },
+            ],
+            "webpack@5.64.4-dc3fc578": [
+                {
+                    "id": "webpack-cli@4.9.1-dc3fc578",
                 },
             ],
             "webpack-dev-middleware@5.3.0-48473bb5": [
@@ -15013,11 +14699,6 @@ PACKAGES = {
             },
         ],
         "extra_deps": {
-            "@angular-devkit/build-optimizer@0.1301.2-dc3fc578": [
-                {
-                    "id": "webpack@5.64.4-dc3fc578",
-                },
-            ],
             "webpack@5.64.4-dc3fc578": [
                 {
                     "id": "terser-webpack-plugin@5.2.5-e30e60ed",
@@ -15036,9 +14717,6 @@ PACKAGES = {
                     "id": "@webpack-cli/configtest@1.1.0-4e0fd822",
                 },
                 {
-                    "id": "@webpack-cli/info@1.4.0-4e0fd822",
-                },
-                {
                     "id": "@webpack-cli/serve@1.6.0-4e0fd822",
                 },
                 {
@@ -15054,11 +14732,6 @@ PACKAGES = {
                 },
                 {
                     "id": "webpack@5.64.4-dc3fc578",
-                },
-            ],
-            "@webpack-cli/info@1.4.0-4e0fd822": [
-                {
-                    "id": "webpack-cli@4.9.1-dc3fc578",
                 },
             ],
             "@webpack-cli/serve@1.6.0-4e0fd822": [
@@ -15315,15 +14988,6 @@ PACKAGES = {
         "name": "xml-name-validator",
         "url": "https://registry.npmjs.org/xml-name-validator/-/xml-name-validator-3.0.0.tgz",
     },
-    "xml@1.0.1": {
-        "deps": [
-        ],
-        "extra_deps": {
-        },
-        "integrity": "sha256-OAMr1wH6IEJ7LuMe1V5nYc4aiBpuq82QAF6+dKsEpiM=",
-        "name": "xml",
-        "url": "https://registry.npmjs.org/xml/-/xml-1.0.1.tgz",
-    },
     "xmlchars@2.2.0": {
         "deps": [
         ],
@@ -15568,14 +15232,6 @@ ROOTS = [
     {
         "id": "html-webpack-plugin@5.5.0-dc3fc578",
         "name": "html-webpack-plugin",
-    },
-    {
-        "id": "jest-haste-map@27.4.5",
-        "name": "jest-haste-map",
-    },
-    {
-        "id": "jest-junit@13.0.0",
-        "name": "jest-junit",
     },
     {
         "id": "jest@27.4.4-dc3fc578",

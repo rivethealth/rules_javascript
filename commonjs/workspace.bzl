@@ -5,7 +5,6 @@ load("@better_rules_javascript//commonjs:rules.bzl", "cjs_root")
 filegroup(
     name = "files",
     srcs = ["npm"],
-    visibility = ["//visibility:private"],
 )
 
 cjs_root(
@@ -13,6 +12,7 @@ cjs_root(
     descriptors = [":files"],
     package_name = {package_name},
     path = "npm",
+    visibility = ["//visibility:public"],
 )
     """.strip().format(
         package_name = json.encode(package.name),

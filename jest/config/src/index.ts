@@ -3,8 +3,8 @@ import * as path from "path";
 import { Configuration } from "./config";
 import { touch } from "./fs";
 
-const configRunfile = "%{config}";
-const roots = JSON.parse("%{roots}");
+const configRunfile = process.env.JEST_CONFIG;
+const roots = JSON.parse(process.env.JEST_ROOTS);
 
 const runfilesDir = process.env.RUNFILES_DIR!;
 const totalShards = +(process.env.TEST_TOTAL_SHARDS || "1");

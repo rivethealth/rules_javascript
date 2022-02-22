@@ -22,6 +22,7 @@ export namespace Package {
   export function json(): JsonFormat<Package> {
     return JsonFormat.object({
       deps: PackageDeps.json(),
+      name: JsonFormat.string(),
     });
   }
 }

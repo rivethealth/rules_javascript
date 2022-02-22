@@ -1,6 +1,7 @@
 load("@bazel_skylib//lib:shell.bzl", "shell")
 load("//commonjs:providers.bzl", "CjsInfo", "gen_manifest", "package_path")
 load("//javascript:providers.bzl", "JsInfo")
+load("//javascript:rules.bzl", "js_export")
 load("//nodejs:rules.bzl", "nodejs_binary")
 load("//nodejs:providers.bzl", "NODE_MODULES_PREFIX", "package_path_name")
 load("//util:path.bzl", "runfile_path")
@@ -50,11 +51,17 @@ def configure_rollup(name, dep, config, config_dep, visibility = None):
         config: Configuration
     """
 
-    nodejs_binary(
-        main = "dist/bin/rollup",
-        name = "%s_bin" % name,
+    js_export(
+        name = "%s.main" % name,
         dep = dep,
-        other_deps = [config_dep],
+        extra_deps = [config_dep],
+        visibility = ["//visibility:private"],
+    )
+
+    nodejs_binary(
+        name = "%s.bin" % name,
+        main = "dist/bin/rollup",
+        dep = ":%s.main" % name,
         visibility = ["//visibility:private"],
     )
 
@@ -62,29 +69,29 @@ def configure_rollup(name, dep, config, config_dep, visibility = None):
         name = name,
         config = config,
         config_dep = config_dep,
-        bin = "%s_bin" % name,
+        bin = ":%s.bin" % name,
         visibility = visibility,
     )
 
 def _rollup_bundle_impl(ctx):
     actions = ctx.actions
-    cjs_dep = ctx.attr.dep[CjsInfo]
-    fs_linker = ctx.file._fs_linker
-    js_dep = ctx.attr.dep[JsInfo]
     default_dep = ctx.attr.dep[DefaultInfo]
+    dep_cjs = ctx.attr.dep[CjsInfo]
+    dep_js = ctx.attr.dep[JsInfo]
+    fs_linker = ctx.file._fs_linker
     rollup = ctx.attr.rollup[RollupInfo]
 
-    package_manifest = actions.declare_file("%s/packages.json" % ctx.label.name)
+    package_manifest = actions.declare_file("%s.packages.json" % ctx.attr.name)
     gen_manifest(
         actions = actions,
-        deps = cjs_dep.transitive_links,
+        deps = dep_cjs.transitive_links,
         manifest = package_manifest,
         manifest_bin = ctx.attr._manifest[DefaultInfo],
-        packages = cjs_dep.transitive_packages,
+        packages = dep_cjs.transitive_packages,
         package_path = package_path,
     )
 
-    bundle = actions.declare_file("%s/bundle.js" % ctx.label.name)
+    bundle = actions.declare_file("%s/bundle.js" % ctx.attr.name)
 
     args = []
     args.append("--config")
@@ -94,15 +101,15 @@ def _rollup_bundle_impl(ctx):
         env = {
             "NODE_FS_PACKAGE_MANIFEST": package_manifest.path,
             "NODE_OPTIONS_APPEND": "-r ./%s" % fs_linker.path,
-            "ROLLUP_INPUT_ROOT": cjs_dep.package.path,
+            "ROLLUP_INPUT_ROOT": dep_cjs.package.path,
             "ROLLUP_OUTPUT": bundle.path,
         },
         executable = rollup.bin.executable,
         tools = [rollup.bin],
         arguments = args,
         inputs = depset(
-            [package_manifest, ctx.file._fs_linker],
-            transitive = [js_dep.transitive_files],
+            [package_manifest, fs_linker],
+            transitive = [dep_js.transitive_files],
         ),
         outputs = [bundle],
     )

@@ -47,7 +47,6 @@ test_suite(
     tests = [
         "//angular/test",
         "//commonjs/test",
-        "//file/test",
         "//javascript/test",
         "//nodejs/test",
         "//rollup/test",

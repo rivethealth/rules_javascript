@@ -71,6 +71,7 @@ export function createVfs(
       path: undefined,
     };
     packageNode.extraChildren.set("node_modules", nodeModules);
+    addDep(nodeModules, package_.name, resolve(path));
     for (const [name, dep] of package_.deps) {
       try {
         addDep(nodeModules, name, resolve(dep));

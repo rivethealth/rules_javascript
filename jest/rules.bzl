@@ -1,7 +1,9 @@
 load("@bazel_skylib//lib:shell.bzl", "shell")
-load("//commonjs:providers.bzl", "create_global", "create_link", "create_package", "gen_manifest")
+load("//commonjs:providers.bzl", "CjsInfo", "create_link", "create_package", "gen_manifest")
 load("//nodejs:providers.bzl", "NODE_MODULES_PREFIX", "modules_links", "package_path_name")
+load("//nodejs:rules.bzl", "nodejs_binary")
 load("//javascript:providers.bzl", "JsInfo")
+load("//javascript:rules.bzl", "js_export")
 load("//util:path.bzl", "output", "runfile_path")
 
 def _jest_transition_impl(settings, attrs):
@@ -15,47 +17,29 @@ _jest_transition = transition(
 
 def _jest_test_impl(ctx):
     actions = ctx.actions
+    data = ctx.files.data
+    data_default = [target[DefaultInfo] for target in ctx.attr.data]
     env = ctx.attr.env
     manifest_bin = ctx.attr._manifest[DefaultInfo]
-    config_dep = ctx.attr.config_dep[0][JsInfo]
+    config_loader_cjs = ctx.attr._config[0][CjsInfo]
+    config_loader_js = ctx.attr._config[0][JsInfo]
+    config_js = ctx.attr.config_dep[0][JsInfo]
+    config_cjs = ctx.attr.config_dep[0][CjsInfo]
     config = ctx.attr.config
+    fs_linker = ctx.file._fs_linker
+    label = ctx.label
+    module_linker = ctx.file._module_linker
     name = ctx.attr.name
     node_options = ctx.attr.node_options
+    nodejs_toolchain = ctx.toolchains["@better_rules_javascript//nodejs:toolchain_type"]
+    cjs_info = ctx.attr.jest[0][CjsInfo]
     js_info = ctx.attr.jest[0][JsInfo]
-    jest_haste_map = ctx.attr.jest_haste_map[0][JsInfo]
-    js_deps = [config_dep, js_info, jest_haste_map] + [dep[JsInfo] for dep in ctx.attr.deps + ctx.attr.global_deps]
-    js_globals = [dep[JsInfo] for dep in ctx.attr.global_deps]
+    cjs_deps = [config_loader_cjs, config_cjs, cjs_info] + [target[CjsInfo] for target in ctx.attr.deps]
+    js_deps = [config_loader_js, config_js, js_info] + [target[JsInfo] for target in ctx.attr.deps]
     output_ = output(label = ctx.label, actions = actions)
     workspace_name = ctx.workspace_name
 
-    nodejs_toolchain = ctx.toolchains["@better_rules_javascript//nodejs:toolchain_type"]
-
-    haste_map = actions.declare_file("%s/haste-map.js" % ctx.attr.name)
-    actions.symlink(
-        output = haste_map,
-        target_file = ctx.file._haste_map,
-        progress_message = "Copying file to %{output}",
-    )
-
-    files = []
-    for js_info_ in [js_info] + js_deps:
-        files.append(js_info_.transitive_files)
-        files.append(js_info_.transitive_srcs)
-
-    package = create_package(
-        name = "_jestconfig",
-        path = "%s/%s" % (output_.path, ctx.label.name),
-        short_path = "%s/%s" % (output_.short_path, ctx.label.name),
-        label = ctx.label,
-    )
-    deps = [create_link(
-        id = "_jestconfig",
-        name = "jest-haste-map",
-        dep = jest_haste_map.package.id,
-        label = ctx.label,
-    )]
-
-    transitive_packages = depset([package], transitive = [dep.transitive_packages for dep in js_deps])
+    transitive_packages = depset(transitive = [dep.transitive_packages for dep in cjs_deps])
 
     def package_path(package):
         return "%s/%s" % (NODE_MODULES_PREFIX, package_path_name(workspace_name, package.short_path))
@@ -63,64 +47,52 @@ def _jest_test_impl(ctx):
     package_manifest = actions.declare_file("%s/packages.json" % ctx.label.name)
     gen_manifest(
         actions = actions,
-        deps = depset(deps, transitive = [dep.transitive_links for dep in js_deps]),
-        globals = [create_global(id = dep.package.id, name = dep.name) for dep in js_globals],
+        deps = depset(transitive = [dep.transitive_links for dep in cjs_deps]),
         manifest = package_manifest,
         manifest_bin = manifest_bin,
         packages = transitive_packages,
         package_path = package_path,
     )
 
-    main_module = "%s/%s/bin/jest.js" % (NODE_MODULES_PREFIX, package_path_name(workspace_name, js_info.package.id))
-
-    config_file = actions.declare_file("%s/jestconfig.js" % ctx.attr.name)
-    actions.expand_template(
-        template = ctx.file._config,
-        output = config_file,
-        substitutions = {
-            '"%{config}"': json.encode(
-                "%s/%s/%s" % (NODE_MODULES_PREFIX, package_path_name(workspace_name, config_dep.package.id), config),
-            ),
-            '"%{roots}"': json.encode(
-                json.encode(["%s/%s" % (NODE_MODULES_PREFIX, package_path_name(workspace_name, dep[JsInfo].package.id)) for dep in ctx.attr.deps]),
-            ),
-        },
-    )
+    main_module = "%s/%s/bin/jest.js" % (NODE_MODULES_PREFIX, package_path_name(workspace_name, cjs_info.package.short_path))
 
     bin = actions.declare_file("%s/bin" % ctx.label.name)
     actions.expand_template(
-        template = ctx.file._runner,
         output = bin,
-        substitutions = {
-            "%{config}": "%s/%s/jestconfig.js" % (NODE_MODULES_PREFIX, package_path_name(package.id)),
-            "%{env}": " ".join(["%s=%s" % (name, shell.quote(value)) for name, value in env.items()]),
-            "%{fs_linker}": shell.quote(runfile_path(ctx.workspace_name, ctx.file._fs_linker)),
-            "%{main_module}": shell.quote(main_module),
-            "%{node}": shell.quote(runfile_path(ctx.workspace_name, nodejs_toolchain.nodejs.bin)),
-            "%{node_options}": " ".join([shell.quote(option) for option in ctx.attr.node_options]),
-            "%{package_manifest}": shell.quote(runfile_path(ctx.workspace_name, package_manifest)),
-            "%{module_linker}": shell.quote(runfile_path(ctx.workspace_name, ctx.file._module_linker)),
-            "%{workspace}": shell.quote(ctx.workspace_name),
-        },
         is_executable = True,
+        substitutions = {
+            "%{config}": shell.quote("%s/%s/%s" % (NODE_MODULES_PREFIX, package_path_name(workspace_name, config_cjs.package.short_path), config)),
+            "%{config_loader}": shell.quote("%s/%s/src/index.js" % (NODE_MODULES_PREFIX, package_path_name(workspace_name, config_loader_cjs.package.short_path))),
+            "%{env}": " ".join(["%s=%s" % (name, shell.quote(value)) for name, value in env.items()]),
+            "%{fs_linker}": shell.quote(runfile_path(workspace_name, fs_linker)),
+            "%{main_module}": shell.quote(main_module),
+            "%{node}": shell.quote(runfile_path(workspace_name, nodejs_toolchain.nodejs.bin)),
+            "%{node_options}": " ".join([shell.quote(option) for option in node_options]),
+            "%{package_manifest}": shell.quote(runfile_path(ctx.workspace_name, package_manifest)),
+            "%{module_linker}": shell.quote(runfile_path(workspace_name, module_linker)),
+            "%{roots}": shell.quote(
+                json.encode(
+                    [
+                        "%s/%s" % (NODE_MODULES_PREFIX, package_path_name(workspace_name, target[CjsInfo].package.short_path))
+                        for target in ctx.attr.deps
+                    ],
+                ),
+            ),
+            "%{workspace}": shell.quote(workspace_name),
+        },
+        template = ctx.file._runner,
     )
 
     runfiles = ctx.runfiles(
-        files = [config_file, nodejs_toolchain.nodejs.bin, ctx.file._fs_linker, ctx.file._module_linker, package_manifest, haste_map] + ctx.files.data,
-        transitive_files = depset(transitive = files),
+        files = [nodejs_toolchain.nodejs.bin, fs_linker, module_linker, package_manifest] + data,
         root_symlinks = modules_links(
-            files = depset([config_file, haste_map], transitive = files).to_list(),
+            files = depset(transitive = [js_info_.transitive_files for js_info_ in js_deps]).to_list(),
             packages = transitive_packages.to_list(),
             prefix = NODE_MODULES_PREFIX,
             workspace_name = workspace_name,
         ),
     )
-
-    for dep in ctx.attr.data:
-        if DefaultInfo not in dep:
-            continue
-        if dep[DefaultInfo].default_runfiles != None:
-            runfiles = runfiles.merge(dep[DefaultInfo].default_runfiles)
+    runfiles = runfiles.merge_all([default_info.default_runfiles for default_info in data_default if default_info.default_runfiles != None])
 
     default_info = DefaultInfo(
         executable = bin,
@@ -131,43 +103,15 @@ def _jest_test_impl(ctx):
 
 jest_test = rule(
     attrs = {
-        "_allowlist_function_transition": attr.label(
-            default = "@bazel_tools//tools/allowlists/function_transition_allowlist",
-        ),
-        "_config": attr.label(
-            allow_single_file = [".js"],
-            default = "//jest/config:bundle",
-        ),
-        "_haste_map": attr.label(
-            cfg = _jest_transition,
-            allow_single_file = [".js"],
-            default = "//jest:haste_map",
-        ),
-        "_runner": attr.label(
-            allow_single_file = True,
-            default = "//jest:runner",
-        ),
-        "_fs_linker": attr.label(
-            allow_single_file = True,
-            default = "//nodejs/fs-linker:file",
-        ),
-        "_manifest": attr.label(
-            cfg = "exec",
-            executable = True,
-            default = "//commonjs/manifest:bin",
-        ),
-        "_module_linker": attr.label(
-            allow_single_file = True,
-            default = "//nodejs/module-linker:file",
-        ),
         "config": attr.string(
+            doc = "Path to config file, relative to config_dep root.",
             mandatory = True,
         ),
         "config_dep": attr.label(
             cfg = _jest_transition,
-            doc = "Jest config file.",
+            doc = "Jest config dependency.",
             mandatory = True,
-            providers = [JsInfo],
+            providers = [CjsInfo, JsInfo],
         ),
         "data": attr.label_list(
             allow_files = True,
@@ -185,20 +129,35 @@ jest_test = rule(
             cfg = _jest_transition,
             doc = "Jest dependency.",
             mandatory = True,
-            providers = [JsInfo],
-        ),
-        "jest_haste_map": attr.label(
-            cfg = _jest_transition,
-            doc = "Haste map.",
-            mandatory = True,
-            providers = [JsInfo],
-        ),
-        "global_deps": attr.label_list(
-            cfg = _jest_transition,
-            doc = "Global dependencies.",
-            providers = [JsInfo],
+            providers = [CjsInfo, JsInfo],
         ),
         "node_options": attr.string_list(
+            doc = "Node.js options.",
+        ),
+        "_allowlist_function_transition": attr.label(
+            default = "@bazel_tools//tools/allowlists/function_transition_allowlist",
+        ),
+        "_config": attr.label(
+            cfg = _jest_transition,
+            default = "//jest/config:lib",
+            providers = [CjsInfo, JsInfo],
+        ),
+        "_runner": attr.label(
+            allow_single_file = True,
+            default = "//jest:runner",
+        ),
+        "_fs_linker": attr.label(
+            allow_single_file = True,
+            default = "//nodejs/fs-linker:file",
+        ),
+        "_manifest": attr.label(
+            cfg = "exec",
+            executable = True,
+            default = "//commonjs/manifest:bin",
+        ),
+        "_module_linker": attr.label(
+            allow_single_file = True,
+            default = "//nodejs/module-linker:file",
         ),
     },
     implementation = _jest_test_impl,

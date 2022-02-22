@@ -153,9 +153,9 @@ function addDeps(
     }
 
     const existingDep = depPackage.deps.get(depArg.name);
-    if (existingDep && existingDep.path !== depArg.dep) {
+    if (existingDep && existingDep.path !== depPackage.path) {
       throw new Error(
-        `Package ${depArg.id} has multiple dependencies for ${depArg.name}: ${existingDep.path} (via ${existingDep.label}) and ${depArg.dep} (via ${depArg.label})`,
+        `Package ${depArg.id} has multiple dependencies for ${depArg.name}: ${existingDep.path} (via ${existingDep.label}) and ${depPackage.path} (via ${depArg.label})`,
       );
     }
 

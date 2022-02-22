@@ -1,5 +1,5 @@
 import { JsonFormat } from "@better-rules-javascript/util-json";
-import { BzlDeps, BzlExtraDeps, BzlPackage, BzlPackages } from "./bzl";
+import { BzlDeps, BzlPackages } from "./bzl";
 import { NpmRegistryClient, NpmSpecifier } from "./npm";
 import {
   YarnDependencyInfo,
@@ -160,31 +160,51 @@ function removeNames(bzlPackages: BzlPackages) {
 }
 
 function fixCycles(bzlPackages: BzlPackages) {
+  const current = new Set<string>();
   const visited = new Set<string>();
   const visit = (id: string) => {
-    const package_ = bzlPackages.get(id);
     if (visited.has(id)) {
-      for (const id of visited) {
+      return;
+    }
+    const package_ = bzlPackages.get(id);
+    if (current.has(id)) {
+      const idList = [...current];
+      idList.splice(0, idList.indexOf(id));
+      const ids = new Set(idList);
+      for (const id of ids) {
         const package_ = bzlPackages.get(id);
-        package_.deps = package_.deps.filter((dep) => {
-          if (!visited.has(dep.id)) {
-            return true;
+        for (const dep of package_.deps) {
+          if (!ids.has(dep.id)) {
+            continue;
           }
-          for (const packageId of visited) {
+          for (const packageId of ids) {
             const package_ = bzlPackages.get(packageId);
-            getOrSet(package_.extraDeps, id, Array).push(dep);
+            const deps = getOrSet(package_.extraDeps, id, () => []);
+            if (!deps.some((d) => d.id === dep.id && d.name == dep.name)) {
+              deps.push(dep);
+            }
           }
-        });
+        }
       }
       return;
     }
-    visited.add(id);
+    current.add(id);
     for (const dep of package_.deps) {
       visit(dep.id);
     }
-    visited.delete(id);
+    current.delete(id);
+    visited.add(id);
   };
   for (const id of bzlPackages.keys()) {
     visit(id);
+  }
+  for (const package_ of bzlPackages.values()) {
+    const extraIds = new Set();
+    for (const deps of package_.extraDeps.values()) {
+      for (const dep of deps) {
+        extraIds.add(dep.id);
+      }
+    }
+    package_.deps = package_.deps.filter((dep) => !extraIds.has(dep.id));
   }
 }

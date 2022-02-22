@@ -64,7 +64,6 @@ js_library = rule(
             doc = "Global dependencies.",
             providers = [CjsInfo],
         ),
-        "extra_deps": attr.string_dict(),
         "prefix": attr.string(
             doc = "Prefix to add.",
         ),

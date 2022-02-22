@@ -209,6 +209,7 @@ class Package {
     function json() {
         return JsonFormat.object({
             deps: PackageDeps.json(),
+            name: JsonFormat.string(),
         });
     }
     Package.json = json;
@@ -1283,6 +1284,7 @@ function createVfs(packageTree, runfiles) {
             path: undefined,
         };
         packageNode.extraChildren.set("node_modules", nodeModules);
+        addDep(nodeModules, package_.name, resolve(path));
         for (const [name, dep] of package_.deps) {
             try {
                 addDep(nodeModules, name, resolve(dep));

@@ -2,7 +2,7 @@ load("@bazel_skylib//lib:shell.bzl", "shell")
 load("//commonjs:providers.bzl", "CjsInfo", "CjsRootInfo", "create_cjs_info", "gen_manifest", "package_path")
 load("//commonjs:rules.bzl", "cjs_root")
 load("//javascript:providers.bzl", "JsInfo", "create_js_info")
-load("//javascript:rules.bzl", "js_library")
+load("//javascript:rules.bzl", "js_export", "js_library")
 load("//nodejs:providers.bzl", "NODE_MODULES_PREFIX", "modules_links", "package_path_name")
 load("//nodejs:rules.bzl", "nodejs_binary")
 load("//typescript:rules.bzl", "ts_library")
@@ -37,17 +37,19 @@ _webpack_transition = transition(
 
 def _webpack_impl(ctx):
     bin = ctx.attr.bin[DefaultInfo]
-    client = [target[JsInfo] for target in ctx.attr.client]
+    client_cjs = [target[CjsInfo] for target in ctx.attr.client]
+    client_js = [target[JsInfo] for target in ctx.attr.client]
     config = ctx.attr.config
-    config_dep = ctx.attr.config_dep[JsInfo]
+    config_dep = ctx.attr.config_dep[CjsInfo]
     server = ctx.attr.server[DefaultInfo]
     workspace_name = ctx.workspace_name
 
     webpack_info = WebpackInfo(
         bin = bin,
+        client_cjs = client_cjs,
+        client_js = client_js,
+        config_path = "%s/%s" % (package_path_name(workspace_name, config_dep.package.short_path), config),
         server = server,
-        config_path = "%s/%s" % (package_path_name(workspace_name, config_dep.package.id), config),
-        client = client,
     )
 
     return [webpack_info]
@@ -66,7 +68,7 @@ webpack = rule(
         "config_dep": attr.label(
             cfg = "exec",
             mandatory = True,
-            providers = [JsInfo],
+            providers = [CjsInfo],
         ),
         "language": attr.string(
             default = "es2020",
@@ -81,7 +83,7 @@ webpack = rule(
         ),
         "client": attr.label_list(
             mandatory = True,
-            providers = [JsInfo],
+            providers = [CjsInfo, JsInfo],
         ),
     },
     doc = "Webpack tools",
@@ -90,33 +92,41 @@ webpack = rule(
 
 _webpack = webpack
 
-def configure_webpack(name, cli, webpack, dev_server, config, config_dep, global_deps = [], node_options = [], other_deps = [], visibility = None):
+def configure_webpack(name, cli, webpack, dev_server, config, config_dep, node_options = [], visibility = None):
     """Set up webpack tools.
 
     Args:
         name: Name
         dep: Webpack library
         config: Configuration
-        other_deps: Other deps (helps with Webpack package cycles)
     """
 
     nodejs_binary(
         main = "bin/cli.js",
         name = "%s.bin" % name,
-        dep = cli,
-        global_deps = global_deps,
+        dep = ":%s.main" % name,
         node_options = node_options,
-        other_deps = other_deps + [config_dep, "@better_rules_javascript//webpack/load-config:lib"],
         visibility = ["//visibility:private"],
+    )
+
+    js_export(
+        name = "%s.main" % name,
+        dep = cli,
+        extra_deps = [config_dep, "@better_rules_javascript//webpack/load-config:lib"],
     )
 
     nodejs_binary(
         name = "%s.server_bin" % name,
-        dep = ":%s.server_lib" % name,
-        global_deps = global_deps,
         node_options = node_options,
-        other_deps = other_deps + [config_dep],
         main = "src/main.js",
+        dep = ":%s.server_main" % name,
+        visibility = ["//visibility:private"],
+    )
+
+    js_export(
+        name = "%s.server_main" % name,
+        dep = ":%s.server_lib" % name,
+        extra_deps = [config_dep],
         visibility = ["//visibility:private"],
     )
 
@@ -162,7 +172,7 @@ def configure_webpack(name, cli, webpack, dev_server, config, config_dep, global
         srcs = ["@better_rules_javascript//webpack/server:tsconfig"],
         deps = ["@better_rules_javascript//rules:tsconfig"],
         root = ":%s.root" % name,
-        path = "%s.root/tsconfig.json" % name,
+        strip_prefix = "/webpack/server",
         visibility = ["//visibility:private"],
     )
 
@@ -178,10 +188,12 @@ def configure_webpack(name, cli, webpack, dev_server, config, config_dep, global
 
 def _webpack_bundle_impl(ctx):
     actions = ctx.actions
-    config = ctx.attr._config[JsInfo]
+    config = ctx.attr._config[CjsInfo]
     compilation_mode = ctx.var["COMPILATION_MODE"]
-    dep = ctx.attr.dep[0][JsInfo]
+    dep_js = ctx.attr.dep[0][JsInfo]
+    dep_cjs = ctx.attr.dep[0][CjsInfo]
     cjs_root = ctx.attr.root[CjsRootInfo]
+    label = ctx.label
     webpack = ctx.attr.webpack[WebpackInfo]
     output_name = ctx.attr.output or ctx.attr.name
     workspace_name = ctx.workspace_name
@@ -189,11 +201,10 @@ def _webpack_bundle_impl(ctx):
     package_manifest = actions.declare_file("%s.packages.json" % ctx.label.name)
     gen_manifest(
         actions = actions,
-        deps = dep.transitive_links,
-        globals = [],
+        deps = dep_cjs.transitive_links,
         manifest = package_manifest,
         manifest_bin = ctx.attr._manifest[DefaultInfo],
-        packages = dep.transitive_packages,
+        packages = dep_cjs.transitive_packages,
         package_path = package_path,
     )
 
@@ -201,7 +212,7 @@ def _webpack_bundle_impl(ctx):
 
     args = []
     args.append("--config")
-    args.append("./%s.runfiles/%s/%s/src/index.mjs" % (webpack.bin.files_to_run.executable.path, NODE_MODULES_PREFIX, package_path_name(workspace_name, config.package.id)))
+    args.append("./%s.runfiles/%s/%s/src/index.mjs" % (webpack.bin.files_to_run.executable.path, NODE_MODULES_PREFIX, package_path_name(workspace_name, config.package.short_path)))
 
     actions.run(
         env = {
@@ -209,7 +220,7 @@ def _webpack_bundle_impl(ctx):
             "NODE_FS_PACKAGE_MANIFEST": package_manifest.path,
             "NODE_OPTIONS_APPEND": "-r ./%s -r ./%s" % (ctx.file._fs_linker.path, ctx.file._skip_package_check.path),
             "WEBPACK_CONFIG": "%s/%s" % (NODE_MODULES_PREFIX, webpack.config_path),
-            "WEBPACK_INPUT_ROOT": dep.package.path,
+            "WEBPACK_INPUT_ROOT": dep_cjs.package.path,
             "WEBPACK_OUTPUT": output.path,
         },
         executable = webpack.bin.files_to_run.executable,
@@ -217,18 +228,18 @@ def _webpack_bundle_impl(ctx):
         arguments = args,
         inputs = depset(
             [package_manifest, ctx.file._fs_linker, ctx.file._skip_package_check],
-            transitive = [dep.transitive_files, dep.transitive_srcs],
+            transitive = [dep_js.transitive_files],
         ),
         outputs = [output],
     )
 
     default_info = DefaultInfo(files = depset([output]))
 
-    cjs_info = create_cjs_info(cjs_root = cjs_root)
+    cjs_info = create_cjs_info(cjs_root = cjs_root, label = label)
 
     js_info = create_js_info(files = [output])
 
-    return [default_info]
+    return [cjs_info, default_info, js_info]
 
 webpack_bundle = rule(
     attrs = {
@@ -236,8 +247,8 @@ webpack_bundle = rule(
             default = "@bazel_tools//tools/allowlists/function_transition_allowlist",
         ),
         "_config": attr.label(
-            cfg = "exec",
             default = "//webpack/load-config:lib",
+            providers = [CjsInfo],
         ),
         "_manifest": attr.label(
             cfg = "exec",
@@ -284,18 +295,19 @@ def _webpack_server_impl(ctx):
     skip_package_check = ctx.file._skip_package_check
     webpack = ctx.split_attr.webpack["tool"][WebpackInfo]
     webpack_client = ctx.split_attr.webpack["browser"][WebpackInfo]
-    js_info = ctx.attr.dep[0][JsInfo]
-    js_deps = [js_info] + [dep[JsInfo] for dep in ctx.attr.global_deps] + webpack_client.client
+    dep_js = ctx.attr.dep[0][JsInfo]
+    dep_cjs = ctx.attr.dep[0][CjsInfo]
     name = ctx.attr.name
     workspace_name = ctx.workspace_name
 
     transitive_links = depset(
-        transitive = [js_info_.transitive_links for js_info_ in js_deps],
+        # create_globals(label, webpack_client.client_cjs),
+        transitive = [dep_cjs.transitive_links] + [cjs_info.transitive_links for cjs_info in webpack_client.client_cjs],
     )
-    transitive_packages = depset(transitive = [dep.transitive_packages for dep in js_deps])
+    transitive_packages = depset(transitive = [dep_cjs.transitive_packages] + [cjs_info.transitive_packages for cjs_info in webpack_client.client_cjs])
 
     def package_path(package):
-        return "%s/%s" % (WEBPACK_MODULES_PREFIX, package_path_name(workspace_name, package.id))
+        return "%s/%s" % (WEBPACK_MODULES_PREFIX, package_path_name(workspace_name, package.short_path))
 
     package_manifest = actions.declare_file("%s-packages.json" % name)
     gen_manifest(
@@ -304,7 +316,6 @@ def _webpack_server_impl(ctx):
         manifest = package_manifest,
         packages = transitive_packages,
         deps = transitive_links,
-        globals = target_globals(ctx.attr.global_deps) + create_globals(label, webpack_client.client),
         package_path = package_path,
     )
 
@@ -317,7 +328,7 @@ def _webpack_server_impl(ctx):
             "%{bin}": shell.quote(runfile_path(ctx.workspace_name, webpack.server.files_to_run.executable)),
             "%{compilation_mode}": shell.quote(compilation_mode),
             "%{config}": "%s/%s" % (NODE_MODULES_PREFIX, webpack.config_path),
-            "%{input_root}": shell.quote("%s/%s" % (WEBPACK_MODULES_PREFIX, package_path_name(workspace_name, js_info.package.id))),
+            "%{input_root}": shell.quote("%s/%s" % (WEBPACK_MODULES_PREFIX, package_path_name(workspace_name, dep_cjs.package.short_path))),
             "%{output}": "/tmp/bundle.js",
             "%{skip_package_check}": runfile_path(ctx.workspace_name, skip_package_check),
             "%{package_manifest}": shell.quote(runfile_path(ctx.workspace_name, package_manifest)),
@@ -325,14 +336,14 @@ def _webpack_server_impl(ctx):
         is_executable = True,
     )
 
+    js_info = create_js_info(
+        deps = [dep_js] + webpack_client.client_js,
+    )
+
     symlinks = modules_links(
         prefix = WEBPACK_MODULES_PREFIX,
         packages = transitive_packages.to_list(),
-        files = depset(
-            transitive =
-                [js_info_.transitive_files for js_info_ in js_deps] +
-                [js_info_.transitive_srcs for js_info_ in js_deps],
-        ).to_list(),
+        files = js_info.transitive_files.to_list(),
         workspace_name = workspace_name,
     )
 
@@ -376,10 +387,8 @@ webpack_server = rule(
             mandatory = True,
             providers = [JsInfo],
         ),
-        "global_deps": attr.label_list(
-            cfg = _webpack_transition,
-            providers = [JsInfo],
-        ),
+        "language": attr.string(),
+        "module": attr.string(),
         "webpack": attr.label(
             cfg = _webpack_tool_transition,
             doc = "Webpack tools",
