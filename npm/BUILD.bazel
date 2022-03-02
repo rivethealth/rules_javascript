@@ -15,6 +15,7 @@ bzl_library(
         "//commonjs:bzl",
         "//javascript:bzl",
         "//util:bzl",
+        "@bazel_skylib//lib:shell",
     ],
 )
 

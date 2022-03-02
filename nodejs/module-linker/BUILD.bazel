@@ -9,12 +9,14 @@ package(default_visibility = ["//visibility:public"])
 rollup_bundle(
     name = "bundle",
     dep = ":lib",
+    output = "bundle.js",
     rollup = ":rollup",
 )
 
-filegroup(
-    name = "file",
+js_library(
+    name = "dist_lib",
     srcs = ["dist/bundle.js"],
+    root = ":root",
 )
 
 generate(
@@ -22,7 +24,6 @@ generate(
     srcs = ["dist/bundle.js"],
     data = [":bundle"],
     data_prefix = "dist",
-    data_strip_prefix = "bundle",
 )
 
 ts_library(

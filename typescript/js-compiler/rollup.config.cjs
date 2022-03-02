@@ -12,6 +12,6 @@ module.exports = {
     "typescript",
   ],
   inlineDynamicImports: true,
-  output: { file: process.env.ROLLUP_OUTPUT, format: "cjs" },
+  output: { file: process.env.ROLLUP_OUTPUT, format: "cjs", sourcemap: true },
   plugins: [commonjs(), nodeResolve()],
 };

@@ -73,7 +73,8 @@ def _ts_proto_libraries_impl(ctx):
     actions = ctx.actions
     cjs_root = ctx.attr.root[CjsRootInfo]
     declaration_prefix = ctx.attr.declaration_prefix
-    fs_linker = ctx.file._fs_linker
+    fs_linker_cjs = ctx.attr._fs_linker[CjsInfo]
+    fs_linker_js = ctx.attr._fs_linker[JsInfo]
     js_prefix = ctx.attr.js_prefix
     config = ctx.attr._config[DefaultInfo]
     label = ctx.label
@@ -214,13 +215,14 @@ def _ts_proto_libraries_impl(ctx):
             actions.run(
                 arguments = ["-p", tsconfig.path],
                 env = {
-                    "NODE_OPTIONS_APPEND": "-r ./%s" % fs_linker.path,
+                    "NODE_OPTIONS_APPEND": "-r ./%s/dist/bundle.js" % fs_linker_cjs.package.path,
                     "NODE_FS_PACKAGE_MANIFEST": package_manifest.path,
                 },
                 executable = ts_proto.tsc.bin.files_to_run.executable,
                 inputs = depset(
-                    [package_manifest, fs_linker, tsconfig] + cjs_root.descriptors + ts,
+                    [package_manifest, tsconfig] + cjs_root.descriptors + ts,
                     transitive =
+                        [fs_linker_js.transitive_files] +
                         ([tsconfig_js.transitive_files] if tsconfig_js else []) +
                         [dep.transitive_files for dep in ts_proto.deps_ts],
                 ),
@@ -299,8 +301,8 @@ def ts_proto_libraries_rule(aspect, compiler):
             ),
             "_fs_linker": attr.label(
                 cfg = "exec",
-                allow_single_file = [".js"],
-                default = "//nodejs/fs-linker:file",
+                default = "//nodejs/fs-linker:dist_lib",
+                providers = [CjsInfo, JsInfo],
             ),
             "_language": attr.label(
                 default = "//javascript:language",

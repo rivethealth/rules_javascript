@@ -59,7 +59,8 @@ def _angular_library(ctx):
     compilation_mode = ctx.var["COMPILATION_MODE"]
     config = ctx.attr._config[DefaultInfo]
     declaration_prefix = ctx.attr.declaration_prefix
-    fs_linker = ctx.file._fs_linker
+    fs_linker_cjs = ctx.attr._fs_linker[CjsInfo]
+    fs_linker_js = ctx.attr._fs_linker[JsInfo]
     js_deps = compiler.js_deps + [dep[JsInfo] for dep in ctx.attr.deps if JsInfo in dep]
     js_prefix = ctx.attr.js_prefix
     label = ctx.label
@@ -295,15 +296,15 @@ def _angular_library(ctx):
             actions.run(
                 arguments = ["-p", tsconfig.path],
                 env = {
-                    "NODE_OPTIONS_APPEND": "-r ./%s" % fs_linker.path,
+                    "NODE_OPTIONS_APPEND": "-r ./%s/dist/bundle.js" % fs_linker_cjs.package.path,
                     "NODE_FS_PACKAGE_MANIFEST": package_manifest.path,
                 },
                 executable = compiler.bin.files_to_run.executable,
                 inputs = depset(
-                    [package_manifest, fs_linker, tsconfig] + cjs_root.descriptors + inputs,
-                    transitive = ([tsconfig_js.transitive_files] if tsconfig_js else []) + [ts_info.transitive_files for ts_info in ts_deps],
+                    [package_manifest, tsconfig] + cjs_root.descriptors + inputs,
+                    transitive = [fs_linker_js.transitive_files] + ([tsconfig_js.transitive_files] if tsconfig_js else []) + [ts_info.transitive_files for ts_info in ts_deps],
                 ),
-                mnemonic = "TypeScriptCompile",
+                mnemonic = "AngularCompile",
                 outputs = outputs,
                 tools = [compiler.bin.files_to_run],
             )
@@ -311,13 +312,13 @@ def _angular_library(ctx):
             actions.run(
                 arguments = ["-p", tsconfig.path],
                 env = {
-                    "NODE_OPTIONS_APPEND": "-r ./%s" % fs_linker.path,
+                    "NODE_OPTIONS_APPEND": "-r ./%s/dist/bundle.js" % fs_linker_cjs.package.path,
                     "NODE_FS_PACKAGE_MANIFEST": package_manifest.path,
                 },
                 executable = compiler.tsc_bin.files_to_run.executable,
                 inputs = depset(
-                    [package_manifest, fs_linker, tsconfig] + cjs_root.descriptors + inputs,
-                    transitive = ([tsconfig_js.transitive_files] if tsconfig_js else []) + [ts_info.transitive_files for ts_info in ts_deps],
+                    [package_manifest, tsconfig] + cjs_root.descriptors + inputs,
+                    transitive = [fs_linker_js.transitive_files] + ([tsconfig_js.transitive_files] if tsconfig_js else []) + [ts_info.transitive_files for ts_info in ts_deps],
                 ),
                 mnemonic = "TypeScriptCompile",
                 outputs = outputs,
@@ -359,8 +360,8 @@ angular_library = rule(
             default = "//typescript/config:bin",
         ),
         "_fs_linker": attr.label(
-            allow_single_file = [".js"],
-            default = "//nodejs/fs-linker:file",
+            default = "//nodejs/fs-linker:dist_lib",
+            providers = [CjsInfo, JsInfo],
         ),
         "_manifest": attr.label(
             cfg = "exec",

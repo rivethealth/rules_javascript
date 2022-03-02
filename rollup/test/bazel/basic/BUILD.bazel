@@ -37,5 +37,6 @@ configure_rollup(
 rollup_bundle(
     name = "bundle",
     dep = ":lib",
+    output = "bundle.js",
     rollup = ":rollup",
 )

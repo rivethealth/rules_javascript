@@ -26,9 +26,11 @@ def _jest_test_impl(ctx):
     config_js = ctx.attr.config_dep[0][JsInfo]
     config_cjs = ctx.attr.config_dep[0][CjsInfo]
     config = ctx.attr.config
-    fs_linker = ctx.file._fs_linker
+    fs_linker_cjs = ctx.attr._fs_linker[CjsInfo]
+    fs_linker_js = ctx.attr._fs_linker[JsInfo]
     label = ctx.label
-    module_linker = ctx.file._module_linker
+    module_linker_cjs = ctx.attr._module_linker[CjsInfo]
+    module_linker_js = ctx.attr._module_linker[JsInfo]
     name = ctx.attr.name
     node_options = ctx.attr.node_options
     nodejs_toolchain = ctx.toolchains["@better_rules_javascript//nodejs:toolchain_type"]
@@ -64,12 +66,12 @@ def _jest_test_impl(ctx):
             "%{config}": shell.quote("%s/%s/%s" % (NODE_MODULES_PREFIX, package_path_name(workspace_name, config_cjs.package.short_path), config)),
             "%{config_loader}": shell.quote("%s/%s/src/index.js" % (NODE_MODULES_PREFIX, package_path_name(workspace_name, config_loader_cjs.package.short_path))),
             "%{env}": " ".join(["%s=%s" % (name, shell.quote(value)) for name, value in env.items()]),
-            "%{fs_linker}": shell.quote(runfile_path(workspace_name, fs_linker)),
+            "%{fs_linker}": shell.quote("%s/dist/bundle.js" % runfile_path(workspace_name, fs_linker_cjs.package)),
             "%{main_module}": shell.quote(main_module),
             "%{node}": shell.quote(runfile_path(workspace_name, nodejs_toolchain.nodejs.bin)),
             "%{node_options}": " ".join([shell.quote(option) for option in node_options]),
             "%{package_manifest}": shell.quote(runfile_path(ctx.workspace_name, package_manifest)),
-            "%{module_linker}": shell.quote(runfile_path(workspace_name, module_linker)),
+            "%{module_linker}": shell.quote("%s/dist/bundle.js" % runfile_path(workspace_name, module_linker_cjs.package)),
             "%{roots}": shell.quote(
                 json.encode(
                     [
@@ -84,7 +86,8 @@ def _jest_test_impl(ctx):
     )
 
     runfiles = ctx.runfiles(
-        files = [nodejs_toolchain.nodejs.bin, fs_linker, module_linker, package_manifest] + data,
+        files = [nodejs_toolchain.nodejs.bin, package_manifest] + data,
+        transitive_files = depset(transitive = [fs_linker_js.transitive_files, module_linker_js.transitive_files]),
         root_symlinks = modules_links(
             files = depset(transitive = [js_info_.transitive_files for js_info_ in js_deps]).to_list(),
             packages = transitive_packages.to_list(),
@@ -147,8 +150,8 @@ jest_test = rule(
             default = "//jest:runner",
         ),
         "_fs_linker": attr.label(
-            allow_single_file = True,
-            default = "//nodejs/fs-linker:file",
+            default = "//nodejs/fs-linker:dist_lib",
+            providers = [CjsInfo, JsInfo],
         ),
         "_manifest": attr.label(
             cfg = "exec",
@@ -156,8 +159,8 @@ jest_test = rule(
             default = "//commonjs/manifest:bin",
         ),
         "_module_linker": attr.label(
-            allow_single_file = True,
-            default = "//nodejs/module-linker:file",
+            default = "//nodejs/module-linker:dist_lib",
+            providers = [CjsInfo, JsInfo],
         ),
     },
     implementation = _jest_test_impl,

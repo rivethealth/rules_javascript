@@ -4546,3 +4546,4 @@ function getPackageTree(packages, globals) {
     ]));
     return { globals: resultGlobals, packages: resultPackages };
 }
+//# sourceMappingURL=bundle.js.map

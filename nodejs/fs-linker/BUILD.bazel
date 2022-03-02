@@ -7,9 +7,13 @@ load("//typescript:rules.bzl", "ts_library")
 
 package(default_visibility = ["//visibility:public"])
 
-filegroup(
-    name = "file",
-    srcs = ["dist/bundle.js"],
+js_library(
+    name = "dist_lib",
+    srcs = glob([
+        "dist/**/*.js",
+        "dist/**/*.js.map",
+    ]),
+    root = ":root",
 )
 
 generate(
@@ -17,7 +21,6 @@ generate(
     srcs = ["dist/bundle.js"],
     data = [":bundle"],
     data_prefix = "dist",
-    data_strip_prefix = "bundle",
 )
 
 cjs_root(
@@ -66,5 +69,6 @@ configure_rollup(
 rollup_bundle(
     name = "bundle",
     dep = ":lib",
+    output = "bundle.js",
     rollup = ":rollup",
 )

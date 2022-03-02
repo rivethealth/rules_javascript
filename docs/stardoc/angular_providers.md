@@ -5,7 +5,7 @@
 ## AngularCompilerInfo
 
 <pre>
-AngularCompilerInfo(<a href="#AngularCompilerInfo-bin">bin</a>, <a href="#AngularCompilerInfo-js_deps">js_deps</a>, <a href="#AngularCompilerInfo-ts_deps">ts_deps</a>, <a href="#AngularCompilerInfo-js_compiler">js_compiler</a>, <a href="#AngularCompilerInfo-resource_compiler">resource_compiler</a>, <a href="#AngularCompilerInfo-tsc_bin">tsc_bin</a>)
+AngularCompilerInfo(<a href="#AngularCompilerInfo-bin">bin</a>, <a href="#AngularCompilerInfo-cjs_deps">cjs_deps</a>, <a href="#AngularCompilerInfo-js_deps">js_deps</a>, <a href="#AngularCompilerInfo-ts_deps">ts_deps</a>, <a href="#AngularCompilerInfo-js_compiler">js_compiler</a>, <a href="#AngularCompilerInfo-resource_compiler">resource_compiler</a>, <a href="#AngularCompilerInfo-tsc_bin">tsc_bin</a>)
 </pre>
 
 TypeScript compiler
@@ -15,6 +15,7 @@ TypeScript compiler
 | Name                                                                | Description         |
 | :------------------------------------------------------------------ | :------------------ |
 | <a id="AngularCompilerInfo-bin"></a>bin                             | Executable          |
+| <a id="AngularCompilerInfo-cjs_deps"></a>cjs_deps                   | CommonJS deps       |
 | <a id="AngularCompilerInfo-js_deps"></a>js_deps                     | JS deps             |
 | <a id="AngularCompilerInfo-ts_deps"></a>ts_deps                     | TS deps             |
 | <a id="AngularCompilerInfo-js_compiler"></a>js_compiler             | Executable          |

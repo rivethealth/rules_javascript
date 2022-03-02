@@ -298,4 +298,4 @@ if (!manifestPath) {
 }
 const packageTree = JsonFormat.parse(PackageTree.json(), fs__namespace.readFileSync(manifestPath, "utf8"));
 const resolver = Resolver.create(packageTree, process.env.RUNFILES_DIR);
-patchModule(resolver, require("module"));
+patchModule(resolver, require("module"));//# sourceMappingURL=bundle.js.map

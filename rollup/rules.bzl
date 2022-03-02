@@ -4,7 +4,7 @@ load("//javascript:providers.bzl", "JsInfo")
 load("//javascript:rules.bzl", "js_export")
 load("//nodejs:rules.bzl", "nodejs_binary")
 load("//nodejs:providers.bzl", "NODE_MODULES_PREFIX", "package_path_name")
-load("//util:path.bzl", "runfile_path")
+load("//util:path.bzl", "output_name", "runfile_path")
 load(":providers.bzl", "RollupInfo")
 
 def _rollup_impl(ctx):
@@ -78,8 +78,19 @@ def _rollup_bundle_impl(ctx):
     default_dep = ctx.attr.dep[DefaultInfo]
     dep_cjs = ctx.attr.dep[CjsInfo]
     dep_js = ctx.attr.dep[JsInfo]
-    fs_linker = ctx.file._fs_linker
+    fs_linker_cjs = ctx.attr._fs_linker[CjsInfo]
+    fs_linker_js = ctx.attr._fs_linker[JsInfo]
     rollup = ctx.attr.rollup[RollupInfo]
+    label = ctx.label
+    if bool(ctx.outputs.output) == bool(ctx.attr.output_directory):
+        fail("Exactly one of output and output must be defined")
+
+    if ctx.outputs.output:
+        output = ctx.outputs.output
+        map = ctx.actions.declare_file("%s.map" % output_name(file = ctx.outputs.output, label = ctx.label))
+    else:
+        output = ctx.actions.declare_directory(ctx.attr.output_directory)
+        map = output
 
     package_manifest = actions.declare_file("%s.packages.json" % ctx.attr.name)
     gen_manifest(
@@ -91,8 +102,6 @@ def _rollup_bundle_impl(ctx):
         package_path = package_path,
     )
 
-    bundle = actions.declare_file("%s/bundle.js" % ctx.attr.name)
-
     args = []
     args.append("--config")
     args.append("./%s.runfiles/%s/%s" % (rollup.bin.executable.path, NODE_MODULES_PREFIX, rollup.config_path))
@@ -100,26 +109,32 @@ def _rollup_bundle_impl(ctx):
     actions.run(
         env = {
             "NODE_FS_PACKAGE_MANIFEST": package_manifest.path,
-            "NODE_OPTIONS_APPEND": "-r ./%s" % fs_linker.path,
+            "NODE_OPTIONS_APPEND": "-r ./%s/dist/bundle.js" % fs_linker_cjs.package.path,
             "ROLLUP_INPUT_ROOT": dep_cjs.package.path,
-            "ROLLUP_OUTPUT": bundle.path,
+            ("ROLLUP_OUTPUT_ROOT" if output.is_directory else "ROLLUP_OUTPUT"): output.path,
         },
         executable = rollup.bin.executable,
         tools = [rollup.bin],
         arguments = args,
         inputs = depset(
-            [package_manifest, fs_linker],
-            transitive = [dep_js.transitive_files],
+            [package_manifest],
+            transitive = [dep_js.transitive_files, fs_linker_js.transitive_files],
         ),
-        outputs = [bundle],
+        outputs = [output, map],
     )
 
+    runfiles = ctx.runfiles(files = [map])
+    runfiles = runfiles.merge(default_dep.default_runfiles)
     default_info = DefaultInfo(
-        files = depset([bundle]),
-        runfiles = default_dep.default_runfiles,
+        files = depset([output]),
+        runfiles = runfiles,
     )
 
-    return [default_info]
+    output_group_info = OutputGroupInfo(
+        map = depset([map]),
+    )
+
+    return [default_info, output_group_info]
 
 rollup_bundle = rule(
     attrs = {
@@ -132,14 +147,18 @@ rollup_bundle = rule(
             mandatory = True,
             providers = [RollupInfo],
         ),
+        "output": attr.output(
+        ),
+        "output_directory": attr.string(
+        ),
         "_manifest": attr.label(
             cfg = "exec",
             executable = True,
             default = "//commonjs/manifest:bin",
         ),
         "_fs_linker": attr.label(
-            allow_single_file = True,
-            default = "//nodejs/fs-linker:file",
+            providers = [CjsInfo, JsInfo],
+            default = "//nodejs/fs-linker:dist_lib",
         ),
     },
     doc = "Rollup bundle",

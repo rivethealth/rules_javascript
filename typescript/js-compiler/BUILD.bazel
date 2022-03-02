@@ -1,3 +1,4 @@
+load("@rules_file//file:rules.bzl", "directory")
 load("@rules_file//generate:rules.bzl", "generate")
 load("//commonjs:rules.bzl", "cjs_root")
 load("//javascript:rules.bzl", "js_library")
@@ -17,7 +18,7 @@ filegroup(
 )
 
 js_library(
-    name = "dist",
+    name = "dist_lib",
     srcs = ["dist/bundle.js"],
     root = ":root",
 )
@@ -27,7 +28,6 @@ generate(
     srcs = ["dist/bundle.js"],
     data = [":bundle"],
     data_prefix = "dist",
-    data_strip_prefix = "bundle",
 )
 
 cjs_root(
@@ -82,5 +82,6 @@ configure_rollup(
 rollup_bundle(
     name = "bundle",
     dep = ":lib",
+    output = "bundle.js",
     rollup = ":rollup",
 )

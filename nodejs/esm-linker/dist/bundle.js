@@ -1,4 +1,38 @@
-'use strict';Object.defineProperty(exports,'__esModule',{value:true});var path=require('path'),Module=require('module'),fs=require('fs'),url=require('url');function _interopDefaultLegacy(e){return e&&typeof e==='object'&&'default'in e?e:{'default':e}}function _interopNamespace(e){if(e&&e.__esModule)return e;var n=Object.create(null);if(e){Object.keys(e).forEach(function(k){if(k!=='default'){var d=Object.getOwnPropertyDescriptor(e,k);Object.defineProperty(n,k,d.get?d:{enumerable:true,get:function(){return e[k]}});}})}n["default"]=e;return Object.freeze(n)}var path__namespace=/*#__PURE__*/_interopNamespace(path);var Module__default=/*#__PURE__*/_interopDefaultLegacy(Module);var fs__namespace=/*#__PURE__*/_interopNamespace(fs);var url__namespace=/*#__PURE__*/_interopNamespace(url);class Trie {
+'use strict';
+
+Object.defineProperty(exports, '__esModule', { value: true });
+
+var path = require('path');
+var Module = require('module');
+var fs = require('fs');
+var url = require('url');
+
+function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
+
+function _interopNamespace(e) {
+    if (e && e.__esModule) return e;
+    var n = Object.create(null);
+    if (e) {
+        Object.keys(e).forEach(function (k) {
+            if (k !== 'default') {
+                var d = Object.getOwnPropertyDescriptor(e, k);
+                Object.defineProperty(n, k, d.get ? d : {
+                    enumerable: true,
+                    get: function () { return e[k]; }
+                });
+            }
+        });
+    }
+    n["default"] = e;
+    return Object.freeze(n);
+}
+
+var path__namespace = /*#__PURE__*/_interopNamespace(path);
+var Module__default = /*#__PURE__*/_interopDefaultLegacy(Module);
+var fs__namespace = /*#__PURE__*/_interopNamespace(fs);
+var url__namespace = /*#__PURE__*/_interopNamespace(url);
+
+class Trie {
     constructor() {
         this.data = { children: new Map() };
     }
@@ -27,7 +61,9 @@
         }
         data.value = value;
     }
-}function pathParts(path_) {
+}
+
+function pathParts(path_) {
     path_ = path__namespace.resolve(path_);
     return path_.split("/").slice(1);
 }
@@ -69,7 +105,9 @@ class Resolver {
         }
         return new Resolver(packages);
     }
-}var JsonFormat;
+}
+
+var JsonFormat;
 (function (JsonFormat) {
     function parse(format, string) {
         return format.fromJson(JSON.parse(string));
@@ -235,7 +273,9 @@ class SetJsonFormat {
     toJson(value) {
         return [...value].map((element) => this.format.toJson(element));
     }
-}var PackageDeps;
+}
+
+var PackageDeps;
 (function (PackageDeps) {
     function json() {
         return JsonFormat.map(JsonFormat.string(), JsonFormat.string());
@@ -265,7 +305,9 @@ var PackageTree;
         });
     }
     PackageTree.json = json;
-})(PackageTree || (PackageTree = {}));const manifestPath = process.env.NODE_PACKAGE_MANIFEST;
+})(PackageTree || (PackageTree = {}));
+
+const manifestPath = process.env.NODE_PACKAGE_MANIFEST;
 if (!manifestPath) {
     throw new Error("NODE_PACKAGE_MANIFEST is not set");
 }
@@ -293,4 +335,7 @@ function resolve(specifier, context, defaultResolve) {
         specifier = `${specifier}/${resolved.inner}`;
     }
     return defaultResolve(specifier, { ...context, parentURL: url__namespace.pathToFileURL(`${base}/_`) }, defaultResolve);
-}exports.resolve=resolve;
+}
+
+exports.resolve = resolve;
+//# sourceMappingURL=bundle.js.map

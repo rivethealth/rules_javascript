@@ -260,3 +260,4 @@ parser.add_argument("output");
     console.error(e);
     process.exit(1);
 });
+//# sourceMappingURL=bundle.js.map

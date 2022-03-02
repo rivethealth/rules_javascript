@@ -193,6 +193,8 @@ def _webpack_bundle_impl(ctx):
     dep_js = ctx.attr.dep[0][JsInfo]
     dep_cjs = ctx.attr.dep[0][CjsInfo]
     cjs_root = ctx.attr.root[CjsRootInfo]
+    fs_linker_cjs = ctx.attr._fs_linker[CjsInfo]
+    fs_linker_js = ctx.attr._fs_linker[JsInfo]
     label = ctx.label
     webpack = ctx.attr.webpack[WebpackInfo]
     output_name = ctx.attr.output or ctx.attr.name
@@ -218,7 +220,7 @@ def _webpack_bundle_impl(ctx):
         env = {
             "COMPILATION_MODE": compilation_mode,
             "NODE_FS_PACKAGE_MANIFEST": package_manifest.path,
-            "NODE_OPTIONS_APPEND": "-r ./%s -r ./%s" % (ctx.file._fs_linker.path, ctx.file._skip_package_check.path),
+            "NODE_OPTIONS_APPEND": "-r ./%s/dist/bundle.js -r ./%s" % (fs_linker_cjs.package.path, ctx.file._skip_package_check.path),
             "WEBPACK_CONFIG": "%s/%s" % (NODE_MODULES_PREFIX, webpack.config_path),
             "WEBPACK_INPUT_ROOT": dep_cjs.package.path,
             "WEBPACK_OUTPUT": output.path,
@@ -227,8 +229,8 @@ def _webpack_bundle_impl(ctx):
         tools = [webpack.bin.files_to_run],
         arguments = args,
         inputs = depset(
-            [package_manifest, ctx.file._fs_linker, ctx.file._skip_package_check],
-            transitive = [dep_js.transitive_files],
+            [package_manifest, ctx.file._skip_package_check],
+            transitive = [dep_js.transitive_files, fs_linker_js.transitive_files],
         ),
         outputs = [output],
     )
@@ -256,8 +258,8 @@ webpack_bundle = rule(
             default = "//commonjs/manifest:bin",
         ),
         "_fs_linker": attr.label(
-            allow_single_file = True,
-            default = "//nodejs/fs-linker:file",
+            default = "//nodejs/fs-linker:dist_lib",
+            providers = [CjsInfo, JsInfo],
         ),
         "_skip_package_check": attr.label(
             allow_single_file = True,

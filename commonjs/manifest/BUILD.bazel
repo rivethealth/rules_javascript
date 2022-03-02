@@ -12,7 +12,6 @@ generate(
     srcs = ["dist/bundle.js"],
     data = [":bundle"],
     data_prefix = "dist",
-    data_strip_prefix = "bundle",
 )
 
 cjs_root(
@@ -69,5 +68,6 @@ configure_rollup(
 rollup_bundle(
     name = "bundle",
     dep = ":lib",
+    output = "bundle.js",
     rollup = ":rollup",
 )

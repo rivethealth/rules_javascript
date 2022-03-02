@@ -48,6 +48,7 @@ test_suite(
         "//angular/test",
         "//commonjs/test",
         "//javascript/test",
+        "//jest/test",
         "//nodejs/test",
         "//rollup/test",
         "//ts-proto/test",

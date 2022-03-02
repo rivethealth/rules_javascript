@@ -28,7 +28,7 @@ def configure_ts_compiler(name, ts, tslib = None, visibility = None):
 
     js_export(
         name = "%s.lib" % name,
-        dep = "@better_rules_javascript//typescript/js-compiler:dist",
+        dep = "@better_rules_javascript//typescript/js-compiler:dist_lib",
         deps = [
             ts,
             "@better_rules_javascript_npm//argparse:lib",
@@ -97,7 +97,8 @@ def _ts_library_impl(ctx):
     cjs_deps = compiler.runtime_cjs + [target[CjsInfo] for target in ctx.attr.deps]
     cjs_root = ctx.attr.root[CjsRootInfo]
     declaration_prefix = ctx.attr.declaration_prefix
-    fs_linker = ctx.file._fs_linker
+    fs_linker_cjs = ctx.attr._fs_linker[CjsInfo]
+    fs_linker_js = ctx.attr._fs_linker[JsInfo]
     js_deps = compiler.runtime_js + [dep[JsInfo] for dep in ctx.attr.deps if JsInfo in dep]
     js_prefix = ctx.attr.js_prefix
     label = ctx.label
@@ -265,13 +266,14 @@ def _ts_library_impl(ctx):
         actions.run(
             arguments = ["-p", tsconfig.path],
             env = {
-                "NODE_OPTIONS_APPEND": "-r ./%s" % fs_linker.path,
+                "NODE_OPTIONS_APPEND": "-r ./%s/dist/bundle.js" % fs_linker_cjs.package.path,
                 "NODE_FS_PACKAGE_MANIFEST": package_manifest.path,
             },
             executable = compiler.bin.files_to_run.executable,
             inputs = depset(
-                [package_manifest, fs_linker, tsconfig] + cjs_root.descriptors + inputs,
+                [package_manifest, tsconfig] + cjs_root.descriptors + inputs,
                 transitive =
+                    [fs_linker_js.transitive_files] +
                     ([tsconfig_js.transitive_files] if tsconfig_js else []) +
                     [dep.transitive_files for dep in ts_deps],
             ),
@@ -366,9 +368,9 @@ ts_library = rule(
             executable = True,
         ),
         "_fs_linker": attr.label(
-            allow_single_file = [".js"],
+            providers = [JsInfo],
             cfg = "exec",
-            default = "//nodejs/fs-linker:file",
+            default = "//nodejs/fs-linker:dist_lib",
         ),
         "_language": attr.label(
             default = "//javascript:language",

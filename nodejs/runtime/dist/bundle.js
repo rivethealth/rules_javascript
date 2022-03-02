@@ -1,4 +1,6 @@
-'use strict';const { emitWarning } = process;
+'use strict';
+
+const { emitWarning } = process;
 /**
  * @file
  * @see https://github.com/nodejs/node/issues/30810
@@ -12,3 +14,4 @@ process.emitWarning = function (warning, type) {
     }
     return emitWarning.apply(this, arguments);
 };
+//# sourceMappingURL=bundle.js.map

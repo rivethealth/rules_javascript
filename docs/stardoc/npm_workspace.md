@@ -50,11 +50,12 @@ npm_import_rule(<a href="#npm_import_rule-plugins">plugins</a>)
 ## package_repo_name
 
 <pre>
-package_repo_name(<a href="#package_repo_name-name">name</a>)
+package_repo_name(<a href="#package_repo_name-prefix">prefix</a>, <a href="#package_repo_name-name">name</a>)
 </pre>
 
 **PARAMETERS**
 
-| Name                                    | Description               | Default Value |
-| :-------------------------------------- | :------------------------ | :------------ |
-| <a id="package_repo_name-name"></a>name | <p align="center"> - </p> | none          |
+| Name                                        | Description               | Default Value |
+| :------------------------------------------ | :------------------------ | :------------ |
+| <a id="package_repo_name-prefix"></a>prefix | <p align="center"> - </p> | none          |
+| <a id="package_repo_name-name"></a>name     | <p align="center"> - </p> | none          |

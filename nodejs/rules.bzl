@@ -7,13 +7,19 @@ load(":providers.bzl", "NODE_MODULES_PREFIX", "modules_links", "package_path_nam
 def _nodejs_simple_binary_implementation(ctx):
     actions = ctx.actions
     nodejs_toolchain = ctx.toolchains["@better_rules_javascript//nodejs:toolchain_type"]
+    path = ctx.attr.path
+    src = ctx.file.src
+
+    module = runfile_path(ctx.workspace_name, src)
+    if path:
+        module = "%s/%s" % (module, path)
 
     bin = actions.declare_file("%s/bin" % ctx.label.name)
     actions.expand_template(
         template = ctx.file._runner,
         output = bin,
         substitutions = {
-            "%{module}": shell.quote(runfile_path(ctx.workspace_name, ctx.file.src)),
+            "%{module}": shell.quote(module),
             "%{node}": shell.quote(runfile_path(ctx.workspace_name, nodejs_toolchain.nodejs.bin)),
             "%{example}": ctx.file.src.short_path,
         },
@@ -27,7 +33,10 @@ def _nodejs_simple_binary_implementation(ctx):
 
 nodejs_simple_binary = rule(
     attrs = {
-        "src": attr.label(mandatory = True, allow_single_file = [".js"], doc = "Source file"),
+        "src": attr.label(mandatory = True, allow_single_file = True, doc = "Source file"),
+        "path": attr.label(
+            doc = "Path to file, if src is directory",
+        ),
         "_bash_runfiles": attr.label(
             allow_files = True,
             default = "@bazel_tools//tools/bash/runfiles",
@@ -51,12 +60,15 @@ def _nodejs_binary_implementation(ctx):
     js_deps = [js_dep]
     cjs_dep = ctx.attr.dep[0][CjsInfo]
     cjs_deps = [cjs_dep]
-    module_linker = ctx.file._module_linker
+    module_linker_cjs = ctx.attr._module_linker[CjsInfo]
+    module_linker_js = ctx.attr._module_linker[JsInfo]
     name = ctx.attr.name
     node_options = ctx.attr.node_options
-    esm_linker = ctx.file._esm_linker
+    esm_linker_cjs = ctx.attr._esm_linker[CjsInfo]
+    esm_linker_js = ctx.attr._esm_linker[JsInfo]
     runner = ctx.file._runner
-    runtime = ctx.file._runtime
+    runtime_cjs = ctx.attr._runtime[CjsInfo]
+    runtime_js = ctx.attr._runtime[JsInfo]
     workspace_name = ctx.workspace_name
 
     nodejs_toolchain = ctx.toolchains["@better_rules_javascript//nodejs:toolchain_type"]
@@ -84,20 +96,16 @@ def _nodejs_binary_implementation(ctx):
         output = bin,
         substitutions = {
             "%{env}": " ".join(["%s=%s" % (name, shell.quote(value)) for name, value in env.items()]),
-            "%{esm_loader}": shell.quote(runfile_path(workspace_name, esm_linker)),
+            "%{esm_loader}": shell.quote("%s/dist/bundle.js" % runfile_path(workspace_name, esm_linker_cjs.package)),
             "%{main_module}": shell.quote(main_module),
             "%{node}": shell.quote(runfile_path(workspace_name, nodejs_toolchain.nodejs.bin)),
             "%{node_options}": " ".join([shell.quote(option) for option in node_options]),
             "%{package_manifest}": shell.quote(runfile_path(workspace_name, package_manifest)),
-            "%{module_linker}": shell.quote(runfile_path(workspace_name, module_linker)),
-            "%{runtime}": shell.quote(runfile_path(workspace_name, runtime)),
+            "%{module_linker}": shell.quote("%s/dist/bundle.js" % runfile_path(workspace_name, module_linker_cjs.package)),
+            "%{runtime}": shell.quote("%s/dist/bundle.js" % runfile_path(workspace_name, runtime_cjs.package)),
         },
         is_executable = True,
     )
-
-    # TODO: remove once scripts are cjs
-    package_json = actions.declare_file("%s.package.json" % ctx.attr.name)
-    ctx.actions.write(package_json, "{}")
 
     js_info = create_js_info(deps = js_deps)
     symlinks = modules_links(
@@ -106,20 +114,19 @@ def _nodejs_binary_implementation(ctx):
         prefix = NODE_MODULES_PREFIX,
         workspace_name = workspace_name,
     )
-    symlinks["package.json"] = package_json
 
     runfiles = ctx.runfiles(
         files =
             [
                 nodejs_toolchain.nodejs.bin,
-                runtime,
-                esm_linker,
-                module_linker,
                 package_manifest,
             ],
+        transitive_files = depset(transitive = [esm_linker_js.transitive_files, module_linker_js.transitive_files, runtime_js.transitive_files]),
         root_symlinks = symlinks,
     )
-    runfiles = runfiles.merge_all([dep[DefaultInfo].default_runfiles for dep in ctx.attr.data if dep[DefaultInfo].default_runfiles != None])
+    runfiles = runfiles.merge_all(
+        [dep[DefaultInfo].default_runfiles for dep in ctx.attr.data if dep[DefaultInfo].default_runfiles != None],
+    )
 
     default_info = DefaultInfo(
         executable = bin,
@@ -162,12 +169,12 @@ nodejs_binary = rule(
             default = "@bazel_tools//tools/allowlists/function_transition_allowlist",
         ),
         "_esm_linker": attr.label(
-            allow_single_file = [".js"],
-            default = "//nodejs/esm-linker:file",
+            default = "//nodejs/esm-linker:dist_lib",
+            providers = [CjsInfo, JsInfo],
         ),
         "_module_linker": attr.label(
-            allow_single_file = True,
-            default = "//nodejs/module-linker:file",
+            default = "//nodejs/module-linker:dist_lib",
+            providers = [CjsInfo, JsInfo],
         ),
         "_manifest": attr.label(
             cfg = "exec",
@@ -179,8 +186,8 @@ nodejs_binary = rule(
             default = "//nodejs:runner",
         ),
         "_runtime": attr.label(
-            allow_single_file = [".js"],
-            default = "//nodejs/runtime:file",
+            default = "//nodejs/runtime:dist_lib",
+            providers = [CjsInfo, JsInfo],
         ),
     },
     doc = "Node.js binary",
