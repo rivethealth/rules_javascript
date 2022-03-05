@@ -1,43 +1,4 @@
 PACKAGES = {
-    "@angular-devkit/build-optimizer@0.1301.2": {
-        "deps": [
-            {
-                "id": "source-map@0.7.3",
-            },
-            {
-                "id": "tslib@2.3.1",
-            },
-            {
-                "id": "typescript@4.5.3",
-            },
-        ],
-        "extra_deps": {
-        },
-        "integrity": "sha512-HnFAabI/VFhQoGeMPEbcZ4COXrRVW0cfFZGv2DqvJTp7G8gqyIt+J1MjMcIuml7s6FoefGM5lMoVBSl/I9tpOw==",
-        "name": "@angular-devkit/build-optimizer",
-        "url": "https://registry.npmjs.org/@angular-devkit/build-optimizer/-/build-optimizer-0.1301.2.tgz",
-    },
-    "@angular-devkit/build-optimizer@0.1301.2-dc3fc578": {
-        "deps": [
-            {
-                "id": "source-map@0.7.3",
-            },
-            {
-                "id": "tslib@2.3.1",
-            },
-            {
-                "id": "typescript@4.5.3",
-            },
-            {
-                "id": "webpack@5.64.4-dc3fc578",
-            },
-        ],
-        "extra_deps": {
-        },
-        "integrity": "sha512-HnFAabI/VFhQoGeMPEbcZ4COXrRVW0cfFZGv2DqvJTp7G8gqyIt+J1MjMcIuml7s6FoefGM5lMoVBSl/I9tpOw==",
-        "name": "@angular-devkit/build-optimizer",
-        "url": "https://registry.npmjs.org/@angular-devkit/build-optimizer/-/build-optimizer-0.1301.2.tgz",
-    },
     "@angular/animations@13.1.1": {
         "deps": [
             {
@@ -4300,27 +4261,19 @@ PACKAGES = {
     },
     "@webpack-cli/configtest@1.1.0-4e0fd822": {
         "deps": [
+            {
+                "id": "webpack@5.64.4-dc3fc578",
+            },
         ],
         "extra_deps": {
-            "webpack-cli@4.9.1-dc3fc578": [
-                {
-                    "id": "@webpack-cli/configtest@1.1.0-4e0fd822",
-                },
-                {
-                    "id": "webpack@5.64.4-dc3fc578",
-                },
-            ],
             "@webpack-cli/configtest@1.1.0-4e0fd822": [
                 {
                     "id": "webpack-cli@4.9.1-dc3fc578",
                 },
-                {
-                    "id": "webpack@5.64.4-dc3fc578",
-                },
             ],
-            "webpack@5.64.4-dc3fc578": [
+            "webpack-cli@4.9.1-dc3fc578": [
                 {
-                    "id": "webpack-cli@4.9.1-dc3fc578",
+                    "id": "@webpack-cli/configtest@1.1.0-4e0fd822",
                 },
             ],
         },
@@ -4405,14 +4358,14 @@ PACKAGES = {
                     "id": "webpack@5.64.4-dc3fc578",
                 },
             ],
-            "webpack@5.64.4-dc3fc578": [
-                {
-                    "id": "webpack-cli@4.9.1-dc3fc578",
-                },
-            ],
             "webpack-dev-middleware@5.3.0-48473bb5": [
                 {
                     "id": "webpack@5.64.4-dc3fc578",
+                },
+            ],
+            "webpack@5.64.4-dc3fc578": [
+                {
+                    "id": "webpack-cli@4.9.1-dc3fc578",
                 },
             ],
         },
@@ -13674,15 +13627,6 @@ PACKAGES = {
         "name": "typedarray-to-buffer",
         "url": "https://registry.npmjs.org/typedarray-to-buffer/-/typedarray-to-buffer-3.1.5.tgz",
     },
-    "typescript@4.5.3": {
-        "deps": [
-        ],
-        "extra_deps": {
-        },
-        "integrity": "sha512-eVYaEHALSt+s9LbvgEv4Ef+Tdq7hBiIZgii12xXJnukryt3pMgJf6aKhoCZ3FWQsu6sydEnkg11fYXLzhLBjeQ==",
-        "name": "typescript",
-        "url": "https://registry.npmjs.org/typescript/-/typescript-4.5.3.tgz",
-    },
     "typescript@4.5.4": {
         "deps": [
         ],
@@ -14140,6 +14084,11 @@ PACKAGES = {
             },
         ],
         "extra_deps": {
+            "@webpack-cli/configtest@1.1.0-4e0fd822": [
+                {
+                    "id": "webpack-cli@4.9.1-dc3fc578",
+                },
+            ],
             "webpack-cli@4.9.1-dc3fc578": [
                 {
                     "id": "@webpack-cli/configtest@1.1.0-4e0fd822",
@@ -14155,19 +14104,6 @@ PACKAGES = {
                 },
                 {
                     "id": "webpack@5.64.4-dc3fc578",
-                },
-            ],
-            "@webpack-cli/configtest@1.1.0-4e0fd822": [
-                {
-                    "id": "webpack-cli@4.9.1-dc3fc578",
-                },
-                {
-                    "id": "webpack@5.64.4-dc3fc578",
-                },
-            ],
-            "webpack@5.64.4-dc3fc578": [
-                {
-                    "id": "webpack-cli@4.9.1-dc3fc578",
                 },
             ],
             "@webpack-cli/info@1.4.0-4e0fd822": [
@@ -14197,6 +14133,11 @@ PACKAGES = {
             "webpack-dev-middleware@5.3.0-48473bb5": [
                 {
                     "id": "webpack@5.64.4-dc3fc578",
+                },
+            ],
+            "webpack@5.64.4-dc3fc578": [
+                {
+                    "id": "webpack-cli@4.9.1-dc3fc578",
                 },
             ],
         },
@@ -14247,11 +14188,6 @@ PACKAGES = {
             },
         ],
         "extra_deps": {
-            "webpack@5.64.4-dc3fc578": [
-                {
-                    "id": "webpack-cli@4.9.1-dc3fc578",
-                },
-            ],
             "webpack-cli@4.9.1-dc3fc578": [
                 {
                     "id": "@webpack-cli/serve@1.6.0-4e0fd822",
@@ -14285,6 +14221,11 @@ PACKAGES = {
             "webpack-dev-middleware@5.3.0-48473bb5": [
                 {
                     "id": "webpack@5.64.4-dc3fc578",
+                },
+            ],
+            "webpack@5.64.4-dc3fc578": [
+                {
+                    "id": "webpack-cli@4.9.1-dc3fc578",
                 },
             ],
         },
@@ -14506,14 +14447,14 @@ PACKAGES = {
                     "id": "webpack@5.64.4-dc3fc578",
                 },
             ],
-            "webpack@5.64.4-dc3fc578": [
-                {
-                    "id": "webpack-cli@4.9.1-dc3fc578",
-                },
-            ],
             "webpack-dev-middleware@5.3.0-48473bb5": [
                 {
                     "id": "webpack@5.64.4-dc3fc578",
+                },
+            ],
+            "webpack@5.64.4-dc3fc578": [
+                {
+                    "id": "webpack-cli@4.9.1-dc3fc578",
                 },
             ],
         },
@@ -14714,21 +14655,10 @@ PACKAGES = {
             ],
             "webpack-cli@4.9.1-dc3fc578": [
                 {
-                    "id": "@webpack-cli/configtest@1.1.0-4e0fd822",
-                },
-                {
                     "id": "@webpack-cli/serve@1.6.0-4e0fd822",
                 },
                 {
                     "id": "webpack-dev-server@4.7.2-dc3fc578",
-                },
-                {
-                    "id": "webpack@5.64.4-dc3fc578",
-                },
-            ],
-            "@webpack-cli/configtest@1.1.0-4e0fd822": [
-                {
-                    "id": "webpack-cli@4.9.1-dc3fc578",
                 },
                 {
                     "id": "webpack@5.64.4-dc3fc578",
@@ -15117,10 +15047,6 @@ PACKAGES = {
 }
 
 ROOTS = [
-    {
-        "id": "@angular-devkit/build-optimizer@0.1301.2-dc3fc578",
-        "name": "@angular-devkit/build-optimizer",
-    },
     {
         "id": "@angular/animations@13.1.1-dc3fc578",
         "name": "@angular/animations",

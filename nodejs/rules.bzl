@@ -1,5 +1,5 @@
 load("@bazel_skylib//lib:shell.bzl", "shell")
-load("//commonjs:providers.bzl", "CjsInfo", "create_package", "gen_manifest", "package_path")
+load("//commonjs:providers.bzl", "CjsInfo", "CjsRootInfo", "create_globals", "create_package", "gen_manifest", "package_path")
 load("//javascript:providers.bzl", "JsInfo", "create_js_info")
 load("//util:path.bzl", "output", "runfile_path")
 load(":providers.bzl", "NODE_MODULES_PREFIX", "modules_links", "package_path_name")
@@ -196,72 +196,99 @@ nodejs_binary = rule(
     toolchains = ["@better_rules_javascript//nodejs:toolchain_type"],
 )
 
-CjsEntries = provider()  # TODO: remove
-create_link = None
-create_global = None
+def _archive_files(packages, files, workspace_name, links = []):
+    result = {}
+    link_paths = {cjs_info.package.path: None for cjs_info in links}
+    packages_dict = {package.short_path: package for package in packages}
+    for file in files:
+        parts = file.short_path.split("/")
+        found = False
+        for i in reversed(range(len(parts) + 1)):
+            root = "/".join(parts[:i])
+            package = packages_dict.get(root, None)
+            if package != None:
+                found = True
+                if package.path in link_paths:
+                    break
+                package_root = package_path_name(workspace_name, package.short_path)
+                path = ".packages/%s" % "/".join([package_root] + parts[i:])
+                result[path] = file
+                break
+        if not found:
+            print(packages_dict.keys())
+            fail("No packages found for file %s" % file.short_path)
+    return result
+
+def _node_package_path(workspace_name, package):
+    return ".packages/%s" % package_path_name(workspace_name, package.short_path)
 
 def _nodejs_archive_impl(ctx):
     actions = ctx.actions
     archive_linker = ctx.attr._archive_linker[DefaultInfo]
-    manifest = ctx.attr._manifest[DefaultInfo]
-    deps = [dep[CjsEntries] for dep in ctx.attr.deps]
-    links = [dep[CjsInfo] for dep in ctx.attr.links]
+    deps = [target[CjsInfo] for target in ctx.attr.deps]
+    label = ctx.label
+    links = [target[CjsRootInfo] for target in ctx.attr.links]
+    manifest_bin = ctx.attr._manifest[DefaultInfo]
     name = ctx.attr.name
+    workspace_name = ctx.workspace_name
 
-    package = create_package(
-        name = "",
-        path = "_",
-        short_path = "_",
-        label = ctx.label,
-    )
-
-    package_deps = [
-        create_link(id = "_", dep = dep[CjsEntries].package.id, name = dep[CjsEntries].name, label = dep.label)
-        for dep in ctx.attr.deps
-    ] + [
-        create_link(id = "_", dep = dep[CjsInfo].package.id, name = dep[CjsInfo].name, label = dep.label)
-        for dep in ctx.attr.links
-    ]
-
-    transitive_links = depset(
-        package_deps,
-        transitive = [cjs_entries.transitive_links for cjs_entries in deps],
-    )
     transitive_files = depset(
-        transitive = [cjs_entries.transitive_files for cjs_entries in deps],
+        transitive = [cjs_info.transitive_files for cjs_info in deps],
     )
     transitive_packages = depset(
-        [package] + [dep.package for dep in links],
-        transitive = [cjs_entries.transitive_packages for cjs_entries in deps],
+        [cjs_root_info.package for cjs_root_info in links],
+        transitive = [cjs_info.transitive_packages for cjs_info in deps],
+    )
+    transitive_links = depset(
+        create_globals(label, deps + links),
+        transitive = [cjs_info.transitive_links for cjs_info in deps],
     )
 
-    package_manifest = actions.declare_file("%s.packages.json" % name)
+    files = _archive_files(
+        links = links,
+        files = transitive_files.to_list(),
+        packages = transitive_packages.to_list(),
+        workspace_name = workspace_name,
+    )
+
+    manifest = actions.declare_file("%s.packages.json" % name)
+
+    def package_path(package):
+        return _node_package_path(workspace_name, package)
+
     gen_manifest(
         actions = actions,
-        manifest_bin = manifest,
-        manifest = package_manifest,
-        packages = transitive_packages,
         deps = transitive_links,
-        globals = [],
+        manifest = manifest,
+        manifest_bin = manifest_bin,
         package_path = package_path,
+        packages = transitive_packages,
     )
 
     archive = actions.declare_file("%s.tar" % name)
 
+    link_paths = {cjs_info.package.path: None for cjs_info in links}
+
+    file_args = actions.args()
+    file_args.use_param_file("@%s")
+    file_args.set_param_file_format("multiline")
+    for name, file in files.items():
+        file_args.add("--file")
+        file_args.add(name)
+        file_args.add(file)
+
     args = actions.args()
-    args.use_param_file("@%s")
-    args.set_param_file_format("multiline")
-    for dep in links:
-        args.add("--link", dep.package.id)
-        args.add("../%s" % dep.package.short_path)
-    args.add("--manifest", package_manifest)
-    args.add("--root", "_")
-    args.add("--output", archive)
-    args.add_all(transitive_files)
+    args.add("--node-modules", "true")
+    for cjs_info in links:
+        args.add("--link")
+        args.add(package_path(cjs_info.package))
+        args.add(cjs_info.package.short_path)
+    args.add("--manifest", manifest)
+    args.add(archive)
 
     actions.run(
-        arguments = [args],
-        inputs = depset([package_manifest], transitive = [transitive_files]),
+        arguments = [file_args, args],
+        inputs = depset([manifest], transitive = [transitive_files]),
         outputs = [archive],
         executable = archive_linker.files_to_run.executable,
         tools = [archive_linker.files_to_run],
@@ -275,24 +302,24 @@ nodejs_archive = rule(
     attrs = {
         "deps": attr.label_list(
             cfg = _nodejs_transition,
-            providers = [CjsEntries],
+            providers = [CjsInfo],
         ),
         "links": attr.label_list(
             cfg = _nodejs_transition,
-            providers = [CjsInfo],
+            providers = [CjsRootInfo],
         ),
         "_allowlist_function_transition": attr.label(
             default = "@bazel_tools//tools/allowlists/function_transition_allowlist",
         ),
         "_archive_linker": attr.label(
             cfg = "exec",
-            executable = True,
             default = "//nodejs/archive-linker:bin",
+            executable = True,
         ),
         "_manifest": attr.label(
             cfg = "exec",
-            executable = True,
             default = "//commonjs/manifest:bin",
+            executable = True,
         ),
     },
     implementation = _nodejs_archive_impl,
@@ -352,30 +379,18 @@ nodejs_install = rule(
 def _nodejs_binary_archive_impl(ctx):
     actions = ctx.actions
     archive_linker = ctx.attr._archive_linker[DefaultInfo]
+    cjs_info = ctx.attr.dep[0][CjsInfo]
     env = ctx.attr.env
+    main = ctx.attr.main
     name = ctx.attr.name
+    label = ctx.label
     node_options = ctx.attr.node_options
-    manifest = ctx.attr._manifest[DefaultInfo]
-    js_globals = [dep[JsInfo] for dep in ctx.attr.global_deps]
+    manifest_bin = ctx.attr._manifest[DefaultInfo]
     archive_runner = ctx.file._archive_runner
     js_info = ctx.attr.dep[0][JsInfo]
-    deps = [js_info] + js_globals
-    workspace_name = workspace_name
+    workspace_name = ctx.workspace_name
 
-    transitive_links = depset(
-        transitive = [js_info.transitive_links for js_info in deps],
-    )
-    transitive_files = depset(
-        transitive = [js_info.transitive_files for js_info in deps],
-    )
-    transitive_packages = depset(
-        transitive = [js_info.transitive_packages for js_info in deps],
-    )
-    transitive_srcs = depset(
-        transitive = [js_info.transitive_srcs for js_info in deps],
-    )
-
-    main_module = "%s/%s" % (package_path_name(workspace_name, js_info.package.id), ctx.attr.main)
+    main_module = "%s/%s" % (package_path_name(workspace_name, cjs_info.package.short_path), main)
 
     bin = actions.declare_file(name)
     actions.expand_template(
@@ -389,31 +404,45 @@ def _nodejs_binary_archive_impl(ctx):
         is_executable = True,
     )
 
-    package_manifest = actions.declare_file("%s.packages.json" % name)
+    files = _archive_files(
+        files = js_info.transitive_files.to_list(),
+        packages = cjs_info.transitive_packages.to_list(),
+        workspace_name = workspace_name,
+    )
+
+    manifest = actions.declare_file("%s.packages.json" % name)
+
+    def package_path(package):
+        return _node_package_path(workspace_name, package)
+
     gen_manifest(
         actions = actions,
-        manifest_bin = manifest,
-        manifest = package_manifest,
-        packages = transitive_packages,
-        deps = transitive_links,
-        globals = [create_global(id = dep.package.id, name = dep.name) for dep in js_globals],
+        deps = cjs_info.transitive_links,
+        manifest = manifest,
+        manifest_bin = manifest_bin,
         package_path = package_path,
+        packages = cjs_info.transitive_packages,
     )
 
     archive = actions.declare_file("%s.tar" % name)
 
+    file_args = actions.args()
+    file_args.use_param_file("@%s")
+    file_args.set_param_file_format("multiline")
+    file_args.add("--file", "bin")
+    file_args.add(bin)
+
+    for name, file in files.items():
+        file_args.add("--file", name)
+        file_args.add(file)
+
     args = actions.args()
-    args.use_param_file("@%s")
-    args.set_param_file_format("multiline")
-    args.add("--bin", bin)
-    args.add("--manifest", package_manifest)
-    args.add("--output", archive)
-    args.add_all(transitive_files)
-    args.add_all(transitive_srcs)
+    args.add("--manifest", manifest)
+    args.add(archive)
 
     actions.run(
-        arguments = [args],
-        inputs = depset([bin, package_manifest], transitive = [transitive_files, transitive_srcs]),
+        arguments = [file_args, args],
+        inputs = depset([bin, manifest], transitive = [js_info.transitive_files]),
         outputs = [archive],
         executable = archive_linker.files_to_run.executable,
         tools = [archive_linker.files_to_run],
@@ -432,10 +461,6 @@ nodejs_binary_archive = rule(
         ),
         "env": attr.string_dict(
             doc = "Environment variables",
-        ),
-        "global_deps": attr.label_list(
-            cfg = _nodejs_transition,
-            providers = [JsInfo],
         ),
         "main": attr.string(
             mandatory = True,

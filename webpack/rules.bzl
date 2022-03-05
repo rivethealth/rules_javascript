@@ -237,7 +237,7 @@ def _webpack_bundle_impl(ctx):
 
     default_info = DefaultInfo(files = depset([output]))
 
-    cjs_info = create_cjs_info(cjs_root = cjs_root, label = label)
+    cjs_info = create_cjs_info(cjs_root = cjs_root, files = [output], label = label)
 
     js_info = create_js_info(files = [output])
 

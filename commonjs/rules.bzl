@@ -125,4 +125,5 @@ cjs_root = rule(
         "prefix": attr.string(),
         "strip_prefix": attr.string(),
     },
+    provides = [CjsRootInfo],
 )

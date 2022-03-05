@@ -163,6 +163,7 @@ def _ts_proto_libraries_impl(ctx):
         transitive = [dep[TsProtoInfo].transitive_libs for dep in ctx.attr.deps],
     )
 
+    cjs_infos = {}
     js_infos = {}
     ts_infos = {}
     default_infos = {}
@@ -232,6 +233,13 @@ def _ts_proto_libraries_impl(ctx):
                 tools = [ts_proto.tsc.bin.files_to_run],
             )
 
+        cjs_infos[lib.label] = create_cjs_info(
+            cjs_root = cjs_root,
+            deps = ts_proto.deps_cjs + ts_proto.tsc.runtime_cjs + [cjs_infos[label] for label in lib.deps],
+            files = declarations,
+            label = label,
+        )
+
         js_infos[lib.label] = create_js_info(
             files = js,
             deps = ts_proto.deps_js + [js_infos[label] for label in lib.deps],
@@ -248,20 +256,14 @@ def _ts_proto_libraries_impl(ctx):
 
     default_info = DefaultInfo(files = depset(transitive = [default_info.files for default_info in default_infos.values()]))
 
-    cjs_info = create_cjs_info(
-        cjs_root = cjs_root,
-        label = label,
-        deps = ts_proto.deps_cjs + ts_proto.tsc.runtime_cjs,
-    )
-
     ts_protos_info = TsProtosInfo(
-        cjs = cjs_info,
         default = default_infos,
+        cjs = cjs_infos,
         js = js_infos,
         ts = ts_infos,
     )
 
-    return [cjs_info, default_info, ts_protos_info]
+    return [default_info, ts_protos_info]
 
 def ts_proto_libraries_rule(aspect, compiler):
     return rule(
@@ -318,7 +320,7 @@ def ts_proto_libraries_rule(aspect, compiler):
                 providers = [BuildSettingInfo],
             ),
         },
-        provides = [CjsInfo, TsProtosInfo],
+        provides = [TsProtosInfo],
     )
 
 def _ts_proto_export_impl(ctx):
@@ -330,7 +332,7 @@ def _ts_proto_export_impl(ctx):
 
     default_info = ts_protos.default[dep]
 
-    cjs_info = ts_protos.cjs
+    cjs_info = ts_protos.cjs[dep]
 
     js_info = ts_protos.js[dep]
 
@@ -346,7 +348,7 @@ ts_proto_export = rule(
             providers = [ProtoInfo],
         ),
         "lib": attr.label(
-            providers = [CjsInfo, TsProtosInfo],
+            providers = [TsProtosInfo],
         ),
     },
     provides = [CjsInfo, JsInfo, TsInfo],

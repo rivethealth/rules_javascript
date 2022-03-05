@@ -4,26 +4,22 @@ filegroup(
     data = ["@better_rules_javascript_files//:common"],
 )
 
-sh_test(
-    name = "binary",
-    srcs = ["test_binary.sh"],
-    data = [":bazel"],
-    tags = ["local"],
-)
+TESTS = [
+    "binary",
+    "binary_archive",
+    "dep",
+    "esm",
+]
 
-sh_test(
-    name = "dep",
-    srcs = ["test_dep.sh"],
-    data = [":bazel"],
-    tags = ["local"],
-)
-
-sh_test(
-    name = "esm",
-    srcs = ["test_esm.sh"],
-    data = [":bazel"],
-    tags = ["local"],
-)
+[
+    sh_test(
+        name = name,
+        srcs = ["test_%s.sh" % name],
+        data = [":bazel"],
+        tags = ["local"],
+    )
+    for name in TESTS
+]
 
 test_suite(
     name = "test",

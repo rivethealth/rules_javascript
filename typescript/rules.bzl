@@ -292,6 +292,7 @@ def _ts_library_impl(ctx):
     )
 
     cjs_info = create_cjs_info(
+        files = declarations,
         label = label,
         cjs_root = cjs_root,
         deps = cjs_deps,
@@ -445,6 +446,7 @@ def _ts_import_impl(ctx):
     cjs_info = create_cjs_info(
         cjs_root = cjs_root,
         deps = cjs_deps,
+        files = declarations,
         label = label,
     )
 
@@ -513,6 +515,7 @@ def _ts_export_impl(ctx):
         cjs_root = struct(
             package = cjs_dep.package,
             name = package_name,
+            descriptors = [],
         ),
         deps = cjs_deps,
         globals = cjs_globals,
@@ -521,6 +524,7 @@ def _ts_export_impl(ctx):
     cjs_info = CjsInfo(
         name = cjs_dep.name,
         package = cjs_info.package,
+        transitive_files = depset(transitive = [c.transitive_files for c in [cjs_dep, cjs_info] + cjs_extra]),
         transitive_links = depset(transitive = [c.transitive_links for c in [cjs_dep, cjs_info] + cjs_extra]),
         transitive_packages = depset(transitive = [c.transitive_packages for c in [cjs_dep, cjs_info] + cjs_extra]),
     )

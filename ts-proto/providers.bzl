@@ -37,7 +37,7 @@ def create_lib(label, path, files, deps):
 TsProtosInfo = provider(
     doc = "",
     fields = {
-        "cjs": "CjsInfo",
+        "cjs": "Dict of CjsInfo by label",
         "js": "Dict of JsInfo by label",
         "ts": "Dict of TsInfo by label",
         "default": "Dict of DefaultInfo by label",

@@ -5,7 +5,7 @@
 ## CjsInfo
 
 <pre>
-CjsInfo(<a href="#CjsInfo-name">name</a>, <a href="#CjsInfo-package">package</a>, <a href="#CjsInfo-transitive_packages">transitive_packages</a>, <a href="#CjsInfo-transitive_links">transitive_links</a>)
+CjsInfo(<a href="#CjsInfo-name">name</a>, <a href="#CjsInfo-package">package</a>, <a href="#CjsInfo-transitive_files">transitive_files</a>, <a href="#CjsInfo-transitive_packages">transitive_packages</a>, <a href="#CjsInfo-transitive_links">transitive_links</a>)
 </pre>
 
 CommonJS-style package info
@@ -16,6 +16,7 @@ CommonJS-style package info
 | :---------------------------------------------------------- | :---------- |
 | <a id="CjsInfo-name"></a>name                               | Name        |
 | <a id="CjsInfo-package"></a>package                         | Package     |
+| <a id="CjsInfo-transitive_files"></a>transitive_files       | Files       |
 | <a id="CjsInfo-transitive_packages"></a>transitive_packages | Packages    |
 | <a id="CjsInfo-transitive_links"></a>transitive_links       | Links       |
 
@@ -56,7 +57,7 @@ cjs_npm_label(<a href="#cjs_npm_label-repo">repo</a>)
 ## create_cjs_info
 
 <pre>
-create_cjs_info(<a href="#create_cjs_info-cjs_root">cjs_root</a>, <a href="#create_cjs_info-label">label</a>, <a href="#create_cjs_info-deps">deps</a>, <a href="#create_cjs_info-globals">globals</a>)
+create_cjs_info(<a href="#create_cjs_info-cjs_root">cjs_root</a>, <a href="#create_cjs_info-label">label</a>, <a href="#create_cjs_info-files">files</a>, <a href="#create_cjs_info-deps">deps</a>, <a href="#create_cjs_info-globals">globals</a>)
 </pre>
 
 **PARAMETERS**
@@ -65,6 +66,7 @@ create_cjs_info(<a href="#create_cjs_info-cjs_root">cjs_root</a>, <a href="#crea
 | :-------------------------------------------- | :------------------------ | :-------------- |
 | <a id="create_cjs_info-cjs_root"></a>cjs_root | <p align="center"> - </p> | none            |
 | <a id="create_cjs_info-label"></a>label       | <p align="center"> - </p> | none            |
+| <a id="create_cjs_info-files"></a>files       | <p align="center"> - </p> | <code>[]</code> |
 | <a id="create_cjs_info-deps"></a>deps         | <p align="center"> - </p> | <code>[]</code> |
 | <a id="create_cjs_info-globals"></a>globals   | <p align="center"> - </p> | <code>[]</code> |
 

@@ -23,7 +23,7 @@ def modules_links(workspace_name, prefix, packages, files):
             package = packages_dict.get(root, None)
             if package != None:
                 package_root = package_path_name(workspace_name, package.short_path)
-                path = "%s/%s/%s" % (prefix, package_root, "/".join(parts[i:]))
+                path = "%s/%s" % (prefix, "/".join([package_root] + parts[i:]))
                 result[path] = file
                 found = True
                 break

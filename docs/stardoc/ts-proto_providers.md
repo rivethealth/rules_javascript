@@ -49,7 +49,7 @@ TsProtosInfo(<a href="#TsProtosInfo-cjs">cjs</a>, <a href="#TsProtosInfo-js">js<
 
 | Name                                     | Description                  |
 | :--------------------------------------- | :--------------------------- |
-| <a id="TsProtosInfo-cjs"></a>cjs         | CjsInfo                      |
+| <a id="TsProtosInfo-cjs"></a>cjs         | Dict of CjsInfo by label     |
 | <a id="TsProtosInfo-js"></a>js           | Dict of JsInfo by label      |
 | <a id="TsProtosInfo-ts"></a>ts           | Dict of TsInfo by label      |
 | <a id="TsProtosInfo-default"></a>default | Dict of DefaultInfo by label |

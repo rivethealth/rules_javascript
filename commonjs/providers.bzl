@@ -15,6 +15,7 @@ CjsInfo = provider(
     fields = {
         "name": "Name",
         "package": "Package",
+        "transitive_files": "Files",
         "transitive_packages": "Packages",
         "transitive_links": "Links",
     },
@@ -143,10 +144,14 @@ def create_extra_deps(package, label, extra_deps):
         for name, path in extra_deps.items()
     ]
 
-def create_cjs_info(cjs_root, label, deps = [], globals = []):
+def create_cjs_info(cjs_root, label, files = [], deps = [], globals = []):
     return CjsInfo(
         package = cjs_root.package,
         name = cjs_root.name,
+        transitive_files = depset(
+            cjs_root.descriptors + files,
+            transitive = [cjs_info.transitive_files for cjs_info in deps + globals],
+        ),
         transitive_links = depset(
             create_links(cjs_root.package, label, deps) + create_globals(label, globals),
             transitive = [cjs_info.transitive_links for cjs_info in deps + globals],

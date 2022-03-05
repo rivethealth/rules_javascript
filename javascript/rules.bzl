@@ -35,6 +35,7 @@ def _js_library_impl(ctx):
     cjs_info = create_cjs_info(
         cjs_root = cjs_root,
         deps = cjs_deps,
+        files = js,
         globals = cjs_globals,
         label = label,
     )
@@ -81,6 +82,7 @@ js_library = rule(
     },
     doc = "JavaScript library",
     implementation = _js_library_impl,
+    provides = [CjsInfo, JsInfo],
 )
 
 def _js_export_impl(ctx):
@@ -100,6 +102,7 @@ def _js_export_impl(ctx):
         cjs_root = struct(
             package = cjs_dep.package,
             name = package_name,
+            descriptors = [],
         ),
         deps = cjs_deps,
         globals = cjs_globals,
@@ -107,6 +110,7 @@ def _js_export_impl(ctx):
     )
     cjs_info = CjsInfo(
         name = cjs_dep.name,
+        transitive_files = depset(transitive = [c.transitive_files for c in [cjs_dep, cjs_info] + cjs_extra]),
         package = cjs_info.package,
         transitive_links = depset(transitive = [c.transitive_links for c in [cjs_dep, cjs_info] + cjs_extra]),
         transitive_packages = depset(transitive = [c.transitive_packages for c in [cjs_dep, cjs_info] + cjs_extra]),
