@@ -1,5 +1,5 @@
 load("@bazel_skylib//rules:common_settings.bzl", "BuildSettingInfo")
-load("//commonjs:providers.bzl", "CjsInfo", "CjsRootInfo", "create_cjs_info", "gen_manifest", "package_path")
+load("//commonjs:providers.bzl", "CjsInfo", "create_cjs_info", "gen_manifest", "package_path")
 load("//javascript:providers.bzl", "JsInfo", "create_js_info")
 load("//nodejs:rules.bzl", "nodejs_binary")
 load("//typescript:providers.bzl", "TsCompilerInfo", "TsInfo", "create_ts_info", "declaration_path", "js_path", "map_path", "module", "target")
@@ -71,7 +71,7 @@ def configure_ts_protoc(name, tsc, ts_proto, deps, options = [], visibility = No
 
 def _ts_proto_libraries_impl(ctx):
     actions = ctx.actions
-    cjs_root = ctx.attr.root[CjsRootInfo]
+    cjs_root = ctx.attr.root[CjsInfo]
     declaration_prefix = ctx.attr.declaration_prefix
     fs_linker_cjs = ctx.attr._fs_linker[CjsInfo]
     fs_linker_js = ctx.attr._fs_linker[JsInfo]
@@ -221,9 +221,9 @@ def _ts_proto_libraries_impl(ctx):
                 },
                 executable = ts_proto.tsc.bin.files_to_run.executable,
                 inputs = depset(
-                    [package_manifest, tsconfig] + cjs_root.descriptors + ts,
+                    [package_manifest, tsconfig] + ts,
                     transitive =
-                        [fs_linker_js.transitive_files] +
+                        [cjs_root.transitive_files, fs_linker_js.transitive_files] +
                         ([tsconfig_js.transitive_files] if tsconfig_js else []) +
                         [dep.transitive_files for dep in ts_proto.deps_ts],
                 ),
@@ -241,11 +241,13 @@ def _ts_proto_libraries_impl(ctx):
         )
 
         js_infos[lib.label] = create_js_info(
+            cjs_root = cjs_root,
             files = js,
             deps = ts_proto.deps_js + [js_infos[label] for label in lib.deps],
         )
 
         ts_infos[lib.label] = create_ts_info(
+            cjs_root = cjs_root,
             files = declarations,
             deps = ts_proto.deps_ts + [ts_infos[label] for label in lib.deps],
         )
@@ -293,7 +295,7 @@ def ts_proto_libraries_rule(aspect, compiler):
             "declaration_prefix": attr.string(),
             "js_prefix": attr.string(),
             "root": attr.label(
-                providers = [CjsRootInfo],
+                providers = [CjsInfo],
             ),
             "target": attr.string(),
             "_config": attr.label(

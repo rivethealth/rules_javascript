@@ -1,5 +1,5 @@
 load("@bazel_skylib//lib:shell.bzl", "shell")
-load("//commonjs:providers.bzl", "CjsInfo", "CjsRootInfo", "create_cjs_info", "gen_manifest", "package_path")
+load("//commonjs:providers.bzl", "CjsInfo", "create_cjs_info", "gen_manifest", "package_path")
 load("//commonjs:rules.bzl", "cjs_root")
 load("//javascript:providers.bzl", "JsInfo", "create_js_info")
 load("//javascript:rules.bzl", "js_export", "js_library")
@@ -192,7 +192,7 @@ def _webpack_bundle_impl(ctx):
     compilation_mode = ctx.var["COMPILATION_MODE"]
     dep_js = ctx.attr.dep[0][JsInfo]
     dep_cjs = ctx.attr.dep[0][CjsInfo]
-    cjs_root = ctx.attr.root[CjsRootInfo]
+    cjs_root = ctx.attr.root[CjsInfo]
     fs_linker_cjs = ctx.attr._fs_linker[CjsInfo]
     fs_linker_js = ctx.attr._fs_linker[JsInfo]
     label = ctx.label
@@ -239,7 +239,7 @@ def _webpack_bundle_impl(ctx):
 
     cjs_info = create_cjs_info(cjs_root = cjs_root, files = [output], label = label)
 
-    js_info = create_js_info(files = [output])
+    js_info = create_js_info(cjs_root = cjs_root, files = [output])
 
     return [cjs_info, default_info, js_info]
 
@@ -276,7 +276,7 @@ webpack_bundle = rule(
         ),
         "root": attr.label(
             doc = "CommonJS package root",
-            providers = [CjsRootInfo],
+            providers = [CjsInfo],
             mandatory = True,
         ),
         "webpack": attr.label(

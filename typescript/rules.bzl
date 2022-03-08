@@ -1,6 +1,6 @@
 load("@bazel_skylib//lib:paths.bzl", "paths")
 load("@bazel_skylib//rules:common_settings.bzl", "BuildSettingInfo")
-load("//commonjs:providers.bzl", "CjsInfo", "CjsRootInfo", "create_cjs_info", "gen_manifest", "package_path")
+load("//commonjs:providers.bzl", "CjsInfo", "create_cjs_info", "gen_manifest", "package_path")
 load("//commonjs:rules.bzl", "cjs_root")
 load("//javascript:providers.bzl", "JsInfo", "create_js_info")
 load("//javascript:rules.bzl", "js_export")
@@ -95,7 +95,7 @@ def _ts_library_impl(ctx):
     config = ctx.attr._config[DefaultInfo]
     compiler = ctx.attr.compiler[TsCompilerInfo]
     cjs_deps = compiler.runtime_cjs + [target[CjsInfo] for target in ctx.attr.deps]
-    cjs_root = ctx.attr.root[CjsRootInfo]
+    cjs_root = ctx.attr.root[CjsInfo]
     declaration_prefix = ctx.attr.declaration_prefix
     fs_linker_cjs = ctx.attr._fs_linker[CjsInfo]
     fs_linker_js = ctx.attr._fs_linker[JsInfo]
@@ -271,9 +271,9 @@ def _ts_library_impl(ctx):
             },
             executable = compiler.bin.files_to_run.executable,
             inputs = depset(
-                [package_manifest, tsconfig] + cjs_root.descriptors + inputs,
+                [package_manifest, tsconfig] + inputs,
                 transitive =
-                    [fs_linker_js.transitive_files] +
+                    [cjs_root.transitive_files, fs_linker_js.transitive_files] +
                     ([tsconfig_js.transitive_files] if tsconfig_js else []) +
                     [dep.transitive_files for dep in ts_deps],
             ),
@@ -299,13 +299,15 @@ def _ts_library_impl(ctx):
     )
 
     js_info = create_js_info(
-        files = cjs_root.descriptors + js,
+        cjs_root = cjs_root,
         deps = js_deps + compiler.runtime_js,
+        files = js,
     )
 
     ts_info = create_ts_info(
-        files = cjs_root.descriptors + declarations,
+        cjs_root = cjs_root,
         deps = ts_deps,
+        files = declarations,
     )
 
     return [cjs_info, default_info, js_info, output_group_info, ts_info]
@@ -348,7 +350,7 @@ ts_library = rule(
         "root": attr.label(
             doc = "CommonJS package root.",
             mandatory = True,
-            providers = [CjsRootInfo],
+            providers = [CjsInfo],
         ),
         "src_prefix": attr.string(
             doc = "Prefix to add to sources.",
@@ -392,7 +394,7 @@ ts_library = rule(
 
 def _ts_import_impl(ctx):
     actions = ctx.actions
-    cjs_root = ctx.attr.root[CjsRootInfo]
+    cjs_root = ctx.attr.root[CjsInfo]
     declaration_prefix = ctx.attr.declaration_prefix
     cjs_deps = [dep[CjsInfo] for dep in ctx.attr.deps]
     js_deps = [dep[JsInfo] for dep in ctx.attr.deps if JsInfo in dep]
@@ -451,12 +453,14 @@ def _ts_import_impl(ctx):
     )
 
     js_info = create_js_info(
-        files = cjs_root.descriptors + js,
+        cjs_root = cjs_root,
+        files = js,
         deps = js_deps,
     )
 
     ts_info = create_ts_info(
-        files = cjs_root.descriptors + declarations,
+        cjs_root = cjs_root,
+        files = declarations,
         deps = ts_deps,
     )
 
@@ -486,7 +490,7 @@ ts_import = rule(
         "root": attr.label(
             doc = "CommonJS root",
             mandatory = True,
-            providers = [CjsRootInfo],
+            providers = [CjsInfo],
         ),
         "strip_prefix": attr.string(
             doc = "Package-relative prefix to remove from files.",
@@ -510,13 +514,16 @@ def _ts_export_impl(ctx):
     ts_deps = [target[TsInfo] for target in ctx.attr.global_deps + ctx.attr.deps + ctx.attr.extra_deps if TsInfo in target]
 
     default_info = default_dep
+    cjs_root = CjsInfo(
+        name = package_name,
+        package = cjs_dep.package,
+        transitive_files = depset(),
+        transitive_links = depset(),
+        transitive_packages = depset(),
+    )
 
     cjs_info = create_cjs_info(
-        cjs_root = struct(
-            package = cjs_dep.package,
-            name = package_name,
-            descriptors = [],
-        ),
+        cjs_root = cjs_root,
         deps = cjs_deps,
         globals = cjs_globals,
         label = label,
@@ -530,10 +537,12 @@ def _ts_export_impl(ctx):
     )
 
     js_info = create_js_info(
+        cjs_root = cjs_root,
         deps = ([js_dep] if js_dep else []) + js_deps,
     )
 
     ts_info = create_ts_info(
+        cjs_root = cjs_root,
         deps = ([ts_dep] if ts_dep else []) + ts_deps,
     )
 

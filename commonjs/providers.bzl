@@ -1,15 +1,6 @@
 load("//util:path.bzl", "output", "runfile_path")
 
 # see http://wiki.commonjs.org/wiki/Packages/1.0
-CjsRootInfo = provider(
-    doc = "CommonJS-style package root",
-    fields = {
-        "descriptors": "Descriptor files",
-        "package": "Package struct",
-        "name": "Name",
-    },
-)
-
 CjsInfo = provider(
     doc = "CommonJS-style package info",
     fields = {
@@ -149,8 +140,8 @@ def create_cjs_info(cjs_root, label, files = [], deps = [], globals = []):
         package = cjs_root.package,
         name = cjs_root.name,
         transitive_files = depset(
-            cjs_root.descriptors + files,
-            transitive = [cjs_info.transitive_files for cjs_info in deps + globals],
+            files,
+            transitive = [cjs_info.transitive_files for cjs_info in [cjs_root] + deps + globals],
         ),
         transitive_links = depset(
             create_links(cjs_root.package, label, deps) + create_globals(label, globals),

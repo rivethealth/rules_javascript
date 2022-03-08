@@ -1,6 +1,6 @@
 load("@rules_file//util:path.bzl", "runfile_path")
 load("//util:path.bzl", "output", "output_name")
-load(":providers.bzl", "CjsRootInfo", "create_package")
+load(":providers.bzl", "CjsInfo", "create_package")
 
 def _default_package_name(ctx):
     workspace = ctx.label.workspace_name or ctx.workspace_name
@@ -89,21 +89,20 @@ def _cjs_root_impl(ctx):
             )
         descriptors.append(descriptor)
 
+    default_info = DefaultInfo(
+        files = depset(descriptors),
+    )
+
     package = create_package(
         name = name,
         label = ctx.label,
         path = root.path,
         short_path = root.short_path,
     )
-
-    cjs_root_info = CjsRootInfo(
-        descriptors = descriptors,
+    cjs_root_info = CjsInfo(
+        transitive_files = depset(descriptors),
         package = package,
         name = name,
-    )
-
-    default_info = DefaultInfo(
-        files = depset(descriptors),
     )
 
     return [cjs_root_info, default_info]
@@ -125,5 +124,5 @@ cjs_root = rule(
         "prefix": attr.string(),
         "strip_prefix": attr.string(),
     },
-    provides = [CjsRootInfo],
+    provides = [CjsInfo],
 )

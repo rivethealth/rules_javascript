@@ -20,24 +20,6 @@ CommonJS-style package info
 | <a id="CjsInfo-transitive_packages"></a>transitive_packages | Packages    |
 | <a id="CjsInfo-transitive_links"></a>transitive_links       | Links       |
 
-<a id="#CjsRootInfo"></a>
-
-## CjsRootInfo
-
-<pre>
-CjsRootInfo(<a href="#CjsRootInfo-descriptors">descriptors</a>, <a href="#CjsRootInfo-package">package</a>, <a href="#CjsRootInfo-name">name</a>)
-</pre>
-
-CommonJS-style package root
-
-**FIELDS**
-
-| Name                                            | Description      |
-| :---------------------------------------------- | :--------------- |
-| <a id="CjsRootInfo-descriptors"></a>descriptors | Descriptor files |
-| <a id="CjsRootInfo-package"></a>package         | Package struct   |
-| <a id="CjsRootInfo-name"></a>name               | Name             |
-
 <a id="#cjs_npm_label"></a>
 
 ## cjs_npm_label

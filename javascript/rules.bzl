@@ -1,10 +1,10 @@
-load("//commonjs:providers.bzl", "CjsInfo", "CjsRootInfo", "create_cjs_info")
+load("//commonjs:providers.bzl", "CjsInfo", "create_cjs_info")
 load("//util:path.bzl", "output", "output_name", "runfile_path")
 load(":providers.bzl", "JsInfo", "create_js_info")
 
 def _js_library_impl(ctx):
     actions = ctx.actions
-    cjs_root = ctx.attr.root[CjsRootInfo]
+    cjs_root = ctx.attr.root[CjsInfo]
     cjs_deps = [dep[CjsInfo] for dep in ctx.attr.deps]
     cjs_globals = [dep[CjsInfo] for dep in ctx.attr.global_deps]
     js_deps = [dep[JsInfo] for dep in ctx.attr.deps + ctx.attr.global_deps]
@@ -41,7 +41,8 @@ def _js_library_impl(ctx):
     )
 
     js_info = create_js_info(
-        files = cjs_root.descriptors + js,
+        files = js,
+        cjs_root = cjs_root,
         deps = js_deps,
     )
 
@@ -70,7 +71,7 @@ js_library = rule(
         ),
         "root": attr.label(
             mandatory = True,
-            providers = [CjsRootInfo],
+            providers = [CjsInfo],
         ),
         "srcs": attr.label_list(
             allow_files = True,
@@ -97,13 +98,16 @@ def _js_export_impl(ctx):
     label = ctx.label
 
     default_info = default_dep
+    cjs_root = CjsInfo(
+        name = package_name,
+        package = cjs_dep.package,
+        transitive_files = depset(),
+        transitive_links = depset(),
+        transitive_packages = depset(),
+    )
 
     cjs_info = create_cjs_info(
-        cjs_root = struct(
-            package = cjs_dep.package,
-            name = package_name,
-            descriptors = [],
-        ),
+        cjs_root = cjs_root,
         deps = cjs_deps,
         globals = cjs_globals,
         label = label,
@@ -117,6 +121,7 @@ def _js_export_impl(ctx):
     )
 
     js_info = create_js_info(
+        cjs_root = cjs_root,
         deps = [js_dep] + js_deps,
     )
 

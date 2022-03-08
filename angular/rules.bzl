@@ -1,6 +1,6 @@
 load("@rules_file//util:path.bzl", "runfile_path")
 load("@bazel_skylib//rules:common_settings.bzl", "BuildSettingInfo")
-load("//commonjs:providers.bzl", "CjsInfo", "CjsRootInfo", "create_cjs_info", "gen_manifest", "package_path")
+load("//commonjs:providers.bzl", "CjsInfo", "create_cjs_info", "gen_manifest", "package_path")
 load("//commonjs:rules.bzl", "cjs_root")
 load("//javascript:providers.bzl", "JsInfo", "create_js_info")
 load("//javascript:rules.bzl", "js_export")
@@ -55,7 +55,7 @@ def _angular_library(ctx):
     actions = ctx.actions
     compiler = ctx.attr.compiler[AngularCompilerInfo]
     cjs_deps = compiler.cjs_deps + [target[CjsInfo] for target in ctx.attr.deps]
-    cjs_root = ctx.attr.root[CjsRootInfo]
+    cjs_root = ctx.attr.root[CjsInfo]
     compilation_mode = ctx.var["COMPILATION_MODE"]
     config = ctx.attr._config[DefaultInfo]
     declaration_prefix = ctx.attr.declaration_prefix
@@ -301,8 +301,8 @@ def _angular_library(ctx):
                 },
                 executable = compiler.bin.files_to_run.executable,
                 inputs = depset(
-                    [package_manifest, tsconfig] + cjs_root.descriptors + inputs,
-                    transitive = [fs_linker_js.transitive_files] + ([tsconfig_js.transitive_files] if tsconfig_js else []) + [ts_info.transitive_files for ts_info in ts_deps],
+                    [package_manifest, tsconfig] + inputs,
+                    transitive = [cjs_root.transitive_files, fs_linker_js.transitive_files] + ([tsconfig_js.transitive_files] if tsconfig_js else []) + [ts_info.transitive_files for ts_info in ts_deps],
                 ),
                 mnemonic = "AngularCompile",
                 outputs = outputs,
@@ -317,8 +317,8 @@ def _angular_library(ctx):
                 },
                 executable = compiler.tsc_bin.files_to_run.executable,
                 inputs = depset(
-                    [package_manifest, tsconfig] + cjs_root.descriptors + inputs,
-                    transitive = [fs_linker_js.transitive_files] + ([tsconfig_js.transitive_files] if tsconfig_js else []) + [ts_info.transitive_files for ts_info in ts_deps],
+                    [package_manifest, tsconfig] + inputs,
+                    transitive = [cjs_root.transitive_files, fs_linker_js.transitive_files] + ([tsconfig_js.transitive_files] if tsconfig_js else []) + [ts_info.transitive_files for ts_info in ts_deps],
                 ),
                 mnemonic = "TypeScriptCompile",
                 outputs = outputs,
@@ -341,12 +341,14 @@ def _angular_library(ctx):
     )
 
     js_info = create_js_info(
-        files = cjs_root.descriptors + js,
+        cjs_root = cjs_root,
+        files = js,
         deps = js_deps + compiler.js_deps,
     )
 
     ts_info = create_ts_info(
-        files = cjs_root.descriptors + declarations,
+        cjs_root = cjs_root,
+        files = declarations,
         deps = ts_deps,
     )
 
@@ -409,7 +411,7 @@ angular_library = rule(
         "root": attr.label(
             doc = "CommonJS root",
             mandatory = True,
-            providers = [CjsRootInfo],
+            providers = [CjsInfo],
         ),
         "srcs": attr.label_list(
             allow_files = True,

@@ -71,7 +71,7 @@ def module(module):
 def target(language):
     return language
 
-def create_ts_info(files = [], deps = []):
+def create_ts_info(cjs_root, files = [], deps = []):
     return TsInfo(
-        transitive_files = depset(files, transitive = [ts_info.transitive_files for ts_info in deps]),
+        transitive_files = depset(files, transitive = [ts_info.transitive_files for ts_info in [cjs_root] + deps]),
     )

@@ -5,9 +5,9 @@ JsInfo = provider(
     },
 )
 
-def create_js_info(files = [], deps = []):
+def create_js_info(cjs_root, files = [], deps = []):
     return JsInfo(
-        transitive_files = depset(files, transitive = [js_info.transitive_files for js_info in deps]),
+        transitive_files = depset(files, transitive = [js_info.transitive_files for js_info in [cjs_root] + deps]),
     )
 
 def js_npm_label(repo):

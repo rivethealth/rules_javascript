@@ -21,15 +21,16 @@ JavaScript
 ## create_js_info
 
 <pre>
-create_js_info(<a href="#create_js_info-files">files</a>, <a href="#create_js_info-deps">deps</a>)
+create_js_info(<a href="#create_js_info-cjs_root">cjs_root</a>, <a href="#create_js_info-files">files</a>, <a href="#create_js_info-deps">deps</a>)
 </pre>
 
 **PARAMETERS**
 
-| Name                                   | Description               | Default Value   |
-| :------------------------------------- | :------------------------ | :-------------- |
-| <a id="create_js_info-files"></a>files | <p align="center"> - </p> | <code>[]</code> |
-| <a id="create_js_info-deps"></a>deps   | <p align="center"> - </p> | <code>[]</code> |
+| Name                                         | Description               | Default Value   |
+| :------------------------------------------- | :------------------------ | :-------------- |
+| <a id="create_js_info-cjs_root"></a>cjs_root | <p align="center"> - </p> | none            |
+| <a id="create_js_info-files"></a>files       | <p align="center"> - </p> | <code>[]</code> |
+| <a id="create_js_info-deps"></a>deps         | <p align="center"> - </p> | <code>[]</code> |
 
 <a id="#js_npm_inner_label"></a>
 

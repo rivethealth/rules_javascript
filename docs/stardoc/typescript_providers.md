@@ -40,15 +40,16 @@ TypeScript
 ## create_ts_info
 
 <pre>
-create_ts_info(<a href="#create_ts_info-files">files</a>, <a href="#create_ts_info-deps">deps</a>)
+create_ts_info(<a href="#create_ts_info-cjs_root">cjs_root</a>, <a href="#create_ts_info-files">files</a>, <a href="#create_ts_info-deps">deps</a>)
 </pre>
 
 **PARAMETERS**
 
-| Name                                   | Description               | Default Value   |
-| :------------------------------------- | :------------------------ | :-------------- |
-| <a id="create_ts_info-files"></a>files | <p align="center"> - </p> | <code>[]</code> |
-| <a id="create_ts_info-deps"></a>deps   | <p align="center"> - </p> | <code>[]</code> |
+| Name                                         | Description               | Default Value   |
+| :------------------------------------------- | :------------------------ | :-------------- |
+| <a id="create_ts_info-cjs_root"></a>cjs_root | <p align="center"> - </p> | none            |
+| <a id="create_ts_info-files"></a>files       | <p align="center"> - </p> | <code>[]</code> |
+| <a id="create_ts_info-deps"></a>deps         | <p align="center"> - </p> | <code>[]</code> |
 
 <a id="#declaration_path"></a>
 

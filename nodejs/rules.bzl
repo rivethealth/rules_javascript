@@ -1,5 +1,5 @@
 load("@bazel_skylib//lib:shell.bzl", "shell")
-load("//commonjs:providers.bzl", "CjsInfo", "CjsRootInfo", "create_globals", "create_package", "gen_manifest", "package_path")
+load("//commonjs:providers.bzl", "CjsInfo", "create_globals", "create_package", "gen_manifest", "package_path")
 load("//javascript:providers.bzl", "JsInfo", "create_js_info")
 load("//util:path.bzl", "output", "runfile_path")
 load(":providers.bzl", "NODE_MODULES_PREFIX", "modules_links", "package_path_name")
@@ -107,9 +107,8 @@ def _nodejs_binary_implementation(ctx):
         is_executable = True,
     )
 
-    js_info = create_js_info(deps = js_deps)
     symlinks = modules_links(
-        files = js_info.transitive_files.to_list(),
+        files = depset(transitive = [js_info.transitive_files for js_info in js_deps]).to_list(),
         packages = transitive_packages.to_list(),
         prefix = NODE_MODULES_PREFIX,
         workspace_name = workspace_name,
@@ -227,7 +226,7 @@ def _nodejs_archive_impl(ctx):
     archive_linker = ctx.attr._archive_linker[DefaultInfo]
     deps = [target[CjsInfo] for target in ctx.attr.deps]
     label = ctx.label
-    links = [target[CjsRootInfo] for target in ctx.attr.links]
+    links = [target[CjsInfo] for target in ctx.attr.links]
     manifest_bin = ctx.attr._manifest[DefaultInfo]
     name = ctx.attr.name
     workspace_name = ctx.workspace_name
@@ -306,7 +305,7 @@ nodejs_archive = rule(
         ),
         "links": attr.label_list(
             cfg = _nodejs_transition,
-            providers = [CjsRootInfo],
+            providers = [CjsInfo],
         ),
         "_allowlist_function_transition": attr.label(
             default = "@bazel_tools//tools/allowlists/function_transition_allowlist",
