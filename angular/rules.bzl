@@ -242,7 +242,7 @@ def _angular_library(ctx):
                     args.add("--manifest", transpile_package_manifest)
                     args.add("--js", js_)
                     args.add("--map", map)
-                    args.add(file)
+                    args.add(ts_.path)
                     args.set_param_file_format("multiline")
                     args.use_param_file("@%s", use_always = True)
                     actions.run(
@@ -250,7 +250,7 @@ def _angular_library(ctx):
                         executable = compiler.js_compiler.files_to_run.executable,
                         execution_requirements = {"supports-workers": "1"},
                         inputs = depset(
-                            [file, transpile_package_manifest, transpile_tsconfig],
+                            [ts_, transpile_package_manifest, transpile_tsconfig],
                             transitive = [js_info.transitive_files for js_info in js_deps] + [tsconfig_js.transitive_files] if tsconfig_js else [],
                         ),
                         mnemonic = "TypeScriptTranspile",
