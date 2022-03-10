@@ -34,7 +34,7 @@ export class JsWorker {
   private parseConfig(config: string) {
     const parsed = ts.getParsedCommandLineOfConfigFile(
       config,
-      { files: [] },
+      {},
       {
         ...ts.sys,
         onUnRecoverableConfigFileDiagnostic: (error) => {
@@ -51,10 +51,10 @@ export class JsWorker {
     return parsed.options;
   }
 
-  private setupVfs(manifest: string) {
+  private async setupVfs(manifest: string) {
     const packageTree = JsonFormat.parse(
       PackageTree.json(),
-      fs.readFileSync(manifest, "utf8"),
+      await fs.promises.readFile(manifest, "utf8"),
     );
     const vfs = createVfs(packageTree, false);
     this.vfs.delegate = vfs;
@@ -63,7 +63,7 @@ export class JsWorker {
   async run(a: string[]) {
     const args: JsArgs = this.parser.parse_args(a);
 
-    this.setupVfs(args.manifest);
+    await this.setupVfs(args.manifest);
 
     const options = this.parseConfig(args.config);
     await fs.promises.mkdir(options.outDir, { recursive: true });
@@ -97,7 +97,7 @@ async function transpileFile(src: string, options: ts.CompilerOptions) {
     name ? path.join(options.outDir, name) : options.outDir,
   );
 
-  const input = fs.readFileSync(src, "utf8");
+  const input = await fs.promises.readFile(src, "utf8");
   const result = ts.transpileModule(input, {
     fileName: path.relative(path.dirname(outputPath), src),
     compilerOptions: options,

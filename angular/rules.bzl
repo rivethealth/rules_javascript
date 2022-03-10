@@ -135,6 +135,7 @@ def _angular_library(ctx):
         args = actions.args()
         if tsconfig_path:
             args.add("--config", "%s/%s" % (tsconfig_dep.package.path, tsconfig_path))
+        args.add("--empty", "true")
         args.add("--module", module)
         args.add("--out-dir", "%s/%s" % (output_.path, js_prefix) if js_prefix else output_.path)
         args.add("--root-dir", "%s/%s" % (output_.path, src_prefix) if src_prefix else output_.path)
@@ -240,8 +241,6 @@ def _angular_library(ctx):
                     args = actions.args()
                     args.add("--config", transpile_tsconfig)
                     args.add("--manifest", transpile_package_manifest)
-                    args.add("--js", js_)
-                    args.add("--map", map)
                     args.add(ts_.path)
                     args.set_param_file_format("multiline")
                     args.use_param_file("@%s", use_always = True)

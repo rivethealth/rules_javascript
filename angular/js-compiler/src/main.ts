@@ -13,7 +13,7 @@ workerMain(async () => {
   const worker = new AngularWorker(vfs);
   return async (a) => {
     try {
-      worker.run(a);
+      await worker.run(a);
     } catch (e) {
       if (e instanceof AngularWorkerError) {
         return { exitCode: 2, output: e.message };

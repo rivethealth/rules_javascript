@@ -121,6 +121,7 @@ def _ts_library_impl(ctx):
     args = actions.args()
     if tsconfig_path:
         args.add("--config", "%s/%s" % (tsconfig_dep.package.path, tsconfig_path))
+    args.add("--empty", "true")
     args.add("--module", module_)
     args.add("--out-dir", "%s/%s" % (output_.path, js_prefix) if js_prefix else output_.path)
     args.add("--root-dir", "%s/%s" % (output_.path, src_prefix) if src_prefix else output_.path)

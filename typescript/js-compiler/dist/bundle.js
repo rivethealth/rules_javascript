@@ -1883,7 +1883,7 @@ class JsWorker {
         this.parser.add_argument("src");
     }
     parseConfig(config) {
-        const parsed = ts__namespace.getParsedCommandLineOfConfigFile(config, { files: [] }, {
+        const parsed = ts__namespace.getParsedCommandLineOfConfigFile(config, {}, {
             ...ts__namespace.sys,
             onUnRecoverableConfigFileDiagnostic: (error) => {
                 throw new JsWorkerError(formatDiagnostics([error]));
@@ -1895,14 +1895,14 @@ class JsWorker {
         }
         return parsed.options;
     }
-    setupVfs(manifest) {
-        const packageTree = JsonFormat.parse(PackageTree.json(), fs__namespace.readFileSync(manifest, "utf8"));
+    async setupVfs(manifest) {
+        const packageTree = JsonFormat.parse(PackageTree.json(), await fs__namespace.promises.readFile(manifest, "utf8"));
         const vfs = createVfs(packageTree, false);
         this.vfs.delegate = vfs;
     }
     async run(a) {
         const args = this.parser.parse_args(a);
-        this.setupVfs(args.manifest);
+        await this.setupVfs(args.manifest);
         const options = this.parseConfig(args.config);
         await fs__namespace.promises.mkdir(options.outDir, { recursive: true });
         await (async function process(src) {

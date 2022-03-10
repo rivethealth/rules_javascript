@@ -198,6 +198,10 @@ const parser = new argparse.ArgumentParser({
     description: "Generate tsconfig.",
 });
 parser.add_argument("--config");
+parser.add_argument("--empty", {
+    default: false,
+    help: "Whether to have empty file list",
+});
 parser.add_argument("--declaration-dir", { dest: "declarationDir" });
 parser.add_argument("--module");
 parser.add_argument("--root-dir", { dest: "rootDir", required: true });
@@ -231,8 +235,13 @@ parser.add_argument("output");
         },
     };
     tsconfig.compilerOptions.rootDir = relative(args.rootDir);
-    tsconfig.include = [`${tsconfig.compilerOptions.rootDir}/**/*`];
-    tsconfig.exclude = [];
+    if (args.empty) {
+        tsconfig.files = [];
+    }
+    else {
+        tsconfig.include = [`${tsconfig.compilerOptions.rootDir}/**/*`];
+        tsconfig.exclude = [];
+    }
     if (args.module) {
         tsconfig.compilerOptions.module = args.module;
     }
