@@ -13,7 +13,7 @@ if [ -z "${RUNFILES_DIR-}" ]; then
 fi
 
 export JEST_CONFIG="$RUNFILES_DIR"/%{config}
-export JEST_ROOTS=%{roots}
+export JEST_ROOT=%{root}
 export NODE_PACKAGE_MANIFEST="$RUNFILES_DIR"/%{package_manifest}
 export NODE_FS_PACKAGE_MANIFEST="$RUNFILES_DIR"/%{package_manifest}
 export NODE_FS_RUNFILES=true

@@ -13,7 +13,6 @@ export class Configuration {
     }
 
     config.haste.forceNodeFilesystemAPI = true;
-    config.haste.hasteMapModulePath = require.resolve("./haste-map.js");
   }
 
   configureJunit(config: Config.InitialOptions) {
@@ -35,7 +34,7 @@ export class Configuration {
 
   configureTests(
     config: Config.InitialOptions,
-    roots: string[],
+    root: string,
     shardIndex: number,
     totalShards: number,
   ) {
@@ -53,21 +52,16 @@ export class Configuration {
     const testRegexes = testRegexTexts.map((text) => new RegExp(text));
 
     const filePaths: string[] = [];
-    for (const root of roots) {
-      for (const { path: path_, entry } of findFiles(
-        path.resolve(this.runfilesDir, root),
-      )) {
-        if (entry.isFile() && testRegexes.some((regex) => regex.test(path_))) {
-          filePaths.push(path_);
-        }
+    for (const { path: path_, entry } of findFiles(
+      path.resolve(this.runfilesDir, root),
+    )) {
+      if (entry.isFile() && testRegexes.some((regex) => regex.test(path_))) {
+        filePaths.push(path_);
       }
     }
-    config.roots = roots.map((root) => path.resolve(this.runfilesDir, root));
 
     config.testRegex = filePaths
       .filter((_, i) => i % totalShards === shardIndex)
       .map((path) => `${escapeRegex(path)}$`);
-
-    config.testPathIgnorePatterns = [];
   }
 }

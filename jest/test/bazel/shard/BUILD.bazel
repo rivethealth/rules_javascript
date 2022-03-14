@@ -30,7 +30,7 @@ jest_test(
     name = "test",
     config = "jest.config.js",
     config_dep = ":jest_config",
+    dep = ":test_lib",
     jest = "@npm//jest:lib",
     shard_count = 2,
-    deps = [":test_lib"],
 )

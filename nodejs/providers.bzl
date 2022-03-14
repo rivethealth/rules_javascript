@@ -28,7 +28,6 @@ def modules_links(workspace_name, prefix, packages, files):
                 found = True
                 break
         if not found:
-            print(packages_dict.keys())
-            fail("No packages found for file %s" % file.short_path)
+            result[runfile_path(workspace_name, file)] = file
 
     return result

@@ -17,8 +17,8 @@ jest_test(
     name = "test_fail",
     config = "jest.config.js",
     config_dep = ":jest_config",
+    dep = ":test_fail_lib",
     jest = "@npm//jest:lib",
-    deps = [":test_fail_lib"],
 )
 
 js_library(
@@ -38,8 +38,8 @@ jest_test(
     name = "test",
     config = "jest.config.js",
     config_dep = ":jest_config",
+    dep = ":test_lib",
     jest = "@npm//jest:lib",
-    deps = [":test_lib"],
 )
 
 js_library(

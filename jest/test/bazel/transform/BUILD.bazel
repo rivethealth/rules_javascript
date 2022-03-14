@@ -43,6 +43,6 @@ jest_test(
     config = "jest.config.js",
     config_dep = ":jest_config",
     data = ["//:babel_config"],
+    dep = ":main",
     jest = "@npm//jest:lib",
-    deps = [":main"],
 )

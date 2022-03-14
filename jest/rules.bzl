@@ -36,14 +36,17 @@ def _jest_test_impl(ctx):
     nodejs_toolchain = ctx.toolchains["@better_rules_javascript//nodejs:toolchain_type"]
     cjs_info = ctx.attr.jest[0][CjsInfo]
     js_info = ctx.attr.jest[0][JsInfo]
-    cjs_deps = [config_loader_cjs, config_cjs, cjs_info] + [target[CjsInfo] for target in ctx.attr.deps]
-    js_deps = [config_loader_js, config_js, js_info] + [target[JsInfo] for target in ctx.attr.deps]
+    cjs_dep = ctx.attr.dep[0][CjsInfo]
+    cjs_deps = [config_loader_cjs, config_cjs, cjs_info] + [ctx.attr.dep[0][CjsInfo]]
+    js_deps = [config_loader_js, config_js, js_info] + [ctx.attr.dep[0][JsInfo]]
     output_ = output(label = ctx.label, actions = actions)
     workspace_name = ctx.workspace_name
 
     transitive_packages = depset(transitive = [dep.transitive_packages for dep in cjs_deps])
 
     def package_path(package):
+        if package.path == cjs_dep.package.path:
+            return runfile_path(workspace_name, cjs_dep.package)
         return "%s/%s" % (NODE_MODULES_PREFIX, package_path_name(workspace_name, package.short_path))
 
     package_manifest = actions.declare_file("%s/packages.json" % ctx.label.name)
@@ -63,7 +66,7 @@ def _jest_test_impl(ctx):
         output = bin,
         is_executable = True,
         substitutions = {
-            "%{config}": shell.quote("%s/%s/%s" % (NODE_MODULES_PREFIX, package_path_name(workspace_name, config_cjs.package.short_path), config)),
+            "%{config}": shell.quote("%s/%s" % (runfile_path(workspace_name, config_cjs.package), config)),
             "%{config_loader}": shell.quote("%s/%s/src/index.js" % (NODE_MODULES_PREFIX, package_path_name(workspace_name, config_loader_cjs.package.short_path))),
             "%{env}": " ".join(["%s=%s" % (name, shell.quote(value)) for name, value in env.items()]),
             "%{fs_linker}": shell.quote("%s/dist/bundle.js" % runfile_path(workspace_name, fs_linker_cjs.package)),
@@ -72,14 +75,7 @@ def _jest_test_impl(ctx):
             "%{node_options}": " ".join([shell.quote(option) for option in node_options]),
             "%{package_manifest}": shell.quote(runfile_path(ctx.workspace_name, package_manifest)),
             "%{module_linker}": shell.quote("%s/dist/bundle.js" % runfile_path(workspace_name, module_linker_cjs.package)),
-            "%{roots}": shell.quote(
-                json.encode(
-                    [
-                        "%s/%s" % (NODE_MODULES_PREFIX, package_path_name(workspace_name, target[CjsInfo].package.short_path))
-                        for target in ctx.attr.deps
-                    ],
-                ),
-            ),
+            "%{root}": shell.quote(runfile_path(workspace_name, cjs_dep.package)),
             "%{workspace}": shell.quote(workspace_name),
         },
         template = ctx.file._runner,
@@ -90,7 +86,7 @@ def _jest_test_impl(ctx):
         transitive_files = depset(transitive = [fs_linker_js.transitive_files, module_linker_js.transitive_files]),
         root_symlinks = modules_links(
             files = depset(transitive = [js_info_.transitive_files for js_info_ in js_deps]).to_list(),
-            packages = transitive_packages.to_list(),
+            packages = [package for package in transitive_packages.to_list() if package.path != cjs_dep.package.path],
             prefix = NODE_MODULES_PREFIX,
             workspace_name = workspace_name,
         ),
@@ -120,9 +116,10 @@ jest_test = rule(
             allow_files = True,
             doc = "Runtime data.",
         ),
-        "deps": attr.label_list(
+        "dep": attr.label(
             cfg = _jest_transition,
-            doc = "Test dependencies.",
+            doc = "Test dependency.",
+            mandatory = True,
             providers = [JsInfo],
         ),
         "env": attr.string_dict(

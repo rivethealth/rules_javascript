@@ -5,7 +5,7 @@
 ## jest_test
 
 <pre>
-jest_test(<a href="#jest_test-name">name</a>, <a href="#jest_test-config">config</a>, <a href="#jest_test-config_dep">config_dep</a>, <a href="#jest_test-data">data</a>, <a href="#jest_test-deps">deps</a>, <a href="#jest_test-env">env</a>, <a href="#jest_test-jest">jest</a>, <a href="#jest_test-node_options">node_options</a>)
+jest_test(<a href="#jest_test-name">name</a>, <a href="#jest_test-config">config</a>, <a href="#jest_test-config_dep">config_dep</a>, <a href="#jest_test-data">data</a>, <a href="#jest_test-dep">dep</a>, <a href="#jest_test-env">env</a>, <a href="#jest_test-jest">jest</a>, <a href="#jest_test-node_options">node_options</a>)
 </pre>
 
 **ATTRIBUTES**
@@ -16,7 +16,7 @@ jest_test(<a href="#jest_test-name">name</a>, <a href="#jest_test-config">config
 | <a id="jest_test-config"></a>config             | Path to config file, relative to config_dep root. | String                                                                                    | required  |         |
 | <a id="jest_test-config_dep"></a>config_dep     | Jest config dependency.                           | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a>                        | required  |         |
 | <a id="jest_test-data"></a>data                 | Runtime data.                                     | <a href="https://bazel.build/docs/build-ref.html#labels">List of labels</a>               | optional  | []      |
-| <a id="jest_test-deps"></a>deps                 | Test dependencies.                                | <a href="https://bazel.build/docs/build-ref.html#labels">List of labels</a>               | optional  | []      |
+| <a id="jest_test-dep"></a>dep                   | Test dependency.                                  | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a>                        | required  |         |
 | <a id="jest_test-env"></a>env                   | Environment variables.                            | <a href="https://bazel.build/docs/skylark/lib/dict.html">Dictionary: String -> String</a> | optional  | {}      |
 | <a id="jest_test-jest"></a>jest                 | Jest dependency.                                  | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a>                        | required  |         |
 | <a id="jest_test-node_options"></a>node_options | Node.js options.                                  | List of strings                                                                           | optional  | []      |

@@ -4,15 +4,15 @@ import { Configuration } from "./config";
 import { touch } from "./fs";
 
 const configRunfile = process.env.JEST_CONFIG;
-const roots = JSON.parse(process.env.JEST_ROOTS);
+const root = process.env.JEST_ROOT;
 
 const runfilesDir = process.env.RUNFILES_DIR!;
 const totalShards = +(process.env.TEST_TOTAL_SHARDS || "1");
 const shardIndex = +(process.env.TEST_SHARD_INDEX || "0");
-const testShardStatus = process.env.TEST_SHARD_STATUS_FILE;
+const testShardStatusPath = process.env.TEST_SHARD_STATUS_FILE;
 
-if (testShardStatus) {
-  touch(testShardStatus);
+if (testShardStatusPath) {
+  touch(testShardStatusPath);
 }
 
 let config: Config.InitialOptions;
@@ -26,7 +26,7 @@ if (configRunfile) {
 
 const configuration = new Configuration(runfilesDir);
 configuration.configureFs(config);
-configuration.configureTests(config, roots, shardIndex, totalShards);
+configuration.configureTests(config, root, shardIndex, totalShards);
 configuration.configureJunit(config);
 
 module.exports = config;
