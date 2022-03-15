@@ -1,0 +1,28 @@
+load("@better_rules_javascript//commonjs:rules.bzl", "cjs_root")
+load("@better_rules_javascript//javascript:rules.bzl", "js_library")
+load("@better_rules_javascript//jest:rules.bzl", "jest_test")
+
+cjs_root(
+    name = "root",
+    package_name = "@better-rules-javascript-test/jest-snapshot",
+)
+
+js_library(
+    name = "test_lib",
+    srcs = ["example.spec.js"],
+    root = ":root",
+)
+
+js_library(
+    name = "jest_config",
+    srcs = ["jest.config.js"],
+    root = ":root",
+)
+
+jest_test(
+    name = "test",
+    config = "jest.config.js",
+    config_dep = ":jest_config",
+    dep = ":test_lib",
+    jest = "@npm//jest:lib",
+)

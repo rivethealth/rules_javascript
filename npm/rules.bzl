@@ -15,8 +15,8 @@ def _yarn_resolve_impl(ctx):
         template = yarn_resolve_template,
         output = bin,
         substitutions = {
-            "%{refresh_flag}": "--refresh" if refresh else "",
             "%{directory}": shell.quote(directory_path or "."),
+            "%{options}": "--refresh" if refresh else "",
             "%{output}": shell.quote(output_path),
         },
         is_executable = True,

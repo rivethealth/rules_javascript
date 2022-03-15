@@ -6,3 +6,4 @@ bazel-*
 node_modules
 .bazel_cache
 .yarn
+jest/test/bazel/snapshot/__snapshots__

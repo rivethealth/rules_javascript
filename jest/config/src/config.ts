@@ -4,10 +4,30 @@ import { DEFAULT_TEST_REGEX } from "./jest";
 import * as path from "path";
 import { escapeRegex } from "./regex";
 
+export interface ConfigureOptions {
+  root: string;
+  shardIndex: number;
+  totalShards: number;
+  target: string;
+  junitOutput: string;
+}
+
 export class Configuration {
   constructor(private readonly runfilesDir: string) {}
 
-  configureFs(config: Config.InitialOptions) {
+  configure(config: Config.InitialOptions, options: ConfigureOptions) {
+    this._configureFs(config);
+    this._configureJunit(config, options.target, options.junitOutput);
+    this._configureSnapshots(config);
+    this._configureTests(
+      config,
+      options.root,
+      options.shardIndex,
+      options.totalShards,
+    );
+  }
+
+  private _configureFs(config: Config.InitialOptions) {
     if (!config.haste) {
       config.haste = {};
     }
@@ -15,7 +35,11 @@ export class Configuration {
     config.haste.forceNodeFilesystemAPI = true;
   }
 
-  configureJunit(config: Config.InitialOptions) {
+  private _configureJunit(
+    config: Config.InitialOptions,
+    target: string,
+    junitOutput: string,
+  ) {
     // JUnit
     if (!config.reporters) {
       config.reporters = ["default"];
@@ -23,16 +47,20 @@ export class Configuration {
     config.reporters.push([
       require.resolve("jest-junit"),
       {
-        suiteName: process.env.TEST_TARGET,
+        suiteName: target,
         includeConsoleOutput: true,
         classNameTemplate: "{classname}",
         titleTemplate: "{title}",
-        outputFile: process.env.XML_OUTPUT_FILE,
+        outputFile: junitOutput,
       },
     ]);
   }
 
-  configureTests(
+  private _configureSnapshots(config: Config.InitialOptions) {
+    config.snapshotResolver = require.resolve("./snapshot-resolver");
+  }
+
+  private _configureTests(
     config: Config.InitialOptions,
     root: string,
     shardIndex: number,
