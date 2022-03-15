@@ -1,5 +1,5 @@
 import * as path from "path";
-import { Configuration } from "webpack";
+import type { Configuration } from "webpack";
 
 const compilationMode = process.env.COMPILATION_MODE;
 const inputRoot = process.env.WEBPACK_INPUT_ROOT;
@@ -39,9 +39,6 @@ export async function configure(
   if (config.optimization.minimize === undefined) {
     config.optimization.minimize = compilationMode === "opt";
   }
-
-  // config.resolve = config.resolve ? { ...config.resolve } : {};
-  // config.resolve.symlinks = true;
 
   config.resolveLoader = config.resolveLoader
     ? { ...config.resolveLoader }

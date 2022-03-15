@@ -3,7 +3,7 @@
     ".": "./src/index.mjs",
     "./*": "./src/*.mjs"
   },
-  "module": "true",
+  "type": "module",
   "typesVersions": {
     "*": {
       "*": [

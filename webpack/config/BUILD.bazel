@@ -5,15 +5,15 @@ load("//typescript:rules.bzl", "ts_library")
 ts_library(
     name = "lib",
     srcs = glob(["src/**/*.ts"]),
+    compile_deps = [
+        "@better_rules_javascript_npm//@types/node:lib",
+        "@better_rules_javascript_npm//webpack:lib",
+    ],
     compiler = "//rules:tsc",
     config = "tsconfig.json",
     config_dep = ":tsconfig",
     root = ":root",
     visibility = ["//visibility:public"],
-    deps = [
-        "@better_rules_javascript_npm//@types/node:lib",
-        "@better_rules_javascript_npm//webpack:lib",
-    ],
 )
 
 cjs_root(

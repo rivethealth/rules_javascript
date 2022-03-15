@@ -1,11 +1,9 @@
 load("@bazel_skylib//lib:shell.bzl", "shell")
 load("//commonjs:providers.bzl", "CjsInfo", "create_cjs_info", "gen_manifest", "package_path")
-load("//commonjs:rules.bzl", "cjs_root")
 load("//javascript:providers.bzl", "JsInfo", "create_js_info")
-load("//javascript:rules.bzl", "js_export", "js_library")
+load("//javascript:rules.bzl", "js_export")
 load("//nodejs:providers.bzl", "NODE_MODULES_PREFIX", "modules_links", "package_path_name")
 load("//nodejs:rules.bzl", "nodejs_binary")
-load("//typescript:rules.bzl", "ts_library")
 load("//util:path.bzl", "runfile_path")
 load(":providers.bzl", "WebpackInfo")
 
@@ -125,54 +123,9 @@ def configure_webpack(name, cli, webpack, dev_server, config, config_dep, node_o
 
     js_export(
         name = "%s.server_main" % name,
-        dep = ":%s.server_lib" % name,
+        dep = "@better_rules_javascript//webpack/server:lib",
+        deps = [webpack, dev_server],
         extra_deps = [config_dep],
-        visibility = ["//visibility:private"],
-    )
-
-    cjs_root(
-        name = "%s.root" % name,
-        package_name = "@better-rules-javascript/webpack-server",
-        descriptors = ["@better_rules_javascript//webpack/server:descriptors"],
-        strip_prefix = "/webpack/server",
-        path = "%s.root" % name,
-        prefix = "%s.root" % name,
-        visibility = ["//visibility:private"],
-    )
-
-    ts_library(
-        name = "%s.server_lib" % name,
-        srcs = ["@better_rules_javascript//webpack/server:src"],
-        strip_prefix = "/webpack/server",
-        compiler = "@better_rules_javascript//rules:tsc",
-        config = "tsconfig.json",
-        config_dep = ":%s.server_tsconfig" % name,
-        root = ":%s.root" % name,
-        deps = [
-            "@better_rules_javascript//commonjs/package:lib",
-            "@better_rules_javascript//ibazel/notification:lib",
-            "@better_rules_javascript//nodejs/fs-linker:lib",
-            "@better_rules_javascript//util/json:lib",
-            "@better_rules_javascript//webpack/load-config:lib",
-            "@better_rules_javascript_npm//@types/argparse:lib",
-            "@better_rules_javascript_npm//@types/node:lib",
-            "@better_rules_javascript_npm//argparse:lib",
-            "@better_rules_javascript_npm//enhanced-resolve:lib",
-            webpack,
-            dev_server,
-        ],
-        declaration_prefix = "%s.root" % name,
-        js_prefix = "%s.root" % name,
-        src_prefix = "%s.root" % name,
-        visibility = ["//visibility:private"],
-    )
-
-    js_library(
-        name = "%s.server_tsconfig" % name,
-        srcs = ["@better_rules_javascript//webpack/server:tsconfig"],
-        deps = ["@better_rules_javascript//rules:tsconfig"],
-        root = ":%s.root" % name,
-        strip_prefix = "/webpack/server",
         visibility = ["//visibility:private"],
     )
 
@@ -339,6 +292,7 @@ def _webpack_server_impl(ctx):
     )
 
     js_info = create_js_info(
+        cjs_root = dep_cjs,
         deps = [dep_js] + webpack_client.client_js,
     )
 

@@ -13,6 +13,7 @@ fi
 
 export COMPILATION_MODE=%{compilation_mode}
 export NODE_OPTIONS_APPEND="-r $(realpath -s "$RUNFILES_DIR"/%{skip_package_check})"
+export WATCHPACK_POLLING=130929
 export WEBPACK_CONFIG=%{config}
 export WEBPACK_INPUT_ROOT="$RUNFILES_DIR"/%{input_root}
 export WEBPACK_OUTPUT="$RUNFILES_DIR"/%{output}

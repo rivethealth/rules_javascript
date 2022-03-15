@@ -11,7 +11,7 @@ import { createVfs } from "@better-rules-javascript/nodejs-fs-linker/package";
 import * as fs from "fs";
 import { WrapperVfs } from "@better-rules-javascript/nodejs-fs-linker/vfs";
 import * as CachedInputFileSystem from "enhanced-resolve/lib/CachedInputFileSystem";
-import { BazelWatchFileSystem } from "./watch";
+import { Subject } from "rxjs";
 
 function refreshPackageTree(vfs: WrapperVfs, webpackManifestPath: string) {
   const packageTree = JsonFormat.parse(
@@ -21,6 +21,39 @@ function refreshPackageTree(vfs: WrapperVfs, webpackManifestPath: string) {
   const vfsImpl = createVfs(packageTree, true);
   vfs.delegate = vfsImpl;
 }
+
+function clearTimeout_(
+  delegate: typeof clearTimeout,
+  event: Subject<undefined>,
+): typeof clearTimeout {
+  return <any>function (handle) {
+    if (handle?.unsubscribe) {
+      handle.unsubscribe();
+      return;
+    }
+    return delegate.apply(this, arguments);
+  };
+}
+
+function setTimeout_(
+  delegate: typeof setTimeout,
+  event: Subject<undefined>,
+): typeof setTimeout {
+  return <any>function (callback, time) {
+    if (time === 130929) {
+      const subscription = event.subscribe(() => {
+        subscription.unsubscribe();
+        callback();
+      });
+      return subscription;
+    }
+    return delegate.apply(this, arguments);
+  };
+}
+
+const refresh = new Subject<undefined>();
+(<any>setTimeout) = setTimeout_(setTimeout, refresh);
+(<any>clearTimeout) = clearTimeout_(clearTimeout, refresh);
 
 export async function startServer(
   vfs: WrapperVfs,
@@ -39,9 +72,6 @@ export async function startServer(
   compiler.intermediateFileSystem = fs;
   compiler.outputFileSystem = fs;
 
-  const watchFileSystem = new BazelWatchFileSystem(compiler.inputFileSystem);
-  compiler.watchFileSystem = watchFileSystem;
-
   const server = new WebpackDevServer(config.devServer, compiler);
 
   await server.start();
@@ -52,8 +82,9 @@ export async function startServer(
       notification.type === IbazelNotification.COMPLETED &&
       notification.status === IbazelStatus.SUCCESS
     ) {
+      console.log("REFRESH");
       refreshPackageTree(vfs, webpackManifestPath);
-      watchFileSystem.refresh();
+      refresh.next(undefined);
     }
   }
 }

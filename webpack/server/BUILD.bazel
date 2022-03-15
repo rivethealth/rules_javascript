@@ -1,16 +1,43 @@
-package(default_visibility = ["//visibility:public"])
+load("//commonjs:rules.bzl", "cjs_root")
+load("//javascript:rules.bzl", "js_library")
+load("//typescript:rules.bzl", "ts_library")
 
-filegroup(
-    name = "src",
+ts_library(
+    name = "lib",
     srcs = glob(["src/**/*.ts"]),
+    compile_deps = [
+        "@better_rules_javascript_npm//@types/argparse:lib",
+        "@better_rules_javascript_npm//@types/node:lib",
+        "@better_rules_javascript_npm//webpack:lib",
+        "@better_rules_javascript_npm//webpack-dev-server:lib",
+    ],
+    compiler = "//rules:tsc",
+    config = "tsconfig.json",
+    config_dep = ":tsconfig",
+    root = ":root",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//commonjs/package:lib",
+        "//ibazel/notification:lib",
+        "//nodejs/fs-linker:lib",
+        "//util/json:lib",
+        "//webpack/load-config:lib",
+        "@better_rules_javascript_npm//argparse:lib",
+        "@better_rules_javascript_npm//enhanced-resolve:lib",
+        "@better_rules_javascript_npm//rxjs:lib",
+    ],
 )
 
-filegroup(
-    name = "descriptors",
-    srcs = ["package.json"],
+cjs_root(
+    name = "root",
+    package_name = "@better-rules-javascript/webpack-server",
+    descriptors = ["package.json"],
+    visibility = ["//visibility:public"],
 )
 
-filegroup(
+js_library(
     name = "tsconfig",
     srcs = ["tsconfig.json"],
+    root = ":root",
+    deps = ["//rules:tsconfig"],
 )
