@@ -301,7 +301,11 @@ def _angular_library(ctx):
                 executable = compiler.bin.files_to_run.executable,
                 inputs = depset(
                     [package_manifest, tsconfig] + inputs,
-                    transitive = [cjs_root.transitive_files, fs_linker_js.transitive_files] + ([tsconfig_js.transitive_files] if tsconfig_js else []) + [ts_info.transitive_files for ts_info in ts_deps],
+                    transitive =
+                        [cjs_root.transitive_files, fs_linker_js.transitive_files] +
+                        ([tsconfig_js.transitive_files] if tsconfig_js else []) +
+                        [js_info.transitive_files for js_info in compiler.js_deps] +
+                        [ts_info.transitive_files for ts_info in ts_deps],
                 ),
                 mnemonic = "AngularCompile",
                 outputs = outputs,
@@ -317,7 +321,10 @@ def _angular_library(ctx):
                 executable = compiler.tsc_bin.files_to_run.executable,
                 inputs = depset(
                     [package_manifest, tsconfig] + inputs,
-                    transitive = [cjs_root.transitive_files, fs_linker_js.transitive_files] + ([tsconfig_js.transitive_files] if tsconfig_js else []) + [ts_info.transitive_files for ts_info in ts_deps],
+                    transitive = [cjs_root.transitive_files, fs_linker_js.transitive_files] +
+                        ([tsconfig_js.transitive_files] if tsconfig_js else []) +
+                        [js_info.transitive_files for js_info in compiler.js_deps] +
+                        [ts_info.transitive_files for ts_info in ts_deps],
                 ),
                 mnemonic = "TypeScriptCompile",
                 outputs = outputs,
@@ -329,7 +336,8 @@ def _angular_library(ctx):
     )
 
     output_group_info = OutputGroupInfo(
-        dts = declarations,
+        dts = depset(declarations),
+        _validation = depset(declarations),
     )
 
     cjs_info = create_cjs_info(

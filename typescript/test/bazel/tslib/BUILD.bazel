@@ -3,15 +3,8 @@ load("@better_rules_javascript//javascript:rules.bzl", "js_library")
 load("@better_rules_javascript//typescript:rules.bzl", "ts_library")
 
 cjs_root(
-    name = "root_lib",
+    name = "root",
     package_name = "example",
-    path = "root_lib",
-)
-
-cjs_root(
-    name = "root_nolib",
-    package_name = "example",
-    path = "root_nolib",
 )
 
 ts_library(
@@ -23,7 +16,7 @@ ts_library(
     declaration_prefix = "root_lib",
     js_prefix = "root_lib",
     module = "commonjs",
-    root = ":root_lib",
+    root = ":root",
     src_prefix = "root_lib",
     target = "es5",
 )
@@ -35,7 +28,7 @@ ts_library(
     declaration_prefix = "root_nolib",
     js_prefix = "root_nolib",
     module = "commonjs",
-    root = ":root_nolib",
+    root = ":root",
     src_prefix = "root_nolib",
     target = "es5",
 )
@@ -43,5 +36,5 @@ ts_library(
 js_library(
     name = "tsconfig_lib",
     srcs = ["tsconfig-lib.json"],
-    root = ":root_lib",
+    root = ":root",
 )

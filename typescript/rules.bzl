@@ -276,6 +276,7 @@ def _ts_library_impl(ctx):
                 transitive =
                     [cjs_root.transitive_files, fs_linker_js.transitive_files] +
                     ([tsconfig_js.transitive_files] if tsconfig_js else []) +
+                    [js_info.transitive_files for js_info in compiler.runtime_js] +
                     [dep.transitive_files for dep in ts_deps],
             ),
             mnemonic = "TypeScriptCompile",
@@ -289,7 +290,8 @@ def _ts_library_impl(ctx):
     )
 
     output_group_info = OutputGroupInfo(
-        dts = declarations,
+        dts = depset(declarations),
+        _validation = depset(declarations),
     )
 
     cjs_info = create_cjs_info(
