@@ -433,7 +433,7 @@ def _nodejs_binary_archive_impl(ctx):
 
     for name, file in files.items():
         file_args.add("--file", name)
-        file_args.add(file)
+        file_args.add(file.path)
 
     args = actions.args()
     args.add("--manifest", manifest)
