@@ -104,18 +104,18 @@ async function runOnce(worker: Worker, args: string[]) {
  */
 export async function workerMain(workerFactory: WorkerFactory) {
   try {
-    const args = process.argv.slice(2, -1);
-    const worker = await workerFactory(args);
     const last = process.argv[process.argv.length - 1];
     if (last === "--persistent_worker") {
+      const worker = await workerFactory(process.argv.slice(2, -1));
       await runWorker(worker);
     } else if (last.startsWith("@")) {
-      const path = last.slice(1);
-      const file = fs.readFileSync(path, "utf-8");
+      const worker = await workerFactory(process.argv.slice(2, -1));
+      const file = await fs.promises.readFile(last.slice(1), "utf-8");
       const args = file.trim().split("\n");
       await runOnce(worker, args);
     } else {
-      await runOnce(worker, args);
+      const worker = await workerFactory([]);
+      await runOnce(worker, process.argv.slice(2));
     }
   } catch (e) {
     if (e instanceof CliError) {

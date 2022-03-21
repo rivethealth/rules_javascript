@@ -1,4 +1,5 @@
 load("@bazel_skylib//lib:shell.bzl", "shell")
+load("@bazel_watcher_2//watcher:rules.bzl", "restart_service")
 load("//commonjs:providers.bzl", "CjsInfo", "create_cjs_info", "gen_manifest", "package_path")
 load("//javascript:providers.bzl", "JsInfo", "create_js_info")
 load("//javascript:rules.bzl", "js_export")
@@ -95,8 +96,13 @@ def configure_webpack(name, cli, webpack, dev_server, config, config_dep, node_o
 
     Args:
         name: Name
-        dep: Webpack library
-        config: Configuration
+        cli: Webpack CLI library
+        webpack: Webpack library
+        dev_server: Webpack dev server library
+        config: Configuration path
+        config_dep: Configuration library
+        node_options: Node.js options
+        visibility: Visibility
     """
 
     nodejs_binary(
@@ -121,6 +127,12 @@ def configure_webpack(name, cli, webpack, dev_server, config, config_dep, node_o
         visibility = ["//visibility:private"],
     )
 
+    restart_service(
+        name = "%s.server_service" % name,
+        bin = ":%s.server_bin" % name,
+        visibility = ["//visibility:private"],
+    )
+
     js_export(
         name = "%s.server_main" % name,
         dep = "@better_rules_javascript//webpack/server:lib",
@@ -134,7 +146,7 @@ def configure_webpack(name, cli, webpack, dev_server, config, config_dep, node_o
         config = config,
         config_dep = config_dep,
         bin = ":%s.bin" % name,
-        server = ":%s.server_bin" % name,
+        server = ":%s.server_service" % name,
         client = [dev_server],
         visibility = visibility,
     )

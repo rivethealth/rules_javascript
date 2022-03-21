@@ -2,3 +2,5 @@ build --symlink_prefix=/
 run --symlink_prefix=/
 test --symlink_prefix=/
 test --test_output=errors
+
+build --experimental_worker_allow_json_protocol

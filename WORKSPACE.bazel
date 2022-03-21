@@ -15,6 +15,17 @@ http_archive(
 
 load("@rules_file//file:workspace.bzl", "files")
 
+# Python
+
+PYTHON_VERSION = "0.6.0"
+
+http_archive(
+    name = "rules_python",
+    sha256 = "a30abdfc7126d497a7698c29c46ea9901c6392d6ed315171a6df5ce433aa4502",
+    strip_prefix = "rules_python-%s" % PYTHON_VERSION,
+    url = "https://github.com/bazelbuild/rules_python/archive/%s.tar.gz" % PYTHON_VERSION,
+)
+
 # Go
 GO_VERSION = "v0.24.5"
 
@@ -139,6 +150,19 @@ http_archive(
     strip_prefix = "stardoc-%s" % STARDOC_VERSION,
     urls = [
         "https://github.com/bazelbuild/stardoc/archive/%s.zip" % STARDOC_VERSION,
+    ],
+)
+
+# Bazel Watcher 2
+
+BAZEL_WATCHER_2_VERSION = "6aa190af977635d85ff3d1bc0a9a8a371336b250"
+
+http_archive(
+    name = "bazel_watcher_2",
+    sha256 = "c950e293d0b20f788b53ea676aeff9b99db3aa5514bf0067b76ade7064970f66",
+    strip_prefix = "bazel-watcher-2-%s" % BAZEL_WATCHER_2_VERSION,
+    urls = [
+        "https://github.com/rivethealth/bazel-watcher-2/archive/%s.zip" % BAZEL_WATCHER_2_VERSION,
     ],
 )
 

@@ -44,3 +44,27 @@ def test_repositories0():
         strip_prefix = "rules_proto_grpc-%s" % PROTO_GRPC_VERSION,
         urls = ["https://github.com/rules-proto-grpc/rules_proto_grpc/archive/%s.tar.gz" % PROTO_GRPC_VERSION],
     )
+
+    # Python
+
+    PYTHON_VERSION = "0.6.0"
+
+    http_archive(
+        name = "rules_python",
+        sha256 = "a30abdfc7126d497a7698c29c46ea9901c6392d6ed315171a6df5ce433aa4502",
+        strip_prefix = "rules_python-%s" % PYTHON_VERSION,
+        url = "https://github.com/bazelbuild/rules_python/archive/%s.tar.gz" % PYTHON_VERSION,
+    )
+
+    # Bazel Watcher 2
+
+    BAZEL_WATCHER_2_VERSION = "0fec172c6c1e4a3f53cac19c8785b7104413bfdd"
+
+    http_archive(
+        name = "bazel_watcher_2",
+        sha256 = "bf95f242a01917b0ceb65911457601de822e28208ceb2904d49f269da534782c",
+        strip_prefix = "bazel-watcher-2-%s" % BAZEL_WATCHER_2_VERSION,
+        urls = [
+            "https://github.com/rivethealth/bazel-watcher-2/archive/%s.zip" % BAZEL_WATCHER_2_VERSION,
+        ],
+    )

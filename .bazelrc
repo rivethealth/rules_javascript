@@ -1,6 +1,7 @@
 import %workspace%/tools/deleted.bazelrc
 build --disk_cache=.bazel_cache
 build --experimental_allow_unresolved_symlinks
+build --experimental_worker_allow_json_protocol
 build --experimental_strict_action_env
 build --incompatible_disable_depset_items=false
 build --verbose_failures
