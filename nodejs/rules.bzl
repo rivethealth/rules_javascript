@@ -274,7 +274,7 @@ def _nodejs_archive_impl(ctx):
     for name, file in files.items():
         file_args.add("--file")
         file_args.add(name)
-        file_args.add(file)
+        file_args.add(file.path)
 
     args = actions.args()
     args.add("--node-modules", "true")

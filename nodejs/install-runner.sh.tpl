@@ -13,6 +13,8 @@ source "${RUNFILES_DIR:-/dev/null}/$f" 2>/dev/null || \
 
 node_modules="${BUILD_WORKSPACE_DIRECTORY-.}"/%{path}
 
+echo "Unpacking to $node_modules" >&2
+
 rm -fr "$node_modules"
 mkdir "$node_modules"
 exec tar xf "$(rlocation %{archive})" -C "$node_modules"
