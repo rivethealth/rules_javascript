@@ -304,7 +304,7 @@ def _webpack_server_impl(ctx):
     )
 
     js_info = JsInfo(
-        transitive_files = depset(transitive = [js_info.transitive_files for js_info in [dep_js] + webpack_client.client_js])
+        transitive_files = depset(transitive = [js_info.transitive_files for js_info in [dep_js] + webpack_client.client_js]),
     )
 
     symlinks = modules_links(

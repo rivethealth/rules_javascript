@@ -42,10 +42,13 @@ async function* lines(
       if (j < 0) {
         break;
       }
-      yield data.substring(i, j);
+      yield data.substring(i, j + 1);
       i = j + 1;
     }
     data = data.substring(i);
+  }
+  if (data) {
+    yield data;
   }
 }
 
@@ -71,6 +74,6 @@ export async function* readNotifications(
   stream: AsyncIterableIterator<string>,
 ): AsyncIterableIterator<IbazelNotification> {
   for await (const line of lines(stream)) {
-    yield parseNotification(line);
+    yield parseNotification(line.trimEnd());
   }
 }

@@ -322,9 +322,9 @@ def _angular_library(ctx):
                 inputs = depset(
                     [package_manifest, tsconfig] + inputs,
                     transitive = [cjs_root.transitive_files, fs_linker_js.transitive_files] +
-                        ([tsconfig_js.transitive_files] if tsconfig_js else []) +
-                        [js_info.transitive_files for js_info in compiler.js_deps] +
-                        [ts_info.transitive_files for ts_info in ts_deps],
+                                 ([tsconfig_js.transitive_files] if tsconfig_js else []) +
+                                 [js_info.transitive_files for js_info in compiler.js_deps] +
+                                 [ts_info.transitive_files for ts_info in ts_deps],
                 ),
                 mnemonic = "TypeScriptCompile",
                 outputs = outputs,

@@ -2,7 +2,7 @@
 set -euo pipefail
 # For additional options to the Node.js runtime, use the
 # NODE_OPTIONS environment variable.
-set -x
+
 if [ -z "${RUNFILES_DIR:-}" ]; then
   if [ ! -z "${RUNFILES_MANIFEST_FILE:-}" ]; then
     export RUNFILES_DIR="${RUNFILES_MANIFEST_FILE%.runfiles_manifest}".runfiles

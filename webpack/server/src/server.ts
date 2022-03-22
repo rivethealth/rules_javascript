@@ -72,6 +72,9 @@ export async function startServer(
   compiler.intermediateFileSystem = fs;
   compiler.outputFileSystem = fs;
 
+  const devServer = config.devServer || {};
+  devServer.setupExitSignals = false;
+
   const server = new WebpackDevServer(config.devServer, compiler);
 
   await server.start();
@@ -82,7 +85,6 @@ export async function startServer(
       notification.type === IbazelNotification.COMPLETED &&
       notification.status === IbazelStatus.SUCCESS
     ) {
-      console.log("REFRESH");
       refreshPackageTree(vfs, webpackManifestPath);
       refresh.next(undefined);
     }

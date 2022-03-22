@@ -456,7 +456,7 @@ nodejs_binary_archive = rule(
         "dep": attr.label(
             cfg = _nodejs_transition,
             mandatory = True,
-            providers = [JsInfo],
+            providers = [CjsInfo, JsInfo],
         ),
         "env": attr.string_dict(
             doc = "Environment variables",
