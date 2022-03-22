@@ -39,8 +39,8 @@ configure_ts_compiler(
 configure_ts_protoc(
     name = "ts_protoc",
     options = [
-        "--ts_proto_opt=esModuleInterop=true",
-        "--ts_proto_opt=forceLong=long",
+        "esModuleInterop=true",
+        "forceLong=long",
     ],
     ts_proto = "@better_rules_javascript_npm//ts-proto:lib",
     tsc = ":tsc",

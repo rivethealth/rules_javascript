@@ -20,10 +20,6 @@ export namespace JsonFormat {
     return new ArrayJsonFormat(elementFormat);
   }
 
-  export function arrayBuffer(): JsonFormat<ArrayBuffer> {
-    return new ArrayBufferFormat();
-  }
-
   export function map<K, V>(
     keyFormat: JsonFormat<K>,
     valueFormat: JsonFormat<V>,

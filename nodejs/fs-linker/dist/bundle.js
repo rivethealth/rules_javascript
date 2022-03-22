@@ -41,10 +41,6 @@ var JsonFormat;
         return new ArrayJsonFormat(elementFormat);
     }
     JsonFormat.array = array;
-    function arrayBuffer() {
-        return new ArrayBufferFormat();
-    }
-    JsonFormat.arrayBuffer = arrayBuffer;
     function map(keyFormat, valueFormat) {
         return new MapJsonFormat(keyFormat, valueFormat);
     }
@@ -654,7 +650,7 @@ function link(vfs, delegate) {
 function linkSync(vfs, delegate) {
     return replaceArguments(vfs, delegate, [0, 1]);
 }
-function lstat(vfs, delegate) {
+function lstat(vfs, delegate, stat) {
     return (function (path, options, callback) {
         const filePath = stringPath(path);
         const resolved = vfs.entry(filePath);
@@ -667,17 +663,21 @@ function lstat(vfs, delegate) {
                 setImmediate(() => callback(null, options.bigint
                     ? new LinkBigintStat(resolved)
                     : new LinkStat(resolved)));
+                return;
             }
             else if (resolved.hardenSymlinks) {
-                fs__namespace.stat(resolved.path, options, callback);
+                stat(resolved.path, options, callback);
                 return;
             }
         }
-        if (resolved && filePath !== resolved.path) ;
-        return delegate.apply(this, arguments);
+        const args = [...arguments];
+        if (resolved && filePath !== resolved.path) {
+            args[0] = resolved.path;
+        }
+        return delegate.apply(this, args);
     });
 }
-function lstatSync(vfs, delegate) {
+function lstatSync(vfs, delegate, statSync) {
     return (function (path, options) {
         const filePath = stringPath(path);
         const resolved = vfs.entry(filePath);
@@ -688,11 +688,14 @@ function lstatSync(vfs, delegate) {
                     : new LinkStat(resolved);
             }
             else if (resolved.hardenSymlinks) {
-                return fs__namespace.statSync(resolved.path, options);
+                return statSync(resolved.path, options);
             }
         }
-        if (resolved && filePath !== resolved.path) ;
-        return delegate.apply(this, arguments);
+        const args = [...arguments];
+        if (resolved && filePath !== resolved.path) {
+            args[0] = resolved.path;
+        }
+        return delegate.apply(this, args);
     });
 }
 function mkdir(vfs, delegate) {
@@ -1138,8 +1141,6 @@ function patchFs(vfs, delegate) {
     // delegate.lutimesSync;
     delegate.link = link(vfs, delegate.link);
     delegate.linkSync = linkSync(vfs, delegate.linkSync);
-    delegate.lstat = lstat(vfs, delegate.lstat);
-    delegate.lstatSync = lstatSync(vfs, delegate.lstatSync);
     delegate.mkdir = mkdir(vfs, delegate.mkdir);
     delegate.mkdirSync = mkdirSync(vfs, delegate.mkdirSync);
     delegate.open = open(vfs, delegate.open);
@@ -1174,6 +1175,8 @@ function patchFs(vfs, delegate) {
     delegate.watchFile = watchFile(vfs, delegate.watchFile);
     delegate.writeFile = writeFile(vfs, delegate.writeFile);
     delegate.writeFileSync = writeFileSync(vfs, delegate.writeFileSync);
+    delegate.lstat = lstat(vfs, delegate.lstat, delegate.stat);
+    delegate.lstatSync = lstatSync(vfs, delegate.lstatSync, delegate.statSync);
 }
 
 function access(vfs, delegate) {

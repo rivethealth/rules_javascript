@@ -3,11 +3,13 @@
 var url = require('url');
 var fs = require('fs');
 var path = require('path');
-var minimal = require('protobufjs/minimal');
 var Long = require('long');
+var _m0 = require('protobufjs/minimal');
 var protobufjs = require('protobufjs');
 var argparse = require('argparse');
 var ts = require('typescript');
+
+function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
 function _interopNamespace(e) {
     if (e && e.__esModule) return e;
@@ -29,7 +31,8 @@ function _interopNamespace(e) {
 
 var fs__namespace = /*#__PURE__*/_interopNamespace(fs);
 var path__namespace = /*#__PURE__*/_interopNamespace(path);
-var Long__namespace = /*#__PURE__*/_interopNamespace(Long);
+var Long__default = /*#__PURE__*/_interopDefaultLegacy(Long);
+var _m0__default = /*#__PURE__*/_interopDefaultLegacy(_m0);
 var ts__namespace = /*#__PURE__*/_interopNamespace(ts);
 
 var VfsNode;
@@ -499,7 +502,7 @@ function link(vfs, delegate) {
 function linkSync(vfs, delegate) {
     return replaceArguments(vfs, delegate, [0, 1]);
 }
-function lstat(vfs, delegate) {
+function lstat(vfs, delegate, stat) {
     return (function (path, options, callback) {
         const filePath = stringPath(path);
         const resolved = vfs.entry(filePath);
@@ -512,17 +515,21 @@ function lstat(vfs, delegate) {
                 setImmediate(() => callback(null, options.bigint
                     ? new LinkBigintStat(resolved)
                     : new LinkStat(resolved)));
+                return;
             }
             else if (resolved.hardenSymlinks) {
-                fs__namespace.stat(resolved.path, options, callback);
+                stat(resolved.path, options, callback);
                 return;
             }
         }
-        if (resolved && filePath !== resolved.path) ;
-        return delegate.apply(this, arguments);
+        const args = [...arguments];
+        if (resolved && filePath !== resolved.path) {
+            args[0] = resolved.path;
+        }
+        return delegate.apply(this, args);
     });
 }
-function lstatSync(vfs, delegate) {
+function lstatSync(vfs, delegate, statSync) {
     return (function (path, options) {
         const filePath = stringPath(path);
         const resolved = vfs.entry(filePath);
@@ -533,11 +540,14 @@ function lstatSync(vfs, delegate) {
                     : new LinkStat(resolved);
             }
             else if (resolved.hardenSymlinks) {
-                return fs__namespace.statSync(resolved.path, options);
+                return statSync(resolved.path, options);
             }
         }
-        if (resolved && filePath !== resolved.path) ;
-        return delegate.apply(this, arguments);
+        const args = [...arguments];
+        if (resolved && filePath !== resolved.path) {
+            args[0] = resolved.path;
+        }
+        return delegate.apply(this, args);
     });
 }
 function mkdir(vfs, delegate) {
@@ -983,8 +993,6 @@ function patchFs(vfs, delegate) {
     // delegate.lutimesSync;
     delegate.link = link(vfs, delegate.link);
     delegate.linkSync = linkSync(vfs, delegate.linkSync);
-    delegate.lstat = lstat(vfs, delegate.lstat);
-    delegate.lstatSync = lstatSync(vfs, delegate.lstatSync);
     delegate.mkdir = mkdir(vfs, delegate.mkdir);
     delegate.mkdirSync = mkdirSync(vfs, delegate.mkdirSync);
     delegate.open = open(vfs, delegate.open);
@@ -1019,6 +1027,8 @@ function patchFs(vfs, delegate) {
     delegate.watchFile = watchFile(vfs, delegate.watchFile);
     delegate.writeFile = writeFile(vfs, delegate.writeFile);
     delegate.writeFileSync = writeFileSync(vfs, delegate.writeFileSync);
+    delegate.lstat = lstat(vfs, delegate.lstat, delegate.stat);
+    delegate.lstatSync = lstatSync(vfs, delegate.lstatSync, delegate.statSync);
 }
 
 function access(vfs, delegate) {
@@ -1057,7 +1067,7 @@ function patchFsPromises(vfs, delegate) {
 /* eslint-disable */
 const baseInput = { path: "" };
 const Input = {
-    encode(message, writer = minimal.Writer.create()) {
+    encode(message, writer = _m0__default["default"].Writer.create()) {
         if (message.path !== "") {
             writer.uint32(10).string(message.path);
         }
@@ -1067,7 +1077,7 @@ const Input = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof minimal.Reader ? input : new minimal.Reader(input);
+        const reader = input instanceof _m0__default["default"].Reader ? input : new _m0__default["default"].Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseInput };
         message.digest = new Uint8Array();
@@ -1132,7 +1142,7 @@ const baseWorkRequest = {
     verbosity: 0,
 };
 const WorkRequest = {
-    encode(message, writer = minimal.Writer.create()) {
+    encode(message, writer = _m0__default["default"].Writer.create()) {
         for (const v of message.arguments) {
             writer.uint32(10).string(v);
         }
@@ -1151,7 +1161,7 @@ const WorkRequest = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof minimal.Reader ? input : new minimal.Reader(input);
+        const reader = input instanceof _m0__default["default"].Reader ? input : new _m0__default["default"].Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseWorkRequest };
         message.arguments = [];
@@ -1276,7 +1286,7 @@ const baseWorkResponse = {
     wasCancelled: false,
 };
 const WorkResponse = {
-    encode(message, writer = minimal.Writer.create()) {
+    encode(message, writer = _m0__default["default"].Writer.create()) {
         if (message.exitCode !== 0) {
             writer.uint32(8).int32(message.exitCode);
         }
@@ -1292,7 +1302,7 @@ const WorkResponse = {
         return writer;
     },
     decode(input, length) {
-        const reader = input instanceof minimal.Reader ? input : new minimal.Reader(input);
+        const reader = input instanceof _m0__default["default"].Reader ? input : new _m0__default["default"].Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseWorkResponse };
         while (reader.pos < end) {
@@ -1413,11 +1423,9 @@ function base64FromBytes(arr) {
     }
     return btoa(bin.join(""));
 }
-// If you get a compile-error about 'Constructor<Long> and ... have no overlap',
-// add '--ts_proto_opt=esModuleInterop=true' as a flag when calling 'protoc'.
-if (minimal.util.Long !== Long__namespace) {
-    minimal.util.Long = Long__namespace;
-    minimal.configure();
+if (_m0__default["default"].util.Long !== Long__default["default"]) {
+    _m0__default["default"].util.Long = Long__default["default"];
+    _m0__default["default"].configure();
 }
 
 function concat(buffers) {
@@ -1516,20 +1524,20 @@ async function runOnce(worker, args) {
  */
 async function workerMain(workerFactory) {
     try {
-        const args = process.argv.slice(2, -1);
-        const worker = await workerFactory(args);
         const last = process.argv[process.argv.length - 1];
         if (last === "--persistent_worker") {
+            const worker = await workerFactory(process.argv.slice(2, -1));
             await runWorker(worker);
         }
         else if (last.startsWith("@")) {
-            const path = last.slice(1);
-            const file = fs__namespace.readFileSync(path, "utf-8");
+            const worker = await workerFactory(process.argv.slice(2, -1));
+            const file = await fs__namespace.promises.readFile(last.slice(1), "utf-8");
             const args = file.trim().split("\n");
             await runOnce(worker, args);
         }
         else {
-            await runOnce(worker, args);
+            const worker = await workerFactory([]);
+            await runOnce(worker, process.argv.slice(2));
         }
     }
     catch (e) {
@@ -1579,10 +1587,6 @@ var JsonFormat;
         return new ArrayJsonFormat(elementFormat);
     }
     JsonFormat.array = array;
-    function arrayBuffer() {
-        return new ArrayBufferFormat();
-    }
-    JsonFormat.arrayBuffer = arrayBuffer;
     function map(keyFormat, valueFormat) {
         return new MapJsonFormat(keyFormat, valueFormat);
     }
@@ -1931,7 +1935,7 @@ async function transpileFile(src, options) {
         throw new Error(`File ${resolvedSrc} not in ${options.rootDir}`);
     }
     const outputPath = outputName(name ? path__namespace.join(options.outDir, name) : options.outDir);
-    const input = fs__namespace.readFileSync(src, "utf8");
+    const input = await fs__namespace.promises.readFile(src, "utf8");
     const result = ts__namespace.transpileModule(input, {
         fileName: path__namespace.relative(path__namespace.dirname(outputPath), src),
         compilerOptions: options,

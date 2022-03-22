@@ -85,10 +85,6 @@ class Resolver {
         return new ArrayJsonFormat(elementFormat);
     }
     JsonFormat.array = array;
-    function arrayBuffer() {
-        return new ArrayBufferFormat();
-    }
-    JsonFormat.arrayBuffer = arrayBuffer;
     function map(keyFormat, valueFormat) {
         return new MapJsonFormat(keyFormat, valueFormat);
     }

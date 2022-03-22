@@ -84,20 +84,14 @@ def _ts_proto_libraries_impl(ctx):
     prefix = ctx.attr.prefix
     src_prefix = ctx.attr.src_prefix
     ts_proto = ctx.attr._ts_protoc[TsProtobuf]
-    tsconfig_dep = ctx.attr.config_dep[CjsInfo] if ctx.attr.config_dep else None
-    tsconfig_js = ctx.attr.config_dep and ctx.attr.config_dep[JsInfo]
-    tsconfig_path = ctx.attr.config
+    tsconfig_proto = ctx.file._tsconfig
     workspace_name = ctx.workspace_name
     target_ = ctx.attr.target or target(ctx.attr._language[BuildSettingInfo].value)
-
-    if tsconfig_path and not tsconfig_dep:
-        fail("tsconfig attribute requires non-empty tsconfig_dep attribute")
 
     # transpile to JS
     transpile_tsconfig = actions.declare_file("%s.js-tsconfig.json" % ctx.attr.name)
     args = actions.args()
-    if tsconfig_path:
-        args.add("--config", "%s/%s" % (tsconfig_dep.package.path, tsconfig_path))
+    args.add("--config", tsconfig_proto)
     args.add("--module", module_)
     args.add("--out-dir", "%s/%s" % (output_.path, js_prefix) if js_prefix else output_.path)
     args.add("--root-dir", "%s/%s" % (output_.path, src_prefix) if src_prefix else output_.path)
@@ -114,7 +108,7 @@ def _ts_proto_libraries_impl(ctx):
     transpile_cjs_info = create_cjs_info(
         cjs_root = cjs_root,
         label = label,
-        deps = ([tsconfig_dep] if tsconfig_dep else []) + ts_proto.tsc.runtime_cjs,
+        deps = ts_proto.tsc.runtime_cjs,
     )
     gen_manifest(
         actions = actions,
@@ -128,8 +122,7 @@ def _ts_proto_libraries_impl(ctx):
     # compile to DTS
     tsconfig = actions.declare_file("%s.tsconfig.json" % ctx.attr.name)
     args = actions.args()
-    if tsconfig_path:
-        args.add("--config", "%s/%s" % (tsconfig_dep.package.path, tsconfig_path))
+    args.add("--config", tsconfig_proto.path)
     args.add("--declaration-dir", "%s/%s" % (output_.path, declaration_prefix) if declaration_prefix else output_.path)
     args.add("--module", module_)
     args.add("--root-dir", "%s/%s" % (output_.path, src_prefix) if src_prefix else output_.path)
@@ -146,7 +139,7 @@ def _ts_proto_libraries_impl(ctx):
     package_manifest = actions.declare_file("%s.package-manifest.json" % ctx.attr.name)
     compile_cjs_info = create_cjs_info(
         cjs_root = cjs_root,
-        deps = ([tsconfig_dep] if tsconfig_dep else []) + ts_proto.tsc.runtime_cjs + ts_proto.deps_cjs,
+        deps = ts_proto.tsc.runtime_cjs + ts_proto.deps_cjs,
         label = label,
     )
     gen_manifest(
@@ -203,10 +196,7 @@ def _ts_proto_libraries_impl(ctx):
                 arguments = [args],
                 executable = ts_proto.tsc.transpile_bin.files_to_run.executable,
                 execution_requirements = {"supports-workers": "1"},
-                inputs = depset(
-                    [ts_, transpile_package_manifest, transpile_tsconfig],
-                    transitive = [tsconfig_js.transitive_files] if tsconfig_js else [],
-                ),
+                inputs = [ts_, transpile_package_manifest, transpile_tsconfig, tsconfig_proto],
                 progress_message = "Transpiling %s to JavaScript" % file.path,
                 mnemonic = "TypeScriptTranspile",
                 outputs = [js_, map],
@@ -221,10 +211,9 @@ def _ts_proto_libraries_impl(ctx):
                 },
                 executable = ts_proto.tsc.bin.files_to_run.executable,
                 inputs = depset(
-                    [package_manifest, tsconfig] + ts,
+                    [package_manifest, tsconfig, tsconfig_proto] + ts,
                     transitive =
                         [cjs_root.transitive_files, fs_linker_js.transitive_files] +
-                        ([tsconfig_js.transitive_files] if tsconfig_js else []) +
                         [dep.transitive_files for dep in ts_proto.deps_ts],
                 ),
                 mnemonic = "TypeScriptCompile",
@@ -275,13 +264,6 @@ def ts_proto_libraries_rule(aspect, compiler):
                 default = compiler,
                 providers = [TsProtobuf],
             ),
-            "config": attr.string(
-                doc = "Tsconfig path.",
-            ),
-            "config_dep": attr.label(
-                doc = "Tsconfig dependency.",
-                providers = [[CjsInfo, JsInfo]],
-            ),
             "deps": attr.label_list(
                 providers = [ProtoInfo],
                 aspects = [aspect],
@@ -320,6 +302,10 @@ def ts_proto_libraries_rule(aspect, compiler):
             "_module": attr.label(
                 default = "//javascript:module",
                 providers = [BuildSettingInfo],
+            ),
+            "_tsconfig": attr.label(
+                default = ":tsconfig",
+                allow_single_file = True,
             ),
         },
         provides = [TsProtosInfo],

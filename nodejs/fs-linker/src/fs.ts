@@ -367,7 +367,7 @@ function linkSync(vfs: Vfs, delegate: typeof fs.linkSync) {
   return replaceArguments(vfs, delegate, [0, 1]);
 }
 
-function lstat(vfs: Vfs, delegate: typeof fs.lstat) {
+function lstat(vfs: Vfs, delegate: typeof fs.lstat, stat: typeof fs.stat) {
   return <typeof fs.stat>(
     function (path: fs.PathLike, options: any, callback?: Function) {
       const filePath = stringPath(path);
@@ -386,8 +386,9 @@ function lstat(vfs: Vfs, delegate: typeof fs.lstat) {
                 : new LinkStat(resolved),
             ),
           );
+          return;
         } else if (resolved.hardenSymlinks) {
-          fs.stat(resolved.path, options, <any>callback);
+          stat(resolved.path, options, <any>callback);
           return;
         }
       }
@@ -395,7 +396,7 @@ function lstat(vfs: Vfs, delegate: typeof fs.lstat) {
       if (resolved && filePath !== resolved.path) {
         args[0] = resolved.path;
       }
-      return delegate.apply(this, arguments);
+      return delegate.apply(this, args);
     }
   );
 }
@@ -403,6 +404,7 @@ function lstat(vfs: Vfs, delegate: typeof fs.lstat) {
 function lstatSync(
   vfs: Vfs,
   delegate: typeof fs.lstatSync,
+  statSync: typeof fs.statSync,
 ): typeof fs.lstatSync {
   return <typeof fs.statSync>(
     function (
@@ -417,14 +419,14 @@ function lstatSync(
             ? new LinkBigintStat(resolved)
             : new LinkStat(resolved);
         } else if (resolved.hardenSymlinks) {
-          return fs.statSync(resolved.path, options);
+          return statSync(resolved.path, options);
         }
       }
       const args = [...arguments];
       if (resolved && filePath !== resolved.path) {
         args[0] = resolved.path;
       }
-      return delegate.apply(this, arguments);
+      return delegate.apply(this, args);
     }
   );
 }
@@ -1004,8 +1006,6 @@ export function patchFs(
   // delegate.lutimesSync;
   delegate.link = link(vfs, <any>delegate.link);
   delegate.linkSync = linkSync(vfs, <any>delegate.linkSync);
-  delegate.lstat = lstat(vfs, delegate.lstat);
-  delegate.lstatSync = lstatSync(vfs, delegate.lstatSync);
   delegate.mkdir = mkdir(vfs, delegate.mkdir);
   delegate.mkdirSync = mkdirSync(vfs, delegate.mkdirSync);
   delegate.open = open(vfs, delegate.open);
@@ -1040,4 +1040,7 @@ export function patchFs(
   delegate.watchFile = watchFile(vfs, delegate.watchFile);
   delegate.writeFile = writeFile(vfs, delegate.writeFile);
   delegate.writeFileSync = writeFileSync(vfs, delegate.writeFileSync);
+
+  delegate.lstat = lstat(vfs, delegate.lstat, delegate.stat);
+  delegate.lstatSync = lstatSync(vfs, delegate.lstatSync, delegate.statSync);
 }

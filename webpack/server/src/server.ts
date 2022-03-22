@@ -39,8 +39,10 @@ function setTimeout_(
   delegate: typeof setTimeout,
   event: Subject<undefined>,
 ): typeof setTimeout {
+  const watchpackPolling = +process.env.WATCHPACK_POLLING;
+
   return <any>function (callback, time) {
-    if (time === 130929) {
+    if (time === watchpackPolling) {
       const subscription = event.subscribe(() => {
         subscription.unsubscribe();
         callback();
@@ -72,10 +74,9 @@ export async function startServer(
   compiler.intermediateFileSystem = fs;
   compiler.outputFileSystem = fs;
 
-  const devServer = config.devServer || {};
-  devServer.setupExitSignals = false;
-
-  const server = new WebpackDevServer(config.devServer, compiler);
+  const serverOptions = config.devServer || {};
+  serverOptions.setupExitSignals = false;
+  const server = new WebpackDevServer(serverOptions, compiler);
 
   await server.start();
 

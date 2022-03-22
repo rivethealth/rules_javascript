@@ -130,6 +130,7 @@ def configure_webpack(name, cli, webpack, dev_server, config, config_dep, node_o
     restart_service(
         name = "%s.server_service" % name,
         bin = ":%s.server_bin" % name,
+        pass_events = True,
         visibility = ["//visibility:private"],
     )
 
