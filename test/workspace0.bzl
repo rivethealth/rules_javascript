@@ -56,15 +56,13 @@ def test_repositories0():
         url = "https://github.com/bazelbuild/rules_python/archive/%s.tar.gz" % PYTHON_VERSION,
     )
 
-    # Bazel Watcher 2
+    # Rivet Bazel Util
 
-    BAZEL_WATCHER_2_VERSION = "0fec172c6c1e4a3f53cac19c8785b7104413bfdd"
+    RIVET_BAZEL_UTIL_VERSION = "d388fb2a617986557c25972ef5b2eb64c259c787"
 
     http_archive(
-        name = "bazel_watcher_2",
-        sha256 = "bf95f242a01917b0ceb65911457601de822e28208ceb2904d49f269da534782c",
-        strip_prefix = "bazel-watcher-2-%s" % BAZEL_WATCHER_2_VERSION,
-        urls = [
-            "https://github.com/rivethealth/bazel-watcher-2/archive/%s.zip" % BAZEL_WATCHER_2_VERSION,
-        ],
+        name = "rivet_bazel_util",
+        sha256 = "06d0b91104f1f41b3ffce7bb8082220ab5427cf2392ccd33216e4fe371d3dae3",
+        strip_prefix = "rivet-bazel-util-%s" % RIVET_BAZEL_UTIL_VERSION,
+        url = "https://github.com/rivethealth/rivet-bazel-util/archive/%s.tar.gz" % RIVET_BAZEL_UTIL_VERSION,
     )

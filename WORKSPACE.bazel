@@ -153,17 +153,15 @@ http_archive(
     ],
 )
 
-# Bazel Watcher 2
+# Rivet Bazel Util
 
-BAZEL_WATCHER_2_VERSION = "6aa190af977635d85ff3d1bc0a9a8a371336b250"
+RIVET_BAZEL_UTIL_VERSION = "d388fb2a617986557c25972ef5b2eb64c259c787"
 
 http_archive(
-    name = "bazel_watcher_2",
-    sha256 = "c950e293d0b20f788b53ea676aeff9b99db3aa5514bf0067b76ade7064970f66",
-    strip_prefix = "bazel-watcher-2-%s" % BAZEL_WATCHER_2_VERSION,
-    urls = [
-        "https://github.com/rivethealth/bazel-watcher-2/archive/%s.zip" % BAZEL_WATCHER_2_VERSION,
-    ],
+    name = "rivet_bazel_util",
+    sha256 = "06d0b91104f1f41b3ffce7bb8082220ab5427cf2392ccd33216e4fe371d3dae3",
+    strip_prefix = "rivet-bazel-util-%s" % RIVET_BAZEL_UTIL_VERSION,
+    url = "https://github.com/rivethealth/rivet-bazel-util/archive/%s.tar.gz" % RIVET_BAZEL_UTIL_VERSION,
 )
 
 # JavaScript

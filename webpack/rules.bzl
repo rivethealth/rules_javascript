@@ -1,5 +1,5 @@
 load("@bazel_skylib//lib:shell.bzl", "shell")
-load("@bazel_watcher_2//watcher:rules.bzl", "restart_service")
+load("@rivet_bazel_util//bazel:providers.bzl", "create_digest")
 load("//commonjs:providers.bzl", "CjsInfo", "create_cjs_info", "gen_manifest", "package_path")
 load("//javascript:providers.bzl", "JsInfo", "create_js_info")
 load("//javascript:rules.bzl", "js_export")
@@ -127,13 +127,6 @@ def configure_webpack(name, cli, webpack, dev_server, config, config_dep, node_o
         visibility = ["//visibility:private"],
     )
 
-    restart_service(
-        name = "%s.server_service" % name,
-        bin = ":%s.server_bin" % name,
-        pass_events = True,
-        visibility = ["//visibility:private"],
-    )
-
     js_export(
         name = "%s.server_main" % name,
         dep = "@better_rules_javascript//webpack/server:lib",
@@ -147,7 +140,7 @@ def configure_webpack(name, cli, webpack, dev_server, config, config_dep, node_o
         config = config,
         config_dep = config_dep,
         bin = ":%s.bin" % name,
-        server = ":%s.server_service" % name,
+        server = ":%s.server_bin" % name,
         client = [dev_server],
         visibility = visibility,
     )
@@ -259,6 +252,7 @@ webpack_bundle = rule(
 def _webpack_server_impl(ctx):
     actions = ctx.actions
     compilation_mode = ctx.var["COMPILATION_MODE"]
+    hash = ctx.attr._hash[DefaultInfo]
     label = ctx.label
     skip_package_check = ctx.file._skip_package_check
     webpack = ctx.split_attr.webpack["tool"][WebpackInfo]
@@ -287,8 +281,7 @@ def _webpack_server_impl(ctx):
         package_path = package_path,
     )
 
-    bin = actions.declare_file("%s/bin" % ctx.label.name)
-
+    bin = actions.declare_file(name)
     actions.expand_template(
         template = ctx.file._runner,
         output = bin,
@@ -302,6 +295,14 @@ def _webpack_server_impl(ctx):
             "%{package_manifest}": shell.quote(runfile_path(ctx.workspace_name, package_manifest)),
         },
         is_executable = True,
+    )
+
+    digest = actions.declare_file("%s.digest" % name)
+    create_digest(
+        actions = actions,
+        runfiles = webpack.server.default_runfiles,
+        hash = hash,
+        output = digest,
     )
 
     js_info = JsInfo(
@@ -329,12 +330,21 @@ def _webpack_server_impl(ctx):
         runfiles = runfiles,
     )
 
-    return [default_info]
+    output_group_info = OutputGroupInfo(
+        digest = depset([digest]),
+    )
+
+    return [default_info, output_group_info]
 
 webpack_server = rule(
     attrs = {
         "_allowlist_function_transition": attr.label(
             default = "@bazel_tools//tools/allowlists/function_transition_allowlist",
+        ),
+        "_hash": attr.label(
+            cfg = "exec",
+            default = "@rivet_bazel_util//util/hash:bin",
+            executable = True,
         ),
         "_manifest": attr.label(
             cfg = "exec",
