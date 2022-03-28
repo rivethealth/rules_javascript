@@ -250,7 +250,7 @@ def _angular_library(ctx):
                         execution_requirements = {"supports-workers": "1"},
                         inputs = depset(
                             [ts_, transpile_package_manifest, transpile_tsconfig],
-                            transitive = [js_info.transitive_files for js_info in js_deps] + [tsconfig_js.transitive_files] if tsconfig_js else [],
+                            transitive = [js_info.transitive_files for js_info in compiler.js_deps] + [tsconfig_js.transitive_files] if tsconfig_js else [],
                         ),
                         mnemonic = "TypeScriptTranspile",
                         outputs = [js_, map],
