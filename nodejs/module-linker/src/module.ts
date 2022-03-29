@@ -7,6 +7,7 @@ function resolveFilename(resolver: Resolver, delegate: Function): Function {
       Module.builtinModules.includes(request) ||
       !parent ||
       parent.path === "internal" ||
+      request.startsWith("node:") ||
       request == "." ||
       request == ".." ||
       request.startsWith("./") ||

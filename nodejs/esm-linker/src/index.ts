@@ -32,6 +32,7 @@ export function resolve(
   if (
     Module.builtinModules.includes(specifier) ||
     parent?.protocol !== "file:" ||
+    specifier.startsWith("node:") ||
     specifier == "." ||
     specifier == ".." ||
     specifier.startsWith("./") ||

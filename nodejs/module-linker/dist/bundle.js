@@ -266,6 +266,7 @@ var PackageTree;
         if (Module__default["default"].builtinModules.includes(request) ||
             !parent ||
             parent.path === "internal" ||
+            request.startsWith("node:") ||
             request == "." ||
             request == ".." ||
             request.startsWith("./") ||

@@ -316,6 +316,7 @@ function resolve(specifier, context, defaultResolve) {
     const parent = context.parentURL !== undefined ? new URL(context.parentURL) : undefined;
     if (Module__default["default"].builtinModules.includes(specifier) ||
         parent?.protocol !== "file:" ||
+        specifier.startsWith("node:") ||
         specifier == "." ||
         specifier == ".." ||
         specifier.startsWith("./") ||
