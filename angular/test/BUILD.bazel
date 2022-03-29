@@ -5,15 +5,15 @@ filegroup(
 )
 
 sh_test(
-    name = "material",
-    srcs = ["test_material.sh"],
+    name = "basic",
+    srcs = ["test_basic.sh"],
     data = [":bazel"],
     tags = ["local"],
 )
 
 sh_test(
-    name = "replace",
-    srcs = ["test_replace.sh"],
+    name = "material",
+    srcs = ["test_material.sh"],
     data = [":bazel"],
     tags = ["local"],
 )
