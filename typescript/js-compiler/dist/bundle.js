@@ -1945,7 +1945,9 @@ async function transpileFile(src, options) {
     }
     await fs__namespace.promises.mkdir(path__namespace.dirname(outputPath), { recursive: true });
     await fs__namespace.promises.writeFile(outputPath, result.outputText, "utf8");
-    await fs__namespace.promises.writeFile(`${outputPath}.map`, result.sourceMapText, "utf8");
+    if (result.sourceMapText !== undefined) {
+        await fs__namespace.promises.writeFile(`${outputPath}.map`, result.sourceMapText, "utf8");
+    }
 }
 function outputName(path) {
     if (path.endsWith(".cts")) {

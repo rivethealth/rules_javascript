@@ -2,11 +2,16 @@ import * as path from "path";
 import type { Configuration } from "webpack";
 
 const compilationMode = process.env.COMPILATION_MODE;
+const jsSourceMap = process.env.JS_SOURCE_MAP;
 const inputRoot = process.env.WEBPACK_INPUT_ROOT;
 const output = process.env.WEBPACK_OUTPUT;
 
 if (!compilationMode) {
   throw new Error("Missing COMPILATION_MODE");
+}
+
+if (!jsSourceMap) {
+  throw new Error("Missing JS_SOURCE_MAP");
 }
 
 if (!inputRoot) {
@@ -18,6 +23,12 @@ export async function configure(
   baseConfig: Configuration,
 ): Promise<Configuration> {
   const config: Configuration = { ...baseConfig };
+
+  if (config.devtool === undefined && jsSourceMap === "true") {
+    config.devtool =
+      compilationMode === "opt" ? "source-map" : "eval-source-map";
+  }
+
   if (config.mode === undefined) {
     config.mode = compilationMode === "opt" ? "production" : "development";
   }

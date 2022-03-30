@@ -104,6 +104,7 @@ def _ts_library_impl(ctx):
     label = ctx.label
     module_ = ctx.attr.module or module(ctx.attr._module[BuildSettingInfo].value)
     output_ = output(ctx.label, actions)
+    source_map = ctx.attr._source_map[BuildSettingInfo].value
     src_prefix = ctx.attr.src_prefix
     srcs = ctx.files.srcs
     strip_prefix = ctx.attr.strip_prefix
@@ -125,6 +126,7 @@ def _ts_library_impl(ctx):
     args.add("--module", module_)
     args.add("--out-dir", "%s/%s" % (output_.path, js_prefix) if js_prefix else output_.path)
     args.add("--root-dir", "%s/%s" % (output_.path, src_prefix) if src_prefix else output_.path)
+    args.add("--source-map", json.encode(source_map))
     args.add("--target", target_)
     args.add(transpile_tsconfig)
     actions.run(
@@ -203,8 +205,10 @@ def _ts_library_impl(ctx):
                 js_ = actions.declare_file(js_path(js_path_))
                 js.append(js_)
                 js_outputs.append(js_)
-                map = actions.declare_file(map_path(js_path(js_path_)))
-                js_outputs.append(map)
+                if source_map:
+                    map = actions.declare_file(map_path(js_path(js_path_)))
+                    js.append(map)
+                    js_outputs.append(map)
                 declaration = actions.declare_file(declaration_path(declaration_path_))
                 declarations.append(declaration)
                 outputs.append(declaration)
@@ -389,6 +393,10 @@ ts_library = rule(
         ),
         "_module": attr.label(
             default = "//javascript:module",
+            providers = [BuildSettingInfo],
+        ),
+        "_source_map": attr.label(
+            default = "//javascript:source_map",
             providers = [BuildSettingInfo],
         ),
     },
