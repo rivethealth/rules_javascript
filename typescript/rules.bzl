@@ -22,6 +22,7 @@ def configure_ts_compiler(name, ts, tslib = None, visibility = None):
     nodejs_binary(
         main = "lib/tsc.js",
         name = "%s.bin" % name,
+        node = "@better_rules_javascript//rules:nodejs",
         dep = ts,
         visibility = ["//visibility:private"],
     )
@@ -41,6 +42,7 @@ def configure_ts_compiler(name, ts, tslib = None, visibility = None):
     nodejs_binary(
         name = "%s.js_bin" % name,
         main = "dist/bundle.js",
+        node = "@better_rules_javascript//rules:nodejs",
         dep = ":%s.lib" % name,
         visibility = ["//visibility:private"],
     )

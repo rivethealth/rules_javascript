@@ -24,4 +24,5 @@ js_library(
 nodejs_binary(
     name = "bin",
     dep = ":js",
+    node = "@better_rules_javascript//rules:nodejs",
 )

@@ -2,11 +2,96 @@ load("@bazel_skylib//lib:shell.bzl", "shell")
 load("//commonjs:providers.bzl", "CjsInfo", "create_globals", "create_package", "gen_manifest", "package_path")
 load("//javascript:providers.bzl", "JsInfo", "create_js_info")
 load("//util:path.bzl", "output", "runfile_path")
-load(":providers.bzl", "NODE_MODULES_PREFIX", "modules_links", "package_path_name")
+load(":providers.bzl", "NODE_MODULES_PREFIX", "NodejsInfo", "NodejsRuntimeInfo", "modules_links", "package_path_name")
+
+def configure_nodejs_runtime(name, repo_name, nodejs_runtime_rule, visibility = None):
+    native.toolchain_type(name = "%s.toolchain_type" % name, visibility = visibility)
+
+    native.toolchain(
+        name = "%s.darwin_x86_64_toolchain" % name,
+        target_compatible_with = [
+            "@bazel_tools//platforms:osx",
+            "@bazel_tools//platforms:x86_64",
+        ],
+        toolchain = "@%s_darwin_x86_64//:nodejs" % repo_name,
+        toolchain_type = ":%s.toolchain_type" % name,
+        visibility = visibility,
+    )
+
+    native.toolchain(
+        name = "%s.linux_x86_64_toolchain" % name,
+        target_compatible_with = [
+            "@bazel_tools//platforms:linux",
+            "@bazel_tools//platforms:x86_64",
+        ],
+        toolchain = "@%s_linux_x86_64//:nodejs" % repo_name,
+        toolchain_type = ":%s.toolchain_type" % name,
+        visibility = visibility,
+    )
+
+    native.toolchain(
+        name = "%s.windows_x86_64_toolchain" % name,
+        target_compatible_with = [
+            "@bazel_tools//platforms:windows",
+            "@bazel_tools//platforms:x86_64",
+        ],
+        toolchain = "@%s_windows_x86_64//:nodejs" % repo_name,
+        toolchain_type = ":%s.toolchain_type" % name,
+        visibility = visibility,
+    )
+
+    nodejs_runtime_rule(
+        name = name,
+        visibility = visibility,
+    )
+
+def _nodejs_impl(ctx):
+    nodejs_runtime = ctx.attr.runtime[NodejsRuntimeInfo]
+    options = ctx.attr.options
+
+    nodejs_info = NodejsInfo(
+        bin = nodejs_runtime.bin,
+        options = options,
+    )
+
+    return [nodejs_info]
+
+nodejs = rule(
+    attrs = {
+        "runtime": attr.label(
+            mandatory = True,
+            providers = [NodejsRuntimeInfo],
+        ),
+        "options": attr.string_list(),
+    },
+    implementation = _nodejs_impl,
+    provides = [NodejsInfo],
+)
+
+def _nodejs_toolchain_impl(ctx):
+    bin = ctx.file.bin
+
+    toolchain_info = platform_common.ToolchainInfo(
+        bin = bin,
+    )
+    return [toolchain_info]
+
+nodejs_toolchain = rule(
+    implementation = _nodejs_toolchain_impl,
+    attrs = {
+        "bin": attr.label(
+            doc = "Node.js executable",
+            allow_single_file = True,
+            mandatory = True,
+        ),
+    },
+    provides = [platform_common.ToolchainInfo],
+)
 
 def _nodejs_simple_binary_implementation(ctx):
     actions = ctx.actions
-    nodejs_toolchain = ctx.toolchains["@better_rules_javascript//nodejs:toolchain_type"]
+    node = ctx.attr.node[NodejsInfo]
+    node_options = node.options + ctx.attr.node_options
     path = ctx.attr.path
     src = ctx.file.src
 
@@ -19,14 +104,15 @@ def _nodejs_simple_binary_implementation(ctx):
         template = ctx.file._runner,
         output = bin,
         substitutions = {
-            "%{module}": shell.quote(module),
-            "%{node}": shell.quote(runfile_path(ctx.workspace_name, nodejs_toolchain.nodejs.bin)),
             "%{example}": ctx.file.src.short_path,
+            "%{module}": shell.quote(module),
+            "%{node}": shell.quote(runfile_path(ctx.workspace_name, node.bin)),
+            "%{node_options}": " ".join([shell.quote(option) for option in node_options]),
         },
         is_executable = True,
     )
 
-    runfiles = ctx.files._bash_runfiles + [ctx.file.src, nodejs_toolchain.nodejs.bin]
+    runfiles = ctx.files._bash_runfiles + [ctx.file.src, node.bin]
     default_info = DefaultInfo(executable = bin, runfiles = ctx.runfiles(runfiles))
 
     return default_info
@@ -34,6 +120,11 @@ def _nodejs_simple_binary_implementation(ctx):
 nodejs_simple_binary = rule(
     attrs = {
         "src": attr.label(mandatory = True, allow_single_file = True, doc = "Source file"),
+        "node": attr.label(
+            mandatory = True,
+            providers = [NodejsInfo],
+        ),
+        "node_options": attr.string_list(),
         "path": attr.label(
             doc = "Path to file, if src is directory",
         ),
@@ -49,7 +140,6 @@ nodejs_simple_binary = rule(
     doc = "Node.js executable, from a single file.",
     executable = True,
     implementation = _nodejs_simple_binary_implementation,
-    toolchains = ["@better_rules_javascript//nodejs:toolchain_type"],
 )
 
 def _nodejs_binary_implementation(ctx):
@@ -63,15 +153,14 @@ def _nodejs_binary_implementation(ctx):
     module_linker_cjs = ctx.attr._module_linker[CjsInfo]
     module_linker_js = ctx.attr._module_linker[JsInfo]
     name = ctx.attr.name
-    node_options = ctx.attr.node_options
+    node = ctx.attr.node[NodejsInfo]
+    node_options = ctx.attr.node_options + node.options
     esm_linker_cjs = ctx.attr._esm_linker[CjsInfo]
     esm_linker_js = ctx.attr._esm_linker[JsInfo]
     runner = ctx.file._runner
     runtime_cjs = ctx.attr._runtime[CjsInfo]
     runtime_js = ctx.attr._runtime[JsInfo]
     workspace_name = ctx.workspace_name
-
-    nodejs_toolchain = ctx.toolchains["@better_rules_javascript//nodejs:toolchain_type"]
 
     transitive_packages = depset(transitive = [dep.transitive_packages for dep in cjs_deps])
 
@@ -98,7 +187,7 @@ def _nodejs_binary_implementation(ctx):
             "%{env}": " ".join(["%s=%s" % (name, shell.quote(value)) for name, value in env.items()]),
             "%{esm_loader}": shell.quote("%s/dist/bundle.js" % runfile_path(workspace_name, esm_linker_cjs.package)),
             "%{main_module}": shell.quote(main_module),
-            "%{node}": shell.quote(runfile_path(workspace_name, nodejs_toolchain.nodejs.bin)),
+            "%{node}": shell.quote(runfile_path(workspace_name, node.bin)),
             "%{node_options}": " ".join([shell.quote(option) for option in node_options]),
             "%{package_manifest}": shell.quote(runfile_path(workspace_name, package_manifest)),
             "%{module_linker}": shell.quote("%s/dist/bundle.js" % runfile_path(workspace_name, module_linker_cjs.package)),
@@ -115,11 +204,7 @@ def _nodejs_binary_implementation(ctx):
     )
 
     runfiles = ctx.runfiles(
-        files =
-            [
-                nodejs_toolchain.nodejs.bin,
-                package_manifest,
-            ],
+        files = [node.bin, package_manifest],
         transitive_files = depset(transitive = [esm_linker_js.transitive_files, module_linker_js.transitive_files, runtime_js.transitive_files]),
         root_symlinks = symlinks,
     )
@@ -161,6 +246,10 @@ nodejs_binary = rule(
         "main": attr.string(
             mandatory = True,
         ),
+        "node": attr.label(
+            mandatory = True,
+            providers = [NodejsInfo],
+        ),
         "node_options": attr.string_list(
             doc = "Node.js options",
         ),
@@ -192,7 +281,6 @@ nodejs_binary = rule(
     doc = "Node.js binary",
     executable = True,
     implementation = _nodejs_binary_implementation,
-    toolchains = ["@better_rules_javascript//nodejs:toolchain_type"],
 )
 
 def _archive_files(packages, files, workspace_name, links = []):

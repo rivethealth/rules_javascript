@@ -56,6 +56,7 @@ ts_library(
 nodejs_simple_binary(
     name = "bin",
     src = "dist/bundle.js",
+    node = "//rules:nodejs",
 )
 
 configure_rollup(

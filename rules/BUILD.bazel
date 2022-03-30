@@ -1,9 +1,11 @@
 load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
 load("//commonjs:rules.bzl", "cjs_root")
 load("//javascript:rules.bzl", "js_library")
+load("//nodejs:rules.bzl", "configure_nodejs_runtime", "nodejs")
 load("//npm:rules.bzl", "yarn_resolve")
 load("//ts-proto:rules.bzl", "configure_ts_protoc")
 load("//typescript:rules.bzl", "configure_ts_compiler")
+load(":rules.bzl", "nodejs_runtime")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -28,6 +30,18 @@ js_library(
     name = "tsconfig",
     srcs = ["tsconfig.common.json"],
     root = ":root",
+)
+
+configure_nodejs_runtime(
+    name = "nodejs_runtime",
+    nodejs_runtime_rule = nodejs_runtime,
+    repo_name = "better_rules_javascript_nodejs",
+)
+
+nodejs(
+    name = "nodejs",
+    options = ["--enable-source-maps"],
+    runtime = ":nodejs_runtime",
 )
 
 configure_ts_compiler(

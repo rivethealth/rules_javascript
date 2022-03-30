@@ -33,4 +33,5 @@ nodejs_binary(
     name = "bin",
     dep = ":lib",
     main = "lib/main.js",
+    node = "@better_rules_javascript//rules:nodejs",
 )

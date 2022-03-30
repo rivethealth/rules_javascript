@@ -36,4 +36,5 @@ nodejs_binary(
     name = "bin",
     dep = ":lib",
     main = "src/main.js",
+    node = "//rules:nodejs",
 )

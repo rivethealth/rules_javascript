@@ -21,5 +21,6 @@ if ! [ -z "${BUILD_WORKING_DIRECTORY:-}" ]; then
 fi
 
 exec "$(rlocation %{node})" \
+  %{node_options} \
   "$(rlocation %{module})" \
   "$@"

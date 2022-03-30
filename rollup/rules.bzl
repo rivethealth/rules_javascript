@@ -61,6 +61,7 @@ def configure_rollup(name, dep, config, config_dep, visibility = None):
     nodejs_binary(
         name = "%s.bin" % name,
         main = "dist/bin/rollup",
+        node = "@better_rules_javascript//rules:nodejs",
         dep = ":%s.main" % name,
         visibility = ["//visibility:private"],
     )

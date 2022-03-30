@@ -108,6 +108,7 @@ def configure_webpack(name, cli, webpack, dev_server, config, config_dep, node_o
 
     nodejs_binary(
         main = "bin/cli.js",
+        node = "@better_rules_javascript//rules:nodejs",
         name = "%s.bin" % name,
         dep = ":%s.main" % name,
         node_options = node_options,
@@ -124,6 +125,7 @@ def configure_webpack(name, cli, webpack, dev_server, config, config_dep, node_o
         name = "%s.server_bin" % name,
         node_options = node_options,
         main = "src/main.js",
+        node = "@better_rules_javascript//rules:nodejs",
         dep = ":%s.server_main" % name,
         visibility = ["//visibility:private"],
     )

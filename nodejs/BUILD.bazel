@@ -34,35 +34,3 @@ bzl_library(
         "@bazel_skylib//lib:shell",
     ],
 )
-
-toolchain_type(name = "toolchain_type")
-
-toolchain(
-    name = "nodejs_darwin_x86_64_toolchain",
-    target_compatible_with = [
-        "@bazel_tools//platforms:osx",
-        "@bazel_tools//platforms:x86_64",
-    ],
-    toolchain = "@nodejs_darwin_x86_64//:nodejs",
-    toolchain_type = ":toolchain_type",
-)
-
-toolchain(
-    name = "nodejs_linux_x86_64_toolchain",
-    target_compatible_with = [
-        "@bazel_tools//platforms:linux",
-        "@bazel_tools//platforms:x86_64",
-    ],
-    toolchain = "@nodejs_linux_x86_64//:nodejs",
-    toolchain_type = ":toolchain_type",
-)
-
-toolchain(
-    name = "nodejs_windows_x86_64_toolchain",
-    target_compatible_with = [
-        "@bazel_tools//platforms:windows",
-        "@bazel_tools//platforms:x86_64",
-    ],
-    toolchain = "@nodejs_windows_x86_64//:nodejs",
-    toolchain_type = ":toolchain_type",
-)

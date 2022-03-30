@@ -60,6 +60,7 @@ nodejs_binary(
     name = "bin",
     dep = ":dist_lib",
     main = "dist/bundle.js",
+    node = "//rules:nodejs",
 )
 
 js_library(

@@ -40,5 +40,5 @@ nodejs_binary(
     data = ["//npm:yarn"],
     dep = ":lib",
     main = "src/main.js",
-    node_options = ["--enable-source-maps"],
+    node = "//rules:nodejs",
 )

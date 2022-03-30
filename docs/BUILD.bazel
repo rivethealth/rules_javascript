@@ -42,4 +42,5 @@ nodejs_binary(
     name = "doctoc",
     dep = "@npm//doctoc:lib",
     main = "doctoc.js",
+    node = "//rules:nodejs",
 )

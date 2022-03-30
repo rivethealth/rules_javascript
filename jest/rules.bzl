@@ -1,6 +1,6 @@
 load("@bazel_skylib//lib:shell.bzl", "shell")
 load("//commonjs:providers.bzl", "CjsInfo", "create_link", "create_package", "gen_manifest")
-load("//nodejs:providers.bzl", "NODE_MODULES_PREFIX", "modules_links", "package_path_name")
+load("//nodejs:providers.bzl", "NODE_MODULES_PREFIX", "NodejsInfo", "modules_links", "package_path_name")
 load("//nodejs:rules.bzl", "nodejs_binary")
 load("//javascript:providers.bzl", "JsInfo")
 load("//javascript:rules.bzl", "js_export")
@@ -32,8 +32,8 @@ def _jest_test_impl(ctx):
     module_linker_cjs = ctx.attr._module_linker[CjsInfo]
     module_linker_js = ctx.attr._module_linker[JsInfo]
     name = ctx.attr.name
-    node_options = ctx.attr.node_options
-    nodejs_toolchain = ctx.toolchains["@better_rules_javascript//nodejs:toolchain_type"]
+    nodejs = ctx.attr.nodejs[NodejsInfo]
+    node_options = nodejs.options + ctx.attr.node_options
     cjs_info = ctx.attr.jest[0][CjsInfo]
     js_info = ctx.attr.jest[0][JsInfo]
     cjs_dep = ctx.attr.dep[0][CjsInfo]
@@ -71,7 +71,7 @@ def _jest_test_impl(ctx):
             "%{env}": " ".join(["%s=%s" % (name, shell.quote(value)) for name, value in env.items()]),
             "%{fs_linker}": shell.quote("%s/dist/bundle.js" % runfile_path(workspace_name, fs_linker_cjs.package)),
             "%{main_module}": shell.quote(main_module),
-            "%{node}": shell.quote(runfile_path(workspace_name, nodejs_toolchain.nodejs.bin)),
+            "%{node}": shell.quote(runfile_path(workspace_name, nodejs.bin)),
             "%{node_options}": " ".join([shell.quote(option) for option in node_options]),
             "%{package_manifest}": shell.quote(runfile_path(ctx.workspace_name, package_manifest)),
             "%{module_linker}": shell.quote("%s/dist/bundle.js" % runfile_path(workspace_name, module_linker_cjs.package)),
@@ -131,6 +131,10 @@ jest_test = rule(
             mandatory = True,
             providers = [CjsInfo, JsInfo],
         ),
+        "node": attr.label(
+            mandatory = True,
+            providers = [NodejsInfo],
+        ),
         "node_options": attr.string_list(
             doc = "Node.js options.",
         ),
@@ -162,5 +166,4 @@ jest_test = rule(
     },
     implementation = _jest_test_impl,
     test = True,
-    toolchains = ["@better_rules_javascript//nodejs:toolchain_type"],
 )

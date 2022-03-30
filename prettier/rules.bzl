@@ -68,6 +68,7 @@ def configure_prettier(name, dep, config, config_dep, plugins = [], visibility =
     nodejs_binary(
         main = "src/index.js",
         name = "%s.bin" % name,
+        node = "@better_rules_javascript//rules:nodejs",
         dep = ":%s.main" % name,
         visibility = ["//visibility:private"],
     )

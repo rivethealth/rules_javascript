@@ -27,4 +27,5 @@ nodejs_binary(
     name = "bin",
     dep = ":example",
     main = "example.js",
+    node = "@better_rules_javascript//rules:nodejs",
 )
