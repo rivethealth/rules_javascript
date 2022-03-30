@@ -301,7 +301,7 @@ def _ts_library_impl(ctx):
     )
 
     cjs_info = create_cjs_info(
-        files = declarations,
+        files = declarations + js,
         label = label,
         cjs_root = cjs_root,
         deps = cjs_deps,
