@@ -1,0 +1,26 @@
+load("@better_rules_javascript//commonjs:rules.bzl", "cjs_root")
+load("@better_rules_javascript//nodejs:rules.bzl", "nodejs_binary")
+load("@better_rules_javascript//typescript:rules.bzl", "ts_library")
+
+cjs_root(
+    name = "root",
+    package_name = "example",
+    descriptors = ["package.json"],
+)
+
+ts_library(
+    name = "lib",
+    srcs = [
+        "example.ts",
+        "lib.ts",
+    ],
+    compiler = "//:ts",
+    root = ":root",
+)
+
+nodejs_binary(
+    name = "bin",
+    dep = ":lib",
+    main = "example.js",
+    node_options = ["--enable-source-maps"],
+)

@@ -67,6 +67,7 @@ def _angular_library(ctx):
     module = _module(ctx.attr._module[BuildSettingInfo].value)
     name = ctx.attr.name
     output_ = output(ctx.label, actions)
+    source_map = ctx.attr._source_map[BuildSettingInfo].value
     src_prefix = ctx.attr.src_prefix
     strip_prefix = ctx.attr.strip_prefix
     ts_deps = compiler.ts_deps + [dep[TsInfo] for dep in ctx.attr.deps if TsInfo in dep]
@@ -81,7 +82,6 @@ def _angular_library(ctx):
     declarations = []
     inputs = []
     js = []
-    js_srcs = []
     outputs = []
 
     # resource
@@ -102,7 +102,6 @@ def _angular_library(ctx):
                     output = resource,
                     target_file = file,
                 )
-            js_srcs.append(resource)
             inputs.append(resource)
         else:
             js_path_ = output_name(
@@ -137,6 +136,7 @@ def _angular_library(ctx):
             args.add("--config", "%s/%s" % (tsconfig_dep.package.path, tsconfig_path))
         args.add("--empty", "true")
         args.add("--module", module)
+        args.add("--source-map", json.encode(source_map))
         args.add("--out-dir", "%s/%s" % (output_.path, js_prefix) if js_prefix else output_.path)
         args.add("--root-dir", "%s/%s" % (output_.path, src_prefix) if src_prefix else output_.path)
         args.add(transpile_tsconfig)
@@ -163,22 +163,6 @@ def _angular_library(ctx):
             packages = transpile_cjs_info.transitive_packages,
         )
 
-        # JS tsconfig
-        tsconfig = actions.declare_file("%s/tsconfig.json" % ctx.attr.name)
-        args = actions.args()
-        if tsconfig_path:
-            args.add("--config", "%s/%s" % (tsconfig_dep.package.path, tsconfig_path))
-        args.add("--module", module)
-        args.add("--out-dir", "%s/%s" % (output_.path, js_prefix) if js_prefix else output_.path)
-        args.add("--root-dir", "%s/%s" % (output_.path, src_prefix) if src_prefix else output_.path)
-        args.add(tsconfig)
-        actions.run(
-            arguments = [args],
-            executable = config.files_to_run.executable,
-            tools = [config.files_to_run],
-            outputs = [tsconfig],
-        )
-
     # transpile
     for file in ctx.files.srcs:
         path = output_name(
@@ -196,7 +180,6 @@ def _angular_library(ctx):
                 output = ts_,
             )
         inputs.append(ts_)
-        js_srcs.append(ts_)
 
         if not is_declaration(path):
             js_path_ = output_name(
@@ -228,16 +211,20 @@ def _angular_library(ctx):
             else:
                 js_ = actions.declare_file(js_path(js_path_))
                 js.append(js_)
-                map = actions.declare_file(map_path(js_path(js_path_)))
-                js_srcs.append(map)
+                if source_map:
+                    map = actions.declare_file(map_path(js_path(js_path_)))
                 declaration = actions.declare_file(declaration_path(declaration_path_))
                 declarations.append(declaration)
                 outputs.append(declaration)
 
                 if compilation_mode == "opt":
                     outputs.append(js_)
-                    outputs.append(map)
+                    if source_map:
+                        outputs.append(map)
                 else:
+                    js_outputs = [js_]
+                    if source_map:
+                        js_outputs.append(map)
                     args = actions.args()
                     args.add("--config", transpile_tsconfig)
                     args.add("--manifest", transpile_package_manifest)
@@ -253,7 +240,7 @@ def _angular_library(ctx):
                             transitive = [js_info.transitive_files for js_info in compiler.js_deps] + [tsconfig_js.transitive_files] if tsconfig_js else [],
                         ),
                         mnemonic = "TypeScriptTranspile",
-                        outputs = [js_, map],
+                        outputs = js_outputs,
                         tools = [compiler.js_compiler.files_to_run],
                     )
 
@@ -268,6 +255,8 @@ def _angular_library(ctx):
         args.add("--declaration-dir", "%s/%s" % (output_.path, declaration_prefix) if declaration_prefix else output_.path)
         args.add("--module", module)
         args.add("--root-dir", "%s/%s" % (output_.path, src_prefix) if src_prefix else output_.path)
+        if compilation_mode == "opt":
+            args.add("--source-map", json.encode(source_map))
         args.add("--type-root", "%s/node_modules/@types" % cjs_root.package.path)
         args.add(tsconfig)
         actions.run(
@@ -365,24 +354,6 @@ def _angular_library(ctx):
 angular_library = rule(
     implementation = _angular_library,
     attrs = {
-        "_config": attr.label(
-            cfg = "exec",
-            executable = True,
-            default = "//typescript/config:bin",
-        ),
-        "_fs_linker": attr.label(
-            default = "//nodejs/fs-linker:dist_lib",
-            providers = [CjsInfo, JsInfo],
-        ),
-        "_manifest": attr.label(
-            cfg = "exec",
-            executable = True,
-            default = "//commonjs/manifest:bin",
-        ),
-        "_module": attr.label(
-            default = "//javascript:module",
-            providers = [BuildSettingInfo],
-        ),
         "compiler": attr.label(
             doc = "Angular compiler.",
             mandatory = True,
@@ -425,6 +396,28 @@ angular_library = rule(
             allow_files = True,
             mandatory = True,
             doc = "TypeScript sources.",
+        ),
+        "_config": attr.label(
+            cfg = "exec",
+            executable = True,
+            default = "//typescript/config:bin",
+        ),
+        "_fs_linker": attr.label(
+            default = "//nodejs/fs-linker:dist_lib",
+            providers = [CjsInfo, JsInfo],
+        ),
+        "_manifest": attr.label(
+            cfg = "exec",
+            executable = True,
+            default = "//commonjs/manifest:bin",
+        ),
+        "_module": attr.label(
+            default = "//javascript:module",
+            providers = [BuildSettingInfo],
+        ),
+        "_source_map": attr.label(
+            default = "//javascript:source_map",
+            providers = [BuildSettingInfo],
         ),
     },
     provides = [CjsInfo, JsInfo, TsInfo],

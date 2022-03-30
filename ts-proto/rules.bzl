@@ -82,6 +82,7 @@ def _ts_proto_libraries_impl(ctx):
     module_ = ctx.attr.module or module(ctx.attr._module[BuildSettingInfo].value)
     output_ = output(ctx.label, actions)
     prefix = ctx.attr.prefix
+    source_map = ctx.attr._source_map[BuildSettingInfo].value
     src_prefix = ctx.attr.src_prefix
     ts_proto = ctx.attr._ts_protoc[TsProtobuf]
     tsconfig_proto = ctx.file._tsconfig
@@ -95,6 +96,7 @@ def _ts_proto_libraries_impl(ctx):
     args.add("--module", module_)
     args.add("--out-dir", "%s/%s" % (output_.path, js_prefix) if js_prefix else output_.path)
     args.add("--root-dir", "%s/%s" % (output_.path, src_prefix) if src_prefix else output_.path)
+    args.add("--source-map", json.encode(source_map))
     args.add("--target", target_)
     args.add(transpile_tsconfig)
     actions.run(
@@ -165,6 +167,8 @@ def _ts_proto_libraries_impl(ctx):
         ts = []
         declarations = []
         for file in lib.files:
+            js_outputs = []
+
             path = file.path[len(lib.path + "/"):]
             if src_prefix:
                 path = "%s/%s" % (src_prefix, path)
@@ -177,8 +181,11 @@ def _ts_proto_libraries_impl(ctx):
                 path = "%s/%s" % (js_prefix, path)
             js_ = actions.declare_file(js_path(path))
             js.append(js_)
-            map = actions.declare_file(map_path(js_path(path)))
-            js.append(map)
+            js_outputs.append(js_)
+            if source_map:
+                map = actions.declare_file(map_path(js_path(path)))
+                js.append(map)
+                js_outputs.append(map)
 
             path = file.path[len(lib.path + "/"):]
             if declaration_prefix:
@@ -199,7 +206,7 @@ def _ts_proto_libraries_impl(ctx):
                 inputs = [ts_, transpile_package_manifest, transpile_tsconfig, tsconfig_proto],
                 progress_message = "Transpiling %s to JavaScript" % file.path,
                 mnemonic = "TypeScriptTranspile",
-                outputs = [js_, map],
+                outputs = js_outputs,
                 tools = [ts_proto.tsc.transpile_bin.files_to_run],
             )
 
@@ -301,6 +308,10 @@ def ts_proto_libraries_rule(aspect, compiler):
             ),
             "_module": attr.label(
                 default = "//javascript:module",
+                providers = [BuildSettingInfo],
+            ),
+            "_source_map": attr.label(
+                default = "//javascript:source_map",
                 providers = [BuildSettingInfo],
             ),
             "_tsconfig": attr.label(

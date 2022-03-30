@@ -112,11 +112,13 @@ async function transpileFile(src: string, options: ts.CompilerOptions) {
 
   await fs.promises.mkdir(path.dirname(outputPath), { recursive: true });
   await fs.promises.writeFile(outputPath, result.outputText, "utf8");
-  await fs.promises.writeFile(
-    `${outputPath}.map`,
-    result.sourceMapText,
-    "utf8",
-  );
+  if (result.sourceMapText !== undefined) {
+    await fs.promises.writeFile(
+      `${outputPath}.map`,
+      result.sourceMapText,
+      "utf8",
+    );
+  }
 }
 
 function outputName(path: string): string | undefined {

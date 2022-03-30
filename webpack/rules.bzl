@@ -1,4 +1,5 @@
 load("@bazel_skylib//lib:shell.bzl", "shell")
+load("@bazel_skylib//rules:common_settings.bzl", "BuildSettingInfo")
 load("@rivet_bazel_util//bazel:providers.bzl", "create_digest")
 load("//commonjs:providers.bzl", "CjsInfo", "create_cjs_info", "gen_manifest", "package_path")
 load("//javascript:providers.bzl", "JsInfo", "create_js_info")
@@ -149,6 +150,7 @@ def _webpack_bundle_impl(ctx):
     actions = ctx.actions
     config = ctx.attr._config[CjsInfo]
     compilation_mode = ctx.var["COMPILATION_MODE"]
+    source_map = ctx.attr._source_map[BuildSettingInfo].value
     dep_js = ctx.attr.dep[0][JsInfo]
     dep_cjs = ctx.attr.dep[0][CjsInfo]
     cjs_root = ctx.attr.root[CjsInfo]
@@ -178,6 +180,7 @@ def _webpack_bundle_impl(ctx):
     actions.run(
         env = {
             "COMPILATION_MODE": compilation_mode,
+            "JS_SOURCE_MAP": json.encode(source_map),
             "NODE_FS_PACKAGE_MANIFEST": package_manifest.path,
             "NODE_OPTIONS_APPEND": "-r ./%s/dist/bundle.js -r ./%s" % (fs_linker_cjs.package.path, ctx.file._skip_package_check.path),
             "WEBPACK_CONFIG": "%s/%s" % (NODE_MODULES_PREFIX, webpack.config_path),
@@ -224,6 +227,10 @@ webpack_bundle = rule(
             allow_single_file = True,
             default = "//webpack:skip_package_check",
         ),
+        "_source_map": attr.label(
+            default = "//javascript:source_map",
+            providers = [BuildSettingInfo],
+        ),
         "dep": attr.label(
             cfg = _webpack_transition,
             doc = "JavaScript dependencies",
@@ -255,6 +262,7 @@ def _webpack_server_impl(ctx):
     hash = ctx.attr._hash[DefaultInfo]
     label = ctx.label
     skip_package_check = ctx.file._skip_package_check
+    source_map = ctx.attr._source_map[BuildSettingInfo].value
     webpack = ctx.split_attr.webpack["tool"][WebpackInfo]
     webpack_client = ctx.split_attr.webpack["browser"][WebpackInfo]
     dep_js = ctx.attr.dep[0][JsInfo]
@@ -291,6 +299,7 @@ def _webpack_server_impl(ctx):
             "%{config}": "%s/%s" % (NODE_MODULES_PREFIX, webpack.config_path),
             "%{input_root}": shell.quote("%s/%s" % (WEBPACK_MODULES_PREFIX, package_path_name(workspace_name, dep_cjs.package.short_path))),
             "%{output}": "/tmp/bundle.js",
+            "%{js_source_map}": shell.quote(json.encode(source_map)),
             "%{skip_package_check}": runfile_path(ctx.workspace_name, skip_package_check),
             "%{package_manifest}": shell.quote(runfile_path(ctx.workspace_name, package_manifest)),
         },
@@ -338,6 +347,20 @@ def _webpack_server_impl(ctx):
 
 webpack_server = rule(
     attrs = {
+        "dep": attr.label(
+            cfg = _webpack_transition,
+            doc = "JavaScript dependencies",
+            mandatory = True,
+            providers = [JsInfo],
+        ),
+        "language": attr.string(),
+        "module": attr.string(),
+        "webpack": attr.label(
+            cfg = _webpack_tool_transition,
+            doc = "Webpack tools",
+            mandatory = True,
+            providers = [WebpackInfo],
+        ),
         "_allowlist_function_transition": attr.label(
             default = "@bazel_tools//tools/allowlists/function_transition_allowlist",
         ),
@@ -359,19 +382,9 @@ webpack_server = rule(
             allow_single_file = True,
             default = "//webpack:server_runner",
         ),
-        "dep": attr.label(
-            cfg = _webpack_transition,
-            doc = "JavaScript dependencies",
-            mandatory = True,
-            providers = [JsInfo],
-        ),
-        "language": attr.string(),
-        "module": attr.string(),
-        "webpack": attr.label(
-            cfg = _webpack_tool_transition,
-            doc = "Webpack tools",
-            mandatory = True,
-            providers = [WebpackInfo],
+        "_source_map": attr.label(
+            default = "//javascript:source_map",
+            providers = [BuildSettingInfo],
         ),
     },
     executable = True,
