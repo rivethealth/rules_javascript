@@ -33,4 +33,5 @@ jest_test(
     dep = ":test_lib",
     jest = "@npm//jest:lib",
     shard_count = 2,
+    node = "@better_rules_javascript//rules:nodejs",
 )

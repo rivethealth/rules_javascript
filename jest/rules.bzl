@@ -32,8 +32,8 @@ def _jest_test_impl(ctx):
     module_linker_cjs = ctx.attr._module_linker[CjsInfo]
     module_linker_js = ctx.attr._module_linker[JsInfo]
     name = ctx.attr.name
-    nodejs = ctx.attr.nodejs[NodejsInfo]
-    node_options = nodejs.options + ctx.attr.node_options
+    node = ctx.attr.node[NodejsInfo]
+    node_options = node.options + ctx.attr.node_options
     cjs_info = ctx.attr.jest[0][CjsInfo]
     js_info = ctx.attr.jest[0][JsInfo]
     cjs_dep = ctx.attr.dep[0][CjsInfo]
@@ -71,7 +71,7 @@ def _jest_test_impl(ctx):
             "%{env}": " ".join(["%s=%s" % (name, shell.quote(value)) for name, value in env.items()]),
             "%{fs_linker}": shell.quote("%s/dist/bundle.js" % runfile_path(workspace_name, fs_linker_cjs.package)),
             "%{main_module}": shell.quote(main_module),
-            "%{node}": shell.quote(runfile_path(workspace_name, nodejs.bin)),
+            "%{node}": shell.quote(runfile_path(workspace_name, node.bin)),
             "%{node_options}": " ".join([shell.quote(option) for option in node_options]),
             "%{package_manifest}": shell.quote(runfile_path(ctx.workspace_name, package_manifest)),
             "%{module_linker}": shell.quote("%s/dist/bundle.js" % runfile_path(workspace_name, module_linker_cjs.package)),
@@ -82,7 +82,7 @@ def _jest_test_impl(ctx):
     )
 
     runfiles = ctx.runfiles(
-        files = [nodejs_toolchain.nodejs.bin, package_manifest] + data,
+        files = [node.bin, package_manifest] + data,
         transitive_files = depset(transitive = [fs_linker_js.transitive_files, module_linker_js.transitive_files]),
         root_symlinks = modules_links(
             files = depset(transitive = [js_info_.transitive_files for js_info_ in js_deps]).to_list(),
