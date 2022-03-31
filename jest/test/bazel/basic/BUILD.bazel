@@ -17,8 +17,8 @@ jest_test(
     name = "test_fail",
     config = "jest.config.js",
     config_dep = ":jest_config",
-    jest = "@npm//jest:lib",
     dep = ":test_fail_lib",
+    jest = "@npm//jest:lib",
     node = "@better_rules_javascript//rules:nodejs",
 )
 

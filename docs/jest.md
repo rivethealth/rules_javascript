@@ -14,6 +14,13 @@ Jest tests JavaScript.
 
 Add jest as an [external dependency](#external_dependencies).
 
+## Options
+
+By default, Jest uses `-i --no-cache`. Add options via test arguments or via the
+`JEST_OPTIONS` environment variable.
+
+Sharding support requires Jest v28.
+
 ## Use
 
 **example/example.js**
@@ -69,6 +76,7 @@ jest_test(
     config_dep = ":jest_config",
     dep = ":test_lib",
     jest = "@npm//jest:lib",
+    node = "@better_rules_javascript//rules:nodejs",
 )
 
 js_library(

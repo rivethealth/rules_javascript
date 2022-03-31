@@ -1810,10 +1810,8 @@ function addDep(root, name, path) {
         path,
     });
 }
-function createVfs(packageTree, runfiles) {
-    const resolve = (path_) => runfiles
-        ? path__namespace.resolve(process.env.RUNFILES_DIR, path_)
-        : path__namespace.resolve(path_);
+function createVfs(packageTree, base) {
+    const resolve = (path_) => base === undefined ? path__namespace.resolve(path_) : path__namespace.resolve(base, path_);
     const root = {
         type: VfsNode.PATH,
         hardenSymlinks: false,
@@ -1901,7 +1899,7 @@ class JsWorker {
     }
     async setupVfs(manifest) {
         const packageTree = JsonFormat.parse(PackageTree.json(), await fs__namespace.promises.readFile(manifest, "utf8"));
-        const vfs = createVfs(packageTree, false);
+        const vfs = createVfs(packageTree, undefined);
         this.vfs.delegate = vfs;
     }
     async run(a) {

@@ -57,7 +57,7 @@ export class AngularWorker {
       PackageTree.json(),
       await fs.promises.readFile(manifest, "utf8"),
     );
-    const vfs = createVfs(packageTree, false);
+    const vfs = createVfs(packageTree, undefined);
     this.vfs.delegate = vfs;
   }
 

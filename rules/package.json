@@ -7,8 +7,6 @@
     "argparse": "~2.0.1",
     "enhanced-resolve": "~5.8.0",
     "eslint": "~8.3.0",
-    "jest-haste-map": "~27.4.0",
-    "jest-junit": "~13.0.0",
     "long": "~4.0.0",
     "node-fetch": "^2.0.0",
     "protobufjs": "~6.11.2",

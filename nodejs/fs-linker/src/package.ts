@@ -48,12 +48,10 @@ function addDep(root: VfsNode.Path, name: string, path: string) {
 
 export function createVfs(
   packageTree: PackageTree,
-  runfiles: boolean,
+  base: string | undefined,
 ): VfsImpl {
   const resolve = (path_: string) =>
-    runfiles
-      ? path.resolve(process.env.RUNFILES_DIR, path_)
-      : path.resolve(path_);
+    base === undefined ? path.resolve(path_) : path.resolve(base, path_);
 
   const root: VfsNode = {
     type: VfsNode.PATH,

@@ -1268,10 +1268,8 @@ function addDep(root, name, path) {
         path,
     });
 }
-function createVfs(packageTree, runfiles) {
-    const resolve = (path_) => runfiles
-        ? path__namespace.resolve(process.env.RUNFILES_DIR, path_)
-        : path__namespace.resolve(path_);
+function createVfs(packageTree, base) {
+    const resolve = (path_) => base === undefined ? path__namespace.resolve(path_) : path__namespace.resolve(base, path_);
     const root = {
         type: VfsNode.PATH,
         hardenSymlinks: false,
@@ -1318,7 +1316,7 @@ if (!manifestPath) {
     throw new Error("NODE_FS_PACKAGE_MANIFEST is not set");
 }
 const packageTree = JsonFormat.parse(PackageTree.json(), fs__namespace.readFileSync(manifestPath, "utf8"));
-const vfs = createVfs(packageTree, process.env.NODE_FS_RUNFILES === "true");
+const vfs = createVfs(packageTree, process.env.NODE_FS_RUNFILES === "true" ? process.env.RUNFILES_DIR : undefined);
 if (process.env.NODE_FS_TRACE === "true") {
     process.stderr.write(vfs.print());
 }

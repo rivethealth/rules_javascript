@@ -15,7 +15,12 @@ const packageTree = JsonFormat.parse(
   fs.readFileSync(manifestPath, "utf8"),
 );
 
-const vfs = createVfs(packageTree, process.env.NODE_FS_RUNFILES === "true");
+const vfs = createVfs(
+  packageTree,
+  process.env.NODE_FS_RUNFILES === "true"
+    ? process.env.RUNFILES_DIR
+    : undefined,
+);
 if (process.env.NODE_FS_TRACE === "true") {
   process.stderr.write(vfs.print());
 }

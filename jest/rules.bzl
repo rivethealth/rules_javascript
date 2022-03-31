@@ -75,7 +75,6 @@ def _jest_test_impl(ctx):
             "%{node_options}": " ".join([shell.quote(option) for option in node_options]),
             "%{package_manifest}": shell.quote(runfile_path(ctx.workspace_name, package_manifest)),
             "%{module_linker}": shell.quote("%s/dist/bundle.js" % runfile_path(workspace_name, module_linker_cjs.package)),
-            "%{root}": shell.quote(runfile_path(workspace_name, cjs_dep.package)),
             "%{workspace}": shell.quote(workspace_name),
         },
         template = ctx.file._runner,

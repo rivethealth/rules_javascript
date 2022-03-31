@@ -13,13 +13,22 @@ if [ -z "${RUNFILES_DIR-}" ]; then
 fi
 
 export JEST_CONFIG="$RUNFILES_DIR"/%{config}
-export JEST_ROOT=%{root}
 export NODE_PACKAGE_MANIFEST="$RUNFILES_DIR"/%{package_manifest}
 export NODE_FS_PACKAGE_MANIFEST="$RUNFILES_DIR"/%{package_manifest}
 export NODE_FS_RUNFILES=true
 
-args=("$@")
+args=()
 
+# sharding
+if [ ! -z "${TEST_SHARD_INDEX-}" ] && [ ! -z "${TEST_TOTAL_SHARDS-}" ]; then
+  # use --passWithNoTests in case there are no tests in the shard
+  args+=(--passWithNoTests --shard="$(("$TEST_SHARD_INDEX"+1))"/"$TEST_TOTAL_SHARDS")
+fi
+
+# exta arguments
+args+=(${JEST_OPTIONS-} "$@")
+
+# test filter
 if [ ! -z "${TESTBRIDGE_TEST_ONLY-}" ]; then
   args+=("$TESTBRIDGE_TEST_ONLY")
 fi
@@ -32,8 +41,8 @@ fi
   --preserve-symlinks-main \
   %{node_options} \
   "$(realpath -s "$RUNFILES_DIR"/%{main_module})" \
+  -i \
   --config="$RUNFILES_DIR"/%{config_loader} \
   --no-cache \
   --no-watchman \
-  --runInBand \
   "${args[@]}"
