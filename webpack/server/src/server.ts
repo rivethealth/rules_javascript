@@ -18,7 +18,7 @@ function refreshPackageTree(vfs: WrapperVfs, webpackManifestPath: string) {
     PackageTree.json(),
     fs.readFileSync(webpackManifestPath, "utf8"),
   );
-  const vfsImpl = createVfs(packageTree, true);
+  const vfsImpl = createVfs(packageTree, process.env.RUNFILES_DIR);
   vfs.delegate = vfsImpl;
 }
 

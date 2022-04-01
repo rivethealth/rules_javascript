@@ -24,7 +24,7 @@ const packageTree = JsonFormat.parse(
   PackageTree.json(),
   fs.readFileSync(packageManifestPath, "utf8"),
 );
-const vfs = createVfs(packageTree, true);
+const vfs = createVfs(packageTree, process.env.RUNFILES_DIR);
 patchFs(vfs, require("fs"));
 patchFsPromises(vfs, require("fs").promises);
 
