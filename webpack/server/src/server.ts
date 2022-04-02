@@ -60,6 +60,7 @@ const refresh = new Subject<undefined>();
 export async function startServer(
   vfs: WrapperVfs,
   webpackManifestPath: string,
+  digestPath: string,
 ) {
   const { default: configPromise } = await eval(
     'import("@better-rules-javascript/webpack-load-config")',
@@ -81,13 +82,22 @@ export async function startServer(
   await server.start();
 
   process.stdin.setEncoding("ascii");
+  let digest: Buffer | undefined;
   for await (const notification of readNotifications(<any>process.stdin)) {
     if (
-      notification.type === IbazelNotification.COMPLETED &&
-      notification.status === IbazelStatus.SUCCESS
+      notification.type !== IbazelNotification.COMPLETED ||
+      notification.status !== IbazelStatus.SUCCESS
     ) {
-      refreshPackageTree(vfs, webpackManifestPath);
-      refresh.next(undefined);
+      continue;
     }
+
+    const newDigest = await fs.promises.readFile(digestPath);
+    if (digest !== undefined && digest.equals(newDigest)) {
+      continue;
+    }
+    digest = newDigest;
+
+    refreshPackageTree(vfs, webpackManifestPath);
+    refresh.next(undefined);
   }
 }

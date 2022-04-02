@@ -8,12 +8,14 @@ import { patchFs } from "@better-rules-javascript/nodejs-fs-linker/fs";
 import { patchFsPromises } from "@better-rules-javascript/nodejs-fs-linker/fs-promises";
 
 interface Args {
+  digest: string;
   packagesManifest: string;
 }
 
 const packageManifestPath = process.env.NODE_PACKAGE_MANIFEST;
 
 const parser = new ArgumentParser({ prog: "webpack-server" });
+parser.add_argument("--digest", { required: true });
 parser.add_argument("--packages-manifest", {
   dest: "packagesManifest",
   required: true,
@@ -34,5 +36,5 @@ patchFsPromises(webpackVfs, require("fs").promises);
 
 (async () => {
   const { startServer } = await import("./server");
-  await startServer(webpackVfs, args.packagesManifest);
+  await startServer(webpackVfs, args.packagesManifest, args.digest);
 })();

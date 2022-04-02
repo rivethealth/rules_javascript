@@ -291,6 +291,18 @@ def _webpack_server_impl(ctx):
         package_path = package_path,
     )
 
+    js_info = JsInfo(
+        transitive_files = depset(transitive = [js_info.transitive_files for js_info in [dep_js] + webpack_client.client_js]),
+    )
+
+    src_digest = actions.declare_file("%s-src.digest" % name)
+    create_digest(
+        actions = actions,
+        hash = hash,
+        output = src_digest,
+        runfiles = ctx.runfiles(transitive_files = js_info.transitive_files),
+    )
+
     bin = actions.declare_file(name)
     actions.expand_template(
         template = ctx.file._runner,
@@ -299,11 +311,12 @@ def _webpack_server_impl(ctx):
             "%{bin}": shell.quote(runfile_path(ctx.workspace_name, webpack.server.files_to_run.executable)),
             "%{compilation_mode}": shell.quote(compilation_mode),
             "%{config}": "%s/%s" % (NODE_MODULES_PREFIX, webpack.config_path),
+            "%{digest}": shell.quote(runfile_path(workspace_name, src_digest)),
             "%{input_root}": shell.quote("%s/%s" % (WEBPACK_MODULES_PREFIX, package_path_name(workspace_name, dep_cjs.package.short_path))),
-            "%{output}": "/tmp/bundle.js",
             "%{js_source_map}": shell.quote(json.encode(source_map)),
-            "%{skip_package_check}": runfile_path(ctx.workspace_name, skip_package_check),
+            "%{output}": "/tmp/bundle.js",
             "%{package_manifest}": shell.quote(runfile_path(ctx.workspace_name, package_manifest)),
+            "%{skip_package_check}": runfile_path(ctx.workspace_name, skip_package_check),
         },
         is_executable = True,
     )
@@ -316,10 +329,6 @@ def _webpack_server_impl(ctx):
         output = digest,
     )
 
-    js_info = JsInfo(
-        transitive_files = depset(transitive = [js_info.transitive_files for js_info in [dep_js] + webpack_client.client_js]),
-    )
-
     symlinks = modules_links(
         prefix = WEBPACK_MODULES_PREFIX,
         packages = transitive_packages.to_list(),
@@ -329,8 +338,9 @@ def _webpack_server_impl(ctx):
 
     runfiles = ctx.runfiles(
         files = [
-            skip_package_check,
             package_manifest,
+            skip_package_check,
+            src_digest,
         ],
         root_symlinks = symlinks,
     )

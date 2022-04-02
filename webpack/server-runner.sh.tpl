@@ -19,4 +19,4 @@ export WEBPACK_CONFIG=%{config}
 export WEBPACK_INPUT_ROOT="$RUNFILES_DIR"/%{input_root}
 export WEBPACK_OUTPUT="$RUNFILES_DIR"/%{output}
 
-exec "$RUNFILES_DIR"/%{bin} --packages-manifest "$RUNFILES_DIR"/%{package_manifest}
+exec "$RUNFILES_DIR"/%{bin} --digest="$RUNFILES_DIR"/%{digest} --packages-manifest "$RUNFILES_DIR"/%{package_manifest}
