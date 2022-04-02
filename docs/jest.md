@@ -16,8 +16,7 @@ Add jest as an [external dependency](#external_dependencies).
 
 ## Options
 
-By default, Jest uses `-i --no-cache`. Add options via test arguments or via the
-`JEST_OPTIONS` environment variable.
+By default, Jest uses `-i --no-cache`. Add options via test arguments.
 
 Sharding support requires Jest v28.
 

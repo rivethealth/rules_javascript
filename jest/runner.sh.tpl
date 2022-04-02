@@ -25,8 +25,10 @@ if [ ! -z "${TEST_SHARD_INDEX-}" ] && [ ! -z "${TEST_TOTAL_SHARDS-}" ]; then
   args+=(--passWithNoTests --shard="$(("$TEST_SHARD_INDEX"+1))"/"$TEST_TOTAL_SHARDS")
 fi
 
+%{preamble}
+
 # exta arguments
-args+=(${JEST_OPTIONS-} "$@")
+args+=("$@")
 
 # test filter
 if [ ! -z "${TESTBRIDGE_TEST_ONLY-}" ]; then

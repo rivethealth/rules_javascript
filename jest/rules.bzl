@@ -17,6 +17,7 @@ _jest_transition = transition(
 
 def _jest_test_impl(ctx):
     actions = ctx.actions
+    bash_preamble = ctx.attr.bash_preamble
     data = ctx.files.data
     data_default = [target[DefaultInfo] for target in ctx.attr.data]
     env = ctx.attr.env
@@ -66,15 +67,16 @@ def _jest_test_impl(ctx):
         output = bin,
         is_executable = True,
         substitutions = {
-            "%{config}": shell.quote("%s/%s" % (runfile_path(workspace_name, config_cjs.package), config)),
             "%{config_loader}": shell.quote("%s/%s/src/index.js" % (NODE_MODULES_PREFIX, package_path_name(workspace_name, config_loader_cjs.package.short_path))),
+            "%{config}": shell.quote("%s/%s" % (runfile_path(workspace_name, config_cjs.package), config)),
             "%{env}": " ".join(["%s=%s" % (name, shell.quote(value)) for name, value in env.items()]),
             "%{fs_linker}": shell.quote("%s/dist/bundle.js" % runfile_path(workspace_name, fs_linker_cjs.package)),
             "%{main_module}": shell.quote(main_module),
-            "%{node}": shell.quote(runfile_path(workspace_name, node.bin)),
-            "%{node_options}": " ".join([shell.quote(option) for option in node_options]),
-            "%{package_manifest}": shell.quote(runfile_path(ctx.workspace_name, package_manifest)),
             "%{module_linker}": shell.quote("%s/dist/bundle.js" % runfile_path(workspace_name, module_linker_cjs.package)),
+            "%{node_options}": " ".join([shell.quote(option) for option in node_options]),
+            "%{node}": shell.quote(runfile_path(workspace_name, node.bin)),
+            "%{package_manifest}": shell.quote(runfile_path(ctx.workspace_name, package_manifest)),
+            "%{preamble}": bash_preamble,
             "%{workspace}": shell.quote(workspace_name),
         },
         template = ctx.file._runner,
@@ -111,6 +113,7 @@ jest_test = rule(
             mandatory = True,
             providers = [CjsInfo, JsInfo],
         ),
+        "bash_preamble": attr.string(),
         "data": attr.label_list(
             allow_files = True,
             doc = "Runtime data.",
