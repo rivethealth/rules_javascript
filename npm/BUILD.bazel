@@ -3,6 +3,8 @@ load("//nodejs:rules.bzl", "nodejs_binary")
 
 package(default_visibility = ["//visibility:public"])
 
+exports_files(["yarn-audit-runner.sh.tpl"])
+
 filegroup(
     name = "yarn_resolve_template",
     srcs = ["yarn-resolve.sh.tpl"],

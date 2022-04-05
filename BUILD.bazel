@@ -5,6 +5,8 @@ load(":npm_data.bzl", "ROOTS")
 
 package(default_visibility = ["//visibility:public"])
 
+exports_files(["yarn.lock"])
+
 js_library(
     name = "eslint_config",
     srcs = [".eslintrc.js"],

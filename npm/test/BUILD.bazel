@@ -1,0 +1,16 @@
+filegroup(
+    name = "bazel",
+    srcs = glob(["bazel/**/*"]),
+    data = ["@better_rules_javascript_files//:common"],
+)
+
+sh_test(
+    name = "yarn-audit",
+    srcs = ["test_yarn_audit.sh"],
+    data = [":bazel"],
+    tags = ["local"],
+)
+
+test_suite(
+    name = "test",
+)

@@ -1,4 +1,51 @@
+load("@bazel_skylib//lib:paths.bzl", "paths")
 load("@bazel_skylib//lib:shell.bzl", "shell")
+load("@rules_file//util:path.bzl", "runfile_path")
+
+def _yarn_audit_test_impl(ctx):
+    actions = ctx.actions
+    lock = ctx.file.lock
+    manifest = ctx.file.manifest
+    name = ctx.attr.name
+    runner = ctx.file._runner
+    workspace_name = ctx.workspace_name
+    yarn = ctx.attr._yarn[DefaultInfo]
+
+    executable = actions.declare_file(name)
+    dir = paths.dirname(runfile_path(workspace_name, lock))
+    actions.expand_template(
+        is_executable = True,
+        substitutions = {"%{dir}": shell.quote(dir)},
+        template = runner,
+        output = executable,
+    )
+
+    runfiles = ctx.runfiles(files = [lock] + ([manifest] if manifest else []))
+    runfiles = runfiles.merge(yarn.default_runfiles)
+    default_info = DefaultInfo(executable = executable, runfiles = runfiles)
+
+    return [default_info]
+
+yarn_audit_test = rule(
+    attrs = {
+        "lock": attr.label(
+            allow_single_file = ["yarn.lock"],
+            mandatory = True,
+        ),
+        "manifest": attr.label(
+            allow_single_file = ["package.json"],
+        ),
+        "_runner": attr.label(
+            allow_single_file = True,
+            default = ":yarn-audit-runner.sh.tpl",
+        ),
+        "_yarn": attr.label(
+            default = ":yarn",
+        ),
+    },
+    implementation = _yarn_audit_test_impl,
+    test = True,
+)
 
 def _yarn_resolve_impl(ctx):
     actions = ctx.actions
