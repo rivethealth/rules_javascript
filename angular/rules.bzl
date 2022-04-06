@@ -216,6 +216,7 @@ def _angular_library(ctx):
                 js.append(js_)
                 if source_map:
                     map = actions.declare_file(map_path(js_path(js_path_)))
+                    js.append(map)
                 declaration = actions.declare_file(declaration_path(declaration_path_))
                 declarations.append(declaration)
                 outputs.append(declaration)
