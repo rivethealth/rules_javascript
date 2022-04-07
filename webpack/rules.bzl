@@ -295,11 +295,10 @@ def _webpack_server_impl(ctx):
         transitive_files = depset(transitive = [js_info.transitive_files for js_info in [dep_js] + webpack_client.client_js]),
     )
 
-    src_digest = actions.declare_file("%s-src.digest" % name)
-    create_digest(
+    src_digest = create_digest(
         actions = actions,
         hash = hash,
-        output = src_digest,
+        name = "%s-src" % name,
         runfiles = ctx.runfiles(transitive_files = js_info.transitive_files),
     )
 
@@ -321,12 +320,11 @@ def _webpack_server_impl(ctx):
         is_executable = True,
     )
 
-    digest = actions.declare_file("%s.digest" % name)
-    create_digest(
+    digest = create_digest(
         actions = actions,
-        runfiles = webpack.server.default_runfiles,
         hash = hash,
-        output = digest,
+        name = name,
+        runfiles = webpack.server.default_runfiles,
     )
 
     symlinks = modules_links(

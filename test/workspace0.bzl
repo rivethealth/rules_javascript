@@ -58,11 +58,11 @@ def test_repositories0():
 
     # Rivet Bazel Util
 
-    RIVET_BAZEL_UTIL_VERSION = "d388fb2a617986557c25972ef5b2eb64c259c787"
+    RIVET_BAZEL_UTIL_VERSION = "48453fd1e220fd16ce229b3812d8b9bb861296ad"
 
     http_archive(
         name = "rivet_bazel_util",
-        sha256 = "06d0b91104f1f41b3ffce7bb8082220ab5427cf2392ccd33216e4fe371d3dae3",
+        sha256 = "6d82bcbe35a8293550642352da9cb2e6b0138c293e1af0eb282b020e9e1a5209",
         strip_prefix = "rivet-bazel-util-%s" % RIVET_BAZEL_UTIL_VERSION,
         url = "https://github.com/rivethealth/rivet-bazel-util/archive/%s.tar.gz" % RIVET_BAZEL_UTIL_VERSION,
     )
