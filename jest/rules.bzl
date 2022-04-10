@@ -1,9 +1,7 @@
 load("@bazel_skylib//lib:shell.bzl", "shell")
-load("//commonjs:providers.bzl", "CjsInfo", "create_link", "create_package", "gen_manifest")
-load("//nodejs:providers.bzl", "NODE_MODULES_PREFIX", "NodejsInfo", "modules_links", "package_path_name")
-load("//nodejs:rules.bzl", "nodejs_binary")
+load("//commonjs:providers.bzl", "CjsInfo", "gen_manifest")
+load("//nodejs:providers.bzl", "NodejsInfo")
 load("//javascript:providers.bzl", "JsInfo")
-load("//javascript:rules.bzl", "js_export")
 load("//util:path.bzl", "output", "runfile_path")
 
 def _jest_transition_impl(settings, attrs):
@@ -43,31 +41,27 @@ def _jest_test_impl(ctx):
     output_ = output(label = ctx.label, actions = actions)
     workspace_name = ctx.workspace_name
 
-    transitive_packages = depset(transitive = [dep.transitive_packages for dep in cjs_deps])
-
     def package_path(package):
-        if package.path == cjs_dep.package.path:
-            return runfile_path(workspace_name, cjs_dep.package)
-        return "%s/%s" % (NODE_MODULES_PREFIX, package_path_name(workspace_name, package.short_path))
+        return runfile_path(workspace_name, package)
 
-    package_manifest = actions.declare_file("%s/packages.json" % ctx.label.name)
+    package_manifest = actions.declare_file("%s.packages.json" % name)
     gen_manifest(
         actions = actions,
         deps = depset(transitive = [dep.transitive_links for dep in cjs_deps]),
         manifest = package_manifest,
         manifest_bin = manifest_bin,
-        packages = transitive_packages,
+        packages = depset(transitive = [dep.transitive_packages for dep in cjs_deps]),
         package_path = package_path,
     )
 
-    main_module = "%s/%s/bin/jest.js" % (NODE_MODULES_PREFIX, package_path_name(workspace_name, cjs_info.package.short_path))
+    main_module = "%s/bin/jest.js" % runfile_path(workspace_name, cjs_info.package)
 
-    bin = actions.declare_file("%s/bin" % ctx.label.name)
+    bin = actions.declare_file(name)
     actions.expand_template(
         output = bin,
         is_executable = True,
         substitutions = {
-            "%{config_loader}": shell.quote("%s/%s/src/index.js" % (NODE_MODULES_PREFIX, package_path_name(workspace_name, config_loader_cjs.package.short_path))),
+            "%{config_loader}": shell.quote("%s/src/index.js" % runfile_path(workspace_name, config_loader_cjs.package)),
             "%{config}": shell.quote("%s/%s" % (runfile_path(workspace_name, config_cjs.package), config)),
             "%{env}": " ".join(["%s=%s" % (name, shell.quote(value)) for name, value in env.items()]),
             "%{fs_linker}": shell.quote("%s/dist/bundle.js" % runfile_path(workspace_name, fs_linker_cjs.package)),
@@ -84,13 +78,7 @@ def _jest_test_impl(ctx):
 
     runfiles = ctx.runfiles(
         files = [node.bin, package_manifest] + data,
-        transitive_files = depset(transitive = [fs_linker_js.transitive_files, module_linker_js.transitive_files]),
-        root_symlinks = modules_links(
-            files = depset(transitive = [js_info_.transitive_files for js_info_ in js_deps]).to_list(),
-            packages = [package for package in transitive_packages.to_list() if package.path != cjs_dep.package.path],
-            prefix = NODE_MODULES_PREFIX,
-            workspace_name = workspace_name,
-        ),
+        transitive_files = depset(transitive = [js_info_.transitive_files for js_info_ in js_deps] + [fs_linker_js.transitive_files, module_linker_js.transitive_files]),
     )
     runfiles = runfiles.merge_all([default_info.default_runfiles for default_info in data_default if default_info.default_runfiles != None])
 

@@ -4,7 +4,6 @@ load("@rivet_bazel_util//bazel:providers.bzl", "create_digest")
 load("//commonjs:providers.bzl", "CjsInfo", "create_cjs_info", "gen_manifest", "package_path")
 load("//javascript:providers.bzl", "JsInfo", "create_js_info")
 load("//javascript:rules.bzl", "js_export")
-load("//nodejs:providers.bzl", "NODE_MODULES_PREFIX", "modules_links", "package_path_name")
 load("//nodejs:rules.bzl", "nodejs_binary")
 load("//util:path.bzl", "runfile_path")
 load(":providers.bzl", "WebpackInfo")
@@ -48,7 +47,7 @@ def _webpack_impl(ctx):
         bin = bin,
         client_cjs = client_cjs,
         client_js = client_js,
-        config_path = "%s/%s" % (package_path_name(workspace_name, config_dep.package.short_path), config),
+        config_path = "%s/%s" % (runfile_path(workspace_name, config_dep.package), config),
         server = server,
     )
 
@@ -177,7 +176,7 @@ def _webpack_bundle_impl(ctx):
 
     args = []
     args.append("--config")
-    args.append("./%s.runfiles/%s/%s/src/index.mjs" % (webpack.bin.files_to_run.executable.path, NODE_MODULES_PREFIX, package_path_name(workspace_name, config.package.short_path)))
+    args.append("./%s.runfiles/%s/src/index.mjs" % (webpack.bin.files_to_run.executable.path, runfile_path(workspace_name, config.package)))
 
     actions.run(
         env = {
@@ -185,7 +184,7 @@ def _webpack_bundle_impl(ctx):
             "JS_SOURCE_MAP": json.encode(source_map),
             "NODE_FS_PACKAGE_MANIFEST": package_manifest.path,
             "NODE_OPTIONS_APPEND": "-r ./%s/dist/bundle.js -r ./%s" % (fs_linker_cjs.package.path, ctx.file._skip_package_check.path),
-            "WEBPACK_CONFIG": "%s/%s" % (NODE_MODULES_PREFIX, webpack.config_path),
+            "WEBPACK_CONFIG": webpack.config_path,
             "WEBPACK_INPUT_ROOT": dep_cjs.package.path,
             "WEBPACK_OUTPUT": output.path,
         },
@@ -272,14 +271,18 @@ def _webpack_server_impl(ctx):
     name = ctx.attr.name
     workspace_name = ctx.workspace_name
 
+    bin = actions.declare_file(name)
+
     transitive_links = depset(
         # create_globals(label, webpack_client.client_cjs),
         transitive = [dep_cjs.transitive_links] + [cjs_info.transitive_links for cjs_info in webpack_client.client_cjs],
     )
     transitive_packages = depset(transitive = [dep_cjs.transitive_packages] + [cjs_info.transitive_packages for cjs_info in webpack_client.client_cjs])
 
+    prefix = "%s.webpack" % runfile_path(workspace_name, bin)
+
     def package_path(package):
-        return "%s/%s" % (WEBPACK_MODULES_PREFIX, package_path_name(workspace_name, package.short_path))
+        return "%s/%s" % (prefix, runfile_path(workspace_name, package))
 
     package_manifest = actions.declare_file("%s-packages.json" % name)
     gen_manifest(
@@ -302,16 +305,15 @@ def _webpack_server_impl(ctx):
         runfiles = ctx.runfiles(transitive_files = js_info.transitive_files),
     )
 
-    bin = actions.declare_file(name)
     actions.expand_template(
         template = ctx.file._runner,
         output = bin,
         substitutions = {
             "%{bin}": shell.quote(runfile_path(ctx.workspace_name, webpack.server.files_to_run.executable)),
             "%{compilation_mode}": shell.quote(compilation_mode),
-            "%{config}": "%s/%s" % (NODE_MODULES_PREFIX, webpack.config_path),
+            "%{config}": webpack.config_path,
             "%{digest}": shell.quote(runfile_path(workspace_name, src_digest)),
-            "%{input_root}": shell.quote("%s/%s" % (WEBPACK_MODULES_PREFIX, package_path_name(workspace_name, dep_cjs.package.short_path))),
+            "%{input_root}": shell.quote(package_path(dep_cjs.package)),
             "%{js_source_map}": shell.quote(json.encode(source_map)),
             "%{output}": "/tmp/bundle.js",
             "%{package_manifest}": shell.quote(runfile_path(ctx.workspace_name, package_manifest)),
@@ -327,12 +329,7 @@ def _webpack_server_impl(ctx):
         runfiles = webpack.server.default_runfiles,
     )
 
-    symlinks = modules_links(
-        prefix = WEBPACK_MODULES_PREFIX,
-        packages = transitive_packages.to_list(),
-        files = js_info.transitive_files.to_list(),
-        workspace_name = workspace_name,
-    )
+    symlinks = {package_path(file): file for file in js_info.transitive_files.to_list()}
 
     runfiles = ctx.runfiles(
         files = [

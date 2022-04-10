@@ -165,7 +165,7 @@ def _nodejs_binary_implementation(ctx):
     transitive_packages = depset(transitive = [dep.transitive_packages for dep in cjs_deps])
 
     def package_path(package):
-        return "%s/%s" % (NODE_MODULES_PREFIX, package_path_name(workspace_name, package.short_path))
+        return runfile_path(workspace_name, package)
 
     package_manifest = actions.declare_file("%s.packages.json" % name)
     gen_manifest(
@@ -177,7 +177,7 @@ def _nodejs_binary_implementation(ctx):
         package_path = package_path,
     )
 
-    main_module = "%s/%s/%s" % (NODE_MODULES_PREFIX, package_path_name(workspace_name, cjs_dep.package.short_path), ctx.attr.main)
+    main_module = "%s/%s" % (runfile_path(workspace_name, cjs_dep.package), ctx.attr.main)
 
     bin = actions.declare_file(name)
     actions.expand_template(
@@ -196,17 +196,17 @@ def _nodejs_binary_implementation(ctx):
         is_executable = True,
     )
 
-    symlinks = modules_links(
-        files = depset(transitive = [js_info.transitive_files for js_info in js_deps]).to_list(),
-        packages = transitive_packages.to_list(),
-        prefix = NODE_MODULES_PREFIX,
-        workspace_name = workspace_name,
-    )
+    # symlinks = modules_links(
+    #     files = depset(transitive = [js_info.transitive_files for js_info in js_deps]).to_list(),
+    #     packages = transitive_packages.to_list(),
+    #     prefix = NODE_MODULES_PREFIX,
+    #     workspace_name = workspace_name,
+    # )
 
     runfiles = ctx.runfiles(
         files = [node.bin, package_manifest],
-        transitive_files = depset(transitive = [esm_linker_js.transitive_files, module_linker_js.transitive_files, runtime_js.transitive_files]),
-        root_symlinks = symlinks,
+        transitive_files = depset(transitive = [js_info.transitive_files for js_info in js_deps] + [esm_linker_js.transitive_files, module_linker_js.transitive_files, runtime_js.transitive_files]),
+        # root_symlinks = symlinks,
     )
     runfiles = runfiles.merge_all(
         [dep[DefaultInfo].default_runfiles for dep in ctx.attr.data if dep[DefaultInfo].default_runfiles != None],

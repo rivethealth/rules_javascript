@@ -1,5 +1,21 @@
 <!-- Generated with Stardoc: http://skydoc.bazel.build -->
 
+<a id="#yarn_audit_test"></a>
+
+## yarn_audit_test
+
+<pre>
+yarn_audit_test(<a href="#yarn_audit_test-name">name</a>, <a href="#yarn_audit_test-lock">lock</a>, <a href="#yarn_audit_test-manifest">manifest</a>)
+</pre>
+
+**ATTRIBUTES**
+
+| Name                                          | Description                    | Type                                                               | Mandatory | Default |
+| :-------------------------------------------- | :----------------------------- | :----------------------------------------------------------------- | :-------- | :------ |
+| <a id="yarn_audit_test-name"></a>name         | A unique name for this target. | <a href="https://bazel.build/docs/build-ref.html#name">Name</a>    | required  |         |
+| <a id="yarn_audit_test-lock"></a>lock         | -                              | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a> | required  |         |
+| <a id="yarn_audit_test-manifest"></a>manifest | -                              | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a> | optional  | None    |
+
 <a id="#yarn_resolve"></a>
 
 ## yarn_resolve

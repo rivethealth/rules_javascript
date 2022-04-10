@@ -24,6 +24,7 @@ nodejs_archive(
         "//nodejs/fs-linker:root",
         "//rules:root",
         "//util/json:root",
+        "//util/util:root",
         "//webpack/config:root",
     ],
     tags = ["no-cache"],

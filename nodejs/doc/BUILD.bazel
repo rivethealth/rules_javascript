@@ -8,7 +8,6 @@ stardoc(
     [
         "//nodejs:providers.bzl",
         "//nodejs:rules.bzl",
-        "//nodejs:toolchains.bzl",
         "//nodejs:workspace.bzl",
     ],
 )

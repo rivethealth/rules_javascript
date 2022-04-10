@@ -211,24 +211,25 @@ def _ts_proto_libraries_impl(ctx):
                 tools = [ts_proto.tsc.transpile_bin.files_to_run],
             )
 
-            actions.run(
-                arguments = ["-p", tsconfig.path],
-                env = {
-                    "NODE_OPTIONS_APPEND": "-r ./%s/dist/bundle.js" % fs_linker_cjs.package.path,
-                    "NODE_FS_PACKAGE_MANIFEST": package_manifest.path,
-                },
-                executable = ts_proto.tsc.bin.files_to_run.executable,
-                inputs = depset(
-                    [package_manifest, tsconfig, tsconfig_proto] + ts,
-                    transitive =
-                        [cjs_root.transitive_files, fs_linker_js.transitive_files] +
-                        [dep.transitive_files for dep in ts_proto.deps_ts],
-                ),
-                mnemonic = "TypeScriptCompile",
-                progress_message = "Compiling %{label} TypeScript declarations",
-                outputs = declarations,
-                tools = [ts_proto.tsc.bin.files_to_run],
-            )
+        actions.run(
+            arguments = ["-p", tsconfig.path],
+            env = {
+                "NODE_OPTIONS_APPEND": "-r ./%s/dist/bundle.js" % fs_linker_cjs.package.path,
+                "NODE_FS_PACKAGE_MANIFEST": package_manifest.path,
+            },
+            executable = ts_proto.tsc.bin.files_to_run.executable,
+            inputs = depset(
+                [package_manifest, tsconfig, tsconfig_proto] + ts,
+                transitive =
+                    [ts_infos[dep].transitive_files for dep in lib.deps] +
+                    [cjs_root.transitive_files, fs_linker_js.transitive_files] +
+                    [dep.transitive_files for dep in ts_proto.deps_ts],
+            ),
+            mnemonic = "TypeScriptCompile",
+            progress_message = "Compiling %{label} TypeScript declarations",
+            outputs = declarations,
+            tools = [ts_proto.tsc.bin.files_to_run],
+        )
 
         cjs_infos[lib.label] = create_cjs_info(
             cjs_root = cjs_root,

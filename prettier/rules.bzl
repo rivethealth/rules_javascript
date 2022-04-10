@@ -4,7 +4,6 @@ load("//commonjs:providers.bzl", "CjsInfo")
 load("//javascript:providers.bzl", "JsInfo")
 load("//javascript:rules.bzl", "js_export", "js_library")
 load("//nodejs:rules.bzl", "nodejs_binary")
-load("//nodejs:providers.bzl", "NODE_MODULES_PREFIX", "package_path_name")
 load("//typescript:rules.bzl", "ts_library")
 load("//util:path.bzl", "runfile_path")
 
@@ -110,8 +109,8 @@ def _prettier_impl(ctx):
     config_js = ctx.attr.config_dep[JsInfo]
     workspace_name = ctx.workspace_name
 
-    config_path = "%s/%s" % (package_path_name(workspace_name, config_cjs.package.short_path), config)
-    config = "./%s.runfiles/%s/%s" % (bin.files_to_run.executable.path, NODE_MODULES_PREFIX, config_path)
+    config_path = "%s/%s" % (runfile_path(workspace_name, config_cjs.package), config)
+    config = "./%s.runfiles/%s" % (bin.files_to_run.executable.path, config_path)
 
     def format(ctx, name, src, out):
         return _prettier_format(

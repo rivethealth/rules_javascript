@@ -275,16 +275,13 @@ var PackageTree;
             return delegate.apply(this, arguments);
         }
         const resolved = resolver.resolve(parent.path, request);
-        const [base, packageName] = resolved.package.split("/node_modules/", 2);
-        request = packageName;
+        request = path__namespace.basename(resolved.package);
         if (resolved.inner) {
             request = `${request}/${resolved.inner}`;
         }
-        const newParent = new Module__default["default"](`${base}/_`, parent);
-        newParent.filename = newParent.id;
-        newParent.paths = [`${base}/node_modules`];
+        parent.paths = [path__namespace.dirname(resolved.package)];
         // ignore options, because paths interferes with resolution
-        return delegate.call(this, request, newParent, isMain);
+        return delegate.call(this, request, parent, isMain);
     };
 }
 function patchModule(resolver, delegate) {

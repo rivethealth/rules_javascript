@@ -1,8 +1,10 @@
-import { Resolver } from "@better-rules-javascript/commonjs-package/resolve";
 import { PackageTree } from "@better-rules-javascript/commonjs-package";
+import { Resolver } from "@better-rules-javascript/commonjs-package/resolve";
 import { JsonFormat } from "@better-rules-javascript/util-json";
-import Module from "module";
+import { lazy } from "@better-rules-javascript/util/cache";
 import * as fs from "fs";
+import Module from "module";
+import * as os from "os";
 import * as path from "path";
 import * as url from "url";
 
@@ -15,9 +17,20 @@ const packageTree = JsonFormat.parse(
   fs.readFileSync(manifestPath, "utf8"),
 );
 
+const linkDirectory = lazy(async () => {
+  const dir = await fs.promises.mkdtemp(path.join(os.tmpdir(), "nodejs-"));
+  process.once("exit", () => {
+    fs.rmSync(dir, { recursive: true });
+  });
+  await fs.promises.mkdir(path.join(dir, "node_modules"));
+  return dir;
+});
+
+const linkedPackages = new Set();
+
 const resolver = Resolver.create(packageTree, process.env.RUNFILES_DIR);
 
-export function resolve(
+export async function resolve(
   specifier: string,
   context: any,
   defaultResolve: Function,
@@ -26,12 +39,14 @@ export function resolve(
     return { format: "commonjs", url: specifier };
   }
 
-  const parent =
-    context.parentURL !== undefined ? new URL(context.parentURL) : undefined;
+  let parentPath: string | undefined;
+  try {
+    parentPath = url.fileURLToPath(context.parentURL);
+  } catch (e) {}
 
   if (
+    parentPath === undefined ||
     Module.builtinModules.includes(specifier) ||
-    parent?.protocol !== "file:" ||
     specifier.startsWith("node:") ||
     specifier == "." ||
     specifier == ".." ||
@@ -43,16 +58,38 @@ export function resolve(
     return defaultResolve(specifier, context, defaultResolve);
   }
 
-  const resolved = resolver.resolve(parent.pathname, specifier);
-  const [base, packageName] = resolved.package.split("/node_modules/", 2);
+  const resolved = resolver.resolve(parentPath, specifier);
+
+  const directory = await linkDirectory();
+  const packageName = path
+    .relative(process.env.RUNFILES_DIR, resolved.package)
+    .replace(/\//g, "_");
+  const linkPath = path.join(directory, "node_modules", packageName);
+  if (!linkedPackages.has(resolved.package)) {
+    linkedPackages.add(resolved.package);
+    await fs.promises.symlink(resolved.package, linkPath);
+  }
+
   specifier = packageName;
   if (resolved.inner) {
     specifier = `${specifier}/${resolved.inner}`;
   }
 
-  return defaultResolve(
+  parentPath = path.join(
+    directory,
+    path.relative(process.env.RUNFILES_DIR, parentPath).replace(/\//g, "_"),
+  );
+  const nodeResolved = defaultResolve(
     specifier,
-    { ...context, parentURL: url.pathToFileURL(`${base}/_`) },
+    { ...context, parentURL: url.pathToFileURL(parentPath) },
     defaultResolve,
   );
+
+  const nodeResolvedPath = url.fileURLToPath(nodeResolved.url);
+  let resolvedPath = path.join(
+    resolved.package,
+    path.relative(linkPath, nodeResolvedPath),
+  );
+  nodeResolved.url = url.pathToFileURL(resolvedPath).toString();
+  return nodeResolved;
 }

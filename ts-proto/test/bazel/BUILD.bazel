@@ -5,6 +5,10 @@ package(default_visibility = ["//visibility:public"])
 
 configure_ts_protoc(
     name = "ts_protoc",
+    options = [
+        "esModuleInterop=true",
+        "forceLong=long",
+    ],
     ts_proto = "@npm//ts-proto:lib",
     tsc = ":tsc",
     deps = [

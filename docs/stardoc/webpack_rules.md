@@ -75,13 +75,13 @@ Set up webpack tools.
 
 **PARAMETERS**
 
-| Name                                                    | Description               | Default Value     |
-| :------------------------------------------------------ | :------------------------ | :---------------- |
-| <a id="configure_webpack-name"></a>name                 | Name                      | none              |
-| <a id="configure_webpack-cli"></a>cli                   | <p align="center"> - </p> | none              |
-| <a id="configure_webpack-webpack"></a>webpack           | <p align="center"> - </p> | none              |
-| <a id="configure_webpack-dev_server"></a>dev_server     | <p align="center"> - </p> | none              |
-| <a id="configure_webpack-config"></a>config             | Configuration             | none              |
-| <a id="configure_webpack-config_dep"></a>config_dep     | <p align="center"> - </p> | none              |
-| <a id="configure_webpack-node_options"></a>node_options | <p align="center"> - </p> | <code>[]</code>   |
-| <a id="configure_webpack-visibility"></a>visibility     | <p align="center"> - </p> | <code>None</code> |
+| Name                                                    | Description                | Default Value     |
+| :------------------------------------------------------ | :------------------------- | :---------------- |
+| <a id="configure_webpack-name"></a>name                 | Name                       | none              |
+| <a id="configure_webpack-cli"></a>cli                   | Webpack CLI library        | none              |
+| <a id="configure_webpack-webpack"></a>webpack           | Webpack library            | none              |
+| <a id="configure_webpack-dev_server"></a>dev_server     | Webpack dev server library | none              |
+| <a id="configure_webpack-config"></a>config             | Configuration path         | none              |
+| <a id="configure_webpack-config_dep"></a>config_dep     | Configuration library      | none              |
+| <a id="configure_webpack-node_options"></a>node_options | Node.js options            | <code>[]</code>   |
+| <a id="configure_webpack-visibility"></a>visibility     | Visibility                 | <code>None</code> |

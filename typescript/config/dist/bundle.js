@@ -201,11 +201,6 @@ parser.add_argument("--empty", {
 parser.add_argument("--declaration-dir", { dest: "declarationDir" });
 parser.add_argument("--module");
 parser.add_argument("--root-dir", { dest: "rootDir", required: true });
-parser.add_argument("--root-dirs", {
-    action: "append",
-    dest: "rootDirs",
-    default: [],
-});
 parser.add_argument("--source-map", { default: "false", dest: "sourceMap" });
 parser.add_argument("--out-dir", { dest: "outDir" });
 parser.add_argument("--target");
@@ -242,7 +237,6 @@ parser.add_argument("output");
     if (args.module) {
         tsconfig.compilerOptions.module = args.module;
     }
-    tsconfig.compilerOptions.rootDirs = (args.rootDirs.length ? args.rootDirs : [args.rootDir]).map(relative);
     if (args.declarationDir) {
         tsconfig.compilerOptions.declaration = true;
         tsconfig.compilerOptions.declarationDir = relative(args.declarationDir);

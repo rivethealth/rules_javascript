@@ -1,0 +1,27 @@
+load("//commonjs:rules.bzl", "cjs_root")
+load("//javascript:rules.bzl", "js_library")
+load("//typescript:rules.bzl", "ts_library")
+
+package(default_visibility = ["//visibility:public"])
+
+cjs_root(
+    name = "root",
+    package_name = "@better-rules-javascript/util",
+    descriptors = ["package.json"],
+)
+
+ts_library(
+    name = "lib",
+    srcs = glob(["src/**/*.ts"]),
+    compiler = "//rules:tsc",
+    config = "tsconfig.json",
+    config_dep = ":tsconfig",
+    root = ":root",
+)
+
+js_library(
+    name = "tsconfig",
+    srcs = ["tsconfig.json"],
+    root = ":root",
+    deps = ["//rules:tsconfig"],
+)

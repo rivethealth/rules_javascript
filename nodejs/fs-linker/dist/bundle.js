@@ -1316,7 +1316,9 @@ if (!manifestPath) {
     throw new Error("NODE_FS_PACKAGE_MANIFEST is not set");
 }
 const packageTree = JsonFormat.parse(PackageTree.json(), fs__namespace.readFileSync(manifestPath, "utf8"));
-const vfs = createVfs(packageTree, process.env.NODE_FS_RUNFILES === "true" ? process.env.RUNFILES_DIR : undefined);
+const vfs = createVfs(packageTree, process.env.NODE_FS_RUNFILES === "true"
+    ? process.env.RUNFILES_DIR
+    : undefined);
 if (process.env.NODE_FS_TRACE === "true") {
     process.stderr.write(vfs.print());
 }

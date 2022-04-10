@@ -3,8 +3,9 @@
 Object.defineProperty(exports, '__esModule', { value: true });
 
 var path = require('path');
-var Module = require('module');
 var fs = require('fs');
+var Module = require('module');
+var os = require('os');
 var url = require('url');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
@@ -28,84 +29,10 @@ function _interopNamespace(e) {
 }
 
 var path__namespace = /*#__PURE__*/_interopNamespace(path);
-var Module__default = /*#__PURE__*/_interopDefaultLegacy(Module);
 var fs__namespace = /*#__PURE__*/_interopNamespace(fs);
+var Module__default = /*#__PURE__*/_interopDefaultLegacy(Module);
+var os__namespace = /*#__PURE__*/_interopNamespace(os);
 var url__namespace = /*#__PURE__*/_interopNamespace(url);
-
-class Trie {
-    constructor() {
-        this.data = { children: new Map() };
-    }
-    getClosest(key) {
-        let data = this.data;
-        let i;
-        for (i = 0; i < key.length && data; i++) {
-            const k = key[i];
-            const newData = data.children.get(k);
-            if (!newData) {
-                break;
-            }
-            data = newData;
-        }
-        return { rest: key.slice(i), value: data.value };
-    }
-    put(key, value) {
-        let data = this.data;
-        for (const k of key) {
-            let newData = data.children.get(k);
-            if (!newData) {
-                newData = { children: new Map() };
-                data.children.set(k, newData);
-            }
-            data = newData;
-        }
-        data.value = value;
-    }
-}
-
-function pathParts(path_) {
-    path_ = path__namespace.resolve(path_);
-    return path_.split("/").slice(1);
-}
-class Resolver {
-    constructor(packages) {
-        this.packages = packages;
-    }
-    resolve(parent, request) {
-        if (request.startsWith(".") || request.startsWith("/")) {
-            throw new Error(`Specifier "${request}" is not for a package`);
-        }
-        const { value: package_ } = this.packages.getClosest(pathParts(parent));
-        if (!package_) {
-            throw new Error(`File "${parent}" is not part of any known package`);
-        }
-        const parts = request.split("/");
-        const i = request.startsWith("@") ? 2 : 1;
-        const dep = package_.deps.get(parts.slice(0, i).join("/"));
-        if (!dep) {
-            throw new Error(`Package "${package_.id}" does not have any dependency for "${request}", requested by ${parent}`);
-        }
-        return { package: dep, inner: parts.slice(i).join("/") };
-    }
-    static create(packageTree, baseDir = "/") {
-        const resolve = (path_) => path__namespace.resolve(baseDir, path_);
-        const packages = new Trie();
-        for (const [path, package_] of packageTree.packages.entries()) {
-            const resolvedPath = pathParts(resolve(path));
-            const deps = new Map();
-            for (const [name, dep] of package_.deps.entries()) {
-                deps.set(name, resolve(dep));
-            }
-            for (const [name, dep] of packageTree.globals.entries()) {
-                if (!package_.deps.has(name)) {
-                    deps.set(name, resolve(dep));
-                }
-            }
-            packages.put(resolvedPath, { id: path, deps });
-        }
-        return new Resolver(packages);
-    }
-}
 
 var JsonFormat;
 (function (JsonFormat) {
@@ -303,19 +230,118 @@ var PackageTree;
     PackageTree.json = json;
 })(PackageTree || (PackageTree = {}));
 
+class Trie {
+    constructor() {
+        this.data = { children: new Map() };
+    }
+    getClosest(key) {
+        let data = this.data;
+        let i;
+        for (i = 0; i < key.length && data; i++) {
+            const k = key[i];
+            const newData = data.children.get(k);
+            if (!newData) {
+                break;
+            }
+            data = newData;
+        }
+        return { rest: key.slice(i), value: data.value };
+    }
+    put(key, value) {
+        let data = this.data;
+        for (const k of key) {
+            let newData = data.children.get(k);
+            if (!newData) {
+                newData = { children: new Map() };
+                data.children.set(k, newData);
+            }
+            data = newData;
+        }
+        data.value = value;
+    }
+}
+
+function pathParts(path_) {
+    path_ = path__namespace.resolve(path_);
+    return path_.split("/").slice(1);
+}
+class Resolver {
+    constructor(packages) {
+        this.packages = packages;
+    }
+    resolve(parent, request) {
+        if (request.startsWith(".") || request.startsWith("/")) {
+            throw new Error(`Specifier "${request}" is not for a package`);
+        }
+        const { value: package_ } = this.packages.getClosest(pathParts(parent));
+        if (!package_) {
+            throw new Error(`File "${parent}" is not part of any known package`);
+        }
+        const parts = request.split("/");
+        const i = request.startsWith("@") ? 2 : 1;
+        const dep = package_.deps.get(parts.slice(0, i).join("/"));
+        if (!dep) {
+            throw new Error(`Package "${package_.id}" does not have any dependency for "${request}", requested by ${parent}`);
+        }
+        return { package: dep, inner: parts.slice(i).join("/") };
+    }
+    static create(packageTree, baseDir = "/") {
+        const resolve = (path_) => path__namespace.resolve(baseDir, path_);
+        const packages = new Trie();
+        for (const [path, package_] of packageTree.packages.entries()) {
+            const resolvedPath = pathParts(resolve(path));
+            const deps = new Map();
+            for (const [name, dep] of package_.deps.entries()) {
+                deps.set(name, resolve(dep));
+            }
+            for (const [name, dep] of packageTree.globals.entries()) {
+                if (!package_.deps.has(name)) {
+                    deps.set(name, resolve(dep));
+                }
+            }
+            packages.put(resolvedPath, { id: path, deps });
+        }
+        return new Resolver(packages);
+    }
+}
+
+function lazy(f) {
+    let result;
+    return () => {
+        if (f) {
+            result = f();
+            f = undefined;
+        }
+        return result;
+    };
+}
+
 const manifestPath = process.env.NODE_PACKAGE_MANIFEST;
 if (!manifestPath) {
     throw new Error("NODE_PACKAGE_MANIFEST is not set");
 }
 const packageTree = JsonFormat.parse(PackageTree.json(), fs__namespace.readFileSync(manifestPath, "utf8"));
+const linkDirectory = lazy(async () => {
+    const dir = await fs__namespace.promises.mkdtemp(path__namespace.join(os__namespace.tmpdir(), "nodejs-"));
+    process.once("exit", () => {
+        fs__namespace.rmSync(dir, { recursive: true });
+    });
+    await fs__namespace.promises.mkdir(path__namespace.join(dir, "node_modules"));
+    return dir;
+});
+const linkedPackages = new Set();
 const resolver = Resolver.create(packageTree, process.env.RUNFILES_DIR);
-function resolve(specifier, context, defaultResolve) {
+async function resolve(specifier, context, defaultResolve) {
     if (!context.parentURL && path__namespace.extname(specifier) == "") {
         return { format: "commonjs", url: specifier };
     }
-    const parent = context.parentURL !== undefined ? new URL(context.parentURL) : undefined;
-    if (Module__default["default"].builtinModules.includes(specifier) ||
-        parent?.protocol !== "file:" ||
+    let parentPath;
+    try {
+        parentPath = url__namespace.fileURLToPath(context.parentURL);
+    }
+    catch (e) { }
+    if (parentPath === undefined ||
+        Module__default["default"].builtinModules.includes(specifier) ||
         specifier.startsWith("node:") ||
         specifier == "." ||
         specifier == ".." ||
@@ -325,13 +351,26 @@ function resolve(specifier, context, defaultResolve) {
         specifier.startsWith("file://")) {
         return defaultResolve(specifier, context, defaultResolve);
     }
-    const resolved = resolver.resolve(parent.pathname, specifier);
-    const [base, packageName] = resolved.package.split("/node_modules/", 2);
+    const resolved = resolver.resolve(parentPath, specifier);
+    const directory = await linkDirectory();
+    const packageName = path__namespace
+        .relative(process.env.RUNFILES_DIR, resolved.package)
+        .replace(/\//g, "_");
+    const linkPath = path__namespace.join(directory, "node_modules", packageName);
+    if (!linkedPackages.has(resolved.package)) {
+        linkedPackages.add(resolved.package);
+        await fs__namespace.promises.symlink(resolved.package, linkPath);
+    }
     specifier = packageName;
     if (resolved.inner) {
         specifier = `${specifier}/${resolved.inner}`;
     }
-    return defaultResolve(specifier, { ...context, parentURL: url__namespace.pathToFileURL(`${base}/_`) }, defaultResolve);
+    parentPath = path__namespace.join(directory, path__namespace.relative(process.env.RUNFILES_DIR, parentPath).replace(/\//g, "_"));
+    const nodeResolved = defaultResolve(specifier, { ...context, parentURL: url__namespace.pathToFileURL(parentPath) }, defaultResolve);
+    const nodeResolvedPath = url__namespace.fileURLToPath(nodeResolved.url);
+    let resolvedPath = path__namespace.join(resolved.package, path__namespace.relative(linkPath, nodeResolvedPath));
+    nodeResolved.url = url__namespace.pathToFileURL(resolvedPath).toString();
+    return nodeResolved;
 }
 
 exports.resolve = resolve;

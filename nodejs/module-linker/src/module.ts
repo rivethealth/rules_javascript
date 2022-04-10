@@ -1,5 +1,6 @@
 import { Resolver } from "@better-rules-javascript/commonjs-package/resolve";
 import Module from "module";
+import * as path from "path";
 
 function resolveFilename(resolver: Resolver, delegate: Function): Function {
   return function (request: string, parent: Module, isMain: boolean) {
@@ -18,18 +19,15 @@ function resolveFilename(resolver: Resolver, delegate: Function): Function {
     }
 
     const resolved = resolver.resolve(parent.path, request);
-    const [base, packageName] = resolved.package.split("/node_modules/", 2);
-    request = packageName;
+    request = path.basename(resolved.package);
     if (resolved.inner) {
       request = `${request}/${resolved.inner}`;
     }
 
-    const newParent = new Module(`${base}/_`, parent);
-    newParent.filename = newParent.id;
-    newParent.paths = [`${base}/node_modules`];
+    parent.paths = [path.dirname(resolved.package)];
 
     // ignore options, because paths interferes with resolution
-    return delegate.call(this, request, newParent, isMain);
+    return delegate.call(this, request, parent, isMain);
   };
 }
 export function patchModule(resolver: Resolver, delegate: typeof Module) {

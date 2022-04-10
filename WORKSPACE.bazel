@@ -2,6 +2,17 @@ workspace(name = "better_rules_javascript")
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
+# Skylib
+
+SKYLIB_VERSION = "d54e8a70ce90a24b921381cbe84fa0b88b22dc46"
+
+http_archive(
+    name = "bazel_skylib",
+    sha256 = "7345a2c1b005aeead6dd402345a665cc514ae229100ff1e5e40f9939efd6856b",
+    strip_prefix = "bazel-skylib-%s" % SKYLIB_VERSION,
+    urls = ["https://github.com/bazelbuild/bazel-skylib/archive/%s.tar.gz" % SKYLIB_VERSION],
+)
+
 # File
 
 FILE_VERSION = "dfd8ba74af217a640f64605a9cfe08bcf1cc885a"
@@ -41,13 +52,23 @@ go_rules_dependencies()
 
 go_register_toolchains()
 
+# Pkg
+
+PKG_VERSION = "0.7.0"
+
+http_archive(
+    name = "rules_pkg",
+    sha256 = "8a298e832762eda1830597d64fe7db58178aa84cd5926d76d5b744d6558941c2",
+    url = "https://github.com/bazelbuild/rules_pkg/releases/download/%s/rules_pkg-%s.tar.gz" % (PKG_VERSION, PKG_VERSION),
+)
+
 # Protobuf
 
-PROTO_VERSION = "7e4afce6fe62dbff0a4a03450143146f9f2d7488"
+PROTO_VERSION = "4.0.0"
 
 http_archive(
     name = "rules_proto",
-    sha256 = "8e7d59a5b12b233be5652e3d29f42fba01c7cbab09f6b3a8d0a57ed6d1e9a0da",
+    sha256 = "66bfdf8782796239d3875d37e7de19b1d94301e8972b3cbd2446b332429b4df1",
     strip_prefix = "rules_proto-%s" % PROTO_VERSION,
     urls = ["https://github.com/bazelbuild/rules_proto/archive/%s.tar.gz" % PROTO_VERSION],
 )
@@ -129,17 +150,6 @@ http_archive(
     ],
 )
 
-# Skylib
-
-SKYLIB_VERSION = "6e30a77347071ab22ce346b6d20cf8912919f644"
-
-http_archive(
-    name = "bazel_skylib",
-    sha256 = "96e0cd3f731f0caef9e9919aa119ecc6dace36b149c2f47e40aa50587790402b",
-    strip_prefix = "bazel-skylib-%s" % SKYLIB_VERSION,
-    urls = ["https://github.com/bazelbuild/bazel-skylib/archive/%s.tar.gz" % SKYLIB_VERSION],
-)
-
 # Stardoc
 
 STARDOC_VERSION = "f4d4b3a965c9ae36feeff5eb3171d6ba17406b84"
@@ -155,11 +165,11 @@ http_archive(
 
 # Rivet Bazel Util
 
-RIVET_BAZEL_UTIL_VERSION = "48453fd1e220fd16ce229b3812d8b9bb861296ad"
+RIVET_BAZEL_UTIL_VERSION = "88685d737d73dee74e880e589a6be2569f7f59ed"
 
 http_archive(
     name = "rivet_bazel_util",
-    sha256 = "6d82bcbe35a8293550642352da9cb2e6b0138c293e1af0eb282b020e9e1a5209",
+    sha256 = "293dc40fe14073432e9f143222e782f0ce25807f5a0f3c1efec05b4daf9f7ca0",
     strip_prefix = "rivet-bazel-util-%s" % RIVET_BAZEL_UTIL_VERSION,
     url = "https://github.com/rivethealth/rivet-bazel-util/archive/%s.tar.gz" % RIVET_BAZEL_UTIL_VERSION,
 )
