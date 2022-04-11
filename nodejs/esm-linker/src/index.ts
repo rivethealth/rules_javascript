@@ -86,7 +86,7 @@ export async function resolve(
   );
 
   const nodeResolvedPath = url.fileURLToPath(nodeResolved.url);
-  let resolvedPath = path.join(
+  const resolvedPath = path.join(
     resolved.package,
     path.relative(linkPath, nodeResolvedPath),
   );

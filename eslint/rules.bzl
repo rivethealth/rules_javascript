@@ -1,11 +1,10 @@
-load("@bazel_skylib//lib:shell.bzl", "shell")
 load("@rules_file//generate:providers.bzl", "FormatterInfo")
 load("//commonjs:providers.bzl", "CjsInfo")
 load("//commonjs:rules.bzl", "cjs_root")
 load("//javascript:rules.bzl", "js_export", "js_library")
 load("//javascript:providers.bzl", "JsInfo")
 load("//nodejs:rules.bzl", "nodejs_binary")
-load("//nodejs:providers.bzl", "NODE_MODULES_PREFIX", "package_path_name")
+load("//nodejs:providers.bzl", "package_path_name")
 load("//typescript:rules.bzl", "ts_library")
 load("//util:path.bzl", "runfile_path")
 
@@ -105,8 +104,8 @@ def _eslint_impl(ctx):
     config_cjs = ctx.attr.config_dep[CjsInfo]
     workspace_name = ctx.workspace_name
 
-    config_path = "%s/%s" % (package_path_name(workspace_name, config_cjs.package.short_path), config)
-    config = "./%s.runfiles/%s/%s" % (bin.files_to_run.executable.path, NODE_MODULES_PREFIX, config_path)
+    config_path = "%s/%s" % (runfile_path(workspace_name, config_cjs.package), config)
+    config = "./%s.runfiles/%s" % (bin.files_to_run.executable.path, config_path)
 
     def format(ctx, name, src, out):
         _eslint_format(ctx, name, src, out, bin.files_to_run, config)

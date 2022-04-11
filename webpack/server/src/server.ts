@@ -22,10 +22,7 @@ function refreshPackageTree(vfs: WrapperVfs, webpackManifestPath: string) {
   vfs.delegate = vfsImpl;
 }
 
-function clearTimeout_(
-  delegate: typeof clearTimeout,
-  event: Subject<undefined>,
-): typeof clearTimeout {
+function clearTimeout_(delegate: typeof clearTimeout): typeof clearTimeout {
   return <any>function (handle) {
     if (handle?.unsubscribe) {
       handle.unsubscribe();
@@ -54,8 +51,10 @@ function setTimeout_(
 }
 
 const refresh = new Subject<undefined>();
+// eslint-disable-next-line no-global-assign
 (<any>setTimeout) = setTimeout_(setTimeout, refresh);
-(<any>clearTimeout) = clearTimeout_(clearTimeout, refresh);
+// eslint-disable-next-line no-global-assign
+(<any>clearTimeout) = clearTimeout_(clearTimeout);
 
 export async function startServer(
   vfs: WrapperVfs,
