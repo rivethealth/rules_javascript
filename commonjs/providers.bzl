@@ -152,3 +152,9 @@ def create_cjs_info(cjs_root, label, files = [], deps = [], globals = []):
             transitive = [cjs_info.transitive_packages for cjs_info in deps + globals],
         ),
     )
+
+def source_root(workspace_name, label):
+    result = "bazel://%s/" % workspace_name
+    if label.package:
+        result += "%s/" % label.package
+    return result

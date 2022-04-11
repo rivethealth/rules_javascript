@@ -1,6 +1,5 @@
-load("@rules_file//util:path.bzl", "runfile_path")
 load("@bazel_skylib//rules:common_settings.bzl", "BuildSettingInfo")
-load("//commonjs:providers.bzl", "CjsInfo", "create_cjs_info", "gen_manifest", "package_path")
+load("//commonjs:providers.bzl", "CjsInfo", "create_cjs_info", "gen_manifest", "package_path", "source_root")
 load("//commonjs:rules.bzl", "cjs_root")
 load("//javascript:providers.bzl", "JsInfo", "create_js_info")
 load("//javascript:rules.bzl", "js_export")
@@ -142,6 +141,7 @@ def _angular_library(ctx):
         args.add("--source-map", json.encode(source_map))
         args.add("--out-dir", "%s/%s" % (output_.path, js_prefix) if js_prefix else output_.path)
         args.add("--root-dir", "%s/%s" % (output_.path, src_prefix) if src_prefix else output_.path)
+        args.add("--source-root", source_root(workspace_name, label))
         args.add(transpile_tsconfig)
         actions.run(
             arguments = [args],
@@ -267,6 +267,7 @@ def _angular_library(ctx):
         args.add("--module", module)
         if compilation_mode == "opt":
             args.add("--source-map", json.encode(source_map))
+            args.add("--source-root", source_root(workspace_name, label))
         args.add("--type-root", "%s/node_modules/@types" % cjs_root.package.path)
         args.add(tsconfig)
         actions.run(

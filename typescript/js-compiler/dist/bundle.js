@@ -1935,7 +1935,7 @@ async function transpileFile(src, options) {
     const outputPath = outputName(name ? path__namespace.join(options.outDir, name) : options.outDir);
     const input = await fs__namespace.promises.readFile(src, "utf8");
     const result = ts__namespace.transpileModule(input, {
-        fileName: path__namespace.relative(path__namespace.dirname(outputPath), src),
+        fileName: resolvedSrc,
         compilerOptions: options,
     });
     if (result.diagnostics.length) {

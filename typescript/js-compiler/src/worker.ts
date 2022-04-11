@@ -99,7 +99,7 @@ async function transpileFile(src: string, options: ts.CompilerOptions) {
 
   const input = await fs.promises.readFile(src, "utf8");
   const result = ts.transpileModule(input, {
-    fileName: path.relative(path.dirname(outputPath), src),
+    fileName: resolvedSrc,
     compilerOptions: options,
   });
   if (result.diagnostics.length) {
