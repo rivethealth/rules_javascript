@@ -96,7 +96,7 @@ def _ts_library_impl(ctx):
     actions = ctx.actions
     config = ctx.attr._config[DefaultInfo]
     compiler = ctx.attr.compiler[TsCompilerInfo]
-    cjs_deps = compiler.runtime_cjs + [target[CjsInfo] for target in ctx.attr.deps]
+    cjs_deps = compiler.runtime_cjs + [target[CjsInfo] for target in ctx.attr.compile_deps + ctx.attr.deps]
     cjs_root = ctx.attr.root[CjsInfo]
     declaration_prefix = ctx.attr.declaration_prefix
     fs_linker_cjs = ctx.attr._fs_linker[CjsInfo]
