@@ -203,7 +203,10 @@ def _ts_proto_libraries_impl(ctx):
             actions.run(
                 arguments = [args],
                 executable = ts_proto.tsc.transpile_bin.files_to_run.executable,
-                execution_requirements = {"supports-workers": "1"},
+                execution_requirements = {
+                    "requires-worker-protocol": "json",
+                    "supports-workers": "1",
+                },
                 inputs = [ts_, transpile_package_manifest, transpile_tsconfig, tsconfig_proto],
                 progress_message = "Transpiling %s to JavaScript" % file.path,
                 mnemonic = "TypeScriptTranspile",

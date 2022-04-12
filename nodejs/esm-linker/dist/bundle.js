@@ -73,6 +73,10 @@ var JsonFormat;
         return new AnyJsonFormat();
     }
     JsonFormat.any = any;
+    function boolean() {
+        return new IdentityJsonFormat();
+    }
+    JsonFormat.boolean = boolean;
     function identity() {
         return new IdentityJsonFormat();
     }
@@ -368,7 +372,7 @@ async function resolve(specifier, context, defaultResolve) {
     parentPath = path__namespace.join(directory, path__namespace.relative(process.env.RUNFILES_DIR, parentPath).replace(/\//g, "_"));
     const nodeResolved = defaultResolve(specifier, { ...context, parentURL: url__namespace.pathToFileURL(parentPath) }, defaultResolve);
     const nodeResolvedPath = url__namespace.fileURLToPath(nodeResolved.url);
-    let resolvedPath = path__namespace.join(resolved.package, path__namespace.relative(linkPath, nodeResolvedPath));
+    const resolvedPath = path__namespace.join(resolved.package, path__namespace.relative(linkPath, nodeResolvedPath));
     nodeResolved.url = url__namespace.pathToFileURL(resolvedPath).toString();
     return nodeResolved;
 }

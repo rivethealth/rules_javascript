@@ -3,7 +3,6 @@ load("//commonjs:rules.bzl", "cjs_root")
 load("//javascript:rules.bzl", "js_library")
 load("//nodejs:rules.bzl", "configure_nodejs_runtime", "nodejs")
 load("//npm:rules.bzl", "yarn_resolve")
-load("//ts-proto:rules.bzl", "configure_ts_protoc")
 load("//typescript:rules.bzl", "configure_ts_compiler")
 load(":rules.bzl", "nodejs_runtime")
 
@@ -48,21 +47,6 @@ configure_ts_compiler(
     name = "tsc",
     ts = "@better_rules_javascript_npm//typescript:lib",
     tslib = "@better_rules_javascript_npm//tslib:lib",
-)
-
-configure_ts_protoc(
-    name = "ts_protoc",
-    options = [
-        "esModuleInterop=true",
-        "forceLong=long",
-    ],
-    ts_proto = "@better_rules_javascript_npm//ts-proto:lib",
-    tsc = ":tsc",
-    deps = [
-        "@better_rules_javascript_npm//@types/long:lib",
-        "@better_rules_javascript_npm//long:lib",
-        "@better_rules_javascript_npm//protobufjs:lib",
-    ],
 )
 
 yarn_resolve(

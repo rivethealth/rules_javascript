@@ -175,3 +175,18 @@ package_path(<a href="#package_path-package">package</a>)
 | Name                                     | Description               | Default Value |
 | :--------------------------------------- | :------------------------ | :------------ |
 | <a id="package_path-package"></a>package | <p align="center"> - </p> | none          |
+
+<a id="#source_root"></a>
+
+## source_root
+
+<pre>
+source_root(<a href="#source_root-workspace_name">workspace_name</a>, <a href="#source_root-label">label</a>)
+</pre>
+
+**PARAMETERS**
+
+| Name                                                  | Description               | Default Value |
+| :---------------------------------------------------- | :------------------------ | :------------ |
+| <a id="source_root-workspace_name"></a>workspace_name | <p align="center"> - </p> | none          |
+| <a id="source_root-label"></a>label                   | <p align="center"> - </p> | none          |

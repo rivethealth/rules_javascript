@@ -48,6 +48,10 @@ export namespace JsonFormat {
     return new AnyJsonFormat();
   }
 
+  export function boolean(): JsonFormat<boolean> {
+    return new IdentityJsonFormat();
+  }
+
   export function identity<T>(): JsonFormat<T> {
     return new IdentityJsonFormat();
   }

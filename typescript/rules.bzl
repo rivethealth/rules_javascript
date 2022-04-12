@@ -225,7 +225,10 @@ def _ts_library_impl(ctx):
             actions.run(
                 arguments = [args],
                 executable = compiler.transpile_bin.files_to_run.executable,
-                execution_requirements = {"supports-workers": "1"},
+                execution_requirements = {
+                    "requires-worker-protocol": "json",
+                    "supports-workers": "1",
+                },
                 inputs = depset(
                     [ts_, transpile_package_manifest, transpile_tsconfig],
                     transitive = [js_info.transitive_files for js_info in compiler.runtime_js] + [tsconfig_js.transitive_files] if tsconfig_js else [],

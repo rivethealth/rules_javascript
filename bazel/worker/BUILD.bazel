@@ -1,6 +1,5 @@
 load("//commonjs:rules.bzl", "cjs_root")
 load("//javascript:rules.bzl", "js_library")
-load("//ts-proto:rules.bzl", "ts_proto_export")
 load("//typescript:rules.bzl", "ts_library")
 
 package(default_visibility = ["//visibility:public"])
@@ -11,12 +10,6 @@ cjs_root(
     descriptors = ["package.json"],
 )
 
-ts_proto_export(
-    name = "worker_proto_lib",
-    dep = "@bazel_tools//src/main/protobuf:worker_protocol_proto",
-    lib = "//bazel/worker-proto:libs",
-)
-
 ts_library(
     name = "lib",
     srcs = glob(["src/**/*.ts"]),
@@ -25,9 +18,8 @@ ts_library(
     config_dep = ":tsconfig",
     root = ":root",
     deps = [
-        ":worker_proto_lib",
+        "//util/json:lib",
         "@better_rules_javascript_npm//@types/node:lib",
-        "@better_rules_javascript_npm//protobufjs:lib",
     ],
 )
 

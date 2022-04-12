@@ -1,10 +1,7 @@
 import * as fs from "fs";
-import {
-  Input,
-  WorkRequest,
-  WorkResponse,
-} from "bazel_tools/src/main/protobuf/worker_protocol";
-import { readFromStream } from "./protobuf";
+import { JsonFormat } from "@better-rules-javascript/util-json";
+import { WorkRequest, WorkResponse } from "./protocol";
+import { lines } from "./stream";
 
 class CliError extends Error {}
 
@@ -31,7 +28,7 @@ export interface Worker {
    */
   (
     args: string[],
-    inputs: Input[] | undefined,
+    inputs: { path: string; digest: ArrayBuffer }[] | undefined,
     abort: AbortSignal,
   ): Promise<WorkResult>;
 }
@@ -47,11 +44,14 @@ export interface WorkResult {
 }
 
 async function runWorker(worker: Worker) {
+  process.stdin.setEncoding("utf8");
+
   let abort: AbortController | undefined;
   process.on("SIGINT", () => abort?.abort());
   process.on("SIGTERM", () => abort?.abort());
-  for await (const message of readFromStream(process.stdin, WorkRequest)) {
-    if (message.requestId) {
+  for await (const line of lines(<any>process.stdin)) {
+    const message = JsonFormat.parse(WorkRequest.json(), line);
+    if (message.request_id) {
       throw new CliError("Does not support multiplexed requests");
     }
     if (abort) {
@@ -69,13 +69,16 @@ async function runWorker(worker: Worker) {
       worker(message.arguments, message.inputs, abort.signal).then(
         ({ exitCode, output }) => {
           const response: WorkResponse = {
-            exitCode,
+            exit_code: exitCode,
             output,
-            requestId: 0,
-            wasCancelled: abort.signal.aborted,
+            request_id: 0,
+            was_cancelled: abort.signal.aborted,
           };
-          const buffer = WorkResponse.encode(response).ldelim().finish();
-          process.stdout.write(buffer);
+          const outputData = JsonFormat.stringify(
+            WorkResponse.json(),
+            response,
+          );
+          process.stdout.write(outputData + "\n");
           abort = undefined;
           if (typeof gc !== "undefined") {
             gc();

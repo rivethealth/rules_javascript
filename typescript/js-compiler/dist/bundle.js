@@ -3,13 +3,8 @@
 var url = require('url');
 var fs = require('fs');
 var path = require('path');
-var Long = require('long');
-var _m0 = require('protobufjs/minimal');
-var protobufjs = require('protobufjs');
 var argparse = require('argparse');
 var ts = require('typescript');
-
-function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
 function _interopNamespace(e) {
     if (e && e.__esModule) return e;
@@ -31,8 +26,6 @@ function _interopNamespace(e) {
 
 var fs__namespace = /*#__PURE__*/_interopNamespace(fs);
 var path__namespace = /*#__PURE__*/_interopNamespace(path);
-var Long__default = /*#__PURE__*/_interopDefaultLegacy(Long);
-var _m0__default = /*#__PURE__*/_interopDefaultLegacy(_m0);
 var ts__namespace = /*#__PURE__*/_interopNamespace(ts);
 
 var VfsNode;
@@ -1064,513 +1057,6 @@ function patchFsPromises(vfs, delegate) {
     delegate.lutimes = lutimes(vfs, delegate.lutimes);
 }
 
-/* eslint-disable */
-const baseInput = { path: "" };
-const Input = {
-    encode(message, writer = _m0__default["default"].Writer.create()) {
-        if (message.path !== "") {
-            writer.uint32(10).string(message.path);
-        }
-        if (message.digest.length !== 0) {
-            writer.uint32(18).bytes(message.digest);
-        }
-        return writer;
-    },
-    decode(input, length) {
-        const reader = input instanceof _m0__default["default"].Reader ? input : new _m0__default["default"].Reader(input);
-        let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseInput };
-        message.digest = new Uint8Array();
-        while (reader.pos < end) {
-            const tag = reader.uint32();
-            switch (tag >>> 3) {
-                case 1:
-                    message.path = reader.string();
-                    break;
-                case 2:
-                    message.digest = reader.bytes();
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
-            }
-        }
-        return message;
-    },
-    fromJSON(object) {
-        const message = { ...baseInput };
-        message.digest = new Uint8Array();
-        if (object.path !== undefined && object.path !== null) {
-            message.path = String(object.path);
-        }
-        else {
-            message.path = "";
-        }
-        if (object.digest !== undefined && object.digest !== null) {
-            message.digest = bytesFromBase64(object.digest);
-        }
-        return message;
-    },
-    toJSON(message) {
-        const obj = {};
-        message.path !== undefined && (obj.path = message.path);
-        message.digest !== undefined &&
-            (obj.digest = base64FromBytes(message.digest !== undefined ? message.digest : new Uint8Array()));
-        return obj;
-    },
-    fromPartial(object) {
-        const message = { ...baseInput };
-        if (object.path !== undefined && object.path !== null) {
-            message.path = object.path;
-        }
-        else {
-            message.path = "";
-        }
-        if (object.digest !== undefined && object.digest !== null) {
-            message.digest = object.digest;
-        }
-        else {
-            message.digest = new Uint8Array();
-        }
-        return message;
-    },
-};
-const baseWorkRequest = {
-    arguments: "",
-    requestId: 0,
-    cancel: false,
-    verbosity: 0,
-};
-const WorkRequest = {
-    encode(message, writer = _m0__default["default"].Writer.create()) {
-        for (const v of message.arguments) {
-            writer.uint32(10).string(v);
-        }
-        for (const v of message.inputs) {
-            Input.encode(v, writer.uint32(18).fork()).ldelim();
-        }
-        if (message.requestId !== 0) {
-            writer.uint32(24).int32(message.requestId);
-        }
-        if (message.cancel === true) {
-            writer.uint32(32).bool(message.cancel);
-        }
-        if (message.verbosity !== 0) {
-            writer.uint32(40).int32(message.verbosity);
-        }
-        return writer;
-    },
-    decode(input, length) {
-        const reader = input instanceof _m0__default["default"].Reader ? input : new _m0__default["default"].Reader(input);
-        let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseWorkRequest };
-        message.arguments = [];
-        message.inputs = [];
-        while (reader.pos < end) {
-            const tag = reader.uint32();
-            switch (tag >>> 3) {
-                case 1:
-                    message.arguments.push(reader.string());
-                    break;
-                case 2:
-                    message.inputs.push(Input.decode(reader, reader.uint32()));
-                    break;
-                case 3:
-                    message.requestId = reader.int32();
-                    break;
-                case 4:
-                    message.cancel = reader.bool();
-                    break;
-                case 5:
-                    message.verbosity = reader.int32();
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
-            }
-        }
-        return message;
-    },
-    fromJSON(object) {
-        const message = { ...baseWorkRequest };
-        message.arguments = [];
-        message.inputs = [];
-        if (object.arguments !== undefined && object.arguments !== null) {
-            for (const e of object.arguments) {
-                message.arguments.push(String(e));
-            }
-        }
-        if (object.inputs !== undefined && object.inputs !== null) {
-            for (const e of object.inputs) {
-                message.inputs.push(Input.fromJSON(e));
-            }
-        }
-        if (object.requestId !== undefined && object.requestId !== null) {
-            message.requestId = Number(object.requestId);
-        }
-        else {
-            message.requestId = 0;
-        }
-        if (object.cancel !== undefined && object.cancel !== null) {
-            message.cancel = Boolean(object.cancel);
-        }
-        else {
-            message.cancel = false;
-        }
-        if (object.verbosity !== undefined && object.verbosity !== null) {
-            message.verbosity = Number(object.verbosity);
-        }
-        else {
-            message.verbosity = 0;
-        }
-        return message;
-    },
-    toJSON(message) {
-        const obj = {};
-        if (message.arguments) {
-            obj.arguments = message.arguments.map((e) => e);
-        }
-        else {
-            obj.arguments = [];
-        }
-        if (message.inputs) {
-            obj.inputs = message.inputs.map((e) => (e ? Input.toJSON(e) : undefined));
-        }
-        else {
-            obj.inputs = [];
-        }
-        message.requestId !== undefined && (obj.requestId = message.requestId);
-        message.cancel !== undefined && (obj.cancel = message.cancel);
-        message.verbosity !== undefined && (obj.verbosity = message.verbosity);
-        return obj;
-    },
-    fromPartial(object) {
-        const message = { ...baseWorkRequest };
-        message.arguments = [];
-        message.inputs = [];
-        if (object.arguments !== undefined && object.arguments !== null) {
-            for (const e of object.arguments) {
-                message.arguments.push(e);
-            }
-        }
-        if (object.inputs !== undefined && object.inputs !== null) {
-            for (const e of object.inputs) {
-                message.inputs.push(Input.fromPartial(e));
-            }
-        }
-        if (object.requestId !== undefined && object.requestId !== null) {
-            message.requestId = object.requestId;
-        }
-        else {
-            message.requestId = 0;
-        }
-        if (object.cancel !== undefined && object.cancel !== null) {
-            message.cancel = object.cancel;
-        }
-        else {
-            message.cancel = false;
-        }
-        if (object.verbosity !== undefined && object.verbosity !== null) {
-            message.verbosity = object.verbosity;
-        }
-        else {
-            message.verbosity = 0;
-        }
-        return message;
-    },
-};
-const baseWorkResponse = {
-    exitCode: 0,
-    output: "",
-    requestId: 0,
-    wasCancelled: false,
-};
-const WorkResponse = {
-    encode(message, writer = _m0__default["default"].Writer.create()) {
-        if (message.exitCode !== 0) {
-            writer.uint32(8).int32(message.exitCode);
-        }
-        if (message.output !== "") {
-            writer.uint32(18).string(message.output);
-        }
-        if (message.requestId !== 0) {
-            writer.uint32(24).int32(message.requestId);
-        }
-        if (message.wasCancelled === true) {
-            writer.uint32(32).bool(message.wasCancelled);
-        }
-        return writer;
-    },
-    decode(input, length) {
-        const reader = input instanceof _m0__default["default"].Reader ? input : new _m0__default["default"].Reader(input);
-        let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseWorkResponse };
-        while (reader.pos < end) {
-            const tag = reader.uint32();
-            switch (tag >>> 3) {
-                case 1:
-                    message.exitCode = reader.int32();
-                    break;
-                case 2:
-                    message.output = reader.string();
-                    break;
-                case 3:
-                    message.requestId = reader.int32();
-                    break;
-                case 4:
-                    message.wasCancelled = reader.bool();
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
-            }
-        }
-        return message;
-    },
-    fromJSON(object) {
-        const message = { ...baseWorkResponse };
-        if (object.exitCode !== undefined && object.exitCode !== null) {
-            message.exitCode = Number(object.exitCode);
-        }
-        else {
-            message.exitCode = 0;
-        }
-        if (object.output !== undefined && object.output !== null) {
-            message.output = String(object.output);
-        }
-        else {
-            message.output = "";
-        }
-        if (object.requestId !== undefined && object.requestId !== null) {
-            message.requestId = Number(object.requestId);
-        }
-        else {
-            message.requestId = 0;
-        }
-        if (object.wasCancelled !== undefined && object.wasCancelled !== null) {
-            message.wasCancelled = Boolean(object.wasCancelled);
-        }
-        else {
-            message.wasCancelled = false;
-        }
-        return message;
-    },
-    toJSON(message) {
-        const obj = {};
-        message.exitCode !== undefined && (obj.exitCode = message.exitCode);
-        message.output !== undefined && (obj.output = message.output);
-        message.requestId !== undefined && (obj.requestId = message.requestId);
-        message.wasCancelled !== undefined &&
-            (obj.wasCancelled = message.wasCancelled);
-        return obj;
-    },
-    fromPartial(object) {
-        const message = { ...baseWorkResponse };
-        if (object.exitCode !== undefined && object.exitCode !== null) {
-            message.exitCode = object.exitCode;
-        }
-        else {
-            message.exitCode = 0;
-        }
-        if (object.output !== undefined && object.output !== null) {
-            message.output = object.output;
-        }
-        else {
-            message.output = "";
-        }
-        if (object.requestId !== undefined && object.requestId !== null) {
-            message.requestId = object.requestId;
-        }
-        else {
-            message.requestId = 0;
-        }
-        if (object.wasCancelled !== undefined && object.wasCancelled !== null) {
-            message.wasCancelled = object.wasCancelled;
-        }
-        else {
-            message.wasCancelled = false;
-        }
-        return message;
-    },
-};
-var globalThis = (() => {
-    if (typeof globalThis !== "undefined")
-        return globalThis;
-    if (typeof self !== "undefined")
-        return self;
-    if (typeof window !== "undefined")
-        return window;
-    if (typeof global !== "undefined")
-        return global;
-    throw "Unable to locate global object";
-})();
-const atob = globalThis.atob ||
-    ((b64) => globalThis.Buffer.from(b64, "base64").toString("binary"));
-function bytesFromBase64(b64) {
-    const bin = atob(b64);
-    const arr = new Uint8Array(bin.length);
-    for (let i = 0; i < bin.length; ++i) {
-        arr[i] = bin.charCodeAt(i);
-    }
-    return arr;
-}
-const btoa = globalThis.btoa ||
-    ((bin) => globalThis.Buffer.from(bin, "binary").toString("base64"));
-function base64FromBytes(arr) {
-    const bin = [];
-    for (const byte of arr) {
-        bin.push(String.fromCharCode(byte));
-    }
-    return btoa(bin.join(""));
-}
-if (_m0__default["default"].util.Long !== Long__default["default"]) {
-    _m0__default["default"].util.Long = Long__default["default"];
-    _m0__default["default"].configure();
-}
-
-function concat(buffers) {
-    const length = buffers.reduce((sum, buffer) => sum + buffer.byteLength, 0);
-    const result = new Uint8Array(length);
-    let offset = 0;
-    for (const buffer of buffers) {
-        result.set(new Uint8Array(buffer), offset);
-        offset += buffer.byteLength;
-    }
-    return result.buffer;
-}
-async function* readFromStream(iterator, messageType) {
-    const it = iterator[Symbol.asyncIterator]();
-    let buffer = new Uint8Array(0);
-    outer: while (true) {
-        while (new Uint8Array(buffer).every((v) => 128 <= v)) {
-            const next = await it.next();
-            if (next.done) {
-                if (buffer.byteLength) {
-                    throw new Error("Unexpected EOF");
-                }
-                else {
-                    break outer;
-                }
-            }
-            buffer = concat([buffer, next.value]);
-        }
-        const reader = protobufjs.Reader.create(new Uint8Array(buffer));
-        const length = reader.uint32();
-        console.error(length);
-        buffer = buffer.slice(reader.pos);
-        while (buffer.byteLength < length) {
-            const next = await it.next();
-            if (next.done) {
-                throw new Error("Unexpected EOF");
-            }
-            buffer = concat([buffer, next.value]);
-        }
-        yield messageType.decode(new Uint8Array(buffer), length);
-        buffer = buffer.slice(length);
-    }
-}
-
-class CliError extends Error {
-}
-async function runWorker(worker) {
-    let abort;
-    process.on("SIGINT", () => abort?.abort());
-    process.on("SIGTERM", () => abort?.abort());
-    for await (const message of readFromStream(process.stdin, WorkRequest)) {
-        if (message.requestId) {
-            throw new CliError("Does not support multiplexed requests");
-        }
-        if (abort) {
-            if (!message.cancel) {
-                throw new CliError("Unexpected request while processing existing request");
-            }
-            abort.abort();
-        }
-        else {
-            if (message.cancel) {
-                continue;
-            }
-            abort = new AbortController();
-            worker(message.arguments, message.inputs, abort.signal).then(({ exitCode, output }) => {
-                const response = {
-                    exitCode,
-                    output,
-                    requestId: 0,
-                    wasCancelled: abort.signal.aborted,
-                };
-                const buffer = WorkResponse.encode(response).ldelim().finish();
-                process.stdout.write(buffer);
-                abort = undefined;
-                if (typeof gc !== "undefined") {
-                    gc();
-                }
-            }, (e) => {
-                console.error(e.stack);
-                process.exit(1);
-            });
-        }
-    }
-}
-async function runOnce(worker, args) {
-    const abort = new AbortController();
-    process.on("SIGINT", () => abort.abort());
-    process.on("SIGTERM", () => abort.abort());
-    const result = await worker(args, undefined, abort.signal);
-    console.error(result.output);
-    process.exitCode = result.exitCode;
-}
-/**
- * Run program using the provided worker factory.
- */
-async function workerMain(workerFactory) {
-    try {
-        const last = process.argv[process.argv.length - 1];
-        if (last === "--persistent_worker") {
-            const worker = await workerFactory(process.argv.slice(2, -1));
-            await runWorker(worker);
-        }
-        else if (last.startsWith("@")) {
-            const worker = await workerFactory(process.argv.slice(2, -1));
-            const file = await fs__namespace.promises.readFile(last.slice(1), "utf-8");
-            const args = file.trim().split("\n");
-            await runOnce(worker, args);
-        }
-        else {
-            const worker = await workerFactory([]);
-            await runOnce(worker, process.argv.slice(2));
-        }
-    }
-    catch (e) {
-        if (e instanceof CliError) {
-            console.error(e.message);
-        }
-        else {
-            console.error(e?.stack || String(e));
-        }
-        process.exit(1);
-    }
-}
-
-workerMain(async () => {
-    const vfs = new WrapperVfs();
-    patchFs(vfs, require("fs"));
-    patchFsPromises(vfs, require("fs").promises);
-    const { JsWorker, JsWorkerError } = await Promise.resolve().then(function () { return worker; });
-    const worker$1 = new JsWorker(vfs);
-    return async (a) => {
-        try {
-            await worker$1.run(a);
-        }
-        catch (e) {
-            if (e instanceof JsWorkerError) {
-                return { exitCode: 2, output: e.message };
-            }
-            return { exitCode: 1, output: String(e?.stack || e) };
-        }
-        return { exitCode: 0, output: "" };
-    };
-});
-
 var JsonFormat;
 (function (JsonFormat) {
     function parse(format, string) {
@@ -1610,6 +1096,10 @@ var JsonFormat;
         return new AnyJsonFormat();
     }
     JsonFormat.any = any;
+    function boolean() {
+        return new IdentityJsonFormat();
+    }
+    JsonFormat.boolean = boolean;
     function identity() {
         return new IdentityJsonFormat();
     }
@@ -1734,6 +1224,173 @@ class SetJsonFormat {
         return [...value].map((element) => this.format.toJson(element));
     }
 }
+
+var Input;
+(function (Input) {
+    function json() {
+        const digest = {
+            fromJson(json) {
+                return Buffer.from(json, "base64");
+            },
+            toJson(value) {
+                return Buffer.from(value).toString("base64");
+            },
+        };
+        return JsonFormat.object({
+            digest,
+            path: JsonFormat.string(),
+        });
+    }
+    Input.json = json;
+})(Input || (Input = {}));
+var WorkRequest;
+(function (WorkRequest) {
+    function json() {
+        return JsonFormat.object({
+            arguments: JsonFormat.array(JsonFormat.string()),
+            inputs: JsonFormat.array(Input.json()),
+            request_id: JsonFormat.number(),
+            verbosity: JsonFormat.number(),
+            sandbox_dir: JsonFormat.string(),
+        });
+    }
+    WorkRequest.json = json;
+})(WorkRequest || (WorkRequest = {}));
+var WorkResponse;
+(function (WorkResponse) {
+    function json() {
+        return JsonFormat.object({
+            exit_code: JsonFormat.number(),
+            output: JsonFormat.string(),
+            request_id: JsonFormat.number(),
+            was_cancelled: JsonFormat.boolean(),
+        });
+    }
+    WorkResponse.json = json;
+})(WorkResponse || (WorkResponse = {}));
+
+async function* lines(stream) {
+    let data = "";
+    for await (const chunk of stream) {
+        data += chunk;
+        let i = 0;
+        while (true) {
+            const j = data.indexOf("\n", i);
+            if (j < 0) {
+                break;
+            }
+            yield data.substring(i, j + 1);
+            i = j + 1;
+        }
+        data = data.substring(i);
+    }
+    if (data) {
+        yield data;
+    }
+}
+
+class CliError extends Error {
+}
+async function runWorker(worker) {
+    process.stdin.setEncoding("utf8");
+    let abort;
+    process.on("SIGINT", () => abort?.abort());
+    process.on("SIGTERM", () => abort?.abort());
+    for await (const line of lines(process.stdin)) {
+        const message = JsonFormat.parse(WorkRequest.json(), line);
+        if (message.request_id) {
+            throw new CliError("Does not support multiplexed requests");
+        }
+        if (abort) {
+            if (!message.cancel) {
+                throw new CliError("Unexpected request while processing existing request");
+            }
+            abort.abort();
+        }
+        else {
+            if (message.cancel) {
+                continue;
+            }
+            abort = new AbortController();
+            worker(message.arguments, message.inputs, abort.signal).then(({ exitCode, output }) => {
+                const response = {
+                    exit_code: exitCode,
+                    output,
+                    request_id: 0,
+                    was_cancelled: abort.signal.aborted,
+                };
+                const outputData = JsonFormat.stringify(WorkResponse.json(), response);
+                process.stdout.write(outputData + "\n");
+                abort = undefined;
+                if (typeof gc !== "undefined") {
+                    gc();
+                }
+            }, (e) => {
+                console.error(e.stack);
+                process.exit(1);
+            });
+        }
+    }
+}
+async function runOnce(worker, args) {
+    const abort = new AbortController();
+    process.on("SIGINT", () => abort.abort());
+    process.on("SIGTERM", () => abort.abort());
+    const result = await worker(args, undefined, abort.signal);
+    console.error(result.output);
+    process.exitCode = result.exitCode;
+}
+/**
+ * Run program using the provided worker factory.
+ */
+async function workerMain(workerFactory) {
+    try {
+        const last = process.argv[process.argv.length - 1];
+        if (last === "--persistent_worker") {
+            const worker = await workerFactory(process.argv.slice(2, -1));
+            await runWorker(worker);
+        }
+        else if (last.startsWith("@")) {
+            const worker = await workerFactory(process.argv.slice(2, -1));
+            const file = await fs__namespace.promises.readFile(last.slice(1), "utf-8");
+            const args = file.trim().split("\n");
+            await runOnce(worker, args);
+        }
+        else {
+            const worker = await workerFactory([]);
+            await runOnce(worker, process.argv.slice(2));
+        }
+    }
+    catch (e) {
+        if (e instanceof CliError) {
+            console.error(e.message);
+        }
+        else {
+            console.error(e?.stack || String(e));
+        }
+        process.exit(1);
+    }
+}
+
+workerMain(async () => {
+    const vfs = new WrapperVfs();
+    patchFs(vfs, require("fs"));
+    patchFsPromises(vfs, require("fs").promises);
+    const { JsWorker, JsWorkerError } = await Promise.resolve().then(function () { return worker; });
+    const worker$1 = new JsWorker(vfs);
+    return async (a) => {
+        try {
+            await worker$1.run(a);
+        }
+        catch (e) {
+            if (e instanceof JsWorkerError) {
+                return { exitCode: 2, output: e.message };
+            }
+            return { exitCode: 1, output: String(e?.stack || e) };
+        }
+        return { exitCode: 0, output: "" };
+    };
+});
 
 var PackageDeps;
 (function (PackageDeps) {

@@ -108,6 +108,10 @@ class Resolver {
         return new AnyJsonFormat();
     }
     JsonFormat.any = any;
+    function boolean() {
+        return new IdentityJsonFormat();
+    }
+    JsonFormat.boolean = boolean;
     function identity() {
         return new IdentityJsonFormat();
     }
