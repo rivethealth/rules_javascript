@@ -124,7 +124,10 @@ def _angular_library(ctx):
             actions.run(
                 arguments = [args],
                 executable = compiler.resource_compiler.files_to_run.executable,
-                execution_requirements = {"supports-workers": "1"},
+                execution_requirements = {
+                    "requires-worker-protocol": "json",
+                    "supports-workers": "1",
+                },
                 inputs = [file],
                 mnemonic = "TypeScriptTranspile",
                 outputs = [js_],
@@ -238,7 +241,10 @@ def _angular_library(ctx):
                     actions.run(
                         arguments = [args],
                         executable = compiler.js_compiler.files_to_run.executable,
-                        execution_requirements = {"supports-workers": "1"},
+                        execution_requirements = {
+                            "requires-worker-protocol": "json",
+                            "supports-workers": "1",
+                        },
                         inputs = depset(
                             [ts_, transpile_package_manifest, transpile_tsconfig],
                             transitive = [js_info.transitive_files for js_info in compiler.js_deps] + [tsconfig_js.transitive_files] if tsconfig_js else [],
