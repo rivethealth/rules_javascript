@@ -22,6 +22,15 @@ export class Resolver {
     private readonly packages: Trie<string, ResolverPackage>,
   ) {}
 
+  root(path: string) {
+    const { value: package_ } = this.packages.getClosest(pathParts(path));
+    if (!package_) {
+      throw new Error(`File "${path}" is not part of any known package`);
+    }
+
+    return package_.id;
+  }
+
   resolve(parent: string, request: string): Resolution {
     if (request.startsWith(".") || request.startsWith("/")) {
       throw new Error(`Specifier "${request}" is not for a package`);

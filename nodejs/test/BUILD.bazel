@@ -9,6 +9,7 @@ TESTS = [
     "binary_archive",
     "dep",
     "esm",
+    "module_details",
 ]
 
 [

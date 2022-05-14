@@ -3,6 +3,7 @@ import { PackageTree } from "@better-rules-javascript/commonjs-package";
 import { JsonFormat } from "@better-rules-javascript/util-json";
 import * as fs from "fs";
 import { patchModule } from "./module";
+import { patchModuleDetails } from "./module-details";
 
 const manifestPath = process.env.NODE_PACKAGE_MANIFEST;
 if (!manifestPath) {
@@ -15,3 +16,4 @@ const packageTree = JsonFormat.parse(
 
 const resolver = Resolver.create(packageTree, process.env.RUNFILES_DIR);
 patchModule(resolver, require("module"));
+patchModuleDetails(resolver, require("module"));
