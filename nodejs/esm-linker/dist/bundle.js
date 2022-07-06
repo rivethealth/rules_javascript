@@ -340,7 +340,7 @@ const linkDirectory = lazy(async () => {
     await fs__namespace.promises.mkdir(path__namespace.join(dir, "node_modules"));
     return dir;
 });
-const linkedPackages = new Set();
+const linkedPackages = new Map();
 const resolver = Resolver.create(packageTree, process.env.RUNFILES_DIR);
 async function resolve(specifier, context, defaultResolve) {
     if (!context.parentURL && path__namespace.extname(specifier) == "") {
@@ -369,9 +369,9 @@ async function resolve(specifier, context, defaultResolve) {
         .replace(/\//g, "_");
     const linkPath = path__namespace.join(directory, "node_modules", packageName);
     if (!linkedPackages.has(resolved.package)) {
-        linkedPackages.add(resolved.package);
-        await fs__namespace.promises.symlink(resolved.package, linkPath);
+        linkedPackages.set(resolved.package, fs__namespace.promises.symlink(resolved.package, linkPath));
     }
+    await linkedPackages.get(resolved.package);
     specifier = packageName;
     if (resolved.inner) {
         specifier = `${specifier}/${resolved.inner}`;

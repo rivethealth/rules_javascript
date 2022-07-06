@@ -26,7 +26,7 @@ const linkDirectory = lazy(async () => {
   return dir;
 });
 
-const linkedPackages = new Set();
+const linkedPackages = new Map<string, Promise<void>>();
 
 const resolver = Resolver.create(packageTree, process.env.RUNFILES_DIR);
 
@@ -66,9 +66,12 @@ export async function resolve(
     .replace(/\//g, "_");
   const linkPath = path.join(directory, "node_modules", packageName);
   if (!linkedPackages.has(resolved.package)) {
-    linkedPackages.add(resolved.package);
-    await fs.promises.symlink(resolved.package, linkPath);
+    linkedPackages.set(
+      resolved.package,
+      fs.promises.symlink(resolved.package, linkPath),
+    );
   }
+  await linkedPackages.get(resolved.package);
 
   specifier = packageName;
   if (resolved.inner) {
