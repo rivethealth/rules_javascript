@@ -44,19 +44,18 @@ export namespace WorkRequest {
 }
 
 export interface WorkResponse {
-  exit_code: number;
+  exitCode: number;
   output: string;
-  request_id?: number;
-  was_cancelled?: boolean;
+  requestId?: number;
+  // wasCanceled is unsupported
 }
 
 export namespace WorkResponse {
   export function json(): JsonFormat<WorkResponse> {
     return JsonFormat.object({
-      exit_code: JsonFormat.number(),
+      exitCode: JsonFormat.number(),
       output: JsonFormat.string(),
-      request_id: JsonFormat.number(),
-      was_cancelled: JsonFormat.boolean(),
+      requestId: JsonFormat.number(),
     });
   }
 }

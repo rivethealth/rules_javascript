@@ -1260,10 +1260,9 @@ var WorkResponse;
 (function (WorkResponse) {
     function json() {
         return JsonFormat.object({
-            exit_code: JsonFormat.number(),
+            exitCode: JsonFormat.number(),
             output: JsonFormat.string(),
-            request_id: JsonFormat.number(),
-            was_cancelled: JsonFormat.boolean(),
+            requestId: JsonFormat.number(),
         });
     }
     WorkResponse.json = json;
@@ -1314,10 +1313,10 @@ async function runWorker(worker) {
             abort = new AbortController();
             worker(message.arguments, message.inputs, abort.signal).then(({ exitCode, output }) => {
                 const response = {
-                    exit_code: exitCode,
+                    exitCode,
                     output,
-                    request_id: 0,
-                    was_cancelled: abort.signal.aborted,
+                    requestId: message.request_id,
+                    // wasCancelled: abort.signal.aborted,
                 };
                 const outputData = JsonFormat.stringify(WorkResponse.json(), response);
                 process.stdout.write(outputData + "\n");
