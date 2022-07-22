@@ -4,7 +4,6 @@ load("//commonjs:rules.bzl", "cjs_root")
 load("//javascript:rules.bzl", "js_export", "js_library")
 load("//javascript:providers.bzl", "JsInfo")
 load("//nodejs:rules.bzl", "nodejs_binary")
-load("//nodejs:providers.bzl", "package_path_name")
 load("//typescript:rules.bzl", "ts_library")
 load("//util:path.bzl", "runfile_path")
 

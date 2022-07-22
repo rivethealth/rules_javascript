@@ -50,8 +50,8 @@ export async function createArchive(
         await copyFile(`${name}/${child}`, `${path}/${child}`);
       }
     } else {
-      const content = fs.readFileSync(path);
-      await write({ name, mode: stat.mode }, content);
+      const content = await fs.promises.readFile(path);
+      write({ name, mode: stat.mode }, content);
     }
   };
 
@@ -59,14 +59,21 @@ export async function createArchive(
     packages.links.map((link) => [link.name, link.path]),
   );
 
-  for (const [path_, package_] of packageTree.packages.entries()) {
+  const contentPath = (path: string) =>
+    packages.nodeModules ? `.content/${path}` : path;
+  const globalPath = (path: string) =>
+    packages.nodeModules ? path : `node_modules/${path}`;
+
+  for (let [path_, package_] of packageTree.packages.entries()) {
     const linkPath = linkPaths.get(path_);
+
+    path_ = contentPath(path_);
 
     if (linkPath !== undefined) {
       await write({
         type: "symlink",
         name: path_,
-        linkname: `../${path.relative(path.dirname(path_), linkPath)}`,
+        linkname: path.relative(path.dirname(path_), `../${linkPath}`),
       });
       continue;
     }
@@ -77,22 +84,22 @@ export async function createArchive(
       await write({
         type: "symlink",
         name,
-        linkname: path.relative(path.dirname(name), depPath),
+        linkname: path.relative(path.dirname(name), contentPath(depPath)),
       });
     }
   }
 
   for (const [depName, depPath] of packageTree.globals.entries()) {
-    const name = packages.nodeModules ? depName : `node_modules/${depName}`;
+    const name = globalPath(depName);
     await write({
       type: "symlink",
       name,
-      linkname: path.relative(path.dirname(name), depPath),
+      linkname: path.relative(path.dirname(name), contentPath(depPath)),
     });
   }
 
   for (const entry of entries) {
-    await copyFile(entry.name, entry.path);
+    await copyFile(contentPath(entry.name), entry.path);
   }
 
   tar.finalize();

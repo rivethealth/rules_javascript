@@ -316,6 +316,7 @@ def _angular_library(ctx):
                 ),
                 mnemonic = "AngularCompile",
                 outputs = outputs,
+                progress_message = "Compiling %{label} Angular",
                 tools = [compiler.bin.files_to_run],
             )
         else:
@@ -335,6 +336,7 @@ def _angular_library(ctx):
                 ),
                 mnemonic = "TypeScriptCompile",
                 outputs = outputs,
+                progress_message = "Compiling %{label} TypeScript declarations",
                 tools = [compiler.tsc_bin.files_to_run],
             )
 

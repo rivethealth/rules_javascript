@@ -3,10 +3,7 @@ set -euo pipefail
 # For additional options to the Node.js runtime, use the
 # NODE_OPTIONS environment variable.
 
-cd "$(dirname "$0")"
-
-# TODO: %{env}
-exec node \
+%{env} exec node \
   %{node_options} \
-  ./%{main_module} \
+  "$(dirname "$0")"/%{main_module} \
   "$@"

@@ -1,6 +1,6 @@
 load("//commonjs:rules.bzl", "cjs_root")
 load("//javascript:rules.bzl", "js_library")
-load("//nodejs:rules.bzl", "nodejs_archive")
+load("//nodejs:rules.bzl", "nodejs_modules_archive")
 load(":npm_data.bzl", "ROOTS")
 
 package(default_visibility = ["//visibility:public"])
@@ -13,8 +13,8 @@ js_library(
     root = ":root",
 )
 
-nodejs_archive(
-    name = "nodejs_archive",
+nodejs_modules_archive(
+    name = "nodejs_modules_archive",
     links = [
         "//angular/resource-compiler:root",
         "//bazel/runfiles:root",
@@ -28,9 +28,7 @@ nodejs_archive(
         "//webpack/config:root",
     ],
     tags = ["no-cache"],
-    deps = [
-        "//bazel/worker:worker_proto_lib",
-    ] + ["@npm//%s:lib" % dep["name"] for dep in ROOTS],
+    deps = ["@npm//%s:lib" % dep["name"] for dep in ROOTS],
 )
 
 js_library(

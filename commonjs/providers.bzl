@@ -1,5 +1,3 @@
-load("//util:path.bzl", "output", "runfile_path")
-
 # see http://wiki.commonjs.org/wiki/Packages/1.0
 CjsInfo = provider(
     doc = "CommonJS-style package info",

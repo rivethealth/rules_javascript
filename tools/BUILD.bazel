@@ -79,7 +79,7 @@ multi_generate(
 
 nodejs_install(
     name = "install_node_modules0",
-    archive = "//:nodejs_archive",
+    archive = "//:nodejs_modules_archive",
 )
 
 sh_binary(
