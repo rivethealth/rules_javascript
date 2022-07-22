@@ -147,9 +147,8 @@ def _nodejs_binary_implementation(ctx):
     env = ctx.attr.env
     manifest = ctx.attr._manifest[DefaultInfo]
     js_dep = ctx.attr.dep[0][JsInfo]
-    js_deps = [js_dep]
-    cjs_dep = ctx.attr.dep[0][CjsInfo]
-    cjs_deps = [cjs_dep]
+    cjs_dep = ctx.attr.dep[0][CjsInfo] if CjsInfo in ctx.attr.dep[0] else None
+    main = ctx.attr.main
     module_linker_cjs = ctx.attr._module_linker[CjsInfo]
     module_linker_js = ctx.attr._module_linker[JsInfo]
     name = ctx.attr.name
@@ -162,7 +161,7 @@ def _nodejs_binary_implementation(ctx):
     runtime_js = ctx.attr._runtime[JsInfo]
     workspace_name = ctx.workspace_name
 
-    transitive_packages = depset(transitive = [dep.transitive_packages for dep in cjs_deps])
+    transitive_packages = depset(transitive = [cjs_dep.transitive_packages] if cjs_dep else [])
 
     def package_path(package):
         return runfile_path(workspace_name, package)
@@ -173,11 +172,11 @@ def _nodejs_binary_implementation(ctx):
         manifest_bin = manifest,
         manifest = package_manifest,
         packages = transitive_packages,
-        deps = depset(transitive = [dep.transitive_links for dep in cjs_deps]),
+        deps = depset(transitive = [cjs_dep.transitive_links] if cjs_dep else []),
         package_path = package_path,
     )
 
-    main_module = "%s/%s" % (runfile_path(workspace_name, cjs_dep.package), ctx.attr.main)
+    main_module = "%s/%s" % (runfile_path(workspace_name, cjs_dep.package), main) if cjs_dep else main
 
     bin = actions.declare_file(name)
     actions.expand_template(
@@ -198,7 +197,7 @@ def _nodejs_binary_implementation(ctx):
 
     runfiles = ctx.runfiles(
         files = [node.bin, package_manifest],
-        transitive_files = depset(transitive = [js_info.transitive_files for js_info in js_deps] + [esm_linker_js.transitive_files, module_linker_js.transitive_files, runtime_js.transitive_files]),
+        transitive_files = depset(transitive = [js_dep.transitive_files] + [esm_linker_js.transitive_files, module_linker_js.transitive_files, runtime_js.transitive_files]),
     )
     runfiles = runfiles.merge_all(
         [dep[DefaultInfo].default_runfiles for dep in ctx.attr.data if dep[DefaultInfo].default_runfiles != None],
@@ -230,7 +229,7 @@ nodejs_binary = rule(
             cfg = _nodejs_transition,
             doc = "JavaScript library.",
             mandatory = True,
-            providers = [CjsInfo, JsInfo],
+            providers = [JsInfo],
         ),
         "env": attr.string_dict(
             doc = "Environment variables",

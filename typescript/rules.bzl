@@ -96,8 +96,8 @@ def _ts_library_impl(ctx):
     actions = ctx.actions
     config = ctx.attr._config[DefaultInfo]
     compiler = ctx.attr.compiler[TsCompilerInfo]
-    cjs_deps = compiler.runtime_cjs + [target[CjsInfo] for target in ctx.attr.compile_deps + ctx.attr.deps]
-    cjs_root = ctx.attr.root[CjsInfo]
+    cjs_deps = compiler.runtime_cjs + [target[CjsInfo] for target in ctx.attr.compile_deps + ctx.attr.deps if CjsInfo in target]
+    cjs_root = ctx.attr.root and ctx.attr.root[CjsInfo]
     declaration_prefix = ctx.attr.declaration_prefix
     fs_linker_cjs = ctx.attr._fs_linker[CjsInfo]
     fs_linker_js = ctx.attr._fs_linker[JsInfo]
@@ -114,7 +114,7 @@ def _ts_library_impl(ctx):
     ts_deps = [target[TsInfo] for target in ctx.attr.compile_deps + ctx.attr.deps if TsInfo in target]
     tsconfig_js = ctx.attr.config_dep and ctx.attr.config_dep[JsInfo]
     tsconfig_path = ctx.attr.config
-    tsconfig_dep = ctx.attr.config_dep[CjsInfo] if ctx.attr.config_dep else None
+    tsconfig_dep = ctx.attr.config_dep and (ctx.attr.config_dep[CjsInfo] if CjsInfo in ctx.attr.config_dep else None)
     workspace_name = ctx.workspace_name
 
     if tsconfig_path and not tsconfig_dep:
@@ -140,18 +140,18 @@ def _ts_library_impl(ctx):
     )
 
     transpile_package_manifest = actions.declare_file("%s.js-package-manifest.json" % ctx.attr.name)
-    transpile_cjs_info = create_cjs_info(
+    transpile_cjs_info = cjs_root and create_cjs_info(
         cjs_root = cjs_root,
         label = label,
         deps = ([tsconfig_dep] if tsconfig_dep else []) + compiler.runtime_cjs,
     )
     gen_manifest(
         actions = actions,
-        deps = transpile_cjs_info.transitive_links,
+        deps = transpile_cjs_info.transitive_links if transpile_cjs_info else depset(),
         manifest = transpile_package_manifest,
         manifest_bin = ctx.attr._manifest[DefaultInfo],
         package_path = package_path,
-        packages = transpile_cjs_info.transitive_packages,
+        packages = transpile_cjs_info.transitive_packages if transpile_cjs_info else depset(),
     )
 
     declarations = []
@@ -250,7 +250,8 @@ def _ts_library_impl(ctx):
         args.add("--module", module_)
         args.add("--root-dir", "%s/%s" % (output_.path, src_prefix) if src_prefix else output_.path)
         args.add("--target", target_)
-        args.add("--type-root", "%s/node_modules/@types" % cjs_root.package.path)
+        if cjs_root:
+            args.add("--type-root", "%s/node_modules/@types" % cjs_root.package.path)
         args.add(tsconfig)
         actions.run(
             arguments = [args],
@@ -260,18 +261,18 @@ def _ts_library_impl(ctx):
         )
 
         package_manifest = actions.declare_file("%s.package-manifest.json" % ctx.attr.name)
-        compile_cjs_info = create_cjs_info(
+        compile_cjs_info = cjs_root and create_cjs_info(
             cjs_root = cjs_root,
             deps = ([tsconfig_dep] if tsconfig_dep else []) + compiler.runtime_cjs + cjs_deps,
             label = label,
         )
         gen_manifest(
             actions = actions,
-            deps = compile_cjs_info.transitive_links,
+            deps = compile_cjs_info.transitive_links if compile_cjs_info else depset(),
             manifest = package_manifest,
             manifest_bin = ctx.attr._manifest[DefaultInfo],
             package_path = package_path,
-            packages = compile_cjs_info.transitive_packages,
+            packages = compile_cjs_info.transitive_packages if compile_cjs_info else depset(),
         )
 
         actions.run(
@@ -284,7 +285,8 @@ def _ts_library_impl(ctx):
             inputs = depset(
                 [package_manifest, tsconfig] + inputs,
                 transitive =
-                    [cjs_root.transitive_files, fs_linker_js.transitive_files] +
+                    ([cjs_root.transitive_files] if cjs_root else []) +
+                    [fs_linker_js.transitive_files] +
                     ([tsconfig_js.transitive_files] if tsconfig_js else []) +
                     [js_info.transitive_files for js_info in compiler.runtime_js] +
                     [dep.transitive_files for dep in ts_deps],
@@ -304,7 +306,7 @@ def _ts_library_impl(ctx):
         _validation = depset(declarations),
     )
 
-    cjs_info = create_cjs_info(
+    cjs_info = cjs_root and create_cjs_info(
         files = declarations + js,
         label = label,
         cjs_root = cjs_root,
@@ -323,7 +325,7 @@ def _ts_library_impl(ctx):
         files = declarations,
     )
 
-    return [cjs_info, default_info, js_info, output_group_info, ts_info]
+    return [default_info, js_info, output_group_info, ts_info] + ([cjs_info] if cjs_info else [])
 
 ts_library = rule(
     implementation = _ts_library_impl,
@@ -341,7 +343,7 @@ ts_library = rule(
         ),
         "config_dep": attr.label(
             doc = "Tsconfig dependency.",
-            providers = [[CjsInfo, JsInfo]],
+            providers = [JsInfo],
         ),
         "data": attr.label_list(
             allow_files = True,
@@ -362,7 +364,6 @@ ts_library = rule(
         ),
         "root": attr.label(
             doc = "CommonJS package root.",
-            mandatory = True,
             providers = [CjsInfo],
         ),
         "src_prefix": attr.string(
@@ -384,7 +385,7 @@ ts_library = rule(
             executable = True,
         ),
         "_fs_linker": attr.label(
-            providers = [JsInfo],
+            providers = [CjsInfo, JsInfo],
             cfg = "exec",
             default = "//nodejs/fs-linker:dist_lib",
         ),
@@ -407,11 +408,12 @@ ts_library = rule(
         ),
     },
     doc = "TypeScript library.",
+    provides = [TsInfo],
 )
 
 def _ts_import_impl(ctx):
     actions = ctx.actions
-    cjs_root = ctx.attr.root[CjsInfo]
+    cjs_root = ctx.attr.root and ctx.attr.root[CjsInfo]
     declaration_prefix = ctx.attr.declaration_prefix
     cjs_deps = [dep[CjsInfo] for dep in ctx.attr.deps]
     js_deps = [dep[JsInfo] for dep in ctx.attr.deps if JsInfo in dep]
@@ -462,7 +464,7 @@ def _ts_import_impl(ctx):
         files = depset(js),
     )
 
-    cjs_info = create_cjs_info(
+    cjs_info = cjs_root and create_cjs_info(
         cjs_root = cjs_root,
         deps = cjs_deps,
         files = declarations,
@@ -481,7 +483,7 @@ def _ts_import_impl(ctx):
         deps = ts_deps,
     )
 
-    return [cjs_info, default_info, js_info, ts_info]
+    return [default_info, js_info, ts_info] + ([cjs_info] if cjs_info else [])
 
 ts_import = rule(
     implementation = _ts_import_impl,
@@ -506,7 +508,6 @@ ts_import = rule(
         ),
         "root": attr.label(
             doc = "CommonJS root",
-            mandatory = True,
             providers = [CjsInfo],
         ),
         "strip_prefix": attr.string(

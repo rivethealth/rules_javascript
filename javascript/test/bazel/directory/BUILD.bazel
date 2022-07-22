@@ -1,12 +1,5 @@
-load("@better_rules_javascript//commonjs:rules.bzl", "cjs_root")
 load("@better_rules_javascript//javascript:rules.bzl", "js_library")
 load("@rules_file//file:rules.bzl", "directory")
-
-cjs_root(
-    name = "root",
-    package_name = "@better-rules-javascript-test/nodejs-dep",
-    descriptors = ["package.json"],
-)
 
 directory(
     name = "src",
@@ -18,5 +11,4 @@ directory(
 js_library(
     name = "lib",
     srcs = [":src"],
-    root = ":root",
 )

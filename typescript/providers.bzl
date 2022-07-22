@@ -73,5 +73,5 @@ def target(language):
 
 def create_ts_info(cjs_root, files = [], deps = []):
     return TsInfo(
-        transitive_files = depset(files, transitive = [ts_info.transitive_files for ts_info in [cjs_root] + deps]),
+        transitive_files = depset(files, transitive = [ts_info.transitive_files for ts_info in ([cjs_root] if cjs_root else []) + deps]),
     )

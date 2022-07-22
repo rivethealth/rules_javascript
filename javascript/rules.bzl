@@ -1,11 +1,11 @@
 load("//commonjs:providers.bzl", "CjsInfo", "create_cjs_info")
-load("//util:path.bzl", "output", "output_name", "runfile_path")
+load("//util:path.bzl", "output", "output_name")
 load(":providers.bzl", "JsInfo", "create_js_info")
 
 def _js_library_impl(ctx):
     actions = ctx.actions
-    cjs_root = ctx.attr.root[CjsInfo]
-    cjs_deps = [dep[CjsInfo] for dep in ctx.attr.deps]
+    cjs_root = ctx.attr.root and ctx.attr.root[CjsInfo]
+    cjs_deps = [dep[CjsInfo] for dep in ctx.attr.deps if CjsInfo in dep]
     cjs_globals = [dep[CjsInfo] for dep in ctx.attr.global_deps]
     js_deps = [dep[JsInfo] for dep in ctx.attr.deps + ctx.attr.global_deps]
     default_deps = [target[DefaultInfo] for target in ctx.attr.deps + ctx.attr.data]
@@ -32,7 +32,7 @@ def _js_library_impl(ctx):
             )
         js.append(js_)
 
-    cjs_info = create_cjs_info(
+    cjs_info = cjs_root and create_cjs_info(
         cjs_root = cjs_root,
         deps = cjs_deps,
         files = js,
@@ -50,7 +50,7 @@ def _js_library_impl(ctx):
     runfiles = runfiles.merge_all([default_info.default_runfiles for default_info in default_deps])
     default_info = DefaultInfo(files = depset(js), runfiles = runfiles)
 
-    return [cjs_info, default_info, js_info]
+    return [default_info, js_info] + ([cjs_info] if cjs_info else [])
 
 js_library = rule(
     attrs = {
@@ -60,17 +60,16 @@ js_library = rule(
         ),
         "deps": attr.label_list(
             doc = "Dependencies.",
-            providers = [CjsInfo],
+            providers = [JsInfo],
         ),
         "global_deps": attr.label_list(
             doc = "Global dependencies.",
-            providers = [CjsInfo],
+            providers = [CjsInfo, JsInfo],
         ),
         "prefix": attr.string(
             doc = "Prefix to add.",
         ),
         "root": attr.label(
-            mandatory = True,
             providers = [CjsInfo],
         ),
         "srcs": attr.label_list(
@@ -83,7 +82,7 @@ js_library = rule(
     },
     doc = "JavaScript library",
     implementation = _js_library_impl,
-    provides = [CjsInfo, JsInfo],
+    provides = [JsInfo],
 )
 
 def _js_export_impl(ctx):
