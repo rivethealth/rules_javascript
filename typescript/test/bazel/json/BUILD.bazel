@@ -15,7 +15,10 @@ js_library(
 
 ts_library(
     name = "lib",
-    srcs = ["example.json"],
+    srcs = [
+        "example.json",
+        "index.ts",
+    ],
     compiler = "//:ts",
     config = "tsconfig",
     config_dep = ":tsconfig",
