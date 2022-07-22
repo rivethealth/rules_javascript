@@ -151,8 +151,5 @@ def create_cjs_info(cjs_root, label, files = [], deps = [], globals = []):
         ),
     )
 
-def source_root(workspace_name, label):
-    result = "bazel://%s/" % workspace_name
-    if label.package:
-        result += "%s/" % label.package
-    return result
+def source_root(label):
+    return "%s/" % label.package if label.package else ""

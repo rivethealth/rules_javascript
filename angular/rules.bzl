@@ -144,7 +144,7 @@ def _angular_library(ctx):
         args.add("--source-map", json.encode(source_map))
         args.add("--out-dir", "%s/%s" % (output_.path, js_prefix) if js_prefix else output_.path)
         args.add("--root-dir", "%s/%s" % (output_.path, src_prefix) if src_prefix else output_.path)
-        args.add("--source-root", source_root(workspace_name, label))
+        args.add("--source-root", source_root(label))
         args.add(transpile_tsconfig)
         actions.run(
             arguments = [args],
@@ -273,7 +273,7 @@ def _angular_library(ctx):
         args.add("--module", module)
         if compilation_mode == "opt":
             args.add("--source-map", json.encode(source_map))
-            args.add("--source-root", source_root(workspace_name, label))
+            args.add("--source-root", source_root(label))
         args.add("--type-root", "%s/node_modules/@types" % cjs_root.package.path)
         args.add(tsconfig)
         actions.run(

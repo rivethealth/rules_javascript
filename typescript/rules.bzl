@@ -129,7 +129,7 @@ def _ts_library_impl(ctx):
     args.add("--out-dir", "%s/%s" % (output_.path, js_prefix) if js_prefix else output_.path)
     args.add("--root-dir", "%s/%s" % (output_.path, src_prefix) if src_prefix else output_.path)
     args.add("--source-map", json.encode(source_map))
-    args.add("--source-root", source_root(workspace_name, label))
+    args.add("--source-root", source_root(label))
     args.add("--target", target_)
     args.add(transpile_tsconfig)
     actions.run(
