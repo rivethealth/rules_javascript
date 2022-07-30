@@ -26,4 +26,5 @@ nodejs_binary(
     dep = "@better_rules_javascript_npm//@yarnpkg/cli-dist:lib",
     main = "bin/yarn.js",
     node = "//rules:nodejs",
+    node_options = ["--title=yarn"],
 )

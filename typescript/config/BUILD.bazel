@@ -61,6 +61,7 @@ nodejs_binary(
     dep = ":dist_lib",
     main = "dist/bundle.js",
     node = "//rules:nodejs",
+    node_options = ["--title=ts-config"],
 )
 
 js_library(

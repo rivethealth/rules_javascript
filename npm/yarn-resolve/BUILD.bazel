@@ -41,4 +41,5 @@ nodejs_binary(
     dep = ":lib",
     main = "src/main.js",
     node = "//rules:nodejs",
+    node_options = ["--title=yarn-resovle"],
 )

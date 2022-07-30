@@ -34,6 +34,7 @@ def configure_js_proto(name, dep, visibility = None):
         dep = dep,
         main = "bin/pbjs",
         node = "@better_rules_javascript//rules:nodejs",
+        node_options = ["--title=pbjs"],
         visibility = ["//visibility:private"],
     )
 

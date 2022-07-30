@@ -54,6 +54,7 @@ def configure_ts_protoc(name, tsc, ts_proto, deps, options = [], visibility = No
         name = "%s.bin" % name,
         node_options = [
             "--no-deprecation",  # https://github.com/protobufjs/protobuf.js/issues/1411
+            "--title=ts-protoc",
         ],
         dep = ts_proto,
         main = "build/plugin.js",

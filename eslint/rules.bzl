@@ -63,6 +63,7 @@ def configure_eslint(name, dep, config, config_dep, plugins = [], visibility = N
         dep = ":%s.main" % name,
         main = "src/main.js",
         node = "@better_rules_javascript//rules:nodejs",
+        node_options = ["--title=eslint"],
         visibility = ["//visibility:private"],
     )
 

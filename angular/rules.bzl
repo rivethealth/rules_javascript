@@ -18,6 +18,7 @@ def configure_angular_compiler(name, core, compiler_cli, ts, tslib, reflect_meta
         main = "lib/tsc.js",
         name = "%s.tsc_bin" % name,
         node = "@better_rules_javascript//rules:nodejs",
+        node_options = ["--title=tsc"],
         dep = ts,
         visibility = ["//visibility:private"],
     )
@@ -33,6 +34,7 @@ def configure_angular_compiler(name, core, compiler_cli, ts, tslib, reflect_meta
         main = "src/main.js",
         name = "%s.js_bin" % name,
         node = "@better_rules_javascript//rules:nodejs",
+        node_options = ["--title=ng-js"],
         dep = ":%s.js_lib" % name,
         visibility = ["//visibility:private"],
     )
@@ -42,6 +44,7 @@ def configure_angular_compiler(name, core, compiler_cli, ts, tslib, reflect_meta
         dep = compiler_cli,
         main = "bundles/src/bin/ngc.js",
         node = "@better_rules_javascript//rules:nodejs",
+        node_options = ["--title=ngc"],
         visibility = ["//visibility:private"],
     )
 
