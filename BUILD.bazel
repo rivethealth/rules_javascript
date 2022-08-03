@@ -54,5 +54,6 @@ test_suite(
         "//rollup/test",
         "//ts-proto/test",
         "//typescript/test",
+        "//webpack/test",
     ],
 )

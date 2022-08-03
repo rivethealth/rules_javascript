@@ -1,4 +1,5 @@
 import %workspace%/tools/deleted.bazelrc
+build -k
 build --disk_cache=.bazel_cache
 build --experimental_allow_unresolved_symlinks
 build --experimental_worker_allow_json_protocol

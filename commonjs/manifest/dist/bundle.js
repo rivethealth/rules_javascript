@@ -1,8 +1,8 @@
 'use strict';
 
+var fs = require('fs');
 var assert = require('assert');
 var util = require('util');
-var fs = require('fs');
 var path = require('path');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
@@ -25,10 +25,10 @@ function _interopNamespace(e) {
     return Object.freeze(n);
 }
 
+var fs__namespace = /*#__PURE__*/_interopNamespace(fs);
+var fs__default = /*#__PURE__*/_interopDefaultLegacy(fs);
 var assert__default = /*#__PURE__*/_interopDefaultLegacy(assert);
 var util__default = /*#__PURE__*/_interopDefaultLegacy(util);
-var fs__default = /*#__PURE__*/_interopDefaultLegacy(fs);
-var fs__namespace = /*#__PURE__*/_interopNamespace(fs);
 var path__default = /*#__PURE__*/_interopDefaultLegacy(path);
 
 var JsonFormat;
@@ -198,6 +198,169 @@ class SetJsonFormat {
         return [...value].map((element) => this.format.toJson(element));
     }
 }
+
+var Input;
+(function (Input) {
+    function json() {
+        const digest = {
+            fromJson(json) {
+                return Buffer.from(json, "base64");
+            },
+            toJson(value) {
+                return Buffer.from(value).toString("base64");
+            },
+        };
+        return JsonFormat.object({
+            digest,
+            path: JsonFormat.string(),
+        });
+    }
+    Input.json = json;
+})(Input || (Input = {}));
+var WorkRequest;
+(function (WorkRequest) {
+    function json() {
+        return JsonFormat.object({
+            arguments: JsonFormat.array(JsonFormat.string()),
+            inputs: JsonFormat.array(Input.json()),
+            request_id: JsonFormat.number(),
+            verbosity: JsonFormat.number(),
+            sandbox_dir: JsonFormat.string(),
+        });
+    }
+    WorkRequest.json = json;
+})(WorkRequest || (WorkRequest = {}));
+var WorkResponse;
+(function (WorkResponse) {
+    function json() {
+        return JsonFormat.object({
+            exitCode: JsonFormat.number(),
+            output: JsonFormat.string(),
+            requestId: JsonFormat.number(),
+        });
+    }
+    WorkResponse.json = json;
+})(WorkResponse || (WorkResponse = {}));
+
+async function* lines(stream) {
+    let data = "";
+    for await (const chunk of stream) {
+        data += chunk;
+        let i = 0;
+        while (true) {
+            const j = data.indexOf("\n", i);
+            if (j < 0) {
+                break;
+            }
+            yield data.substring(i, j + 1);
+            i = j + 1;
+        }
+        data = data.substring(i);
+    }
+    if (data) {
+        yield data;
+    }
+}
+
+class CliError extends Error {
+}
+async function runWorker(worker) {
+    process.stdin.setEncoding("utf8");
+    let abort;
+    process.on("SIGINT", () => abort?.abort());
+    process.on("SIGTERM", () => abort?.abort());
+    for await (const line of lines(process.stdin)) {
+        const message = JsonFormat.parse(WorkRequest.json(), line);
+        if (message.request_id) {
+            throw new CliError("Does not support multiplexed requests");
+        }
+        if (abort) {
+            if (!message.cancel) {
+                throw new CliError("Unexpected request while processing existing request");
+            }
+            abort.abort();
+        }
+        else {
+            if (message.cancel) {
+                continue;
+            }
+            abort = new AbortController();
+            worker(message.arguments, message.inputs, abort.signal).then(({ exitCode, output }) => {
+                const response = {
+                    exitCode,
+                    output,
+                    requestId: message.request_id,
+                    // wasCancelled: abort.signal.aborted,
+                };
+                const outputData = JsonFormat.stringify(WorkResponse.json(), response);
+                process.stdout.write(outputData + "\n");
+                abort = undefined;
+                if (typeof gc !== "undefined") {
+                    gc();
+                }
+            }, (e) => {
+                console.error(e.stack);
+                process.exit(1);
+            });
+        }
+    }
+}
+async function runOnce(worker, args) {
+    const abort = new AbortController();
+    process.on("SIGINT", () => abort.abort());
+    process.on("SIGTERM", () => abort.abort());
+    const result = await worker(args, undefined, abort.signal);
+    console.error(result.output);
+    process.exitCode = result.exitCode;
+}
+/**
+ * Run program using the provided worker factory.
+ */
+async function workerMain(workerFactory) {
+    try {
+        const last = process.argv[process.argv.length - 1];
+        if (last === "--persistent_worker") {
+            const worker = await workerFactory(process.argv.slice(2, -1));
+            await runWorker(worker);
+        }
+        else if (last.startsWith("@")) {
+            const worker = await workerFactory(process.argv.slice(2, -1));
+            const file = await fs__namespace.promises.readFile(last.slice(1), "utf-8");
+            const args = file.trim().split("\n");
+            await runOnce(worker, args);
+        }
+        else {
+            const worker = await workerFactory([]);
+            await runOnce(worker, process.argv.slice(2));
+        }
+    }
+    catch (e) {
+        if (e instanceof CliError) {
+            console.error(e.message);
+        }
+        else {
+            console.error(e?.stack || String(e));
+        }
+        process.exit(1);
+    }
+}
+
+workerMain(async () => {
+    const { ManifestWorker, ManifestWorkerError } = await Promise.resolve().then(function () { return worker; });
+    const worker$1 = new ManifestWorker();
+    return async (a) => {
+        try {
+            await worker$1.run(a);
+        }
+        catch (e) {
+            if (e instanceof ManifestWorkerError) {
+                return { exitCode: 2, output: e.message };
+            }
+            return { exitCode: 1, output: String(e?.stack || e) };
+        }
+        return { exitCode: 0, output: "" };
+    };
+});
 
 var PackageDeps;
 (function (PackageDeps) {
@@ -4439,43 +4602,6 @@ Object.defineProperty(module.exports, 'Const', {
 // end
 });
 
-async function main() {
-    function depArg(value) {
-        return JSON.parse(value);
-    }
-    function packageArg(value) {
-        return JSON.parse(value);
-    }
-    const parser = new argparse.ArgumentParser({
-        description: "Create package manifest.",
-        prog: "package-manifest",
-    });
-    parser.add_argument("--package", {
-        action: "append",
-        default: [],
-        dest: "packages",
-        help: "Package",
-        type: packageArg,
-    });
-    parser.add_argument("--dep", {
-        action: "append",
-        default: [],
-        dest: "deps",
-        help: "Dependency",
-        type: depArg,
-    });
-    parser.add_argument("output", { help: "Output" });
-    const args = parser.parse_args();
-    const packages = getPackages(args.packages);
-    const globals = new Map();
-    addDeps(args.deps, packages, globals);
-    const tree = getPackageTree(packages, globals);
-    await fs__namespace.promises.writeFile(args.output, JsonFormat.stringify(PackageTree.json(), tree));
-}
-main().catch((e) => {
-    console.error(e.stack);
-    process.exit(1);
-});
 function getPackages(packageArgs) {
     const packages = new Map();
     const packageIdByPath = new Map();
@@ -4546,4 +4672,55 @@ function getPackageTree(packages, globals) {
     ]));
     return { globals: resultGlobals, packages: resultPackages };
 }
+
+function depArg(value) {
+    return JSON.parse(value);
+}
+function packageArg(value) {
+    return JSON.parse(value);
+}
+class ManifestWorkerError extends Error {
+}
+class WorkerArgumentParser extends argparse.ArgumentParser {
+    exit(status, message) {
+        throw new ManifestWorkerError(message);
+    }
+}
+class ManifestWorker {
+    constructor() {
+        this.parser = new WorkerArgumentParser({
+            description: "Create package manifest.",
+            prog: "package-manifest",
+        });
+        this.parser.add_argument("--package", {
+            action: "append",
+            default: [],
+            dest: "packages",
+            help: "Package",
+            type: packageArg,
+        });
+        this.parser.add_argument("--dep", {
+            action: "append",
+            default: [],
+            dest: "deps",
+            help: "Dependency",
+            type: depArg,
+        });
+        this.parser.add_argument("output", { help: "Output" });
+    }
+    async run(a) {
+        const args = this.parser.parse_args(a);
+        const packages = getPackages(args.packages);
+        const globals = new Map();
+        addDeps(args.deps, packages, globals);
+        const tree = getPackageTree(packages, globals);
+        await fs__namespace.promises.writeFile(args.output, JsonFormat.stringify(PackageTree.json(), tree));
+    }
+}
+
+var worker = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    ManifestWorkerError: ManifestWorkerError,
+    ManifestWorker: ManifestWorker
+});
 //# sourceMappingURL=bundle.js.map

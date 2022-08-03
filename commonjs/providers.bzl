@@ -79,9 +79,16 @@ def gen_manifest(actions, manifest_bin, manifest, packages, deps, package_path):
     args.add_all(deps, before_each = "--dep", map_each = _dep_arg)
     args.add_all(packages, before_each = "--package", map_each = package_arg, allow_closure = True)
     args.add(manifest)
+
+    args.set_param_file_format("multiline")
+    args.use_param_file("@%s", use_always = True)
     actions.run(
         arguments = [args],
         executable = manifest_bin.files_to_run.executable,
+        execution_requirements = {
+            "requires-worker-protocol": "json",
+            "supports-workers": "1",
+        },
         outputs = [manifest],
         mnemonic = "GenCjsManifest",
         progress_message = "Generating package manifest %{output}",
