@@ -45,6 +45,7 @@
     "@types/node": "~16.11.0",
     "@types/node-fetch": "^2.0.0",
     "@types/prettier": "~2.4.0",
+    "@types/react": "~15.0.0",
     "@types/tar-stream": "~2.2.0"
   },
   "private": true,

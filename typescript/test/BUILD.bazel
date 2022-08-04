@@ -39,6 +39,13 @@ sh_test(
 )
 
 sh_test(
+    name = "jsx",
+    srcs = ["test_jsx.sh"],
+    data = [":bazel"],
+    tags = ["local"],
+)
+
+sh_test(
     name = "source_map",
     srcs = ["test_source_map.sh"],
     data = [":bazel"],

@@ -69,6 +69,7 @@ def _angular_library(ctx):
     js_deps = compiler.js_deps + [dep[JsInfo] for dep in ctx.attr.deps if JsInfo in dep]
     js_prefix = ctx.attr.js_prefix
     label = ctx.label
+    jsx = ctx.attr.jsx
     module = _module(ctx.attr._module[BuildSettingInfo].value)
     name = ctx.attr.name
     output_ = output(ctx.label, actions)
@@ -218,10 +219,10 @@ def _angular_library(ctx):
                 js.append(js_)
                 declarations.append(js_)
             else:
-                js_ = actions.declare_file(js_path(js_path_))
+                js_ = actions.declare_file(js_path(js_path_, jsx = jsx))
                 js.append(js_)
                 if source_map:
-                    map = actions.declare_file(map_path(js_path(js_path_)))
+                    map = actions.declare_file(map_path(js_path(js_path_, jsx = jsx)))
                     js.append(map)
                 declaration = actions.declare_file(declaration_path(declaration_path_))
                 declarations.append(declaration)
@@ -408,6 +409,11 @@ angular_library = rule(
         ),
         "extra_deps": attr.string_dict(
             doc = "Extra dependencies.",
+        ),
+        "jsx": attr.string(
+            default = "react",
+            doc = "How JSX is emitted: react (default) or preserve",
+            values = ["preserve", "react"],
         ),
         "root": attr.label(
             doc = "CommonJS root",

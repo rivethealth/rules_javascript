@@ -105,6 +105,7 @@ def _ts_library_impl(ctx):
     fs_linker_js = ctx.attr._fs_linker[JsInfo]
     js_deps = compiler.runtime_js + [dep[JsInfo] for dep in ctx.attr.deps if JsInfo in dep]
     js_prefix = ctx.attr.js_prefix
+    jsx = ctx.attr.jsx
     label = ctx.label
     module_ = ctx.attr.module or module(ctx.attr._module[BuildSettingInfo].value)
     output_ = output(ctx.label, actions)
@@ -120,7 +121,7 @@ def _ts_library_impl(ctx):
     workspace_name = ctx.workspace_name
 
     if tsconfig_path and not tsconfig_dep:
-        fail("tsconfig attribute requires non-empty tsconfig_dep attribute")
+        fail("config attribute requires non-empty config_dep attribute")
 
     transpile_tsconfig = actions.declare_file("%s.js-tsconfig.json" % ctx.attr.name)
     args = actions.args()
@@ -207,11 +208,11 @@ def _ts_library_impl(ctx):
                 declarations.append(declaration)
                 outputs.append(declaration)
             else:
-                js_ = actions.declare_file(js_path(js_path_))
+                js_ = actions.declare_file(js_path(js_path_, jsx))
                 js.append(js_)
                 js_outputs.append(js_)
                 if source_map:
-                    map = actions.declare_file(map_path(js_path(js_path_)))
+                    map = actions.declare_file(map_path(js_path(js_path_, jsx)))
                     js.append(map)
                     js_outputs.append(map)
                 declaration = actions.declare_file(declaration_path(declaration_path_))
@@ -363,6 +364,11 @@ ts_library = rule(
         ),
         "js_prefix": attr.string(
             doc = "Prefix to add to JavaScript files.",
+        ),
+        "jsx": attr.string(
+            default = "react",
+            doc = "How JSX is emitted: react (default) or preserve",
+            values = ["preserve", "react"],
         ),
         "root": attr.label(
             doc = "CommonJS package root.",

@@ -40,20 +40,20 @@ def declaration_path(path):
     if path.endswith(".ts"):
         return path[:-len(".ts")] + ".d.ts"
     if path.endswith(".tsx"):
-        return path[:-len(".ts")] + ".d.ts"
+        return path[:-len(".tsx")] + ".d.ts"
     fail("%s does not have a recognized file extension" % path)
 
-def js_path(path):
+def js_path(path, jsx = "react"):
     if path.endswith(".cjs") or path.endswith(".js") or path.endswith(".mjs"):
         return path
     if path.endswith(".cts"):
         return path[:-len(".cts")] + ".cjs"
     if path.endswith(".jsx"):
-        return path[:-len(".jsx")] + ".js"
+        return path[:-len(".jsx")] + (".js" if jsx == "react" else ".jsx")
     if path.endswith(".ts"):
         return path[:-len(".ts")] + ".js"
     if path.endswith(".tsx"):
-        return path[:-len(".tsx")] + ".js"
+        return path[:-len(".tsx")] + (".js" if jsx == "react" else ".jsx")
     if path.endswith(".mts"):
         return path[:-len(".mts")] + ".mjs"
     if path.endswith(".json"):

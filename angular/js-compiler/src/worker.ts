@@ -32,7 +32,7 @@ export class AngularWorker {
 
   private readonly parser = new WorkerArgumentParser();
 
-  private parseConfig(config: string) {
+  private parseConfig(config: string): ts.ParsedCommandLine {
     const parsed = ts.getParsedCommandLineOfConfigFile(
       config,
       {},
@@ -49,7 +49,7 @@ export class AngularWorker {
     if (errors.length) {
       throw new AngularWorkerError(formatDiagnostics(errors));
     }
-    return parsed.options;
+    return parsed;
   }
 
   private async setupVfs(manifest: string) {
@@ -66,8 +66,8 @@ export class AngularWorker {
 
     await this.setupVfs(args.manifest);
 
-    const options = this.parseConfig(args.config);
-    await fs.promises.mkdir(options.outDir, { recursive: true });
+    const parsed = this.parseConfig(args.config);
+    await fs.promises.mkdir(parsed.options.outDir, { recursive: true });
 
     await (async function process(src: string): Promise<void> {
       const stat = await fs.promises.stat(src);
@@ -77,31 +77,35 @@ export class AngularWorker {
           await process(path.join(src, child));
         }
       } else {
-        await transpileFile(src, options);
+        await transpileFile(src, parsed);
       }
     })(args.src);
   }
 }
 
-async function transpileFile(src: string, options: ts.CompilerOptions) {
+async function transpileFile(src: string, parsed: ts.ParsedCommandLine) {
   let name: string;
   const resolvedSrc = path.resolve(src);
-  if (resolvedSrc === options.rootDir) {
+  if (resolvedSrc === parsed.options.rootDir) {
     name = "";
-  } else if (resolvedSrc.startsWith(`${options.rootDir}/`)) {
-    name = resolvedSrc.slice(`${options.rootDir}/`.length);
+  } else if (resolvedSrc.startsWith(`${parsed.options.rootDir}/`)) {
+    name = resolvedSrc.slice(`${parsed.options.rootDir}/`.length);
   } else {
-    throw new Error(`File ${resolvedSrc} not in ${options.rootDir}`);
+    throw new Error(`File ${resolvedSrc} not in ${parsed.options.rootDir}`);
   }
 
-  const outputPath = outputName(
-    name ? path.join(options.outDir, name) : options.outDir,
+  src = path.resolve(src);
+
+  const [outputPath] = ts.getOutputFileNames(
+    { ...parsed, fileNames: [src] },
+    src,
+    false,
   );
 
   const input = await fs.promises.readFile(src, "utf8");
   const result = ts.transpileModule(input, {
-    fileName: src,
-    compilerOptions: options,
+    fileName: name,
+    compilerOptions: parsed.options,
     transformers: {
       before: [resourceTransformer()],
     },
@@ -118,20 +122,5 @@ async function transpileFile(src: string, options: ts.CompilerOptions) {
       result.sourceMapText,
       "utf8",
     );
-  }
-}
-
-function outputName(path: string): string | undefined {
-  if (path.endsWith(".cts")) {
-    return path.slice(0, -".cts".length) + ".cjs";
-  }
-  if (path.endsWith(".ts")) {
-    return path.slice(0, -".ts".length) + ".js";
-  }
-  if (path.endsWith(".tsx")) {
-    return path.slice(0, -".tsx".length) + ".jsx";
-  }
-  if (path.endsWith(".mts")) {
-    return path.slice(0, -".mts".length) + ".mjs";
   }
 }

@@ -1,0 +1,25 @@
+load("@better_rules_javascript//commonjs:rules.bzl", "cjs_root")
+load("@better_rules_javascript//javascript:rules.bzl", "js_library")
+load("@better_rules_javascript//typescript:rules.bzl", "ts_library")
+
+cjs_root(
+    name = "root",
+    package_name = "example",
+    descriptors = ["package.json"],
+)
+
+ts_library(
+    name = "lib",
+    srcs = ["example.tsx"],
+    compiler = "//:ts",
+    config = "tsconfig.json",
+    config_dep = ":tsconfig",
+    root = ":root",
+    deps = ["@npm//@types/react:lib"],
+)
+
+js_library(
+    name = "tsconfig",
+    srcs = ["tsconfig.json"],
+    root = ":root",
+)

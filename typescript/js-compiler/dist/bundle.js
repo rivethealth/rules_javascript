@@ -1551,7 +1551,7 @@ class JsWorker {
         if (errors.length) {
             throw new JsWorkerError(formatDiagnostics(errors));
         }
-        return parsed.options;
+        return parsed;
     }
     async setupVfs(manifest) {
         const packageTree = JsonFormat.parse(PackageTree.json(), await fs__namespace.promises.readFile(manifest, "utf8"));
@@ -1561,8 +1561,8 @@ class JsWorker {
     async run(a) {
         const args = this.parser.parse_args(a);
         await this.setupVfs(args.manifest);
-        const options = this.parseConfig(args.config);
-        await fs__namespace.promises.mkdir(options.outDir, { recursive: true });
+        const parsed = this.parseConfig(args.config);
+        await fs__namespace.promises.mkdir(parsed.options.outDir, { recursive: true });
         await (async function process(src) {
             const stat = await fs__namespace.promises.stat(src);
             if (stat.isDirectory()) {
@@ -1571,28 +1571,29 @@ class JsWorker {
                 }
             }
             else {
-                await transpileFile(src, options);
+                await transpileFile(src, parsed);
             }
         })(args.src);
     }
 }
-async function transpileFile(src, options) {
+async function transpileFile(src, parsed) {
     let name;
     const resolvedSrc = path__namespace.resolve(src);
-    if (resolvedSrc === options.rootDir) {
+    if (resolvedSrc === parsed.options.rootDir) {
         name = "";
     }
-    else if (resolvedSrc.startsWith(`${options.rootDir}/`)) {
-        name = resolvedSrc.slice(`${options.rootDir}/`.length);
+    else if (resolvedSrc.startsWith(`${parsed.options.rootDir}/`)) {
+        name = resolvedSrc.slice(`${parsed.options.rootDir}/`.length);
     }
     else {
-        throw new Error(`File ${resolvedSrc} not in ${options.rootDir}`);
+        throw new Error(`File ${resolvedSrc} not in ${parsed.options.rootDir}`);
     }
-    const outputPath = outputName(name ? path__namespace.join(options.outDir, name) : options.outDir);
+    src = path__namespace.resolve(src);
+    const [outputPath] = ts__namespace.getOutputFileNames({ ...parsed, fileNames: [src] }, src, false);
     const input = await fs__namespace.promises.readFile(src, "utf8");
     const result = ts__namespace.transpileModule(input, {
-        fileName: resolvedSrc,
-        compilerOptions: options,
+        fileName: name,
+        compilerOptions: parsed.options,
     });
     if (result.diagnostics.length) {
         throw new JsWorkerError(formatDiagnostics(result.diagnostics));
@@ -1601,20 +1602,6 @@ async function transpileFile(src, options) {
     await fs__namespace.promises.writeFile(outputPath, result.outputText, "utf8");
     if (result.sourceMapText !== undefined) {
         await fs__namespace.promises.writeFile(`${outputPath}.map`, result.sourceMapText, "utf8");
-    }
-}
-function outputName(path) {
-    if (path.endsWith(".cts")) {
-        return path.slice(0, -".cts".length) + ".cjs";
-    }
-    if (path.endsWith(".ts")) {
-        return path.slice(0, -".ts".length) + ".js";
-    }
-    if (path.endsWith(".tsx")) {
-        return path.slice(0, -".tsx".length) + ".jsx";
-    }
-    if (path.endsWith(".mts")) {
-        return path.slice(0, -".mts".length) + ".mjs";
     }
 }
 
