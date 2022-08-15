@@ -17,7 +17,6 @@ parser.add_argument("--module");
 parser.add_argument("--root-dir", { dest: "rootDir", required: true });
 parser.add_argument("--source-map", { default: "false", dest: "sourceMap" });
 parser.add_argument("--out-dir", { dest: "outDir" });
-parser.add_argument("--source-root", { dest: "sourceRoot" });
 parser.add_argument("--target");
 parser.add_argument("--type-root", {
   action: "append",
@@ -34,7 +33,6 @@ interface Args {
   rootDir: string;
   outDir?: string;
   sourceMap: "true" | "false";
-  sourceRoot?: string;
   target?: string;
   typeRoots: string[];
   output?: string;
@@ -84,10 +82,6 @@ interface Args {
 
   if (args.config) {
     tsconfig.extends = relative(args.config);
-  }
-
-  if (args.sourceRoot) {
-    tsconfig.compilerOptions.sourceRoot = args.sourceRoot;
   }
 
   tsconfig.compilerOptions.sourceMap = args.sourceMap === "true";

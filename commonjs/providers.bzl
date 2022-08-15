@@ -157,6 +157,3 @@ def create_cjs_info(cjs_root, label, files = [], deps = [], globals = []):
             transitive = [cjs_info.transitive_packages for cjs_info in deps + globals],
         ),
     )
-
-def source_root(label):
-    return "%s/" % label.package if label.package else ""

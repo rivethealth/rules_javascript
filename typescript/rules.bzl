@@ -1,6 +1,6 @@
 load("@bazel_skylib//lib:paths.bzl", "paths")
 load("@bazel_skylib//rules:common_settings.bzl", "BuildSettingInfo")
-load("//commonjs:providers.bzl", "CjsInfo", "create_cjs_info", "gen_manifest", "package_path", "source_root")
+load("//commonjs:providers.bzl", "CjsInfo", "create_cjs_info", "gen_manifest", "package_path")
 load("//commonjs:rules.bzl", "cjs_root")
 load("//javascript:providers.bzl", "JsInfo", "create_js_info")
 load("//javascript:rules.bzl", "js_export")
@@ -132,7 +132,6 @@ def _ts_library_impl(ctx):
     args.add("--out-dir", "%s/%s" % (output_.path, js_prefix) if js_prefix else output_.path)
     args.add("--root-dir", "%s/%s" % (output_.path, src_prefix) if src_prefix else output_.path)
     args.add("--source-map", json.encode(source_map))
-    args.add("--source-root", source_root(label))
     args.add("--target", target_)
     args.add(transpile_tsconfig)
     actions.run(
