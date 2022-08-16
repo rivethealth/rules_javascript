@@ -1,8 +1,8 @@
 'use strict';
 
 var argparse = require('argparse');
-var fs = require('fs');
-var path = require('path');
+var fs = require('node:fs');
+var path = require('node:path');
 
 function _interopNamespace(e) {
     if (e && e.__esModule) return e;

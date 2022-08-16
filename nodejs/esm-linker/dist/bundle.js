@@ -2,11 +2,11 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-var path = require('path');
-var fs = require('fs');
+var path = require('node:path');
+var fs = require('node:fs');
 var os = require('os');
-var Module = require('module');
-var url = require('url');
+var Module = require('node:module');
+var url = require('node:url');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 

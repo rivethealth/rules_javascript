@@ -5,8 +5,8 @@ import { WrapperVfs } from "@better-rules-javascript/nodejs-fs-linker/vfs";
 
 workerMain(async () => {
   const vfs = new WrapperVfs();
-  patchFs(vfs, require("fs"));
-  patchFsPromises(vfs, require("fs").promises);
+  patchFs(vfs, require("node:fs"));
+  patchFsPromises(vfs, require("node:fs").promises);
 
   const { AngularWorker, AngularWorkerError } = await import("./worker");
 

@@ -1,11 +1,11 @@
-import { ArgumentParser } from "argparse";
-import { JsonFormat } from "@better-rules-javascript/util-json";
 import { PackageTree } from "@better-rules-javascript/commonjs-package";
-import { createVfs } from "@better-rules-javascript/nodejs-fs-linker/package";
-import * as fs from "fs";
-import { WrapperVfs } from "@better-rules-javascript/nodejs-fs-linker/vfs";
 import { patchFs } from "@better-rules-javascript/nodejs-fs-linker/fs";
 import { patchFsPromises } from "@better-rules-javascript/nodejs-fs-linker/fs-promises";
+import { createVfs } from "@better-rules-javascript/nodejs-fs-linker/package";
+import { WrapperVfs } from "@better-rules-javascript/nodejs-fs-linker/vfs";
+import { JsonFormat } from "@better-rules-javascript/util-json";
+import { ArgumentParser } from "argparse";
+import * as fs from "node:fs";
 
 interface Args {
   digest: string;
@@ -27,12 +27,12 @@ const packageTree = JsonFormat.parse(
   fs.readFileSync(packageManifestPath, "utf8"),
 );
 const vfs = createVfs(packageTree, process.env.RUNFILES_DIR);
-patchFs(vfs, require("fs"));
-patchFsPromises(vfs, require("fs").promises);
+patchFs(vfs, require("node:fs"));
+patchFsPromises(vfs, require("node:fs").promises);
 
 const webpackVfs = new WrapperVfs();
-patchFs(webpackVfs, require("fs"));
-patchFsPromises(webpackVfs, require("fs").promises);
+patchFs(webpackVfs, require("node:fs"));
+patchFsPromises(webpackVfs, require("node:fs").promises);
 
 (async () => {
   const { startServer } = await import("./server");

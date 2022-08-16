@@ -1,4 +1,4 @@
-import * as Module from "module";
+import * as Module from "node:module";
 
 function load(delegate: Function): Function {
   return function (path: string) {

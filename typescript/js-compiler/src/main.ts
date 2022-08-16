@@ -5,8 +5,8 @@ import { workerMain } from "@better-rules-javascript/bazel-worker";
 
 workerMain(async () => {
   const vfs = new WrapperVfs();
-  patchFs(vfs, require("fs"));
-  patchFsPromises(vfs, require("fs").promises);
+  patchFs(vfs, require("node:fs"));
+  patchFsPromises(vfs, require("node:fs").promises);
 
   const { JsWorker, JsWorkerError } = await import("./worker");
   const worker = new JsWorker(vfs);

@@ -1,8 +1,8 @@
 'use strict';
 
-var url = require('url');
-var fs = require('fs');
-var path = require('path');
+var node_url = require('node:url');
+var fs = require('node:fs');
+var path = require('node:path');
 var argparse = require('argparse');
 var ts = require('typescript');
 
@@ -426,11 +426,11 @@ function stringPath(value) {
     if (value instanceof Buffer) {
         value = value.toString();
     }
-    if (value instanceof url.URL) {
+    if (value instanceof node_url.URL) {
         if (value.protocol !== "file:") {
             throw new Error(`Invalid protocol: ${value.protocol}`);
         }
-        value = url.fileURLToPath(value);
+        value = node_url.fileURLToPath(value);
     }
     return path__namespace.resolve(value);
 }
@@ -1373,8 +1373,8 @@ async function workerMain(workerFactory) {
 
 workerMain(async () => {
     const vfs = new WrapperVfs();
-    patchFs(vfs, require("fs"));
-    patchFsPromises(vfs, require("fs").promises);
+    patchFs(vfs, require("node:fs"));
+    patchFsPromises(vfs, require("node:fs").promises);
     const { JsWorker, JsWorkerError } = await Promise.resolve().then(function () { return worker; });
     const worker$1 = new JsWorker(vfs);
     return async (a) => {

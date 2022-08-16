@@ -1,7 +1,7 @@
 import { Resolver } from "@better-rules-javascript/commonjs-package/resolve";
-import * as fs from "fs";
-import Module from "module";
-import * as path from "path";
+import * as fs from "node:fs";
+import Module from "node:module";
+import * as path from "node:path";
 
 function parse(resolver: Resolver) {
   return (path_: string) => {

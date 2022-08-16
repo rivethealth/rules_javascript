@@ -1,5 +1,5 @@
 import { ArgumentParser } from "argparse";
-import * as fs from "fs";
+import * as fs from "node:fs";
 import { ESLint, Linter } from "eslint";
 import { workerMain } from "@better-rules-javascript/bazel-worker";
 

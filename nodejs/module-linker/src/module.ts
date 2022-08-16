@@ -1,6 +1,6 @@
 import { Resolver } from "@better-rules-javascript/commonjs-package/resolve";
-import Module from "module";
-import * as path from "path";
+import Module from "node:module";
+import * as path from "node:path";
 import { NodeLinks } from "./link";
 
 function resolveFilename(

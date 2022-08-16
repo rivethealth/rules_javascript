@@ -1,4 +1,4 @@
-'use strict';var path=require('path'),fs=require('fs'),Module=require('module'),os=require('os');function _interopDefaultLegacy(e){return e&&typeof e==='object'&&'default'in e?e:{'default':e}}function _interopNamespace(e){if(e&&e.__esModule)return e;var n=Object.create(null);if(e){Object.keys(e).forEach(function(k){if(k!=='default'){var d=Object.getOwnPropertyDescriptor(e,k);Object.defineProperty(n,k,d.get?d:{enumerable:true,get:function(){return e[k]}});}})}n["default"]=e;return Object.freeze(n)}var path__namespace=/*#__PURE__*/_interopNamespace(path);var fs__namespace=/*#__PURE__*/_interopNamespace(fs);var Module__default=/*#__PURE__*/_interopDefaultLegacy(Module);var os__namespace=/*#__PURE__*/_interopNamespace(os);class Trie {
+'use strict';var path=require('node:path'),fs=require('node:fs'),Module=require('node:module'),os=require('os');function _interopDefaultLegacy(e){return e&&typeof e==='object'&&'default'in e?e:{'default':e}}function _interopNamespace(e){if(e&&e.__esModule)return e;var n=Object.create(null);if(e){Object.keys(e).forEach(function(k){if(k!=='default'){var d=Object.getOwnPropertyDescriptor(e,k);Object.defineProperty(n,k,d.get?d:{enumerable:true,get:function(){return e[k]}});}})}n["default"]=e;return Object.freeze(n)}var path__namespace=/*#__PURE__*/_interopNamespace(path);var fs__namespace=/*#__PURE__*/_interopNamespace(fs);var Module__default=/*#__PURE__*/_interopDefaultLegacy(Module);var os__namespace=/*#__PURE__*/_interopNamespace(os);class Trie {
     constructor() {
         this.data = { children: new Map() };
     }
@@ -390,5 +390,5 @@ const packageTree = JsonFormat.parse(PackageTree.json(), fs__namespace.readFileS
 const links = new NodeLinks((packagePath) => path__namespace.relative(runfilesDir, packagePath).replace(/\//g, "_"));
 process.on("exit", () => links.destroy());
 const resolver = Resolver.create(packageTree, process.env.RUNFILES_DIR);
-patchModule(resolver, links, require("module"));
-patchModuleDetails(resolver, require("module"));//# sourceMappingURL=bundle.js.map
+patchModule(resolver, links, require("node:module"));
+patchModuleDetails(resolver, require("node:module"));//# sourceMappingURL=bundle.js.map

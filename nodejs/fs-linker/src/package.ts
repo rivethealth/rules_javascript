@@ -1,5 +1,5 @@
 import { PackageTree } from "@better-rules-javascript/commonjs-package";
-import * as path from "path";
+import * as path from "node:path";
 import { VfsImpl, VfsNode } from "./vfs";
 
 class DependencyConflictError extends Error {}

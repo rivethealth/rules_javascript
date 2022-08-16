@@ -1,8 +1,8 @@
 import { PackageTree } from "@better-rules-javascript/commonjs-package";
 import { Resolver } from "@better-rules-javascript/commonjs-package/resolve";
 import { JsonFormat } from "@better-rules-javascript/util-json";
-import * as fs from "fs";
-import * as path from "path";
+import * as fs from "node:fs";
+import * as path from "node:path";
 import { NodeModuleLinks } from "./link";
 import { Loader } from "./load";
 

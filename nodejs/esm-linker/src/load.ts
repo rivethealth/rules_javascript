@@ -1,7 +1,7 @@
 import { Resolver } from "@better-rules-javascript/commonjs-package/resolve";
-import Module from "module";
-import * as path from "path";
-import * as url from "url";
+import Module from "node:module";
+import * as path from "node:path";
+import * as url from "node:url";
 import { NodeModuleLinks } from "./link";
 
 export class Loader {

@@ -8,7 +8,7 @@ import * as WebpackDevServer from "webpack-dev-server";
 import { JsonFormat } from "@better-rules-javascript/util-json";
 import { PackageTree } from "@better-rules-javascript/commonjs-package";
 import { createVfs } from "@better-rules-javascript/nodejs-fs-linker/package";
-import * as fs from "fs";
+import * as fs from "node:fs";
 import { WrapperVfs } from "@better-rules-javascript/nodejs-fs-linker/vfs";
 import * as CachedInputFileSystem from "enhanced-resolve/lib/CachedInputFileSystem";
 import { Subject } from "rxjs";

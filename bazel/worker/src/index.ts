@@ -1,4 +1,4 @@
-import * as fs from "fs";
+import * as fs from "node:fs";
 import { JsonFormat } from "@better-rules-javascript/util-json";
 import { WorkRequest, WorkResponse } from "./protocol";
 import { lines } from "./stream";

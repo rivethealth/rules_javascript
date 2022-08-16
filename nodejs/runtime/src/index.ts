@@ -1,8 +1,8 @@
-import * as Module from "module";
+import * as Module from "node:module";
 const { emit } = process;
 
 // shim module.isBuiltin, added in v18.6.0
-const moduleModule = require("module");
+const moduleModule = require("node:module");
 if (!moduleModule.isBuiltin) {
   const builtins = new Set(Module.builtinModules);
   moduleModule.isBuiltin = (name: string) =>

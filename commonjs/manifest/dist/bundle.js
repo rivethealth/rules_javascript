@@ -1,8 +1,9 @@
 'use strict';
 
-var fs = require('fs');
+var fs = require('node:fs');
 var assert = require('assert');
 var util = require('util');
+var fs$1 = require('fs');
 var path = require('path');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
@@ -26,9 +27,9 @@ function _interopNamespace(e) {
 }
 
 var fs__namespace = /*#__PURE__*/_interopNamespace(fs);
-var fs__default = /*#__PURE__*/_interopDefaultLegacy(fs);
 var assert__default = /*#__PURE__*/_interopDefaultLegacy(assert);
 var util__default = /*#__PURE__*/_interopDefaultLegacy(util);
+var fs__default = /*#__PURE__*/_interopDefaultLegacy(fs$1);
 var path__default = /*#__PURE__*/_interopDefaultLegacy(path);
 
 var JsonFormat;

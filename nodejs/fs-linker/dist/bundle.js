@@ -1,8 +1,8 @@
 'use strict';
 
-var fs = require('fs');
-var url = require('url');
-var path = require('path');
+var fs = require('node:fs');
+var node_url = require('node:url');
+var path = require('node:path');
 
 function _interopNamespace(e) {
     if (e && e.__esModule) return e;
@@ -585,11 +585,11 @@ function stringPath(value) {
     if (value instanceof Buffer) {
         value = value.toString();
     }
-    if (value instanceof url.URL) {
+    if (value instanceof node_url.URL) {
         if (value.protocol !== "file:") {
             throw new Error(`Invalid protocol: ${value.protocol}`);
         }
-        value = url.fileURLToPath(value);
+        value = node_url.fileURLToPath(value);
     }
     return path__namespace.resolve(value);
 }
@@ -1326,7 +1326,7 @@ const vfs = createVfs(packageTree, process.env.NODE_FS_RUNFILES === "true"
 if (process.env.NODE_FS_TRACE === "true") {
     process.stderr.write(vfs.print());
 }
-patchFs(vfs, require("fs"));
-patchFsPromises(vfs, require("fs").promises);
-patchModule(require("module"));
+patchFs(vfs, require("node:fs"));
+patchFsPromises(vfs, require("node:fs").promises);
+patchModule(require("node:module"));
 //# sourceMappingURL=bundle.js.map

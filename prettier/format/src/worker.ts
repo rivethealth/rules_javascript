@@ -1,5 +1,5 @@
 import { ArgumentParser } from "argparse";
-import * as fs from "fs";
+import * as fs from "node:fs";
 import prettier from "prettier";
 
 export class PrettierWorker {

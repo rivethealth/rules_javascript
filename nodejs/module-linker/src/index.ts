@@ -1,11 +1,11 @@
 import { Resolver } from "@better-rules-javascript/commonjs-package/resolve";
 import { PackageTree } from "@better-rules-javascript/commonjs-package";
 import { JsonFormat } from "@better-rules-javascript/util-json";
-import * as fs from "fs";
+import * as fs from "node:fs";
 import { patchModule } from "./module";
 import { patchModuleDetails } from "./module-details";
 import { NodeLinks } from "./link";
-import * as path from "path";
+import * as path from "node:path";
 
 const manifestPath = process.env.NODE_PACKAGE_MANIFEST;
 if (!manifestPath) {
@@ -28,5 +28,5 @@ const links = new NodeLinks((packagePath) =>
 process.on("exit", () => links.destroy());
 
 const resolver = Resolver.create(packageTree, process.env.RUNFILES_DIR);
-patchModule(resolver, links, require("module"));
-patchModuleDetails(resolver, require("module"));
+patchModule(resolver, links, require("node:module"));
+patchModuleDetails(resolver, require("node:module"));

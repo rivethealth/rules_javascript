@@ -1,10 +1,10 @@
 import { ArgumentParser } from "argparse";
-import * as fs from "fs";
+import * as fs from "node:fs";
 import * as childProcess from "child_process";
 import { toStarlarkFile } from "./bzl";
 import { JsonFormat } from "@better-rules-javascript/util-json";
 import { YarnLocator, YarnPackageInfo, YarnVersion } from "./yarn";
-import * as path from "path";
+import * as path from "node:path";
 import { getPackage, ResolvedNpmPackage, resolvePackages } from "./resolve";
 import { NpmRegistryClient, NpmSpecifier } from "./npm";
 import { printStarlark } from "./starlark";
