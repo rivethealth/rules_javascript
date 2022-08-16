@@ -34,8 +34,6 @@ def configure_ts_compiler(name, ts, tslib = None, visibility = None):
         deps = [
             ts,
             "@better_rules_javascript_npm//argparse:lib",
-            "@better_rules_javascript_npm//long:lib",
-            "@better_rules_javascript_npm//protobufjs:lib",
             "@better_rules_javascript_npm//tslib:lib",
         ],
     )

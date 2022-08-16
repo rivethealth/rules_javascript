@@ -18,3 +18,10 @@ nodejs_binary(
     main = "better_rules_javascript_test/binary/main.js",
     node = "@better_rules_javascript//rules:nodejs",
 )
+
+nodejs_binary(
+    name = "bin_16",
+    dep = ":main",
+    main = "better_rules_javascript_test/binary/main.js",
+    node = "//:nodejs_16",
+)

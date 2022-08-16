@@ -4081,6 +4081,15 @@ PACKAGES = {
         "name": "@types/node",
         "url": "https://registry.npmjs.org/@types/node/-/node-16.11.11.tgz",
     },
+    "@types/node@18.7.5": {
+        "deps": [
+        ],
+        "extra_deps": {
+        },
+        "integrity": "sha512-NcKK6Ts+9LqdHJaW6HQmgr7dT/i3GOHG+pt6BiWv++5SnjtRd4NXeiuN2kA153SjhXPR/AhHIPHPbrsbpUVOww==",
+        "name": "@types/node",
+        "url": "https://registry.npmjs.org/@types/node/-/node-18.7.5.tgz",
+    },
     "@types/object-hash@1.3.4": {
         "deps": [
         ],
@@ -10136,14 +10145,14 @@ PACKAGES = {
         "deps": [
         ],
         "extra_deps": {
-            "jest-pnp-resolver@1.2.2-acd3a0d2": [
-                {
-                    "id": "jest-resolve@28.1.3",
-                },
-            ],
             "jest-resolve@28.1.3": [
                 {
                     "id": "jest-pnp-resolver@1.2.2-acd3a0d2",
+                },
+            ],
+            "jest-pnp-resolver@1.2.2-acd3a0d2": [
+                {
+                    "id": "jest-resolve@28.1.3",
                 },
             ],
         },
@@ -10203,14 +10212,14 @@ PACKAGES = {
             },
         ],
         "extra_deps": {
-            "jest-pnp-resolver@1.2.2-acd3a0d2": [
-                {
-                    "id": "jest-resolve@28.1.3",
-                },
-            ],
             "jest-resolve@28.1.3": [
                 {
                     "id": "jest-pnp-resolver@1.2.2-acd3a0d2",
+                },
+            ],
+            "jest-pnp-resolver@1.2.2-acd3a0d2": [
+                {
+                    "id": "jest-resolve@28.1.3",
                 },
             ],
         },
@@ -15181,7 +15190,7 @@ ROOTS = [
         "name": "@types/node-fetch",
     },
     {
-        "id": "@types/node@16.11.11",
+        "id": "@types/node@18.7.5",
         "name": "@types/node",
     },
     {

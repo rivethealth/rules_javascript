@@ -1,14 +1,18 @@
 import { Resolver } from "@better-rules-javascript/commonjs-package/resolve";
 import Module from "module";
 import * as path from "path";
+import { NodeLinks } from "./link";
 
-function resolveFilename(resolver: Resolver, delegate: Function): Function {
+function resolveFilename(
+  resolver: Resolver,
+  links: NodeLinks,
+  delegate: Function,
+): Function {
   return function (request: string, parent: Module, isMain: boolean) {
     if (
-      Module.builtinModules.includes(request) ||
+      (<any>Module).isBuiltin(request) ||
       !parent ||
       parent.path === "internal" ||
-      request.startsWith("node:") ||
       request == "." ||
       request == ".." ||
       request.startsWith("./") ||
@@ -19,20 +23,33 @@ function resolveFilename(resolver: Resolver, delegate: Function): Function {
     }
 
     const resolved = resolver.resolve(parent.path, request);
+
     request = path.basename(resolved.package);
+    let parentPath = path.dirname(resolved.package);
+    if ((<any>Module).isBuiltin(request)) {
+      const linkPackage = links.package(resolved.package);
+      request = linkPackage.name;
+      parentPath = linkPackage.context;
+    }
+
     if (resolved.inner) {
       request = `${request}/${resolved.inner}`;
     }
 
-    parent.paths = [path.dirname(resolved.package)];
+    parent.paths = [parentPath];
 
     // ignore options, because paths interferes with resolution
     return delegate.call(this, request, parent, isMain);
   };
 }
-export function patchModule(resolver: Resolver, delegate: typeof Module) {
+export function patchModule(
+  resolver: Resolver,
+  links: NodeLinks,
+  delegate: typeof Module,
+) {
   (<any>delegate)._resolveFilename = resolveFilename(
     resolver,
+    links,
     (<any>delegate)._resolveFilename,
   );
 }

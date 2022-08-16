@@ -1,18 +1,23 @@
-const { emitWarning } = process;
+import * as Module from "module";
+const { emit } = process;
+
+// shim module.isBuiltin, added in v18.6.0
+const moduleModule = require("module");
+if (!moduleModule.isBuiltin) {
+  const builtins = new Set(Module.builtinModules);
+  moduleModule.isBuiltin = (name: string) =>
+    name.startsWith("node:") || builtins.has(name);
+}
 
 /**
  * @file
  * @see https://github.com/nodejs/node/issues/30810
  */
 
-process.emitWarning = function (warning: string | Error, type: any) {
-  if (type === "ExperimentalWarning") {
+process.emit = <any>function (name: string, data: any) {
+  if (name === "warning" && data?.name === "ExperimentalWarning") {
     return;
   }
 
-  if (type && typeof type === "object" && type.type === "ExperimentalWarning") {
-    return;
-  }
-
-  return emitWarning.apply(this, arguments);
+  return emit.apply(this, arguments);
 };

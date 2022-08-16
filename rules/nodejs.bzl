@@ -16,11 +16,21 @@ NODEJS_REPOSITORIES = {
             "sha256": "44b36846f45c3599d4230008cc5064d3e72405eea26268731b2374fe4ab998ed",
         },
     },
-    "17": {
+    "18": {
+        "darwin_x86_64": {
+            "url": "v18.7.0/node-v18.7.0-darwin-x64.tar.gz",
+            "prefix": "node-v18.7.0-darwin-x64",
+            "sha256": "ce95b924b450edbcfeaf422b3635a6b44b17ad23cd1f5efff6b051c60db548c8",
+        },
         "linux_x86_64": {
-            "url": "v17.3.0/node-v17.3.0-linux-x64.tar.gz",
-            "prefix": "node-v17.3.0-linux-x64",
-            "sha256": "479fb0b4b6405fb7240376187e2823cf384635a4998bdbaddc3ea826b63c8c74",
+            "url": "v18.7.0/node-v18.7.0-linux-x64.tar.gz",
+            "prefix": "node-v18.7.0-linux-x64",
+            "sha256": "0bef16a77faed5220c2ea1555f7bd19ea79bfbb848dba62fbe9d43eb1a36fce0",
+        },
+        "windows_x86_64": {
+            "url": "v18.7.0/node-v18.7.0-win-x64.zip",
+            "prefix": "node-v18.7.0-win-x64",
+            "sha256": "9c0abfe32291dd5bed717463cb3590004289f03ab66011e383daa0fcec674683",
         },
     },
 }

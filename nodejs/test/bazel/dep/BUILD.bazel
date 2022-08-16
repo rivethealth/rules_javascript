@@ -12,7 +12,10 @@ js_library(
     name = "main",
     srcs = ["main.js"],
     root = ":root",
-    deps = ["//dep/other:lib"],
+    deps = [
+        "//dep/http:lib",
+        "//dep/other:lib",
+    ],
 )
 
 nodejs_binary(
@@ -20,4 +23,11 @@ nodejs_binary(
     dep = ":main",
     main = "main.js",
     node = "@better_rules_javascript//rules:nodejs",
+)
+
+nodejs_binary(
+    name = "bin_16",
+    dep = ":main",
+    main = "main.js",
+    node = "//:nodejs_16",
 )

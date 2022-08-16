@@ -1,0 +1,15 @@
+load("@better_rules_javascript//nodejs:rules.bzl", "configure_nodejs_runtime", "nodejs")
+load(":rules.bzl", "nodejs_runtime_16")
+
+package(default_visibility = ["//visibility:public"])
+
+configure_nodejs_runtime(
+    name = "nodejs_runtime_16",
+    nodejs_runtime_rule = nodejs_runtime_16,
+    repo_name = "nodejs_16",
+)
+
+nodejs(
+    name = "nodejs_16",
+    runtime = ":nodejs_runtime_16",
+)

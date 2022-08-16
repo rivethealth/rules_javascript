@@ -1,4 +1,4 @@
-'use strict';var path=require('path'),fs=require('fs'),Module=require('module');function _interopDefaultLegacy(e){return e&&typeof e==='object'&&'default'in e?e:{'default':e}}function _interopNamespace(e){if(e&&e.__esModule)return e;var n=Object.create(null);if(e){Object.keys(e).forEach(function(k){if(k!=='default'){var d=Object.getOwnPropertyDescriptor(e,k);Object.defineProperty(n,k,d.get?d:{enumerable:true,get:function(){return e[k]}});}})}n["default"]=e;return Object.freeze(n)}var path__namespace=/*#__PURE__*/_interopNamespace(path);var fs__namespace=/*#__PURE__*/_interopNamespace(fs);var Module__default=/*#__PURE__*/_interopDefaultLegacy(Module);class Trie {
+'use strict';var path=require('path'),fs=require('fs'),Module=require('module'),os=require('os');function _interopDefaultLegacy(e){return e&&typeof e==='object'&&'default'in e?e:{'default':e}}function _interopNamespace(e){if(e&&e.__esModule)return e;var n=Object.create(null);if(e){Object.keys(e).forEach(function(k){if(k!=='default'){var d=Object.getOwnPropertyDescriptor(e,k);Object.defineProperty(n,k,d.get?d:{enumerable:true,get:function(){return e[k]}});}})}n["default"]=e;return Object.freeze(n)}var path__namespace=/*#__PURE__*/_interopNamespace(path);var fs__namespace=/*#__PURE__*/_interopNamespace(fs);var Module__default=/*#__PURE__*/_interopDefaultLegacy(Module);var os__namespace=/*#__PURE__*/_interopNamespace(os);class Trie {
     constructor() {
         this.data = { children: new Map() };
     }
@@ -272,12 +272,11 @@ var PackageTree;
         });
     }
     PackageTree.json = json;
-})(PackageTree || (PackageTree = {}));function resolveFilename(resolver, delegate) {
+})(PackageTree || (PackageTree = {}));function resolveFilename(resolver, links, delegate) {
     return function (request, parent, isMain) {
-        if (Module__default["default"].builtinModules.includes(request) ||
+        if (Module__default["default"].isBuiltin(request) ||
             !parent ||
             parent.path === "internal" ||
-            request.startsWith("node:") ||
             request == "." ||
             request == ".." ||
             request.startsWith("./") ||
@@ -287,16 +286,22 @@ var PackageTree;
         }
         const resolved = resolver.resolve(parent.path, request);
         request = path__namespace.basename(resolved.package);
+        let parentPath = path__namespace.dirname(resolved.package);
+        if (Module__default["default"].isBuiltin(request)) {
+            const linkPackage = links.package(resolved.package);
+            request = linkPackage.name;
+            parentPath = linkPackage.context;
+        }
         if (resolved.inner) {
             request = `${request}/${resolved.inner}`;
         }
-        parent.paths = [path__namespace.dirname(resolved.package)];
+        parent.paths = [parentPath];
         // ignore options, because paths interferes with resolution
         return delegate.call(this, request, parent, isMain);
     };
 }
-function patchModule(resolver, delegate) {
-    delegate._resolveFilename = resolveFilename(resolver, delegate._resolveFilename);
+function patchModule(resolver, links, delegate) {
+    delegate._resolveFilename = resolveFilename(resolver, links, delegate._resolveFilename);
 }function parse(resolver) {
     return (path_) => {
         try {
@@ -334,11 +339,56 @@ function patchModuleDetails(resolver, delegate) {
     //   }
     //   return originalFilename.apply(this, arguments);
     // };
+}function lazy(f) {
+    let result;
+    return () => {
+        if (f) {
+            result = f();
+            f = undefined;
+        }
+        return result;
+    };
+}class NodeLinks {
+    constructor(nameFn) {
+        this.nameFn = nameFn;
+        this._linkRoot = undefined;
+        this.linkRoot = lazy(() => {
+            const root = fs__namespace.mkdtempSync(path__namespace.join(os__namespace.tmpdir(), "nodejs-"));
+            this._linkRoot = root;
+            return root;
+        });
+        this.linked = new Set();
+    }
+    package(packagePath) {
+        const packageName = this.nameFn(packagePath);
+        const directory = this.linkRoot();
+        const linkPath = path__namespace.join(directory, packageName);
+        if (!this.linked.has(packageName)) {
+            this.linked.add(packageName);
+            fs__namespace.symlinkSync(packagePath, linkPath);
+        }
+        return {
+            context: directory,
+            name: packageName,
+        };
+    }
+    destroy() {
+        if (this._linkRoot === undefined) {
+            return;
+        }
+        fs__namespace.rmSync(this._linkRoot, { recursive: true });
+    }
 }const manifestPath = process.env.NODE_PACKAGE_MANIFEST;
 if (!manifestPath) {
     throw new Error("NODE_PACKAGE_MANIFEST is not set");
 }
+const runfilesDir = process.env.RUNFILES_DIR;
+if (!runfilesDir) {
+    throw new Error("RUNFILES_DIR is not set");
+}
 const packageTree = JsonFormat.parse(PackageTree.json(), fs__namespace.readFileSync(manifestPath, "utf8"));
+const links = new NodeLinks((packagePath) => path__namespace.relative(runfilesDir, packagePath).replace(/\//g, "_"));
+process.on("exit", () => links.destroy());
 const resolver = Resolver.create(packageTree, process.env.RUNFILES_DIR);
-patchModule(resolver, require("module"));
+patchModule(resolver, links, require("module"));
 patchModuleDetails(resolver, require("module"));//# sourceMappingURL=bundle.js.map

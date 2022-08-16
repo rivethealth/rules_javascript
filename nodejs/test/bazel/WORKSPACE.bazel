@@ -14,3 +14,16 @@ test_repositories0()
 load("@better_rules_javascript//test:workspace1.bzl", "test_repositories1")
 
 test_repositories1()
+
+load("@better_rules_javascript//nodejs:workspace.bzl", "nodejs_repositories", "nodejs_toolchains")
+load("@better_rules_javascript//rules:nodejs.bzl", "NODEJS_REPOSITORIES")
+
+nodejs_repositories(
+    name = "nodejs_16",
+    repositories = NODEJS_REPOSITORIES["16"],
+)
+
+nodejs_toolchains(
+    repositories = NODEJS_REPOSITORIES["16"],
+    toolchain = "@better_rules_javascript_test//:nodejs_runtime_16",
+)
