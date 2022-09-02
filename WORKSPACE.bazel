@@ -178,7 +178,7 @@ http_archive(
 
 load("//rules:workspace.bzl", javascript_repositories = "repositories")
 
-javascript_repositories()
+javascript_repositories("18.8.0")
 
 files(
     name = "better_rules_javascript_files",

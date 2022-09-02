@@ -4,8 +4,8 @@ load("@better_rules_javascript//jest:rules.bzl", "jest_test")
 
 js_export(
     name = "babel",
-    dep = "@npm_babel_core_7.16.0//:lib",
-    deps = ["@npm//@babel/plugin-transform-modules-commonjs:lib"],
+    dep = "@npm_babel_core_7.18.10//:lib",
+    deps = ["@npm//@babel/preset-env:lib"],
 )
 
 cjs_root(
@@ -46,4 +46,5 @@ jest_test(
     dep = ":main",
     jest = "@npm//jest:lib",
     node = "@better_rules_javascript//rules:nodejs",
+    node_options=["--experimental-vm-modules", "--es-module-specifier-resolution=node"]
 )

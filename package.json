@@ -10,8 +10,8 @@
     "@angular/material": "~13.2.0",
     "@angular/platform-browser": "~13.1.0",
     "@angular/platform-browser-dynamic": "~13.1.0",
-    "@babel/core": "~7.16.0",
-    "@babel/plugin-transform-modules-commonjs": "~7.13.0",
+    "@babel/core": "~7.18.0",
+    "@babel/preset-env": "~7.18.0",
     "@rollup/plugin-commonjs": "~16.0.0",
     "@rollup/plugin-node-resolve": "13.0.4",
     "@typescript-eslint/eslint-plugin": "~5.5.0",
@@ -21,7 +21,7 @@
     "doctoc": "~2.1.0",
     "eslint": "~8.3.0",
     "html-webpack-plugin": "~5.5.0",
-    "jest": "28.0.0-alpha.7",
+    "jest": "28.0.0",
     "long": "~4.0.0",
     "node-fetch": "^2.0.0",
     "prettier": "~2.5.0",
@@ -47,6 +47,9 @@
     "@types/prettier": "~2.4.0",
     "@types/react": "~15.0.0",
     "@types/tar-stream": "~2.2.0"
+  },
+  "scripts": {
+    "update-node-versions": "node scripts/update_node_versions.js > rules/nodejs.bzl"
   },
   "private": true,
   "version": "0.0.0"
