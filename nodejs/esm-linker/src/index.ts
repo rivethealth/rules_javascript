@@ -88,8 +88,6 @@ export async function resolve(
     defaultResolve
   );
 
-  console.warn(nodeResolved);
-  console.warn(parentPath);
   const nodeResolvedPath = url.fileURLToPath(nodeResolved.url);
   const resolvedPath = path.join(
     resolved.package,

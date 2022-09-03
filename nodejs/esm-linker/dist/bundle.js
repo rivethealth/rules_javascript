@@ -378,8 +378,6 @@ async function resolve(specifier, context, defaultResolve) {
     }
     parentPath = path__namespace.join(directory, path__namespace.relative(process.env.RUNFILES_DIR, parentPath).replace(/\//g, "_"));
     const nodeResolved = await defaultResolve(specifier, { ...context, parentURL: url__namespace.pathToFileURL(parentPath) }, defaultResolve);
-    console.warn(nodeResolved);
-    console.warn(parentPath);
     const nodeResolvedPath = url__namespace.fileURLToPath(nodeResolved.url);
     const resolvedPath = path__namespace.join(resolved.package, path__namespace.relative(linkPath, nodeResolvedPath));
     nodeResolved.url = url__namespace.pathToFileURL(resolvedPath).toString();

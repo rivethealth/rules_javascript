@@ -1,17 +1,14 @@
 'use strict';
 
-const { emitWarning } = process;
+const { emit } = process;
 /**
  * @file
  * @see https://github.com/nodejs/node/issues/30810
  */
-process.emitWarning = function (warning, type) {
-    if (type === "ExperimentalWarning") {
+process.emit = function (name, data) {
+    if (name === "warning" && data?.name === "ExperimentalWarning") {
         return;
     }
-    if (type && typeof type === "object" && type.type === "ExperimentalWarning") {
-        return;
-    }
-    return emitWarning.apply(this, arguments);
+    return emit.apply(this, arguments);
 };
 //# sourceMappingURL=bundle.js.map

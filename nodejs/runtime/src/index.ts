@@ -1,18 +1,14 @@
-const { emitWarning } = process;
+const { emit } = process;
 
 /**
  * @file
  * @see https://github.com/nodejs/node/issues/30810
  */
 
-process.emitWarning = function (warning: string | Error, type: any) {
-  if (type === "ExperimentalWarning") {
+process.emit = <any>function (name: string, data: any) {
+  if (name === "warning" && data?.name === "ExperimentalWarning") {
     return;
   }
 
-  if (type && typeof type === "object" && type.type === "ExperimentalWarning") {
-    return;
-  }
-
-  return emitWarning.apply(this, arguments);
+  return emit.apply(this, arguments);
 };
