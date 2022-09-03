@@ -52,7 +52,7 @@ test_suite(
         "//jest/test",
         "//nodejs/test",
         "//rollup/test",
-        "//ts-proto/test",
+        # "//ts-proto/test",
         "//typescript/test",
         "//webpack/test",
     ],

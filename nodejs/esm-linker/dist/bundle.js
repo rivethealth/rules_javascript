@@ -344,7 +344,7 @@ const linkedPackages = new Map();
 const resolver = Resolver.create(packageTree, process.env.RUNFILES_DIR);
 async function resolve(specifier, context, defaultResolve) {
     if (!context.parentURL && path__namespace.extname(specifier) == "") {
-        return { format: "commonjs", url: specifier };
+        return { format: "commonjs", url: specifier, shortCircuit: true };
     }
     let parentPath;
     try {
@@ -377,7 +377,9 @@ async function resolve(specifier, context, defaultResolve) {
         specifier = `${specifier}/${resolved.inner}`;
     }
     parentPath = path__namespace.join(directory, path__namespace.relative(process.env.RUNFILES_DIR, parentPath).replace(/\//g, "_"));
-    const nodeResolved = defaultResolve(specifier, { ...context, parentURL: url__namespace.pathToFileURL(parentPath) }, defaultResolve);
+    const nodeResolved = await defaultResolve(specifier, { ...context, parentURL: url__namespace.pathToFileURL(parentPath) }, defaultResolve);
+    console.warn(nodeResolved);
+    console.warn(parentPath);
     const nodeResolvedPath = url__namespace.fileURLToPath(nodeResolved.url);
     const resolvedPath = path__namespace.join(resolved.package, path__namespace.relative(linkPath, nodeResolvedPath));
     nodeResolved.url = url__namespace.pathToFileURL(resolvedPath).toString();
