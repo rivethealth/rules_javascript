@@ -1,0 +1,19 @@
+name: "Lint Check"
+
+on: [push]
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Mount bazel cache
+        uses: actions/cache@v3
+        with:
+          path: "~/.cache/bazel"
+          key: bazel
+      - name: Format
+        run: bazel test //tools:format_test
+      - name: Lint
+        run: bazel test //tools:lint_test
