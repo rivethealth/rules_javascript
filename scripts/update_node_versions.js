@@ -48,14 +48,14 @@ async function getNodeJsVersions() {
     .filter(
       (version) =>
         versionCompare(version, MIN_VERSION) >= 0 &&
-        versionCompare(version, MAX_VERSION) <= 0
+        versionCompare(version, MAX_VERSION) <= 0,
     )
     .sort(versionCompare);
 }
 
 async function getNodeJsVersion(version) {
   const text = await getText(
-    `https://nodejs.org/dist/v${version.join(".")}/SHASUMS256.txt`
+    `https://nodejs.org/dist/v${version.join(".")}/SHASUMS256.txt`,
   );
 
   return {
@@ -97,7 +97,7 @@ async function main() {
         `},`,
       ]
         .map((line) => `    ${line}`)
-        .join("\n")
+        .join("\n"),
     );
   });
   console.log("}");

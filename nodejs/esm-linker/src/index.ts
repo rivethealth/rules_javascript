@@ -14,7 +14,7 @@ if (!manifestPath) {
 }
 const packageTree = JsonFormat.parse(
   PackageTree.json(),
-  fs.readFileSync(manifestPath, "utf8")
+  fs.readFileSync(manifestPath, "utf8"),
 );
 
 const linkDirectory = lazy(async () => {
@@ -33,7 +33,7 @@ const resolver = Resolver.create(packageTree, process.env.RUNFILES_DIR);
 export async function resolve(
   specifier: string,
   context: any,
-  defaultResolve: Function
+  defaultResolve: Function,
 ) {
   if (!context.parentURL && path.extname(specifier) == "") {
     return { format: "commonjs", url: specifier, shortCircuit: true };
@@ -68,7 +68,7 @@ export async function resolve(
   if (!linkedPackages.has(resolved.package)) {
     linkedPackages.set(
       resolved.package,
-      fs.promises.symlink(resolved.package, linkPath)
+      fs.promises.symlink(resolved.package, linkPath),
     );
   }
   await linkedPackages.get(resolved.package);
@@ -80,18 +80,18 @@ export async function resolve(
 
   parentPath = path.join(
     directory,
-    path.relative(process.env.RUNFILES_DIR, parentPath).replace(/\//g, "_")
+    path.relative(process.env.RUNFILES_DIR, parentPath).replace(/\//g, "_"),
   );
   const nodeResolved = await defaultResolve(
     specifier,
     { ...context, parentURL: url.pathToFileURL(parentPath) },
-    defaultResolve
+    defaultResolve,
   );
 
   const nodeResolvedPath = url.fileURLToPath(nodeResolved.url);
   const resolvedPath = path.join(
     resolved.package,
-    path.relative(linkPath, nodeResolvedPath)
+    path.relative(linkPath, nodeResolvedPath),
   );
   nodeResolved.url = url.pathToFileURL(resolvedPath).toString();
   return nodeResolved;
