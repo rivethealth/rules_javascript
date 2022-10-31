@@ -22,10 +22,10 @@ load("@better_rules_javascript//typescript:rules.bzl", "ts_export", "ts_import")
 
 ts_import(
     name = "lib.inner",
-    declarations = [":files"],
+    declarations = [":root"],
     deps = {deps},
     root = ":root",
-    js = [":files"],
+    js = [":root"],
     visibility = ["//visibility:public"],
 )
 
