@@ -112,14 +112,15 @@ is_json(<a href="#is_json-path">path</a>)
 ## js_path
 
 <pre>
-js_path(<a href="#js_path-path">path</a>)
+js_path(<a href="#js_path-path">path</a>, <a href="#js_path-jsx">jsx</a>)
 </pre>
 
 **PARAMETERS**
 
-| Name                          | Description               | Default Value |
-| :---------------------------- | :------------------------ | :------------ |
-| <a id="js_path-path"></a>path | <p align="center"> - </p> | none          |
+| Name                          | Description               | Default Value        |
+| :---------------------------- | :------------------------ | :------------------- |
+| <a id="js_path-path"></a>path | <p align="center"> - </p> | none                 |
+| <a id="js_path-jsx"></a>jsx   | <p align="center"> - </p> | <code>"react"</code> |
 
 <a id="#map_path"></a>
 

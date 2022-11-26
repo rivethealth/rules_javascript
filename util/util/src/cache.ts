@@ -3,7 +3,7 @@ export function lazy<T>(f: () => T) {
   return () => {
     if (f) {
       result = f();
-      f = undefined;
+      f = undefined!;
     }
     return result;
   };

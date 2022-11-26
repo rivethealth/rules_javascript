@@ -1,14 +1,10 @@
 import { JsonFormat } from "@better-rules-javascript/util-json";
+import { Locator, structUtils } from "@yarnpkg/core";
+import { patchUtils } from "@yarnpkg/plugin-patch";
 import { BzlDeps, BzlPackages } from "./bzl";
-import { NpmRegistryClient, NpmSpecifier } from "./npm";
-import {
-  YarnDependencyInfo,
-  YarnLocator,
-  YarnPackageInfo,
-  YarnVersion,
-} from "./yarn";
-import { getIntegrity } from "./sri";
-import { getOrSet } from "./collection";
+import { getOrSet } from "@better-rules-javascript/util/collection";
+import { NpmRegistryClient } from "./npm";
+import { YarnDependencies, YarnPackageInfos } from "./yarn";
 
 export interface ResolvedNpmPackage {
   contentIntegrity: string;
@@ -26,15 +22,14 @@ export namespace ResolvedNpmPackage {
 
 export async function getPackage(
   client: NpmRegistryClient,
-  specifier: NpmSpecifier,
+  npmLocator: Locator,
 ): Promise<ResolvedNpmPackage> {
-  const package_ = await client.getPackage(specifier);
+  const package_ = await client.getPackage(npmLocator);
   let integrity: string;
   if (package_.dist.integrity) {
     integrity = package_.dist.integrity;
   } else {
-    const content = await client.getPackageContent(package_.dist.tarball);
-    integrity = getIntegrity(content);
+    throw new Error("Missing integrity");
   }
 
   return {
@@ -44,8 +39,8 @@ export async function getPackage(
 }
 
 export async function resolvePackages(
-  packageInfos: YarnPackageInfo[],
-  getPackage: (specifier: NpmSpecifier) => Promise<ResolvedNpmPackage>,
+  yarnPackages: YarnPackageInfos,
+  getPackage: (npmSpecifier: Locator) => Promise<ResolvedNpmPackage>,
   progress: (message: string) => void,
 ): Promise<{ packages: BzlPackages; roots: BzlDeps }> {
   const bzlPackages: BzlPackages = new Map();
@@ -62,24 +57,21 @@ export async function resolvePackages(
 
   let reported = process.hrtime.bigint();
   await Promise.all(
-    packageInfos.map(async (packageInfo) => {
-      const deps = bzlDeps(packageInfo.children.Dependencies || []);
-      const id = bzlId(packageInfo.value);
-      const specifier = npmSpecifier(packageInfo.value);
+    [...yarnPackages.values()].map(async (yarnPackage) => {
+      const deps = bzlDeps(yarnPackages, yarnPackage.dependencies);
+      const id = bzlId(yarnPackage.locator);
+      const specifier = npmLocator(yarnPackage.locator);
       if (id && specifier) {
         const npmPackage = await getPackage(specifier);
         bzlPackages.set(id, {
           deps,
           extraDeps: new Map(),
           integrity: npmPackage.contentIntegrity,
-          name: packageInfo.value.name,
+          name: structUtils.stringifyIdent(yarnPackage.locator),
           url: npmPackage.contentUrl,
         });
         finished++;
-      } else if (
-        packageInfo.value.version.type === YarnVersion.WORKSPACE &&
-        packageInfo.value.version.path === "."
-      ) {
+      } else if (yarnPackage.locator.reference === "workspace:.") {
         bzlRoots = deps;
       }
       const now = process.hrtime.bigint();
@@ -95,63 +87,94 @@ export async function resolvePackages(
     throw new Error("Could not find root workspace");
   }
 
+  garbageCollect(bzlPackages, bzlRoots);
   removeNames(bzlPackages);
   fixCycles(bzlPackages);
 
   return { roots: bzlRoots, packages: bzlPackages };
 }
 
-function npmSpecifier(locator: YarnLocator): NpmSpecifier | undefined {
-  switch (locator.version.type) {
-    case YarnVersion.PATCH:
-      return npmSpecifier(locator.version.locator);
-    case YarnVersion.VIRTUAL:
-      if (locator.version.version.type !== YarnVersion.NPM) {
-        return;
-      }
-      return {
-        name: locator.name,
-        version: locator.version.version.version,
-      };
-    case YarnVersion.NPM:
-      return { name: locator.name, version: locator.version.version };
+function npmLocator(locator: Locator): Locator | undefined {
+  if (locator.reference.startsWith("patch:")) {
+    const parsed = patchUtils.parseLocator(locator);
+    return npmLocator(parsed.sourceLocator);
+  }
+  if (structUtils.isVirtualLocator(locator)) {
+    locator = structUtils.devirtualizeLocator(locator);
+    return npmLocator(locator);
+  }
+  if (locator.reference.startsWith("npm:")) {
+    return structUtils.makeLocator(
+      locator,
+      locator.reference.replace(/^npm:/, ""),
+    );
   }
 }
 
-function bzlId(locator: YarnLocator): string | undefined {
-  switch (locator.version.type) {
-    case YarnVersion.PATCH:
-      return bzlId(locator.version.locator);
-    case YarnVersion.VIRTUAL:
-      if (locator.version.version.type !== YarnVersion.NPM) {
-        return;
-      }
-      return `${locator.name}@${
-        locator.version.version.version
-      }-${locator.version.digest.slice(0, 8)}`;
-    case YarnVersion.NPM:
-      return `${locator.name}@${locator.version.version}`;
+function bzlId(locator: Locator): string | undefined {
+  if (locator.reference.startsWith("patch:")) {
+    const parsed = patchUtils.parseLocator(locator);
+    return `${bzlId(parsed.sourceLocator)}-${locator.locatorHash.slice(0, 8)}`;
+  }
+  if (structUtils.isVirtualLocator(locator)) {
+    const entropy = locator.reference.slice(
+      "virtual:".length,
+      "virtual:".length + 8,
+    );
+    locator = structUtils.devirtualizeLocator(locator);
+    return `${bzlId(locator)}-${entropy}`;
+  }
+  if (locator.reference.startsWith("npm:")) {
+    const version = locator.reference.replace(/^npm:/, "");
+    return `${structUtils.stringifyIdent(locator)}@${version}`;
   }
 }
 
-function bzlDeps(yarnDependencies: YarnDependencyInfo[]): BzlDeps {
+function bzlDeps(
+  yarnPackages: YarnPackageInfos,
+  yarnDependencies: YarnDependencies,
+): BzlDeps {
   const result: BzlDeps = [];
-  for (const yarnDependency of yarnDependencies) {
-    if (!yarnDependency.locator) {
-      continue;
-    }
-    const id = bzlId(yarnDependency.locator);
+  for (const [depName, depId] of yarnDependencies.entries()) {
+    const id = bzlId(yarnPackages.get(depId)!.locator);
     if (id) {
-      result.push({ name: yarnDependency.descriptor.name, id });
+      result.push({ name: depName, id });
     }
   }
   return result;
 }
 
+function garbageCollect(bzlPackages: BzlPackages, roots: BzlDeps) {
+  const references = new Map<string, number>();
+  const addDeps = (deps: BzlDeps) => {
+    for (const dep of deps) {
+      references.set(dep.id, (references.get(dep.id) || 0) + 1);
+    }
+  };
+  addDeps(roots);
+  for (const bzlPackage of bzlPackages.values()) {
+    addDeps(bzlPackage.deps);
+  }
+  const checkId = (id: string) => {
+    if (references.get(id)) {
+      return;
+    }
+    const bzlPackage = bzlPackages.get(id)!;
+    for (const dep of bzlPackage.deps) {
+      references.set(dep.id, references.get(dep.id)! - 1);
+      checkId(dep.id);
+    }
+    bzlPackages.delete(id);
+  };
+  for (const id of bzlPackages.keys()) {
+    checkId(id);
+  }
+}
+
 function removeNames(bzlPackages: BzlPackages) {
   for (const package_ of bzlPackages.values()) {
     for (const dep of package_.deps) {
-      const depPackage = bzlPackages.get(dep.id);
+      const depPackage = bzlPackages.get(dep.id)!;
       if (dep.name === depPackage.name) {
         dep.name = null;
       }
@@ -166,19 +189,19 @@ function fixCycles(bzlPackages: BzlPackages) {
     if (visited.has(id)) {
       return;
     }
-    const package_ = bzlPackages.get(id);
+    const package_ = bzlPackages.get(id)!;
     if (current.has(id)) {
       const idList = [...current];
       idList.splice(0, idList.indexOf(id));
       const ids = new Set(idList);
       for (const id of ids) {
-        const package_ = bzlPackages.get(id);
+        const package_ = bzlPackages.get(id)!;
         for (const dep of package_.deps) {
           if (!ids.has(dep.id)) {
             continue;
           }
           for (const packageId of ids) {
-            const package_ = bzlPackages.get(packageId);
+            const package_ = bzlPackages.get(packageId)!;
             const deps = getOrSet(package_.extraDeps, id, () => []);
             if (!deps.some((d) => d.id === dep.id && d.name == dep.name)) {
               deps.push(dep);

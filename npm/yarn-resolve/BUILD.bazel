@@ -26,10 +26,18 @@ ts_library(
     config_dep = ":config",
     root = ":root",
     deps = [
+        "//util/cache:lib",
         "//util/json:lib",
+        "//util/starlark:lib",
+        "//util/util:lib",
         "@better_rules_javascript_npm//@types/argparse:lib",
         "@better_rules_javascript_npm//@types/node:lib",
         "@better_rules_javascript_npm//@types/node-fetch:lib",
+        "@better_rules_javascript_npm//@yarnpkg/cli:lib",
+        "@better_rules_javascript_npm//@yarnpkg/core:lib",
+        "@better_rules_javascript_npm//@yarnpkg/fslib:lib",
+        "@better_rules_javascript_npm//@yarnpkg/plugin-npm:lib",
+        "@better_rules_javascript_npm//@yarnpkg/plugin-patch:lib",
         "@better_rules_javascript_npm//argparse:lib",
         "@better_rules_javascript_npm//node-fetch:lib",
     ],
@@ -37,9 +45,8 @@ ts_library(
 
 nodejs_binary(
     name = "bin",
-    data = ["//npm:yarn"],
     dep = ":lib",
     main = "src/main.js",
     node = "//rules:nodejs",
-    node_options = ["--title=yarn-resovle"],
+    # node_options = ["--title=yarn-resolve"],
 )

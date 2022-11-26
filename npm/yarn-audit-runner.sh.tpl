@@ -1,12 +1,16 @@
-#!/usr/bin/env sh
-set -e
+#!/usr/bin/env bash
+set -euo pipefail
 
-if [ -z "$RUNFILES_DIR" ]; then
-  export RUNFILES_DIR="$0".runfiles
+if [ -z "${RUNFILES_DIR-}" ]; then
+  if [ ! -z "${RUNFILES_MANIFEST_FILE-}" ]; then
+    export RUNFILES_DIR="${RUNFILES_MANIFEST_FILE%.runfiles_manifest}.runfiles"
+  else
+    export RUNFILES_DIR="$0.runfiles"
+  fi
 fi
 
-abs_runfiles_dir="$(realpath -s "$RUNFILES_DIR")"
+[[ "$RUNFILES_DIR" = /* ]] || RUNFILES_DIR="$(pwd)"/"$RUNFILES_DIR"
 
-cd "$RUNFILES_DIR"/%{dir}
+cd "$RUNFILES_DIR"/%{path}
 
-exec "$abs_runfiles_dir"/better_rules_javascript/npm/yarn npm audit
+exec "$RUNFILES_DIR"/%{yarn} npm audit

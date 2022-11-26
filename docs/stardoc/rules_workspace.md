@@ -5,5 +5,11 @@
 ## repositories
 
 <pre>
-repositories()
+repositories(<a href="#repositories-version">version</a>)
 </pre>
+
+**PARAMETERS**
+
+| Name                                     | Description               | Default Value         |
+| :--------------------------------------- | :------------------------ | :-------------------- |
+| <a id="repositories-version"></a>version | <p align="center"> - </p> | <code>"18.8.0"</code> |

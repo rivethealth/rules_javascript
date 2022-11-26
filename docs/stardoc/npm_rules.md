@@ -5,16 +5,16 @@
 ## yarn_audit_test
 
 <pre>
-yarn_audit_test(<a href="#yarn_audit_test-name">name</a>, <a href="#yarn_audit_test-lock">lock</a>, <a href="#yarn_audit_test-manifest">manifest</a>)
+yarn_audit_test(<a href="#yarn_audit_test-name">name</a>, <a href="#yarn_audit_test-data">data</a>, <a href="#yarn_audit_test-path">path</a>)
 </pre>
 
 **ATTRIBUTES**
 
-| Name                                          | Description                    | Type                                                               | Mandatory | Default |
-| :-------------------------------------------- | :----------------------------- | :----------------------------------------------------------------- | :-------- | :------ |
-| <a id="yarn_audit_test-name"></a>name         | A unique name for this target. | <a href="https://bazel.build/docs/build-ref.html#name">Name</a>    | required  |         |
-| <a id="yarn_audit_test-lock"></a>lock         | -                              | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a> | required  |         |
-| <a id="yarn_audit_test-manifest"></a>manifest | -                              | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a> | optional  | None    |
+| Name                                  | Description                    | Type                                                                        | Mandatory | Default |
+| :------------------------------------ | :----------------------------- | :-------------------------------------------------------------------------- | :-------- | :------ |
+| <a id="yarn_audit_test-name"></a>name | A unique name for this target. | <a href="https://bazel.build/docs/build-ref.html#name">Name</a>             | required  |         |
+| <a id="yarn_audit_test-data"></a>data | -                              | <a href="https://bazel.build/docs/build-ref.html#labels">List of labels</a> | optional  | []      |
+| <a id="yarn_audit_test-path"></a>path | Package relative path          | String                                                                      | optional  | ""      |
 
 <a id="#yarn_resolve"></a>
 

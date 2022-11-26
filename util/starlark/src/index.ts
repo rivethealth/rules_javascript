@@ -95,6 +95,7 @@ function printValue(value: StarlarkValue, indent: string | undefined): string {
   if (value instanceof StarlarkString) {
     return printString(value);
   }
+  throw new Error();
 }
 
 function printVariable(value: StarlarkVariable): string {
@@ -114,6 +115,7 @@ function printStatement(value: StarlarkStatement): string {
   if (value instanceof StarlarkEqualStatement) {
     return printEqualStatement(value);
   }
+  throw new Error();
 }
 
 export function printStarlark(file: StarlarkFile): string {

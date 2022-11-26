@@ -19,8 +19,7 @@ Bazel repositories. This approach integrates well into the Bazel ecosystem and
 avoid excessive downloads. Compare with
 [rules_jvm_external](https://github.com/bazelbuild/rules_jvm_external).
 
-better_rules_javascript uses Yarn 2, as its lock file provides all the necessary
-information.
+better_rules_javascript uses Yarn 2.
 
 ## Yarn
 
@@ -38,28 +37,23 @@ Create a package.json.
 }
 ```
 
+Create a `yarn_resolve` target.
+
+**BUILD.bazel**
+
+```bzl
+yarn_resolve(
+    name = "resolve_npm",
+)
+```
+
+Resolve packages and generate npm_data.bzl
+
 ```sh
-bazel run @better_rules_javascript//npm/yarn-gen:bin -- --refresh npm_data.bzl
+bazel run :resolve_npm
 ```
 
-Full options:
-
-```txt
-usage: yarn-gen [-h] [--dir DIR] [--lock LOCK] [--refresh] output
-
-Convert yarn lock file to Starlark
-
-positional arguments:
-  output       Path to Starlark output.
-
-optional arguments:
-  -h, --help   show this help message and exit
-  --dir DIR    Directory for refresh. Defaults to .
-  --lock LOCK  Path to yarn.lock.
-  --refresh    Run yarn to refresh yarn.lock.
-```
-
-Then load the repositories into the workspace.
+Load the repositories.
 
 **WORKSPACE.bazel**
 
@@ -74,7 +68,7 @@ npm("npm", npm_packages, npm_roots)
 Several types of files can be distributed in NPM packages: JavaScript,
 TypeScript, CSS, etc.
 
-To support these, the npm repostiories can be customized via "plugins."
+To support these, the npm repositories can be customized via "plugins."
 
 ```bzl
 npm("npm", npm_packages, npm_roots, npm_plugins)
@@ -92,7 +86,7 @@ load("@better_rules_javascript//js:workspace.bzl", "js_npm_plugin")
 ]
 ```
 
-You may want to add others like `ts_npm_plugin()`.
+If you use TypeScript, replace `js_npm_plugin()` with `ts_npm_plugin()`.
 
 ### Usage
 
