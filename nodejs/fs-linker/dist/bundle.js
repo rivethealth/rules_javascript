@@ -1329,4 +1329,3 @@ if (process.env.NODE_FS_TRACE === "true") {
 patchFs(vfs, require("fs"));
 patchFsPromises(vfs, require("fs").promises);
 patchModule(require("module"));
-//# sourceMappingURL=bundle.js.map

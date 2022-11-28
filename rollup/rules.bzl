@@ -1,4 +1,5 @@
 load("@bazel_skylib//lib:shell.bzl", "shell")
+load("@bazel_skylib//rules:common_settings.bzl", "BuildSettingInfo")
 load("//commonjs:providers.bzl", "CjsInfo", "gen_manifest", "package_path")
 load("//javascript:providers.bzl", "JsInfo")
 load("//javascript:rules.bzl", "js_export")
@@ -6,9 +7,27 @@ load("//nodejs:rules.bzl", "nodejs_binary")
 load("//util:path.bzl", "output_name", "runfile_path")
 load(":providers.bzl", "RollupInfo")
 
+def _rollup_transition_impl(settings, attrs):
+    return {"//javascript:language": "es2020", "//javascript:module": "esnext"}
+
+_rollup_transition = transition(
+    implementation = _rollup_transition_impl,
+    inputs = [],
+    outputs = ["//javascript:language", "//javascript:module"],
+)
+
+def _rollup_config_transition_impl(settings, attrs):
+    return {"//javascript:module": "commonjs"}
+
+_rollup_config_transition = transition(
+    implementation = _rollup_config_transition_impl,
+    inputs = [],
+    outputs = ["//javascript:module"],
+)
+
 def _rollup_impl(ctx):
     config = ctx.attr.config
-    config_dep = ctx.attr.config_dep[CjsInfo]
+    config_dep = ctx.attr.config_dep[0][CjsInfo]
     workspace_name = ctx.workspace_name
 
     rollup_info = RollupInfo(
@@ -31,10 +50,13 @@ rollup = rule(
             mandatory = True,
         ),
         "config_dep": attr.label(
-            cfg = "exec",
+            cfg = _rollup_config_transition,
             doc = "Config dependency.",
             mandatory = True,
             providers = [CjsInfo],
+        ),
+        "_allowlist_function_transition": attr.label(
+            default = "@bazel_tools//tools/allowlists/function_transition_allowlist",
         ),
     },
     doc = "Rollup tools.",
@@ -76,22 +98,21 @@ def configure_rollup(name, dep, config, config_dep, visibility = None):
 
 def _rollup_bundle_impl(ctx):
     actions = ctx.actions
-    default_dep = ctx.attr.dep[DefaultInfo]
-    dep_cjs = ctx.attr.dep[CjsInfo]
-    dep_js = ctx.attr.dep[JsInfo]
+    compilation_mode = ctx.var["COMPILATION_MODE"]
+    default_dep = ctx.attr.dep[0][DefaultInfo]
+    dep_cjs = ctx.attr.dep[0][CjsInfo]
+    dep_js = ctx.attr.dep[0][JsInfo]
     fs_linker_cjs = ctx.attr._fs_linker[CjsInfo]
     fs_linker_js = ctx.attr._fs_linker[JsInfo]
+    js_module = ctx.attr._js_module[BuildSettingInfo].value
+    js_source_map = ctx.attr._js_source_map[BuildSettingInfo].value
+    name = ctx.attr.name
     rollup = ctx.attr.rollup[RollupInfo]
+    rollup_config_cjs = ctx.attr._rollup_config[0][CjsInfo]
+    rollup_config_js = ctx.attr._rollup_config[0][JsInfo]
     label = ctx.label
-    if bool(ctx.outputs.output) == bool(ctx.attr.output_directory):
-        fail("Exactly one of output and output must be defined")
 
-    if ctx.outputs.output:
-        output = ctx.outputs.output
-        map = ctx.actions.declare_file("%s.map" % output_name(file = ctx.outputs.output, label = ctx.label))
-    else:
-        output = ctx.actions.declare_directory(ctx.attr.output_directory)
-        map = output
+    output = ctx.actions.declare_directory(ctx.attr.output or name)
 
     package_manifest = actions.declare_file("%s.packages.json" % ctx.attr.name)
     gen_manifest(
@@ -103,43 +124,40 @@ def _rollup_bundle_impl(ctx):
         package_path = package_path,
     )
 
-    args = []
-    args.append("--config")
-    args.append("./%s.runfiles/%s" % (rollup.bin.executable.path, rollup.config_path))
+    args = [
+        "--config",
+        "%s/src/index.cjs" % rollup_config_cjs.package.path,
+    ]
 
     actions.run(
         env = {
+            "COMPILATION_MODE": compilation_mode,
+            "JS_MODULE": js_module,
+            "JS_SOURCE_MAP": "true" if js_source_map else "false",
             "NODE_FS_PACKAGE_MANIFEST": package_manifest.path,
             "NODE_OPTIONS_APPEND": "-r ./%s/dist/bundle.js" % fs_linker_cjs.package.path,
+            "ROLLUP_CONFIG": "./%s.runfiles/%s" % (rollup.bin.executable.path, rollup.config_path),
             "ROLLUP_INPUT_ROOT": dep_cjs.package.path,
-            ("ROLLUP_OUTPUT_ROOT" if output.is_directory else "ROLLUP_OUTPUT"): output.path,
+            "ROLLUP_OUTPUT_ROOT": output.path,
         },
         executable = rollup.bin.executable,
         tools = [rollup.bin],
         arguments = args,
         inputs = depset(
             [package_manifest],
-            transitive = [dep_js.transitive_files, fs_linker_js.transitive_files],
+            transitive = [dep_js.transitive_files, fs_linker_js.transitive_files, rollup_config_js.transitive_files],
         ),
-        outputs = [output, map],
+        outputs = [output],
     )
 
-    runfiles = ctx.runfiles(files = [map])
-    runfiles = runfiles.merge(default_dep.default_runfiles)
-    default_info = DefaultInfo(
-        files = depset([output]),
-        runfiles = runfiles,
-    )
+    default_info = DefaultInfo(files = depset([output]))
 
-    output_group_info = OutputGroupInfo(
-        map = depset([map]),
-    )
-
-    return [default_info, output_group_info]
+    return [default_info]
 
 rollup_bundle = rule(
     attrs = {
         "dep": attr.label(
+            cfg = _rollup_transition,
             doc = "JavaScript dependencies",
             providers = [CjsInfo, JsInfo],
         ),
@@ -148,9 +166,11 @@ rollup_bundle = rule(
             mandatory = True,
             providers = [RollupInfo],
         ),
-        "output": attr.output(
+        "output": attr.string(
+            doc = "Output directory. Defaults to the name as the target.",
         ),
-        "output_directory": attr.string(
+        "_allowlist_function_transition": attr.label(
+            default = "@bazel_tools//tools/allowlists/function_transition_allowlist",
         ),
         "_manifest": attr.label(
             cfg = "exec",
@@ -160,6 +180,18 @@ rollup_bundle = rule(
         "_fs_linker": attr.label(
             providers = [CjsInfo, JsInfo],
             default = "//nodejs/fs-linker:dist_lib",
+        ),
+        "_js_module": attr.label(
+            providers = [BuildSettingInfo],
+            default = "//javascript:module",
+        ),
+        "_js_source_map": attr.label(
+            providers = [BuildSettingInfo],
+            default = "//javascript:source_map",
+        ),
+        "_rollup_config": attr.label(
+            cfg = _rollup_config_transition,
+            default = "//rollup/config:lib",
         ),
     },
     doc = "Rollup bundle",

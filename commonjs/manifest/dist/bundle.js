@@ -4723,4 +4723,3 @@ var worker = /*#__PURE__*/Object.freeze({
     ManifestWorkerError: ManifestWorkerError,
     ManifestWorker: ManifestWorker
 });
-//# sourceMappingURL=bundle.js.map

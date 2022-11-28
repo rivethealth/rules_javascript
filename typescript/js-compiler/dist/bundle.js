@@ -1610,4 +1610,3 @@ var worker = /*#__PURE__*/Object.freeze({
     JsWorkerError: JsWorkerError,
     JsWorker: JsWorker
 });
-//# sourceMappingURL=bundle.js.map
