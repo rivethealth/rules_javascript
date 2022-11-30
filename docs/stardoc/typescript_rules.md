@@ -58,7 +58,7 @@ TypeScript library with pre-existing declaration files.
 | <a id="ts_import-deps"></a>deps                             | Dependencies                                  | <a href="https://bazel.build/docs/build-ref.html#labels">List of labels</a> | optional  | []      |
 | <a id="ts_import-js"></a>js                                 | JavaScript                                    | <a href="https://bazel.build/docs/build-ref.html#labels">List of labels</a> | optional  | []      |
 | <a id="ts_import-js_prefix"></a>js_prefix                   | Prefix to add to JavaScript files.            | String                                                                      | optional  | ""      |
-| <a id="ts_import-root"></a>root                             | CommonJS root                                 | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a>          | required  |         |
+| <a id="ts_import-root"></a>root                             | CommonJS root                                 | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a>          | optional  | None    |
 | <a id="ts_import-strip_prefix"></a>strip_prefix             | Package-relative prefix to remove from files. | String                                                                      | optional  | ""      |
 
 <a id="#ts_library"></a>
@@ -67,7 +67,7 @@ TypeScript library with pre-existing declaration files.
 
 <pre>
 ts_library(<a href="#ts_library-name">name</a>, <a href="#ts_library-compile_deps">compile_deps</a>, <a href="#ts_library-compiler">compiler</a>, <a href="#ts_library-config">config</a>, <a href="#ts_library-config_dep">config_dep</a>, <a href="#ts_library-data">data</a>, <a href="#ts_library-declaration_prefix">declaration_prefix</a>, <a href="#ts_library-deps">deps</a>,
-           <a href="#ts_library-js_prefix">js_prefix</a>, <a href="#ts_library-module">module</a>, <a href="#ts_library-root">root</a>, <a href="#ts_library-src_prefix">src_prefix</a>, <a href="#ts_library-srcs">srcs</a>, <a href="#ts_library-strip_prefix">strip_prefix</a>, <a href="#ts_library-target">target</a>)
+           <a href="#ts_library-js_prefix">js_prefix</a>, <a href="#ts_library-jsx">jsx</a>, <a href="#ts_library-module">module</a>, <a href="#ts_library-root">root</a>, <a href="#ts_library-src_prefix">src_prefix</a>, <a href="#ts_library-srcs">srcs</a>, <a href="#ts_library-strip_prefix">strip_prefix</a>, <a href="#ts_library-target">target</a>)
 </pre>
 
 TypeScript library.
@@ -85,8 +85,9 @@ TypeScript library.
 | <a id="ts_library-declaration_prefix"></a>declaration_prefix | Prefix to add to declaration files.                                                                           | String                                                                      | optional  | ""      |
 | <a id="ts_library-deps"></a>deps                             | JS and TS dependencies                                                                                        | <a href="https://bazel.build/docs/build-ref.html#labels">List of labels</a> | optional  | []      |
 | <a id="ts_library-js_prefix"></a>js_prefix                   | Prefix to add to JavaScript files.                                                                            | String                                                                      | optional  | ""      |
+| <a id="ts_library-jsx"></a>jsx                               | How JSX is emitted: react (default) or preserve                                                               | String                                                                      | optional  | "react" |
 | <a id="ts_library-module"></a>module                         | Module type. By default, uses //javascript:module.                                                            | String                                                                      | optional  | ""      |
-| <a id="ts_library-root"></a>root                             | CommonJS package root.                                                                                        | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a>          | required  |         |
+| <a id="ts_library-root"></a>root                             | CommonJS package root.                                                                                        | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a>          | optional  | None    |
 | <a id="ts_library-src_prefix"></a>src_prefix                 | Prefix to add to sources.                                                                                     | String                                                                      | optional  | ""      |
 | <a id="ts_library-srcs"></a>srcs                             | TypeScript sources. If providing directories, the \*\_prefix attributes must be used to separate the outputs. | <a href="https://bazel.build/docs/build-ref.html#labels">List of labels</a> | optional  | []      |
 | <a id="ts_library-strip_prefix"></a>strip_prefix             | Package-relative prefix to remove.                                                                            | String                                                                      | optional  | ""      |

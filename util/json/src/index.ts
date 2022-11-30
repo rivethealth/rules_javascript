@@ -94,11 +94,11 @@ class ArrayJsonFormat<T> implements JsonFormat<T[]> {
   constructor(private readonly elementFormat: JsonFormat<T>) {}
 
   fromJson(json: any) {
-    return json.map((element) => this.elementFormat.fromJson(element));
+    return json.map((element: any) => this.elementFormat.fromJson(element));
   }
 
   toJson(json: any) {
-    return json.map((element) => this.elementFormat.toJson(element));
+    return json.map((element: any) => this.elementFormat.toJson(element));
   }
 }
 
@@ -121,8 +121,8 @@ class ObjectJsonFormat<V> implements JsonFormat<V> {
 
   private readonly properties: [string, JsonFormat<any>][];
 
-  fromJson(json: any) {
-    const result = <V>{};
+  fromJson(json: any): V {
+    const result: any = {};
     for (const [key, format] of this.properties) {
       if (key in json) {
         result[key] = format.fromJson(json[key]);
@@ -135,7 +135,7 @@ class ObjectJsonFormat<V> implements JsonFormat<V> {
     const json = <Json>{};
     for (const [key, format] of this.properties) {
       if (key in value) {
-        json[key] = format.toJson(value[key]);
+        json[key] = format.toJson((<any>value)[key]);
       }
     }
     return json;
@@ -150,7 +150,7 @@ class MapJsonFormat<K, V> implements JsonFormat<Map<K, V>> {
 
   fromJson(json: any) {
     return new Map<K, V>(
-      json.map(({ key, value }) => [
+      (<any[]>json).map(({ key, value }) => [
         this.keyFormat.fromJson(key),
         this.valueFormat.fromJson(value),
       ]),
@@ -187,7 +187,9 @@ class SetJsonFormat<T> implements JsonFormat<Set<T>> {
   constructor(private readonly format: JsonFormat<T>) {}
 
   fromJson(json: any) {
-    return new Set<T>(json.map((element) => this.format.fromJson(element)));
+    return new Set<T>(
+      json.map((element: any) => this.format.fromJson(element)),
+    );
   }
 
   toJson(value: Set<T>) {

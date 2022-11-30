@@ -1,17 +1,6 @@
 import { JsonFormat } from "@better-rules-javascript/util-json";
-import { Agent } from "https";
-import fetch from "node-fetch";
-
-export interface NpmSpecifier {
-  name: string;
-  version: string;
-}
-
-export namespace NpmSpecifier {
-  export function stringify(value: NpmSpecifier) {
-    return `${value.name}@${value.version}`;
-  }
-}
+import { Configuration, Locator } from "@yarnpkg/core";
+import { npmHttpUtils } from "@yarnpkg/plugin-npm";
 
 export interface NpmPackage {
   dist: {
@@ -32,28 +21,18 @@ export namespace NpmPackage {
 }
 
 export class NpmRegistryClient {
-  private readonly agent = new Agent({
-    keepAlive: true,
-    maxTotalSockets: 10,
-  });
-  private readonly url = "https://registry.npmjs.org";
+  constructor(private readonly configuration: Configuration) {}
 
-  async getPackageContent(url: string): Promise<ArrayBuffer> {
-    const response = await fetch(url, { agent: this.agent });
-    if (!response.ok) {
-      throw new Error(`Registry error ${response.status}`);
-    }
-    return await response.arrayBuffer();
-  }
+  async getPackage(specifier: Locator): Promise<NpmPackage> {
+    const path = `/${npmHttpUtils.getIdentUrl(specifier)}/${
+      specifier.reference
+    }`;
+    const response = await npmHttpUtils.get(path, {
+      configuration: this.configuration,
+      ident: specifier,
+      jsonResponse: true,
+    });
 
-  async getPackage(specifier: NpmSpecifier): Promise<NpmPackage> {
-    const response = await fetch(
-      `${this.url}/${specifier.name}/${specifier.version}`,
-      { agent: this.agent },
-    );
-    if (!response.ok) {
-      throw new Error(`Registry error ${response.status}`);
-    }
-    return NpmPackage.json().fromJson(await response.json());
+    return NpmPackage.json().fromJson(response);
   }
 }

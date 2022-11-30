@@ -4,43 +4,46 @@ load("@rules_file//util:path.bzl", "runfile_path")
 
 def _yarn_audit_test_impl(ctx):
     actions = ctx.actions
-    lock = ctx.file.lock
-    manifest = ctx.file.manifest
+    data = ctx.files.data
+    label = ctx.label
     name = ctx.attr.name
+    path = ctx.attr.path
     runner = ctx.file._runner
-    workspace_name = ctx.workspace_name
-    yarn = ctx.attr._yarn[DefaultInfo]
+    workspace = ctx.workspace_name
+    yarn = ctx.executable._yarn
+    yarn_default = ctx.attr._yarn[DefaultInfo]
+
+    path = path[len("/"):] if path.startswith("/") else "/".join([part for part in [workspace, label.package, path]])
 
     executable = actions.declare_file(name)
-    dir = paths.dirname(runfile_path(workspace_name, lock))
     actions.expand_template(
         is_executable = True,
-        substitutions = {"%{dir}": shell.quote(dir)},
+        substitutions = {
+            "%{path}": shell.quote(path),
+            "%{yarn}": shell.quote(runfile_path(workspace, yarn)),
+        },
         template = runner,
         output = executable,
     )
 
-    runfiles = ctx.runfiles(files = [lock] + ([manifest] if manifest else []))
-    runfiles = runfiles.merge(yarn.default_runfiles)
+    runfiles = ctx.runfiles(files = data)
+    runfiles = runfiles.merge(yarn_default.default_runfiles)
     default_info = DefaultInfo(executable = executable, runfiles = runfiles)
 
     return [default_info]
 
 yarn_audit_test = rule(
     attrs = {
-        "lock": attr.label(
-            allow_single_file = ["yarn.lock"],
-            mandatory = True,
-        ),
-        "manifest": attr.label(
-            allow_single_file = ["package.json"],
-        ),
+        "data": attr.label_list(allow_files = True),
+        "path": attr.string(doc = "Package relative path"),
         "_runner": attr.label(
             allow_single_file = True,
             default = ":yarn-audit-runner.sh.tpl",
         ),
         "_yarn": attr.label(
+            cfg = "target",
             default = ":yarn",
+            executable = True,
         ),
     },
     implementation = _yarn_audit_test_impl,
@@ -49,44 +52,44 @@ yarn_audit_test = rule(
 
 def _yarn_resolve_impl(ctx):
     actions = ctx.actions
-    directory_path = ctx.attr.path[len("/"):] if ctx.attr.path.startswith("/") else ctx.attr.path if not ctx.label.package else ctx.label.package if not ctx.attr.path else "%s/%s" % (ctx.label.package, ctx.attr.path)
+    label = ctx.label
     name = ctx.attr.name
+    path = ctx.attr.path
     refresh = ctx.attr.refresh
-    output_path = ctx.attr.output[len("/"):] if ctx.attr.output.startswith("/") else ctx.attr.output if not ctx.label.package else ctx.label.package if not ctx.attr.output else "%s/%s" % (ctx.label.package, ctx.attr.output)
-    yarn_gen = ctx.attr._yarn_gen[DefaultInfo]
-    yarn_resolve_template = ctx.file._yarn_resolve_template
+    runner = ctx.file._runner
+    output = ctx.attr.output
+    workspace = ctx.workspace_name
+    yarn = ctx.executable._yarn
+    yarn_default = ctx.attr._yarn[DefaultInfo]
+    yarn_resolve = ctx.executable._yarn_resolve
+    yarn_resolve_default = ctx.attr._yarn_resolve[DefaultInfo]
 
     bin = actions.declare_file(name)
+    output = output[len("/"):] if output.startswith("/") else "/".join([part for part in [label.package, output]])
+    path = path[len("/"):] if path.startswith("/") else "/".join([part for part in [label.package, path]])
 
     actions.expand_template(
-        template = yarn_resolve_template,
+        template = runner,
         output = bin,
         substitutions = {
-            "%{directory}": shell.quote(directory_path or "."),
-            "%{options}": "--refresh" if refresh else "",
-            "%{output}": shell.quote(output_path),
+            "%{refresh}": shell.quote("true" if refresh else "false"),
+            "%{path}": shell.quote(path),
+            "%{output}": shell.quote(output),
+            "%{yarn}": shell.quote(runfile_path(workspace, yarn)),
+            "%{yarn_resolve}": shell.quote(runfile_path(workspace, yarn_resolve)),
         },
         is_executable = True,
     )
 
-    default_info = DefaultInfo(
-        executable = bin,
-        runfiles = yarn_gen.default_runfiles,
-    )
+    runfiles = ctx.runfiles()
+    runfiles = runfiles.merge(yarn_default.default_runfiles)
+    runfiles = runfiles.merge(yarn_resolve_default.default_runfiles)
+    default_info = DefaultInfo(executable = bin, runfiles = runfiles)
 
     return [default_info]
 
 yarn_resolve = rule(
     attrs = {
-        "_yarn_resolve_template": attr.label(
-            allow_single_file = [".tpl"],
-            default = ":yarn_resolve_template",
-        ),
-        "_yarn_gen": attr.label(
-            cfg = "target",
-            default = "//npm/yarn-resolve:bin",
-            executable = True,
-        ),
         "path": attr.string(
             doc = "Package-relative path to package.json and yarn.lock directory",
             default = "",
@@ -98,6 +101,20 @@ yarn_resolve = rule(
         "refresh": attr.bool(
             default = True,
             doc = "Whether to refresh",
+        ),
+        "_runner": attr.label(
+            allow_single_file = True,
+            default = ":yarn-resolve.sh.tpl",
+        ),
+        "_yarn": attr.label(
+            cfg = "target",
+            default = "//npm:yarn",
+            executable = True,
+        ),
+        "_yarn_resolve": attr.label(
+            cfg = "target",
+            default = "//npm/yarn-resolve:bin",
+            executable = True,
         ),
     },
     executable = True,

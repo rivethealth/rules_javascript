@@ -3,6 +3,7 @@
     "importHelpers": true,
     "module": "esnext",
     "moduleResolution": "node",
+    "strict": true,
     "target": "es2020"
   }
 }

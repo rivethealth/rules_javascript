@@ -16,22 +16,6 @@ nodejs(<a href="#nodejs-name">name</a>, <a href="#nodejs-options">options</a>, <
 | <a id="nodejs-options"></a>options | -                              | List of strings                                                    | optional  | []      |
 | <a id="nodejs-runtime"></a>runtime | -                              | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a> | required  |         |
 
-<a id="#nodejs_archive"></a>
-
-## nodejs_archive
-
-<pre>
-nodejs_archive(<a href="#nodejs_archive-name">name</a>, <a href="#nodejs_archive-deps">deps</a>, <a href="#nodejs_archive-links">links</a>)
-</pre>
-
-**ATTRIBUTES**
-
-| Name                                   | Description                    | Type                                                                        | Mandatory | Default |
-| :------------------------------------- | :----------------------------- | :-------------------------------------------------------------------------- | :-------- | :------ |
-| <a id="nodejs_archive-name"></a>name   | A unique name for this target. | <a href="https://bazel.build/docs/build-ref.html#name">Name</a>             | required  |         |
-| <a id="nodejs_archive-deps"></a>deps   | -                              | <a href="https://bazel.build/docs/build-ref.html#labels">List of labels</a> | optional  | []      |
-| <a id="nodejs_archive-links"></a>links | -                              | <a href="https://bazel.build/docs/build-ref.html#labels">List of labels</a> | optional  | []      |
-
 <a id="#nodejs_binary"></a>
 
 ## nodejs_binary
@@ -62,6 +46,8 @@ Node.js binary
 nodejs_binary_archive(<a href="#nodejs_binary_archive-name">name</a>, <a href="#nodejs_binary_archive-dep">dep</a>, <a href="#nodejs_binary_archive-env">env</a>, <a href="#nodejs_binary_archive-main">main</a>, <a href="#nodejs_binary_archive-node_options">node_options</a>)
 </pre>
 
+Create executable tar
+
 **ATTRIBUTES**
 
 | Name                                                        | Description                    | Type                                                                                      | Mandatory | Default |
@@ -87,6 +73,24 @@ nodejs_install(<a href="#nodejs_install-name">name</a>, <a href="#nodejs_install
 | <a id="nodejs_install-name"></a>name       | A unique name for this target. | <a href="https://bazel.build/docs/build-ref.html#name">Name</a>    | required  |         |
 | <a id="nodejs_install-archive"></a>archive | -                              | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a> | required  |         |
 | <a id="nodejs_install-path"></a>path       | Path from root of workspace    | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a> | optional  | None    |
+
+<a id="#nodejs_modules_archive"></a>
+
+## nodejs_modules_archive
+
+<pre>
+nodejs_modules_archive(<a href="#nodejs_modules_archive-name">name</a>, <a href="#nodejs_modules_archive-deps">deps</a>, <a href="#nodejs_modules_archive-links">links</a>)
+</pre>
+
+node_modules tar
+
+**ATTRIBUTES**
+
+| Name                                           | Description                    | Type                                                                        | Mandatory | Default |
+| :--------------------------------------------- | :----------------------------- | :-------------------------------------------------------------------------- | :-------- | :------ |
+| <a id="nodejs_modules_archive-name"></a>name   | A unique name for this target. | <a href="https://bazel.build/docs/build-ref.html#name">Name</a>             | required  |         |
+| <a id="nodejs_modules_archive-deps"></a>deps   | -                              | <a href="https://bazel.build/docs/build-ref.html#labels">List of labels</a> | optional  | []      |
+| <a id="nodejs_modules_archive-links"></a>links | -                              | <a href="https://bazel.build/docs/build-ref.html#labels">List of labels</a> | optional  | []      |
 
 <a id="#nodejs_simple_binary"></a>
 

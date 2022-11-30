@@ -6,7 +6,7 @@ import {
   StarlarkString,
   StarlarkValue,
   StarlarkVariable,
-} from "./starlark";
+} from "@better-rules-javascript/util-starlark";
 
 export interface BzlPackage {
   deps: BzlDeps;
