@@ -282,7 +282,8 @@ var PackageTree;
             request == ".." ||
             request.startsWith("./") ||
             request.startsWith("../") ||
-            request.startsWith("/")) {
+            request.startsWith("/") ||
+            request.startsWith("#")) {
             return delegate.apply(this, arguments);
         }
         const resolved = resolver.resolve(parent.path, request);

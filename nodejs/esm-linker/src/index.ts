@@ -53,6 +53,7 @@ export async function resolve(
     specifier.startsWith("./") ||
     specifier.startsWith("../") ||
     specifier.startsWith("/") ||
+    specifier.startsWith("#") ||
     specifier.startsWith("file://")
   ) {
     return defaultResolve(specifier, context, defaultResolve);

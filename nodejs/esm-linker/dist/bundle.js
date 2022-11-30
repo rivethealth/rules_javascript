@@ -359,6 +359,7 @@ async function resolve(specifier, context, defaultResolve) {
         specifier.startsWith("./") ||
         specifier.startsWith("../") ||
         specifier.startsWith("/") ||
+        specifier.startsWith("#") ||
         specifier.startsWith("file://")) {
         return defaultResolve(specifier, context, defaultResolve);
     }

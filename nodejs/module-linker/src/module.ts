@@ -13,7 +13,8 @@ function resolveFilename(resolver: Resolver, delegate: Function): Function {
       request == ".." ||
       request.startsWith("./") ||
       request.startsWith("../") ||
-      request.startsWith("/")
+      request.startsWith("/") ||
+      request.startsWith("#")
     ) {
       return delegate.apply(this, arguments);
     }
