@@ -1,4 +1,34 @@
-'use strict';var path=require('path'),fs=require('fs'),Module=require('module');function _interopDefaultLegacy(e){return e&&typeof e==='object'&&'default'in e?e:{'default':e}}function _interopNamespace(e){if(e&&e.__esModule)return e;var n=Object.create(null);if(e){Object.keys(e).forEach(function(k){if(k!=='default'){var d=Object.getOwnPropertyDescriptor(e,k);Object.defineProperty(n,k,d.get?d:{enumerable:true,get:function(){return e[k]}});}})}n["default"]=e;return Object.freeze(n)}var path__namespace=/*#__PURE__*/_interopNamespace(path);var fs__namespace=/*#__PURE__*/_interopNamespace(fs);var Module__default=/*#__PURE__*/_interopDefaultLegacy(Module);class Trie {
+'use strict';
+
+var path = require('path');
+var fs = require('fs');
+var Module = require('module');
+
+function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
+
+function _interopNamespace(e) {
+    if (e && e.__esModule) return e;
+    var n = Object.create(null);
+    if (e) {
+        Object.keys(e).forEach(function (k) {
+            if (k !== 'default') {
+                var d = Object.getOwnPropertyDescriptor(e, k);
+                Object.defineProperty(n, k, d.get ? d : {
+                    enumerable: true,
+                    get: function () { return e[k]; }
+                });
+            }
+        });
+    }
+    n["default"] = e;
+    return Object.freeze(n);
+}
+
+var path__namespace = /*#__PURE__*/_interopNamespace(path);
+var fs__namespace = /*#__PURE__*/_interopNamespace(fs);
+var Module__default = /*#__PURE__*/_interopDefaultLegacy(Module);
+
+class Trie {
     constructor() {
         this.data = { children: new Map() };
     }
@@ -27,7 +57,9 @@
         }
         data.value = value;
     }
-}function pathParts(path_) {
+}
+
+function pathParts(path_) {
     path_ = path__namespace.resolve(path_);
     return path_.split("/").slice(1);
 }
@@ -76,7 +108,9 @@ class Resolver {
         }
         return new Resolver(packages);
     }
-}var JsonFormat;
+}
+
+var JsonFormat;
 (function (JsonFormat) {
     function parse(format, string) {
         return format.fromJson(JSON.parse(string));
@@ -242,7 +276,9 @@ class SetJsonFormat {
     toJson(value) {
         return [...value].map((element) => this.format.toJson(element));
     }
-}var PackageDeps;
+}
+
+var PackageDeps;
 (function (PackageDeps) {
     function json() {
         return JsonFormat.map(JsonFormat.string(), JsonFormat.string());
@@ -272,7 +308,9 @@ var PackageTree;
         });
     }
     PackageTree.json = json;
-})(PackageTree || (PackageTree = {}));function resolveFilename(resolver, delegate) {
+})(PackageTree || (PackageTree = {}));
+
+function resolveFilename(resolver, delegate) {
     return function (request, parent, isMain) {
         if (Module__default["default"].builtinModules.includes(request) ||
             !parent ||
@@ -298,7 +336,9 @@ var PackageTree;
 }
 function patchModule(resolver, delegate) {
     delegate._resolveFilename = resolveFilename(resolver, delegate._resolveFilename);
-}function parse(resolver) {
+}
+
+function parse(resolver) {
     return (path_) => {
         try {
             const root = path__namespace.resolve(process.env.RUNFILES_DIR, resolver.root(path_));
@@ -335,11 +375,13 @@ function patchModuleDetails(resolver, delegate) {
     //   }
     //   return originalFilename.apply(this, arguments);
     // };
-}const manifestPath = process.env.NODE_PACKAGE_MANIFEST;
+}
+
+const manifestPath = process.env.NODE_PACKAGE_MANIFEST;
 if (!manifestPath) {
     throw new Error("NODE_PACKAGE_MANIFEST is not set");
 }
 const packageTree = JsonFormat.parse(PackageTree.json(), fs__namespace.readFileSync(manifestPath, "utf8"));
 const resolver = Resolver.create(packageTree, process.env.RUNFILES_DIR);
 patchModule(resolver, require("module"));
-patchModuleDetails(resolver, require("module"));//# sourceMappingURL=bundle.js.map
+patchModuleDetails(resolver, require("module"));

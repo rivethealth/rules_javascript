@@ -386,4 +386,3 @@ async function resolve(specifier, context, defaultResolve) {
 }
 
 exports.resolve = resolve;
-//# sourceMappingURL=bundle.js.map

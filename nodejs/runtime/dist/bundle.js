@@ -11,4 +11,3 @@ process.emit = function (name, data) {
     }
     return emit.apply(this, arguments);
 };
-//# sourceMappingURL=bundle.js.map

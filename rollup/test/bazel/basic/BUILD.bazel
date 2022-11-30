@@ -19,7 +19,7 @@ js_library(
 
 js_library(
     name = "rollup_config",
-    srcs = ["rollup.config.cjs"],
+    srcs = ["rollup.config.js"],
     root = ":root",
     deps = [
         "@npm//@rollup/plugin-commonjs:lib",
@@ -29,7 +29,7 @@ js_library(
 
 configure_rollup(
     name = "rollup",
-    config = "rollup.config.cjs",
+    config = "rollup.config.js",
     config_dep = ":rollup_config",
     dep = "@npm//rollup:lib",
 )
@@ -37,6 +37,5 @@ configure_rollup(
 rollup_bundle(
     name = "bundle",
     dep = ":lib",
-    output = "bundle.js",
     rollup = ":rollup",
 )

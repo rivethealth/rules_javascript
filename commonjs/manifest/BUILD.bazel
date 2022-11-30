@@ -3,15 +3,28 @@ load("//commonjs:rules.bzl", "cjs_root")
 load("//javascript:rules.bzl", "js_library")
 load("//nodejs:rules.bzl", "nodejs_simple_binary")
 load("//rollup:rules.bzl", "configure_rollup", "rollup_bundle")
+load("//tools:rules.bzl", "js_gen")
 load("//typescript:rules.bzl", "ts_library")
 
 package(default_visibility = ["//visibility:public"])
 
+rollup_bundle(
+    name = "bundle",
+    dep = ":lib",
+    rollup = ":rollup",
+)
+
 generate(
     name = "gen",
-    srcs = ["dist/bundle.js"],
-    data = [":bundle"],
+    srcs = ["dist"],
+    data = [":gen_bundle"],
     data_prefix = "dist",
+    data_strip_prefix = "bundle",
+)
+
+js_gen(
+    name = "gen_bundle",
+    src = ":bundle",
 )
 
 cjs_root(
@@ -22,7 +35,7 @@ cjs_root(
 
 js_library(
     name = "rollup_config",
-    srcs = ["rollup.config.cjs"],
+    srcs = ["rollup.config.js"],
     root = ":root",
     deps = [
         "@better_rules_javascript_npm//@rollup/plugin-commonjs:lib",
@@ -62,14 +75,7 @@ nodejs_simple_binary(
 
 configure_rollup(
     name = "rollup",
-    config = "rollup.config.cjs",
+    config = "rollup.config.js",
     config_dep = ":rollup_config",
     dep = "@better_rules_javascript_npm//rollup:lib",
-)
-
-rollup_bundle(
-    name = "bundle",
-    dep = ":lib",
-    output = "bundle.js",
-    rollup = ":rollup",
 )
