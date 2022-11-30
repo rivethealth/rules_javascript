@@ -14,7 +14,7 @@ def npm_import_external_rule(plugins):
         )
 
         # packages can have different prefixes
-        mv_result = ctx.execute(["sh", "-c", "mv tmp/* npm"])
+        mv_result = ctx.execute(["sh", "-c", "mv tmp/* npm && rm -fr npm/node_modules"])
         if mv_result.return_code:
             fail("Could not extract package")
 
