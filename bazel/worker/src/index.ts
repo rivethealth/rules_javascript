@@ -121,11 +121,13 @@ export async function workerMain(workerFactory: WorkerFactory) {
       await runOnce(worker, process.argv.slice(2));
     }
   } catch (e) {
-    if (e instanceof CliError) {
-      console.error(e.message);
-    } else {
-      console.error(e?.stack || String(e));
-    }
+    console.error(
+      e instanceof CliError
+        ? e.message
+        : e instanceof Error
+        ? e.stack
+        : String(e),
+    );
     process.exit(1);
   }
 }

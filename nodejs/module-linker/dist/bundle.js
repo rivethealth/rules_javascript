@@ -285,11 +285,7 @@ var PackageDeps;
     }
     PackageDeps.json = json;
 })(PackageDeps || (PackageDeps = {}));
-/**
- * Package
- */
-class Package {
-}
+var Package;
 (function (Package) {
     function json() {
         return JsonFormat.object({

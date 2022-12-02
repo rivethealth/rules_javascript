@@ -12003,6 +12003,15 @@ PACKAGES = {
         "name": "lodash.merge",
         "url": "https://registry.npmjs.org/lodash.merge/-/lodash.merge-4.6.2.tgz",
     },
+    "lodash@3.10.1": {
+        "deps": [
+        ],
+        "extra_deps": {
+        },
+        "integrity": "sha512-9mDDwqVIma6OZX79ZlDACZl8sBm0TEnkf99zV3iMA4GzkIT/9hiqP5mY0HoT1iNLCrKc/R1HByV+yJfRWVJryQ==",
+        "name": "lodash",
+        "url": "https://registry.npmjs.org/lodash/-/lodash-3.10.1.tgz",
+    },
     "lodash@4.17.21": {
         "deps": [
         ],
@@ -16773,6 +16782,10 @@ ROOTS = [
     {
         "id": "jest@28.0.0-alpha.7-dc3fc578",
         "name": "jest",
+    },
+    {
+        "id": "lodash@3.10.1",
+        "name": "lodash3",
     },
     {
         "id": "long@4.0.0",

@@ -6,6 +6,7 @@ filegroup(
 
 sh_test(
     name = "basic",
+    size = "large",
     srcs = ["test_basic.sh"],
     data = [":bazel"],
     tags = ["local"],
@@ -13,6 +14,7 @@ sh_test(
 
 sh_test(
     name = "material",
+    size = "large",
     srcs = ["test_material.sh"],
     data = [":bazel"],
     tags = ["local"],

@@ -5,7 +5,16 @@ filegroup(
 )
 
 sh_test(
+    name = "alias",
+    size = "large",
+    srcs = ["test_alias.sh"],
+    data = [":bazel"],
+    tags = ["local"],
+)
+
+sh_test(
     name = "yarn-audit",
+    size = "large",
     srcs = ["test_yarn_audit.sh"],
     data = [":bazel"],
     tags = ["local"],

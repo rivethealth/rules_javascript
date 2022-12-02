@@ -3,7 +3,12 @@ import Module from "module";
 import * as path from "path";
 
 function resolveFilename(resolver: Resolver, delegate: Function): Function {
-  return function (request: string, parent: Module, isMain: boolean) {
+  return function (
+    this: any,
+    request: string,
+    parent: Module,
+    isMain: boolean,
+  ) {
     if (
       Module.builtinModules.includes(request) ||
       !parent ||

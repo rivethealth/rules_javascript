@@ -335,12 +335,11 @@ async function workerMain(workerFactory) {
         }
     }
     catch (e) {
-        if (e instanceof CliError) {
-            console.error(e.message);
-        }
-        else {
-            console.error(e?.stack || String(e));
-        }
+        console.error(e instanceof CliError
+            ? e.message
+            : e instanceof Error
+                ? e.stack
+                : String(e));
         process.exit(1);
     }
 }
@@ -356,7 +355,7 @@ workerMain(async () => {
             if (e instanceof ManifestWorkerError) {
                 return { exitCode: 2, output: e.message };
             }
-            return { exitCode: 1, output: String(e?.stack || e) };
+            return { exitCode: 1, output: String(e instanceof Error ? e.stack : e) };
         }
         return { exitCode: 0, output: "" };
     };
@@ -369,11 +368,7 @@ var PackageDeps;
     }
     PackageDeps.json = json;
 })(PackageDeps || (PackageDeps = {}));
-/**
- * Package
- */
-class Package {
-}
+var Package;
 (function (Package) {
     function json() {
         return JsonFormat.object({

@@ -15,6 +15,7 @@ TESTS = [
 [
     sh_test(
         name = name,
+        size = "large",
         srcs = ["test_%s.sh" % name],
         data = [":bazel"],
         tags = ["local"],

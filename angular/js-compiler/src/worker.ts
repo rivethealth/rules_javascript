@@ -67,7 +67,7 @@ export class AngularWorker {
     await this.setupVfs(args.manifest);
 
     const parsed = this.parseConfig(args.config);
-    await fs.promises.mkdir(parsed.options.outDir, { recursive: true });
+    await fs.promises.mkdir(parsed.options.outDir!, { recursive: true });
 
     await (async function process(src: string): Promise<void> {
       const stat = await fs.promises.stat(src);
@@ -110,8 +110,8 @@ async function transpileFile(src: string, parsed: ts.ParsedCommandLine) {
       before: [resourceTransformer()],
     },
   });
-  if (result.diagnostics.length) {
-    throw new AngularWorkerError(formatDiagnostics(result.diagnostics));
+  if (result.diagnostics!.length) {
+    throw new AngularWorkerError(formatDiagnostics(result.diagnostics!));
   }
 
   await fs.promises.mkdir(path.dirname(outputPath), { recursive: true });

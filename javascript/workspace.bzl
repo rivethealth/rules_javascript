@@ -1,20 +1,48 @@
 load(":providers.bzl", "js_npm_inner_label", "js_npm_label")
 load("//commonjs:providers.bzl", "cjs_npm_label")
 
-def _js_npm_alias_build(repo):
+def _js_npm_alias_build(package_name, repo):
     return """
-alias(
+load("@better_rules_javascript//javascript:rules.bzl", "js_export")
+
+js_export(
     name = "lib",
-    actual = {label},
+    dep = {label},
+    package_name = {package_name},
     visibility = ["//visibility:public"],
 )
     """.strip().format(
         label = json.encode(js_npm_label(repo)),
+        package_name = json.encode(package_name),
     )
 
 def _js_directory_npm_package_build(package):
+    deps = []
+    exports = []
+    for i, dep in enumerate(package.deps):
+        if not dep.name:
+            deps.append(js_npm_label(dep.id))
+            continue
+        name = "import%s" % i
+        deps.append(name)
+        exports.append(
+            """
+js_export(
+    name = {name},
+    dep = {dep},
+    package_name = {package_name},
+)
+""".strip().format(
+                name = json.encode(name),
+                dep = json.encode(js_npm_label(dep.id)),
+                package_name = json.encode(dep.name),
+            ),
+        )
+
     result = """
 load("@better_rules_javascript//javascript:rules.bzl", "js_export", "js_library")
+
+{exports}
 
 js_library(
     name = "lib.inner",
@@ -31,7 +59,9 @@ js_export(
     visibility = ["//visibility:public"],
 )
     """.strip().format(
-        deps = json.encode([js_npm_label(dep) for dep in package.deps]),
+        deps_exports = exports,
+        deps = json.encode(deps),
+        exports = "\n\n".join(exports),
         extra_deps = json.encode([":lib.export.%s" % i for i in range(len(package.extra_deps))]),
     )
     result += "\n"
@@ -72,8 +102,8 @@ js_library(
     )
 
 def js_directory_npm_plugin():
-    def alias_build(repo):
-        return _js_npm_alias_build(repo)
+    def alias_build(package_name, repo):
+        return _js_npm_alias_build(package_name, repo)
 
     def package_build(package, files):
         return _js_directory_npm_package_build(package)
@@ -84,8 +114,8 @@ def js_directory_npm_plugin():
     )
 
 def js_npm_plugin(exclude_suffixes = []):
-    def alias_build(repo):
-        return _js_npm_alias_build(repo)
+    def alias_build(package_name, repo):
+        return _js_npm_alias_build(package_name, repo)
 
     def package_build(package, files):
         return _js_npm_package_build(exclude_suffixes, package)

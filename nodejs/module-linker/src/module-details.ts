@@ -6,7 +6,10 @@ import * as path from "path";
 function parse(resolver: Resolver) {
   return (path_: string) => {
     try {
-      const root = path.resolve(process.env.RUNFILES_DIR, resolver.root(path_));
+      const root = path.resolve(
+        process.env.RUNFILES_DIR!,
+        resolver.root(path_),
+      );
       const packageContent = fs.readFileSync(
         path.join(root, "package.json"),
         "utf-8",
@@ -34,11 +37,11 @@ export function patchModuleDetails(
 ) {
   const originalRequire = delegate.prototype.require;
   const parse_ = parse(resolver);
-  delegate.prototype.require = <any>function (id: string) {
+  delegate.prototype.require = <any>function (this: any, id: string) {
     if (id === MODULE_NAME) {
       return parse_;
     }
-    return originalRequire.apply(this, arguments);
+    return originalRequire.apply(this, <any>arguments);
   };
 
   // const originalFilename = (<any>delegate)._resolveFilename;

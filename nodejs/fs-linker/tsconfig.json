@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "strict": false
   },
   "extends": "@better-rules-javascript/rules/tsconfig.common.json"
 }

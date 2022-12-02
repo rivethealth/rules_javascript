@@ -63,7 +63,7 @@ export async function resolve(
 
   const directory = await linkDirectory();
   const packageName = path
-    .relative(process.env.RUNFILES_DIR, resolved.package)
+    .relative(process.env.RUNFILES_DIR!, resolved.package)
     .replace(/\//g, "_");
   const linkPath = path.join(directory, "node_modules", packageName);
   if (!linkedPackages.has(resolved.package)) {
@@ -81,7 +81,7 @@ export async function resolve(
 
   parentPath = path.join(
     directory,
-    path.relative(process.env.RUNFILES_DIR, parentPath).replace(/\//g, "_"),
+    path.relative(process.env.RUNFILES_DIR!, parentPath).replace(/\//g, "_"),
   );
   const nodeResolved = await defaultResolve(
     specifier,

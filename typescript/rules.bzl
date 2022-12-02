@@ -540,13 +540,12 @@ def _ts_export_impl(ctx):
 
     default_info = default_dep
     cjs_root = CjsInfo(
-        name = package_name,
+        name = package_name or cjs_dep.name,
         package = cjs_dep.package,
         transitive_files = depset(),
         transitive_links = depset(),
         transitive_packages = depset(),
     )
-
     cjs_info = create_cjs_info(
         cjs_root = cjs_root,
         deps = cjs_deps,
@@ -554,7 +553,7 @@ def _ts_export_impl(ctx):
         label = label,
     )
     cjs_info = CjsInfo(
-        name = cjs_dep.name,
+        name = cjs_info.name,
         package = cjs_info.package,
         transitive_files = depset(transitive = [c.transitive_files for c in [cjs_dep, cjs_info] + cjs_extra]),
         transitive_links = depset(transitive = [c.transitive_links for c in [cjs_dep, cjs_info] + cjs_extra]),

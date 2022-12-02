@@ -35,7 +35,7 @@ interface Args {
   sourceMap: "true" | "false";
   target?: string;
   typeRoots: string[];
-  output?: string;
+  output: string;
 }
 
 (async () => {

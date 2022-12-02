@@ -1,31 +1,32 @@
 name: "Lint Check"
-
-on: [push]
-
+on:
+  pull_request:
+  push:
+    branches: [main]
 jobs:
   lint:
     name: Lint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3
       - name: Mount bazel cache
         uses: actions/cache@v3
         with:
           path: "~/.cache/bazel"
           key: bazel
-      - name: Format
-        run: bazel test //tools:format_test
+      - name: Test
+        run: bazel test tools:format_test tools:lint_test tools:diff_js
   test:
     name: Test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3
       - name: Mount bazel cache
         uses: actions/cache@v3
         with:
           path: "~/.cache/bazel"
           key: bazel
-      - name: Test bundle gen
-        run: bazel test //tools:diff_js
       - name: Test
-        run: bazel test //:test
+        run: bazel test --config=ci :test

@@ -66,7 +66,7 @@ export class JsWorker {
     await this.setupVfs(args.manifest);
 
     const parsed = this.parseConfig(args.config);
-    await fs.promises.mkdir(parsed.options.outDir, { recursive: true });
+    await fs.promises.mkdir(parsed.options.outDir!, { recursive: true });
 
     await (async function process(src: string): Promise<void> {
       const stat = await fs.promises.stat(src);
@@ -106,8 +106,8 @@ async function transpileFile(src: string, parsed: ts.ParsedCommandLine) {
     fileName: name,
     compilerOptions: parsed.options,
   });
-  if (result.diagnostics.length) {
-    throw new JsWorkerError(formatDiagnostics(result.diagnostics));
+  if (result.diagnostics!.length) {
+    throw new JsWorkerError(formatDiagnostics(result.diagnostics!));
   }
 
   await fs.promises.mkdir(path.dirname(outputPath), { recursive: true });

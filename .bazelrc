@@ -1,11 +1,25 @@
+# Files
 import %workspace%/tools/deleted.bazelrc
+
+# Cache
+build --disk_cache=~/.cache/bazel-disk
+clean --disk_cache ~/.cache/bazel-disk
+fetch --disk_cache ~/.cache/bazel-disk
+info --disk_cache ~/.cache/bazel-disk
+query --disk_cache ~/.cache/bazel-disk
+sync --disk_cache ~/.cache/bazel-disk
+
+# Build
 build -k
-build --disk_cache=.bazel_cache
-build --experimental_allow_unresolved_symlinks
 build --experimental_worker_allow_json_protocol
 build --experimental_strict_action_env
 build --incompatible_disable_depset_items=false
-build --local_test_jobs=1
+build --verbose_failures
+
+# Test
 build --test_output=streamed
 build --test_env=HOME
-build --verbose_failures
+build:ci --test_output=errors
+
+# User settings
+try-import %workspace%/user.bazelrc

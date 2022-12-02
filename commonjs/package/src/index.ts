@@ -11,7 +11,7 @@ export namespace PackageDeps {
 /**
  * Package
  */
-export class Package {
+export interface Package {
   /** Dependencies */
   deps: PackageDeps;
   /** Name */

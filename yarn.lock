@@ -6694,6 +6694,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lodash3@npm:lodash@^3.0.0":
+  version: 3.10.1
+  resolution: "lodash@npm:3.10.1"
+  checksum: 53065d3712a2fd90b55690c5af19f9625a5bbb2b7876ff76d782ee1dc22618fd4dff191d44a8e165a17b5b81a851c3e884d3b5b25e314422fbe24bb299542685
+  languageName: node
+  linkType: hard
+
 "lodash@npm:^4.17.14, lodash@npm:^4.17.15, lodash@npm:^4.17.20, lodash@npm:^4.17.21":
   version: 4.17.21
   resolution: "lodash@npm:4.17.21"
@@ -8246,6 +8253,7 @@ __metadata:
     eslint: ~8.3.0
     html-webpack-plugin: ~5.5.0
     jest: 28.0.0-alpha.7
+    lodash3: "npm:lodash@^3.0.0"
     long: ~4.0.0
     node-fetch: ^2.0.0
     npm-registry-fetch: ~14.0.2

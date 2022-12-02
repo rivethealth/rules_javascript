@@ -6,6 +6,7 @@ filegroup(
 
 sh_test(
     name = "directory",
+    size = "large",
     srcs = ["test_directory.sh"],
     data = [":bazel"],
     tags = ["local"],

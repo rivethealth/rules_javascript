@@ -17,7 +17,10 @@ workerMain(async () => {
       if (e instanceof JsWorkerError) {
         return { exitCode: 2, output: e.message };
       }
-      return { exitCode: 1, output: String(e?.stack || e) };
+      return {
+        exitCode: 1,
+        output: e instanceof Error ? e.stack || "" : String(e),
+      };
     }
     return { exitCode: 0, output: "" };
   };

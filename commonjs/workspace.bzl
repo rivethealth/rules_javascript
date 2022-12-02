@@ -33,7 +33,7 @@ cjs_root(
     )
 
 def cjs_directory_npm_plugin():
-    def alias_build(repo):
+    def alias_build(package_name, repo):
         return ""
 
     def package_build(package, files):
@@ -45,7 +45,7 @@ def cjs_directory_npm_plugin():
     )
 
 def cjs_npm_plugin():
-    def alias_build(repo):
+    def alias_build(package_name, repo):
         return ""
 
     def package_build(package, files):
