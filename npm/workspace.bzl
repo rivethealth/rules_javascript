@@ -1,8 +1,20 @@
 load("//commonjs:workspace.bzl", "cjs_npm_plugin")
 load("//javascript:workspace.bzl", "js_npm_plugin")
+load("@bazel_tools//tools/build_defs/repo:utils.bzl", "read_netrc", "read_user_netrc", "use_netrc")
+
+# See https://github.com/bazelbuild/bazel/blob/5.3.2/tools/build_defs/repo/http.bzl
+def _get_auth(ctx, urls):
+    """Given the list of URLs obtain the correct auth dict."""
+    if ctx.attr.netrc:
+        netrc = read_netrc(ctx, ctx.attr.netrc)
+    else:
+        netrc = read_user_netrc(ctx)
+    return use_netrc(netrc, urls, ctx.attr.auth_patterns)
 
 def npm_import_external_rule(plugins):
     def impl(ctx):
+        auth = _get_auth(ctx, ctx.attr.urls)
+
         deps = [struct(id = dep["id"], name = dep["name"]) for dep in [json.decode(d) for d in ctx.attr.deps]]
         extra_deps = {id: [json.decode(d) for d in deps] for id, deps in ctx.attr.extra_deps.items()}
         package_name = ctx.attr.package_name
@@ -10,6 +22,7 @@ def npm_import_external_rule(plugins):
         ctx.download_and_extract(
             ctx.attr.urls,
             "tmp",
+            auth = auth,
             integrity = ctx.attr.integrity,
         )
 
@@ -62,6 +75,7 @@ def npm_import_external_rule(plugins):
     return repository_rule(
         implementation = impl,
         attrs = {
+            "auth_patterns": attr.string_dict(),
             "deps": attr.string_list(
                 doc = "Dependencies.",
             ),
@@ -71,6 +85,7 @@ def npm_import_external_rule(plugins):
             "integrity": attr.string(
                 doc = "Integrity",
             ),
+            "netrc": attr.string(),
             "package_name": attr.string(
                 doc = "Package name.",
                 mandatory = True,
@@ -119,7 +134,7 @@ DEFAULT_PLUGINS = [
     js_npm_plugin(),
 ]
 
-def npm(name, packages, roots, plugins = DEFAULT_PLUGINS):
+def npm(name, packages, roots, plugins = DEFAULT_PLUGINS, auth_patterns = None, netrc = None):
     npm_import_external = npm_import_external_rule(plugins)
     npm_import = npm_import_rule(plugins)
 
@@ -132,6 +147,8 @@ def npm(name, packages, roots, plugins = DEFAULT_PLUGINS):
         }
         npm_import_external(
             name = repo_name,
+            auth_patterns = auth_patterns,
+            netrc = netrc,
             package_name = package["name"],
             deps = [json.encode({"id": package_repo_name(name, dep["id"]), "name": dep.get("name")}) for dep in package["deps"]],
             extra_deps = extra_deps,
