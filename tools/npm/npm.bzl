@@ -4067,9 +4067,30 @@ PACKAGES = {
         "deps": [
         ],
         "extra_deps": {
-            "webpack@5.64.4-dc3fc578": [
+            "@webpack-cli/configtest@1.1.0-4e0fd822": [
                 {
                     "id": "webpack-cli@4.9.1-dc3fc578",
+                },
+                {
+                    "id": "webpack@5.64.4-dc3fc578",
+                },
+            ],
+            "@webpack-cli/info@1.4.0-4e0fd822": [
+                {
+                    "id": "webpack-cli@4.9.1-dc3fc578",
+                },
+            ],
+            "@webpack-cli/serve@1.6.0-4e0fd822": [
+                {
+                    "id": "webpack-cli@4.9.1-dc3fc578",
+                },
+                {
+                    "id": "webpack-dev-server@4.7.2-dc3fc578",
+                },
+            ],
+            "terser-webpack-plugin@5.2.5-e30e60ed": [
+                {
+                    "id": "webpack@5.64.4-dc3fc578",
                 },
             ],
             "webpack-cli@4.9.1-dc3fc578": [
@@ -4077,15 +4098,40 @@ PACKAGES = {
                     "id": "@webpack-cli/configtest@1.1.0-4e0fd822",
                 },
                 {
+                    "id": "@webpack-cli/info@1.4.0-4e0fd822",
+                },
+                {
+                    "id": "@webpack-cli/serve@1.6.0-4e0fd822",
+                },
+                {
+                    "id": "webpack-dev-server@4.7.2-dc3fc578",
+                },
+                {
                     "id": "webpack@5.64.4-dc3fc578",
                 },
             ],
-            "@webpack-cli/configtest@1.1.0-4e0fd822": [
+            "webpack-dev-middleware@5.3.0-48473bb5": [
+                {
+                    "id": "webpack@5.64.4-dc3fc578",
+                },
+            ],
+            "webpack-dev-server@4.7.2-dc3fc578": [
                 {
                     "id": "webpack-cli@4.9.1-dc3fc578",
                 },
                 {
+                    "id": "webpack-dev-middleware@5.3.0-48473bb5",
+                },
+                {
                     "id": "webpack@5.64.4-dc3fc578",
+                },
+            ],
+            "webpack@5.64.4-dc3fc578": [
+                {
+                    "id": "terser-webpack-plugin@5.2.5-e30e60ed",
+                },
+                {
+                    "id": "webpack-cli@4.9.1-dc3fc578",
                 },
             ],
         },
@@ -4100,12 +4146,69 @@ PACKAGES = {
             },
         ],
         "extra_deps": {
-            "webpack-cli@4.9.1-dc3fc578": [
+            "@webpack-cli/configtest@1.1.0-4e0fd822": [
                 {
-                    "id": "@webpack-cli/info@1.4.0-4e0fd822",
+                    "id": "webpack-cli@4.9.1-dc3fc578",
+                },
+                {
+                    "id": "webpack@5.64.4-dc3fc578",
                 },
             ],
             "@webpack-cli/info@1.4.0-4e0fd822": [
+                {
+                    "id": "webpack-cli@4.9.1-dc3fc578",
+                },
+            ],
+            "@webpack-cli/serve@1.6.0-4e0fd822": [
+                {
+                    "id": "webpack-cli@4.9.1-dc3fc578",
+                },
+                {
+                    "id": "webpack-dev-server@4.7.2-dc3fc578",
+                },
+            ],
+            "terser-webpack-plugin@5.2.5-e30e60ed": [
+                {
+                    "id": "webpack@5.64.4-dc3fc578",
+                },
+            ],
+            "webpack-cli@4.9.1-dc3fc578": [
+                {
+                    "id": "@webpack-cli/configtest@1.1.0-4e0fd822",
+                },
+                {
+                    "id": "@webpack-cli/info@1.4.0-4e0fd822",
+                },
+                {
+                    "id": "@webpack-cli/serve@1.6.0-4e0fd822",
+                },
+                {
+                    "id": "webpack-dev-server@4.7.2-dc3fc578",
+                },
+                {
+                    "id": "webpack@5.64.4-dc3fc578",
+                },
+            ],
+            "webpack-dev-middleware@5.3.0-48473bb5": [
+                {
+                    "id": "webpack@5.64.4-dc3fc578",
+                },
+            ],
+            "webpack-dev-server@4.7.2-dc3fc578": [
+                {
+                    "id": "webpack-cli@4.9.1-dc3fc578",
+                },
+                {
+                    "id": "webpack-dev-middleware@5.3.0-48473bb5",
+                },
+                {
+                    "id": "webpack@5.64.4-dc3fc578",
+                },
+            ],
+            "webpack@5.64.4-dc3fc578": [
+                {
+                    "id": "terser-webpack-plugin@5.2.5-e30e60ed",
+                },
                 {
                     "id": "webpack-cli@4.9.1-dc3fc578",
                 },
@@ -4117,17 +4220,71 @@ PACKAGES = {
     },
     "@webpack-cli/serve@1.6.0-4e0fd822": {
         "deps": [
-            {
-                "id": "webpack-dev-server@4.7.2-dc3fc578",
-            },
         ],
         "extra_deps": {
-            "webpack-cli@4.9.1-dc3fc578": [
+            "@webpack-cli/configtest@1.1.0-4e0fd822": [
                 {
-                    "id": "@webpack-cli/serve@1.6.0-4e0fd822",
+                    "id": "webpack-cli@4.9.1-dc3fc578",
+                },
+                {
+                    "id": "webpack@5.64.4-dc3fc578",
+                },
+            ],
+            "@webpack-cli/info@1.4.0-4e0fd822": [
+                {
+                    "id": "webpack-cli@4.9.1-dc3fc578",
                 },
             ],
             "@webpack-cli/serve@1.6.0-4e0fd822": [
+                {
+                    "id": "webpack-cli@4.9.1-dc3fc578",
+                },
+                {
+                    "id": "webpack-dev-server@4.7.2-dc3fc578",
+                },
+            ],
+            "terser-webpack-plugin@5.2.5-e30e60ed": [
+                {
+                    "id": "webpack@5.64.4-dc3fc578",
+                },
+            ],
+            "webpack-cli@4.9.1-dc3fc578": [
+                {
+                    "id": "@webpack-cli/configtest@1.1.0-4e0fd822",
+                },
+                {
+                    "id": "@webpack-cli/info@1.4.0-4e0fd822",
+                },
+                {
+                    "id": "@webpack-cli/serve@1.6.0-4e0fd822",
+                },
+                {
+                    "id": "webpack-dev-server@4.7.2-dc3fc578",
+                },
+                {
+                    "id": "webpack@5.64.4-dc3fc578",
+                },
+            ],
+            "webpack-dev-middleware@5.3.0-48473bb5": [
+                {
+                    "id": "webpack@5.64.4-dc3fc578",
+                },
+            ],
+            "webpack-dev-server@4.7.2-dc3fc578": [
+                {
+                    "id": "webpack-cli@4.9.1-dc3fc578",
+                },
+                {
+                    "id": "webpack-dev-middleware@5.3.0-48473bb5",
+                },
+                {
+                    "id": "webpack@5.64.4-dc3fc578",
+                },
+            ],
+            "webpack@5.64.4-dc3fc578": [
+                {
+                    "id": "terser-webpack-plugin@5.2.5-e30e60ed",
+                },
                 {
                     "id": "webpack-cli@4.9.1-dc3fc578",
                 },
@@ -4366,11 +4523,6 @@ PACKAGES = {
                     "id": "@yarnpkg/plugin-patch@3.2.4-dc3fc578",
                 },
             ],
-            "@yarnpkg/plugin-patch@3.2.4-dc3fc578": [
-                {
-                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
-                },
-            ],
             "@yarnpkg/plugin-dlx@3.1.4-b0da1d74": [
                 {
                     "id": "@yarnpkg/cli@3.3.0-dc3fc578",
@@ -4394,17 +4546,15 @@ PACKAGES = {
                     "id": "@yarnpkg/plugin-pnp@3.2.5-b0da1d74",
                 },
             ],
-            "@yarnpkg/plugin-pnp@3.2.5-b0da1d74": [
+            "@yarnpkg/plugin-npm-cli@3.3.0-b0da1d74": [
                 {
                     "id": "@yarnpkg/cli@3.3.0-dc3fc578",
                 },
                 {
-                    "id": "@yarnpkg/plugin-stage@3.1.3-fe3aae18",
+                    "id": "@yarnpkg/plugin-npm@2.7.3-b0da1d74",
                 },
-            ],
-            "@yarnpkg/plugin-stage@3.1.3-fe3aae18": [
                 {
-                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                    "id": "@yarnpkg/plugin-pack@3.1.4-b0da1d74",
                 },
             ],
             "@yarnpkg/plugin-npm@2.7.3-b0da1d74": [
@@ -4417,12 +4567,31 @@ PACKAGES = {
                     "id": "@yarnpkg/cli@3.3.0-dc3fc578",
                 },
             ],
-            "@yarnpkg/plugin-npm-cli@3.3.0-b0da1d74": [
+            "@yarnpkg/plugin-patch@3.2.4-dc3fc578": [
                 {
                     "id": "@yarnpkg/cli@3.3.0-dc3fc578",
                 },
             ],
+            "@yarnpkg/plugin-pnp@3.2.5-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+                {
+                    "id": "@yarnpkg/plugin-stage@3.1.3-fe3aae18",
+                },
+            ],
             "@yarnpkg/plugin-pnpm@1.1.2-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+                {
+                    "id": "@yarnpkg/plugin-pnp@3.2.5-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-stage@3.1.3-fe3aae18",
+                },
+            ],
+            "@yarnpkg/plugin-stage@3.1.3-fe3aae18": [
                 {
                     "id": "@yarnpkg/cli@3.3.0-dc3fc578",
                 },
@@ -4669,7 +4838,34 @@ PACKAGES = {
                     "id": "@yarnpkg/plugin-compat@3.1.7-b0da1d74",
                 },
                 {
+                    "id": "@yarnpkg/plugin-dlx@3.1.4-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-essentials@3.3.0-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-init@3.1.4-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-nm@3.1.5-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-npm-cli@3.3.0-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-npm@2.7.3-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-pack@3.1.4-b0da1d74",
+                },
+                {
                     "id": "@yarnpkg/plugin-patch@3.2.4-dc3fc578",
+                },
+                {
+                    "id": "@yarnpkg/plugin-pnp@3.2.5-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-pnpm@1.1.2-b0da1d74",
                 },
             ],
             "@yarnpkg/plugin-compat@3.1.7-b0da1d74": [
@@ -4677,7 +4873,75 @@ PACKAGES = {
                     "id": "@yarnpkg/plugin-patch@3.2.4-dc3fc578",
                 },
             ],
+            "@yarnpkg/plugin-dlx@3.1.4-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+            ],
+            "@yarnpkg/plugin-essentials@3.3.0-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+            ],
+            "@yarnpkg/plugin-init@3.1.4-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+            ],
+            "@yarnpkg/plugin-nm@3.1.5-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+                {
+                    "id": "@yarnpkg/plugin-pnp@3.2.5-b0da1d74",
+                },
+            ],
+            "@yarnpkg/plugin-npm-cli@3.3.0-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+                {
+                    "id": "@yarnpkg/plugin-npm@2.7.3-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-pack@3.1.4-b0da1d74",
+                },
+            ],
+            "@yarnpkg/plugin-npm@2.7.3-b0da1d74": [
+                {
+                    "id": "@yarnpkg/plugin-pack@3.1.4-b0da1d74",
+                },
+            ],
+            "@yarnpkg/plugin-pack@3.1.4-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+            ],
             "@yarnpkg/plugin-patch@3.2.4-dc3fc578": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+            ],
+            "@yarnpkg/plugin-pnp@3.2.5-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+                {
+                    "id": "@yarnpkg/plugin-stage@3.1.3-fe3aae18",
+                },
+            ],
+            "@yarnpkg/plugin-pnpm@1.1.2-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+                {
+                    "id": "@yarnpkg/plugin-pnp@3.2.5-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-stage@3.1.3-fe3aae18",
+                },
+            ],
+            "@yarnpkg/plugin-stage@3.1.3-fe3aae18": [
                 {
                     "id": "@yarnpkg/cli@3.3.0-dc3fc578",
                 },
@@ -4732,10 +4996,113 @@ PACKAGES = {
                     "id": "@yarnpkg/cli@3.3.0-dc3fc578",
                 },
                 {
+                    "id": "@yarnpkg/plugin-compat@3.1.7-b0da1d74",
+                },
+                {
                     "id": "@yarnpkg/plugin-dlx@3.1.4-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-essentials@3.3.0-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-init@3.1.4-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-nm@3.1.5-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-npm-cli@3.3.0-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-npm@2.7.3-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-pack@3.1.4-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-patch@3.2.4-dc3fc578",
+                },
+                {
+                    "id": "@yarnpkg/plugin-pnp@3.2.5-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-pnpm@1.1.2-b0da1d74",
+                },
+            ],
+            "@yarnpkg/plugin-compat@3.1.7-b0da1d74": [
+                {
+                    "id": "@yarnpkg/plugin-patch@3.2.4-dc3fc578",
                 },
             ],
             "@yarnpkg/plugin-dlx@3.1.4-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+            ],
+            "@yarnpkg/plugin-essentials@3.3.0-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+            ],
+            "@yarnpkg/plugin-init@3.1.4-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+            ],
+            "@yarnpkg/plugin-nm@3.1.5-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+                {
+                    "id": "@yarnpkg/plugin-pnp@3.2.5-b0da1d74",
+                },
+            ],
+            "@yarnpkg/plugin-npm-cli@3.3.0-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+                {
+                    "id": "@yarnpkg/plugin-npm@2.7.3-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-pack@3.1.4-b0da1d74",
+                },
+            ],
+            "@yarnpkg/plugin-npm@2.7.3-b0da1d74": [
+                {
+                    "id": "@yarnpkg/plugin-pack@3.1.4-b0da1d74",
+                },
+            ],
+            "@yarnpkg/plugin-pack@3.1.4-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+            ],
+            "@yarnpkg/plugin-patch@3.2.4-dc3fc578": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+            ],
+            "@yarnpkg/plugin-pnp@3.2.5-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+                {
+                    "id": "@yarnpkg/plugin-stage@3.1.3-fe3aae18",
+                },
+            ],
+            "@yarnpkg/plugin-pnpm@1.1.2-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+                {
+                    "id": "@yarnpkg/plugin-pnp@3.2.5-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-stage@3.1.3-fe3aae18",
+                },
+            ],
+            "@yarnpkg/plugin-stage@3.1.3-fe3aae18": [
                 {
                     "id": "@yarnpkg/cli@3.3.0-dc3fc578",
                 },
@@ -4835,10 +5202,113 @@ PACKAGES = {
                     "id": "@yarnpkg/cli@3.3.0-dc3fc578",
                 },
                 {
+                    "id": "@yarnpkg/plugin-compat@3.1.7-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-dlx@3.1.4-b0da1d74",
+                },
+                {
                     "id": "@yarnpkg/plugin-essentials@3.3.0-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-init@3.1.4-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-nm@3.1.5-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-npm-cli@3.3.0-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-npm@2.7.3-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-pack@3.1.4-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-patch@3.2.4-dc3fc578",
+                },
+                {
+                    "id": "@yarnpkg/plugin-pnp@3.2.5-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-pnpm@1.1.2-b0da1d74",
+                },
+            ],
+            "@yarnpkg/plugin-compat@3.1.7-b0da1d74": [
+                {
+                    "id": "@yarnpkg/plugin-patch@3.2.4-dc3fc578",
+                },
+            ],
+            "@yarnpkg/plugin-dlx@3.1.4-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
                 },
             ],
             "@yarnpkg/plugin-essentials@3.3.0-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+            ],
+            "@yarnpkg/plugin-init@3.1.4-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+            ],
+            "@yarnpkg/plugin-nm@3.1.5-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+                {
+                    "id": "@yarnpkg/plugin-pnp@3.2.5-b0da1d74",
+                },
+            ],
+            "@yarnpkg/plugin-npm-cli@3.3.0-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+                {
+                    "id": "@yarnpkg/plugin-npm@2.7.3-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-pack@3.1.4-b0da1d74",
+                },
+            ],
+            "@yarnpkg/plugin-npm@2.7.3-b0da1d74": [
+                {
+                    "id": "@yarnpkg/plugin-pack@3.1.4-b0da1d74",
+                },
+            ],
+            "@yarnpkg/plugin-pack@3.1.4-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+            ],
+            "@yarnpkg/plugin-patch@3.2.4-dc3fc578": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+            ],
+            "@yarnpkg/plugin-pnp@3.2.5-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+                {
+                    "id": "@yarnpkg/plugin-stage@3.1.3-fe3aae18",
+                },
+            ],
+            "@yarnpkg/plugin-pnpm@1.1.2-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+                {
+                    "id": "@yarnpkg/plugin-pnp@3.2.5-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-stage@3.1.3-fe3aae18",
+                },
+            ],
+            "@yarnpkg/plugin-stage@3.1.3-fe3aae18": [
                 {
                     "id": "@yarnpkg/cli@3.3.0-dc3fc578",
                 },
@@ -5058,10 +5528,113 @@ PACKAGES = {
                     "id": "@yarnpkg/cli@3.3.0-dc3fc578",
                 },
                 {
+                    "id": "@yarnpkg/plugin-compat@3.1.7-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-dlx@3.1.4-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-essentials@3.3.0-b0da1d74",
+                },
+                {
                     "id": "@yarnpkg/plugin-init@3.1.4-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-nm@3.1.5-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-npm-cli@3.3.0-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-npm@2.7.3-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-pack@3.1.4-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-patch@3.2.4-dc3fc578",
+                },
+                {
+                    "id": "@yarnpkg/plugin-pnp@3.2.5-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-pnpm@1.1.2-b0da1d74",
+                },
+            ],
+            "@yarnpkg/plugin-compat@3.1.7-b0da1d74": [
+                {
+                    "id": "@yarnpkg/plugin-patch@3.2.4-dc3fc578",
+                },
+            ],
+            "@yarnpkg/plugin-dlx@3.1.4-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+            ],
+            "@yarnpkg/plugin-essentials@3.3.0-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
                 },
             ],
             "@yarnpkg/plugin-init@3.1.4-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+            ],
+            "@yarnpkg/plugin-nm@3.1.5-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+                {
+                    "id": "@yarnpkg/plugin-pnp@3.2.5-b0da1d74",
+                },
+            ],
+            "@yarnpkg/plugin-npm-cli@3.3.0-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+                {
+                    "id": "@yarnpkg/plugin-npm@2.7.3-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-pack@3.1.4-b0da1d74",
+                },
+            ],
+            "@yarnpkg/plugin-npm@2.7.3-b0da1d74": [
+                {
+                    "id": "@yarnpkg/plugin-pack@3.1.4-b0da1d74",
+                },
+            ],
+            "@yarnpkg/plugin-pack@3.1.4-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+            ],
+            "@yarnpkg/plugin-patch@3.2.4-dc3fc578": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+            ],
+            "@yarnpkg/plugin-pnp@3.2.5-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+                {
+                    "id": "@yarnpkg/plugin-stage@3.1.3-fe3aae18",
+                },
+            ],
+            "@yarnpkg/plugin-pnpm@1.1.2-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+                {
+                    "id": "@yarnpkg/plugin-pnp@3.2.5-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-stage@3.1.3-fe3aae18",
+                },
+            ],
+            "@yarnpkg/plugin-stage@3.1.3-fe3aae18": [
                 {
                     "id": "@yarnpkg/cli@3.3.0-dc3fc578",
                 },
@@ -5182,10 +5755,57 @@ PACKAGES = {
                     "id": "@yarnpkg/cli@3.3.0-dc3fc578",
                 },
                 {
+                    "id": "@yarnpkg/plugin-compat@3.1.7-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-dlx@3.1.4-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-essentials@3.3.0-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-init@3.1.4-b0da1d74",
+                },
+                {
                     "id": "@yarnpkg/plugin-nm@3.1.5-b0da1d74",
                 },
                 {
+                    "id": "@yarnpkg/plugin-npm-cli@3.3.0-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-npm@2.7.3-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-pack@3.1.4-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-patch@3.2.4-dc3fc578",
+                },
+                {
                     "id": "@yarnpkg/plugin-pnp@3.2.5-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-pnpm@1.1.2-b0da1d74",
+                },
+            ],
+            "@yarnpkg/plugin-compat@3.1.7-b0da1d74": [
+                {
+                    "id": "@yarnpkg/plugin-patch@3.2.4-dc3fc578",
+                },
+            ],
+            "@yarnpkg/plugin-dlx@3.1.4-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+            ],
+            "@yarnpkg/plugin-essentials@3.3.0-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+            ],
+            "@yarnpkg/plugin-init@3.1.4-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
                 },
             ],
             "@yarnpkg/plugin-nm@3.1.5-b0da1d74": [
@@ -5196,9 +5816,46 @@ PACKAGES = {
                     "id": "@yarnpkg/plugin-pnp@3.2.5-b0da1d74",
                 },
             ],
+            "@yarnpkg/plugin-npm-cli@3.3.0-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+                {
+                    "id": "@yarnpkg/plugin-npm@2.7.3-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-pack@3.1.4-b0da1d74",
+                },
+            ],
+            "@yarnpkg/plugin-npm@2.7.3-b0da1d74": [
+                {
+                    "id": "@yarnpkg/plugin-pack@3.1.4-b0da1d74",
+                },
+            ],
+            "@yarnpkg/plugin-pack@3.1.4-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+            ],
+            "@yarnpkg/plugin-patch@3.2.4-dc3fc578": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+            ],
             "@yarnpkg/plugin-pnp@3.2.5-b0da1d74": [
                 {
                     "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+                {
+                    "id": "@yarnpkg/plugin-stage@3.1.3-fe3aae18",
+                },
+            ],
+            "@yarnpkg/plugin-pnpm@1.1.2-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+                {
+                    "id": "@yarnpkg/plugin-pnp@3.2.5-b0da1d74",
                 },
                 {
                     "id": "@yarnpkg/plugin-stage@3.1.3-fe3aae18",
@@ -5253,12 +5910,6 @@ PACKAGES = {
                 "id": "@yarnpkg/fslib@2.9.0",
             },
             {
-                "id": "@yarnpkg/plugin-npm@2.7.3-b0da1d74",
-            },
-            {
-                "id": "@yarnpkg/plugin-pack@3.1.4-b0da1d74",
-            },
-            {
                 "id": "clipanion@3.2.0-rc.4-f9a3b1e8",
             },
             {
@@ -5283,10 +5934,113 @@ PACKAGES = {
                     "id": "@yarnpkg/cli@3.3.0-dc3fc578",
                 },
                 {
+                    "id": "@yarnpkg/plugin-compat@3.1.7-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-dlx@3.1.4-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-essentials@3.3.0-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-init@3.1.4-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-nm@3.1.5-b0da1d74",
+                },
+                {
                     "id": "@yarnpkg/plugin-npm-cli@3.3.0-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-npm@2.7.3-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-pack@3.1.4-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-patch@3.2.4-dc3fc578",
+                },
+                {
+                    "id": "@yarnpkg/plugin-pnp@3.2.5-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-pnpm@1.1.2-b0da1d74",
+                },
+            ],
+            "@yarnpkg/plugin-compat@3.1.7-b0da1d74": [
+                {
+                    "id": "@yarnpkg/plugin-patch@3.2.4-dc3fc578",
+                },
+            ],
+            "@yarnpkg/plugin-dlx@3.1.4-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+            ],
+            "@yarnpkg/plugin-essentials@3.3.0-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+            ],
+            "@yarnpkg/plugin-init@3.1.4-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+            ],
+            "@yarnpkg/plugin-nm@3.1.5-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+                {
+                    "id": "@yarnpkg/plugin-pnp@3.2.5-b0da1d74",
                 },
             ],
             "@yarnpkg/plugin-npm-cli@3.3.0-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+                {
+                    "id": "@yarnpkg/plugin-npm@2.7.3-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-pack@3.1.4-b0da1d74",
+                },
+            ],
+            "@yarnpkg/plugin-npm@2.7.3-b0da1d74": [
+                {
+                    "id": "@yarnpkg/plugin-pack@3.1.4-b0da1d74",
+                },
+            ],
+            "@yarnpkg/plugin-pack@3.1.4-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+            ],
+            "@yarnpkg/plugin-patch@3.2.4-dc3fc578": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+            ],
+            "@yarnpkg/plugin-pnp@3.2.5-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+                {
+                    "id": "@yarnpkg/plugin-stage@3.1.3-fe3aae18",
+                },
+            ],
+            "@yarnpkg/plugin-pnpm@1.1.2-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+                {
+                    "id": "@yarnpkg/plugin-pnp@3.2.5-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-stage@3.1.3-fe3aae18",
+                },
+            ],
+            "@yarnpkg/plugin-stage@3.1.3-fe3aae18": [
                 {
                     "id": "@yarnpkg/cli@3.3.0-dc3fc578",
                 },
@@ -5328,6 +6082,9 @@ PACKAGES = {
                 {
                     "id": "@yarnpkg/plugin-pack@3.1.4",
                 },
+                {
+                    "id": "@yarnpkg/plugin-patch@3.2.4",
+                },
             ],
             "@yarnpkg/plugin-npm@2.7.3": [
                 {
@@ -5335,6 +6092,11 @@ PACKAGES = {
                 },
             ],
             "@yarnpkg/plugin-pack@3.1.4": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0",
+                },
+            ],
+            "@yarnpkg/plugin-patch@3.2.4": [
                 {
                     "id": "@yarnpkg/cli@3.3.0",
                 },
@@ -5371,6 +6133,72 @@ PACKAGES = {
                     "id": "@yarnpkg/cli@3.3.0-dc3fc578",
                 },
                 {
+                    "id": "@yarnpkg/plugin-compat@3.1.7-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-dlx@3.1.4-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-essentials@3.3.0-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-init@3.1.4-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-nm@3.1.5-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-npm-cli@3.3.0-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-npm@2.7.3-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-pack@3.1.4-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-patch@3.2.4-dc3fc578",
+                },
+                {
+                    "id": "@yarnpkg/plugin-pnp@3.2.5-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-pnpm@1.1.2-b0da1d74",
+                },
+            ],
+            "@yarnpkg/plugin-compat@3.1.7-b0da1d74": [
+                {
+                    "id": "@yarnpkg/plugin-patch@3.2.4-dc3fc578",
+                },
+            ],
+            "@yarnpkg/plugin-dlx@3.1.4-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+            ],
+            "@yarnpkg/plugin-essentials@3.3.0-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+            ],
+            "@yarnpkg/plugin-init@3.1.4-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+            ],
+            "@yarnpkg/plugin-nm@3.1.5-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+                {
+                    "id": "@yarnpkg/plugin-pnp@3.2.5-b0da1d74",
+                },
+            ],
+            "@yarnpkg/plugin-npm-cli@3.3.0-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+                {
                     "id": "@yarnpkg/plugin-npm@2.7.3-b0da1d74",
                 },
                 {
@@ -5383,6 +6211,35 @@ PACKAGES = {
                 },
             ],
             "@yarnpkg/plugin-pack@3.1.4-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+            ],
+            "@yarnpkg/plugin-patch@3.2.4-dc3fc578": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+            ],
+            "@yarnpkg/plugin-pnp@3.2.5-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+                {
+                    "id": "@yarnpkg/plugin-stage@3.1.3-fe3aae18",
+                },
+            ],
+            "@yarnpkg/plugin-pnpm@1.1.2-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+                {
+                    "id": "@yarnpkg/plugin-pnp@3.2.5-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-stage@3.1.3-fe3aae18",
+                },
+            ],
+            "@yarnpkg/plugin-stage@3.1.3-fe3aae18": [
                 {
                     "id": "@yarnpkg/cli@3.3.0-dc3fc578",
                 },
@@ -5451,6 +6308,9 @@ PACKAGES = {
                 {
                     "id": "@yarnpkg/plugin-pack@3.1.4",
                 },
+                {
+                    "id": "@yarnpkg/plugin-patch@3.2.4",
+                },
             ],
             "@yarnpkg/plugin-npm@2.7.3": [
                 {
@@ -5458,6 +6318,11 @@ PACKAGES = {
                 },
             ],
             "@yarnpkg/plugin-pack@3.1.4": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0",
+                },
+            ],
+            "@yarnpkg/plugin-patch@3.2.4": [
                 {
                     "id": "@yarnpkg/cli@3.3.0",
                 },
@@ -5524,6 +6389,72 @@ PACKAGES = {
                     "id": "@yarnpkg/cli@3.3.0-dc3fc578",
                 },
                 {
+                    "id": "@yarnpkg/plugin-compat@3.1.7-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-dlx@3.1.4-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-essentials@3.3.0-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-init@3.1.4-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-nm@3.1.5-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-npm-cli@3.3.0-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-npm@2.7.3-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-pack@3.1.4-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-patch@3.2.4-dc3fc578",
+                },
+                {
+                    "id": "@yarnpkg/plugin-pnp@3.2.5-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-pnpm@1.1.2-b0da1d74",
+                },
+            ],
+            "@yarnpkg/plugin-compat@3.1.7-b0da1d74": [
+                {
+                    "id": "@yarnpkg/plugin-patch@3.2.4-dc3fc578",
+                },
+            ],
+            "@yarnpkg/plugin-dlx@3.1.4-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+            ],
+            "@yarnpkg/plugin-essentials@3.3.0-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+            ],
+            "@yarnpkg/plugin-init@3.1.4-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+            ],
+            "@yarnpkg/plugin-nm@3.1.5-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+                {
+                    "id": "@yarnpkg/plugin-pnp@3.2.5-b0da1d74",
+                },
+            ],
+            "@yarnpkg/plugin-npm-cli@3.3.0-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+                {
                     "id": "@yarnpkg/plugin-npm@2.7.3-b0da1d74",
                 },
                 {
@@ -5536,6 +6467,35 @@ PACKAGES = {
                 },
             ],
             "@yarnpkg/plugin-pack@3.1.4-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+            ],
+            "@yarnpkg/plugin-patch@3.2.4-dc3fc578": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+            ],
+            "@yarnpkg/plugin-pnp@3.2.5-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+                {
+                    "id": "@yarnpkg/plugin-stage@3.1.3-fe3aae18",
+                },
+            ],
+            "@yarnpkg/plugin-pnpm@1.1.2-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+                {
+                    "id": "@yarnpkg/plugin-pnp@3.2.5-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-stage@3.1.3-fe3aae18",
+                },
+            ],
+            "@yarnpkg/plugin-stage@3.1.3-fe3aae18": [
                 {
                     "id": "@yarnpkg/cli@3.3.0-dc3fc578",
                 },
@@ -5564,17 +6524,33 @@ PACKAGES = {
             },
         ],
         "extra_deps": {
-            "@yarnpkg/plugin-patch@3.2.4": [
-                {
-                    "id": "@yarnpkg/cli@3.3.0",
-                },
-            ],
             "@yarnpkg/cli@3.3.0": [
                 {
                     "id": "@yarnpkg/cli@3.3.0",
                 },
                 {
+                    "id": "@yarnpkg/plugin-npm@2.7.3",
+                },
+                {
+                    "id": "@yarnpkg/plugin-pack@3.1.4",
+                },
+                {
                     "id": "@yarnpkg/plugin-patch@3.2.4",
+                },
+            ],
+            "@yarnpkg/plugin-npm@2.7.3": [
+                {
+                    "id": "@yarnpkg/plugin-pack@3.1.4",
+                },
+            ],
+            "@yarnpkg/plugin-pack@3.1.4": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0",
+                },
+            ],
+            "@yarnpkg/plugin-patch@3.2.4": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0",
                 },
             ],
         },
@@ -5609,7 +6585,34 @@ PACKAGES = {
                     "id": "@yarnpkg/plugin-compat@3.1.7-b0da1d74",
                 },
                 {
+                    "id": "@yarnpkg/plugin-dlx@3.1.4-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-essentials@3.3.0-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-init@3.1.4-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-nm@3.1.5-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-npm-cli@3.3.0-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-npm@2.7.3-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-pack@3.1.4-b0da1d74",
+                },
+                {
                     "id": "@yarnpkg/plugin-patch@3.2.4-dc3fc578",
+                },
+                {
+                    "id": "@yarnpkg/plugin-pnp@3.2.5-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-pnpm@1.1.2-b0da1d74",
                 },
             ],
             "@yarnpkg/plugin-compat@3.1.7-b0da1d74": [
@@ -5617,7 +6620,75 @@ PACKAGES = {
                     "id": "@yarnpkg/plugin-patch@3.2.4-dc3fc578",
                 },
             ],
+            "@yarnpkg/plugin-dlx@3.1.4-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+            ],
+            "@yarnpkg/plugin-essentials@3.3.0-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+            ],
+            "@yarnpkg/plugin-init@3.1.4-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+            ],
+            "@yarnpkg/plugin-nm@3.1.5-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+                {
+                    "id": "@yarnpkg/plugin-pnp@3.2.5-b0da1d74",
+                },
+            ],
+            "@yarnpkg/plugin-npm-cli@3.3.0-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+                {
+                    "id": "@yarnpkg/plugin-npm@2.7.3-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-pack@3.1.4-b0da1d74",
+                },
+            ],
+            "@yarnpkg/plugin-npm@2.7.3-b0da1d74": [
+                {
+                    "id": "@yarnpkg/plugin-pack@3.1.4-b0da1d74",
+                },
+            ],
+            "@yarnpkg/plugin-pack@3.1.4-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+            ],
             "@yarnpkg/plugin-patch@3.2.4-dc3fc578": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+            ],
+            "@yarnpkg/plugin-pnp@3.2.5-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+                {
+                    "id": "@yarnpkg/plugin-stage@3.1.3-fe3aae18",
+                },
+            ],
+            "@yarnpkg/plugin-pnpm@1.1.2-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+                {
+                    "id": "@yarnpkg/plugin-pnp@3.2.5-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-stage@3.1.3-fe3aae18",
+                },
+            ],
+            "@yarnpkg/plugin-stage@3.1.3-fe3aae18": [
                 {
                     "id": "@yarnpkg/cli@3.3.0-dc3fc578",
                 },
@@ -5693,10 +6764,57 @@ PACKAGES = {
                     "id": "@yarnpkg/cli@3.3.0-dc3fc578",
                 },
                 {
+                    "id": "@yarnpkg/plugin-compat@3.1.7-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-dlx@3.1.4-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-essentials@3.3.0-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-init@3.1.4-b0da1d74",
+                },
+                {
                     "id": "@yarnpkg/plugin-nm@3.1.5-b0da1d74",
                 },
                 {
+                    "id": "@yarnpkg/plugin-npm-cli@3.3.0-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-npm@2.7.3-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-pack@3.1.4-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-patch@3.2.4-dc3fc578",
+                },
+                {
                     "id": "@yarnpkg/plugin-pnp@3.2.5-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-pnpm@1.1.2-b0da1d74",
+                },
+            ],
+            "@yarnpkg/plugin-compat@3.1.7-b0da1d74": [
+                {
+                    "id": "@yarnpkg/plugin-patch@3.2.4-dc3fc578",
+                },
+            ],
+            "@yarnpkg/plugin-dlx@3.1.4-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+            ],
+            "@yarnpkg/plugin-essentials@3.3.0-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+            ],
+            "@yarnpkg/plugin-init@3.1.4-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
                 },
             ],
             "@yarnpkg/plugin-nm@3.1.5-b0da1d74": [
@@ -5707,9 +6825,46 @@ PACKAGES = {
                     "id": "@yarnpkg/plugin-pnp@3.2.5-b0da1d74",
                 },
             ],
+            "@yarnpkg/plugin-npm-cli@3.3.0-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+                {
+                    "id": "@yarnpkg/plugin-npm@2.7.3-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-pack@3.1.4-b0da1d74",
+                },
+            ],
+            "@yarnpkg/plugin-npm@2.7.3-b0da1d74": [
+                {
+                    "id": "@yarnpkg/plugin-pack@3.1.4-b0da1d74",
+                },
+            ],
+            "@yarnpkg/plugin-pack@3.1.4-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+            ],
+            "@yarnpkg/plugin-patch@3.2.4-dc3fc578": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+            ],
             "@yarnpkg/plugin-pnp@3.2.5-b0da1d74": [
                 {
                     "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+                {
+                    "id": "@yarnpkg/plugin-stage@3.1.3-fe3aae18",
+                },
+            ],
+            "@yarnpkg/plugin-pnpm@1.1.2-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+                {
+                    "id": "@yarnpkg/plugin-pnp@3.2.5-b0da1d74",
                 },
                 {
                     "id": "@yarnpkg/plugin-stage@3.1.3-fe3aae18",
@@ -5761,12 +6916,6 @@ PACKAGES = {
                 "id": "@yarnpkg/fslib@2.9.0",
             },
             {
-                "id": "@yarnpkg/plugin-pnp@3.2.5-b0da1d74",
-            },
-            {
-                "id": "@yarnpkg/plugin-stage@3.1.3-fe3aae18",
-            },
-            {
                 "id": "clipanion@3.2.0-rc.4-f9a3b1e8",
             },
             {
@@ -5782,10 +6931,113 @@ PACKAGES = {
                     "id": "@yarnpkg/cli@3.3.0-dc3fc578",
                 },
                 {
+                    "id": "@yarnpkg/plugin-compat@3.1.7-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-dlx@3.1.4-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-essentials@3.3.0-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-init@3.1.4-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-nm@3.1.5-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-npm-cli@3.3.0-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-npm@2.7.3-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-pack@3.1.4-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-patch@3.2.4-dc3fc578",
+                },
+                {
+                    "id": "@yarnpkg/plugin-pnp@3.2.5-b0da1d74",
+                },
+                {
                     "id": "@yarnpkg/plugin-pnpm@1.1.2-b0da1d74",
                 },
             ],
+            "@yarnpkg/plugin-compat@3.1.7-b0da1d74": [
+                {
+                    "id": "@yarnpkg/plugin-patch@3.2.4-dc3fc578",
+                },
+            ],
+            "@yarnpkg/plugin-dlx@3.1.4-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+            ],
+            "@yarnpkg/plugin-essentials@3.3.0-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+            ],
+            "@yarnpkg/plugin-init@3.1.4-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+            ],
+            "@yarnpkg/plugin-nm@3.1.5-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+                {
+                    "id": "@yarnpkg/plugin-pnp@3.2.5-b0da1d74",
+                },
+            ],
+            "@yarnpkg/plugin-npm-cli@3.3.0-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+                {
+                    "id": "@yarnpkg/plugin-npm@2.7.3-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-pack@3.1.4-b0da1d74",
+                },
+            ],
+            "@yarnpkg/plugin-npm@2.7.3-b0da1d74": [
+                {
+                    "id": "@yarnpkg/plugin-pack@3.1.4-b0da1d74",
+                },
+            ],
+            "@yarnpkg/plugin-pack@3.1.4-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+            ],
+            "@yarnpkg/plugin-patch@3.2.4-dc3fc578": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+            ],
+            "@yarnpkg/plugin-pnp@3.2.5-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+                {
+                    "id": "@yarnpkg/plugin-stage@3.1.3-fe3aae18",
+                },
+            ],
             "@yarnpkg/plugin-pnpm@1.1.2-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+                {
+                    "id": "@yarnpkg/plugin-pnp@3.2.5-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-stage@3.1.3-fe3aae18",
+                },
+            ],
+            "@yarnpkg/plugin-stage@3.1.3-fe3aae18": [
                 {
                     "id": "@yarnpkg/cli@3.3.0-dc3fc578",
                 },
@@ -5834,10 +7086,57 @@ PACKAGES = {
                     "id": "@yarnpkg/cli@3.3.0-dc3fc578",
                 },
                 {
+                    "id": "@yarnpkg/plugin-compat@3.1.7-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-dlx@3.1.4-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-essentials@3.3.0-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-init@3.1.4-b0da1d74",
+                },
+                {
                     "id": "@yarnpkg/plugin-nm@3.1.5-b0da1d74",
                 },
                 {
+                    "id": "@yarnpkg/plugin-npm-cli@3.3.0-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-npm@2.7.3-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-pack@3.1.4-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-patch@3.2.4-dc3fc578",
+                },
+                {
                     "id": "@yarnpkg/plugin-pnp@3.2.5-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-pnpm@1.1.2-b0da1d74",
+                },
+            ],
+            "@yarnpkg/plugin-compat@3.1.7-b0da1d74": [
+                {
+                    "id": "@yarnpkg/plugin-patch@3.2.4-dc3fc578",
+                },
+            ],
+            "@yarnpkg/plugin-dlx@3.1.4-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+            ],
+            "@yarnpkg/plugin-essentials@3.3.0-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+            ],
+            "@yarnpkg/plugin-init@3.1.4-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
                 },
             ],
             "@yarnpkg/plugin-nm@3.1.5-b0da1d74": [
@@ -5848,9 +7147,46 @@ PACKAGES = {
                     "id": "@yarnpkg/plugin-pnp@3.2.5-b0da1d74",
                 },
             ],
+            "@yarnpkg/plugin-npm-cli@3.3.0-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+                {
+                    "id": "@yarnpkg/plugin-npm@2.7.3-b0da1d74",
+                },
+                {
+                    "id": "@yarnpkg/plugin-pack@3.1.4-b0da1d74",
+                },
+            ],
+            "@yarnpkg/plugin-npm@2.7.3-b0da1d74": [
+                {
+                    "id": "@yarnpkg/plugin-pack@3.1.4-b0da1d74",
+                },
+            ],
+            "@yarnpkg/plugin-pack@3.1.4-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+            ],
+            "@yarnpkg/plugin-patch@3.2.4-dc3fc578": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+            ],
             "@yarnpkg/plugin-pnp@3.2.5-b0da1d74": [
                 {
                     "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+                {
+                    "id": "@yarnpkg/plugin-stage@3.1.3-fe3aae18",
+                },
+            ],
+            "@yarnpkg/plugin-pnpm@1.1.2-b0da1d74": [
+                {
+                    "id": "@yarnpkg/cli@3.3.0-dc3fc578",
+                },
+                {
+                    "id": "@yarnpkg/plugin-pnp@3.2.5-b0da1d74",
                 },
                 {
                     "id": "@yarnpkg/plugin-stage@3.1.3-fe3aae18",
@@ -8487,14 +9823,14 @@ PACKAGES = {
             },
         ],
         "extra_deps": {
-            "eslint@8.3.0": [
-                {
-                    "id": "eslint-utils@3.0.0-19231e7a",
-                },
-            ],
             "eslint-utils@3.0.0-19231e7a": [
                 {
                     "id": "eslint@8.3.0",
+                },
+            ],
+            "eslint@8.3.0": [
+                {
+                    "id": "eslint-utils@3.0.0-19231e7a",
                 },
             ],
         },
@@ -8653,14 +9989,14 @@ PACKAGES = {
             },
         ],
         "extra_deps": {
-            "eslint@8.3.0": [
-                {
-                    "id": "eslint-utils@3.0.0-19231e7a",
-                },
-            ],
             "eslint-utils@3.0.0-19231e7a": [
                 {
                     "id": "eslint@8.3.0",
+                },
+            ],
+            "eslint@8.3.0": [
+                {
+                    "id": "eslint-utils@3.0.0-19231e7a",
                 },
             ],
         },
@@ -11270,14 +12606,14 @@ PACKAGES = {
         "deps": [
         ],
         "extra_deps": {
-            "jest-resolve@28.1.3": [
-                {
-                    "id": "jest-pnp-resolver@1.2.2-acd3a0d2",
-                },
-            ],
             "jest-pnp-resolver@1.2.2-acd3a0d2": [
                 {
                     "id": "jest-resolve@28.1.3",
+                },
+            ],
+            "jest-resolve@28.1.3": [
+                {
+                    "id": "jest-pnp-resolver@1.2.2-acd3a0d2",
                 },
             ],
         },
@@ -11337,14 +12673,14 @@ PACKAGES = {
             },
         ],
         "extra_deps": {
-            "jest-resolve@28.1.3": [
-                {
-                    "id": "jest-pnp-resolver@1.2.2-acd3a0d2",
-                },
-            ],
             "jest-pnp-resolver@1.2.2-acd3a0d2": [
                 {
                     "id": "jest-resolve@28.1.3",
+                },
+            ],
+            "jest-resolve@28.1.3": [
+                {
+                    "id": "jest-pnp-resolver@1.2.2-acd3a0d2",
                 },
             ],
         },
@@ -15157,14 +16493,71 @@ PACKAGES = {
             },
         ],
         "extra_deps": {
-            "webpack@5.64.4-dc3fc578": [
+            "@webpack-cli/configtest@1.1.0-4e0fd822": [
                 {
-                    "id": "terser-webpack-plugin@5.2.5-e30e60ed",
+                    "id": "webpack-cli@4.9.1-dc3fc578",
+                },
+                {
+                    "id": "webpack@5.64.4-dc3fc578",
+                },
+            ],
+            "@webpack-cli/info@1.4.0-4e0fd822": [
+                {
+                    "id": "webpack-cli@4.9.1-dc3fc578",
+                },
+            ],
+            "@webpack-cli/serve@1.6.0-4e0fd822": [
+                {
+                    "id": "webpack-cli@4.9.1-dc3fc578",
+                },
+                {
+                    "id": "webpack-dev-server@4.7.2-dc3fc578",
                 },
             ],
             "terser-webpack-plugin@5.2.5-e30e60ed": [
                 {
                     "id": "webpack@5.64.4-dc3fc578",
+                },
+            ],
+            "webpack-cli@4.9.1-dc3fc578": [
+                {
+                    "id": "@webpack-cli/configtest@1.1.0-4e0fd822",
+                },
+                {
+                    "id": "@webpack-cli/info@1.4.0-4e0fd822",
+                },
+                {
+                    "id": "@webpack-cli/serve@1.6.0-4e0fd822",
+                },
+                {
+                    "id": "webpack-dev-server@4.7.2-dc3fc578",
+                },
+                {
+                    "id": "webpack@5.64.4-dc3fc578",
+                },
+            ],
+            "webpack-dev-middleware@5.3.0-48473bb5": [
+                {
+                    "id": "webpack@5.64.4-dc3fc578",
+                },
+            ],
+            "webpack-dev-server@4.7.2-dc3fc578": [
+                {
+                    "id": "webpack-cli@4.9.1-dc3fc578",
+                },
+                {
+                    "id": "webpack-dev-middleware@5.3.0-48473bb5",
+                },
+                {
+                    "id": "webpack@5.64.4-dc3fc578",
+                },
+            ],
+            "webpack@5.64.4-dc3fc578": [
+                {
+                    "id": "terser-webpack-plugin@5.2.5-e30e60ed",
+                },
+                {
+                    "id": "webpack-cli@4.9.1-dc3fc578",
                 },
             ],
         },
@@ -15963,9 +17356,30 @@ PACKAGES = {
             },
         ],
         "extra_deps": {
-            "webpack@5.64.4-dc3fc578": [
+            "@webpack-cli/configtest@1.1.0-4e0fd822": [
                 {
                     "id": "webpack-cli@4.9.1-dc3fc578",
+                },
+                {
+                    "id": "webpack@5.64.4-dc3fc578",
+                },
+            ],
+            "@webpack-cli/info@1.4.0-4e0fd822": [
+                {
+                    "id": "webpack-cli@4.9.1-dc3fc578",
+                },
+            ],
+            "@webpack-cli/serve@1.6.0-4e0fd822": [
+                {
+                    "id": "webpack-cli@4.9.1-dc3fc578",
+                },
+                {
+                    "id": "webpack-dev-server@4.7.2-dc3fc578",
+                },
+            ],
+            "terser-webpack-plugin@5.2.5-e30e60ed": [
+                {
+                    "id": "webpack@5.64.4-dc3fc578",
                 },
             ],
             "webpack-cli@4.9.1-dc3fc578": [
@@ -15985,6 +17399,11 @@ PACKAGES = {
                     "id": "webpack@5.64.4-dc3fc578",
                 },
             ],
+            "webpack-dev-middleware@5.3.0-48473bb5": [
+                {
+                    "id": "webpack@5.64.4-dc3fc578",
+                },
+            ],
             "webpack-dev-server@4.7.2-dc3fc578": [
                 {
                     "id": "webpack-cli@4.9.1-dc3fc578",
@@ -15996,25 +17415,10 @@ PACKAGES = {
                     "id": "webpack@5.64.4-dc3fc578",
                 },
             ],
-            "webpack-dev-middleware@5.3.0-48473bb5": [
+            "webpack@5.64.4-dc3fc578": [
                 {
-                    "id": "webpack@5.64.4-dc3fc578",
+                    "id": "terser-webpack-plugin@5.2.5-e30e60ed",
                 },
-            ],
-            "@webpack-cli/configtest@1.1.0-4e0fd822": [
-                {
-                    "id": "webpack-cli@4.9.1-dc3fc578",
-                },
-                {
-                    "id": "webpack@5.64.4-dc3fc578",
-                },
-            ],
-            "@webpack-cli/info@1.4.0-4e0fd822": [
-                {
-                    "id": "webpack-cli@4.9.1-dc3fc578",
-                },
-            ],
-            "@webpack-cli/serve@1.6.0-4e0fd822": [
                 {
                     "id": "webpack-cli@4.9.1-dc3fc578",
                 },
@@ -16043,15 +17447,50 @@ PACKAGES = {
             },
         ],
         "extra_deps": {
-            "webpack@5.64.4-dc3fc578": [
+            "@webpack-cli/configtest@1.1.0-4e0fd822": [
+                {
+                    "id": "webpack-cli@4.9.1-dc3fc578",
+                },
+                {
+                    "id": "webpack@5.64.4-dc3fc578",
+                },
+            ],
+            "@webpack-cli/info@1.4.0-4e0fd822": [
                 {
                     "id": "webpack-cli@4.9.1-dc3fc578",
                 },
             ],
-            "webpack-cli@4.9.1-dc3fc578": [
+            "@webpack-cli/serve@1.6.0-4e0fd822": [
+                {
+                    "id": "webpack-cli@4.9.1-dc3fc578",
+                },
                 {
                     "id": "webpack-dev-server@4.7.2-dc3fc578",
                 },
+            ],
+            "terser-webpack-plugin@5.2.5-e30e60ed": [
+                {
+                    "id": "webpack@5.64.4-dc3fc578",
+                },
+            ],
+            "webpack-cli@4.9.1-dc3fc578": [
+                {
+                    "id": "@webpack-cli/configtest@1.1.0-4e0fd822",
+                },
+                {
+                    "id": "@webpack-cli/info@1.4.0-4e0fd822",
+                },
+                {
+                    "id": "@webpack-cli/serve@1.6.0-4e0fd822",
+                },
+                {
+                    "id": "webpack-dev-server@4.7.2-dc3fc578",
+                },
+                {
+                    "id": "webpack@5.64.4-dc3fc578",
+                },
+            ],
+            "webpack-dev-middleware@5.3.0-48473bb5": [
                 {
                     "id": "webpack@5.64.4-dc3fc578",
                 },
@@ -16067,9 +17506,12 @@ PACKAGES = {
                     "id": "webpack@5.64.4-dc3fc578",
                 },
             ],
-            "webpack-dev-middleware@5.3.0-48473bb5": [
+            "webpack@5.64.4-dc3fc578": [
                 {
-                    "id": "webpack@5.64.4-dc3fc578",
+                    "id": "terser-webpack-plugin@5.2.5-e30e60ed",
+                },
+                {
+                    "id": "webpack-cli@4.9.1-dc3fc578",
                 },
             ],
         },
@@ -16165,15 +17607,50 @@ PACKAGES = {
             },
         ],
         "extra_deps": {
-            "webpack@5.64.4-dc3fc578": [
+            "@webpack-cli/configtest@1.1.0-4e0fd822": [
+                {
+                    "id": "webpack-cli@4.9.1-dc3fc578",
+                },
+                {
+                    "id": "webpack@5.64.4-dc3fc578",
+                },
+            ],
+            "@webpack-cli/info@1.4.0-4e0fd822": [
                 {
                     "id": "webpack-cli@4.9.1-dc3fc578",
                 },
             ],
-            "webpack-cli@4.9.1-dc3fc578": [
+            "@webpack-cli/serve@1.6.0-4e0fd822": [
+                {
+                    "id": "webpack-cli@4.9.1-dc3fc578",
+                },
                 {
                     "id": "webpack-dev-server@4.7.2-dc3fc578",
                 },
+            ],
+            "terser-webpack-plugin@5.2.5-e30e60ed": [
+                {
+                    "id": "webpack@5.64.4-dc3fc578",
+                },
+            ],
+            "webpack-cli@4.9.1-dc3fc578": [
+                {
+                    "id": "@webpack-cli/configtest@1.1.0-4e0fd822",
+                },
+                {
+                    "id": "@webpack-cli/info@1.4.0-4e0fd822",
+                },
+                {
+                    "id": "@webpack-cli/serve@1.6.0-4e0fd822",
+                },
+                {
+                    "id": "webpack-dev-server@4.7.2-dc3fc578",
+                },
+                {
+                    "id": "webpack@5.64.4-dc3fc578",
+                },
+            ],
+            "webpack-dev-middleware@5.3.0-48473bb5": [
                 {
                     "id": "webpack@5.64.4-dc3fc578",
                 },
@@ -16189,9 +17666,12 @@ PACKAGES = {
                     "id": "webpack@5.64.4-dc3fc578",
                 },
             ],
-            "webpack-dev-middleware@5.3.0-48473bb5": [
+            "webpack@5.64.4-dc3fc578": [
                 {
-                    "id": "webpack@5.64.4-dc3fc578",
+                    "id": "terser-webpack-plugin@5.2.5-e30e60ed",
+                },
+                {
+                    "id": "webpack-cli@4.9.1-dc3fc578",
                 },
             ],
         },
@@ -16296,12 +17776,30 @@ PACKAGES = {
             },
         ],
         "extra_deps": {
-            "webpack@5.64.4-dc3fc578": [
-                {
-                    "id": "terser-webpack-plugin@5.2.5-e30e60ed",
-                },
+            "@webpack-cli/configtest@1.1.0-4e0fd822": [
                 {
                     "id": "webpack-cli@4.9.1-dc3fc578",
+                },
+                {
+                    "id": "webpack@5.64.4-dc3fc578",
+                },
+            ],
+            "@webpack-cli/info@1.4.0-4e0fd822": [
+                {
+                    "id": "webpack-cli@4.9.1-dc3fc578",
+                },
+            ],
+            "@webpack-cli/serve@1.6.0-4e0fd822": [
+                {
+                    "id": "webpack-cli@4.9.1-dc3fc578",
+                },
+                {
+                    "id": "webpack-dev-server@4.7.2-dc3fc578",
+                },
+            ],
+            "terser-webpack-plugin@5.2.5-e30e60ed": [
+                {
+                    "id": "webpack@5.64.4-dc3fc578",
                 },
             ],
             "webpack-cli@4.9.1-dc3fc578": [
@@ -16309,8 +17807,19 @@ PACKAGES = {
                     "id": "@webpack-cli/configtest@1.1.0-4e0fd822",
                 },
                 {
+                    "id": "@webpack-cli/info@1.4.0-4e0fd822",
+                },
+                {
+                    "id": "@webpack-cli/serve@1.6.0-4e0fd822",
+                },
+                {
                     "id": "webpack-dev-server@4.7.2-dc3fc578",
                 },
+                {
+                    "id": "webpack@5.64.4-dc3fc578",
+                },
+            ],
+            "webpack-dev-middleware@5.3.0-48473bb5": [
                 {
                     "id": "webpack@5.64.4-dc3fc578",
                 },
@@ -16326,22 +17835,12 @@ PACKAGES = {
                     "id": "webpack@5.64.4-dc3fc578",
                 },
             ],
-            "webpack-dev-middleware@5.3.0-48473bb5": [
+            "webpack@5.64.4-dc3fc578": [
                 {
-                    "id": "webpack@5.64.4-dc3fc578",
+                    "id": "terser-webpack-plugin@5.2.5-e30e60ed",
                 },
-            ],
-            "@webpack-cli/configtest@1.1.0-4e0fd822": [
                 {
                     "id": "webpack-cli@4.9.1-dc3fc578",
-                },
-                {
-                    "id": "webpack@5.64.4-dc3fc578",
-                },
-            ],
-            "terser-webpack-plugin@5.2.5-e30e60ed": [
-                {
-                    "id": "webpack@5.64.4-dc3fc578",
                 },
             ],
         },

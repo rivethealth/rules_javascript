@@ -6,6 +6,11 @@ To format, run `bazel run :format`.
 
 To lint, run `bazel run :lint`.
 
+## NPM
+
+After updating `package.json`, run `bazel run tools/npm:resolve` to resolve the
+packages.
+
 ## Bazel Pacakges
 
 After creating or deleting Bazel packages, run `bazel run :bazelrc_gen` to

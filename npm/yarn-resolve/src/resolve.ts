@@ -5,6 +5,7 @@ import { BzlDeps, BzlPackages } from "./bzl";
 import { getOrSet } from "@better-rules-javascript/util/collection";
 import { NpmRegistryClient } from "./npm";
 import { YarnDependencies, YarnPackageInfos } from "./yarn";
+import { Graph, stronglyConnectedComponents } from "./graph";
 
 export interface ResolvedNpmPackage {
   contentIntegrity: string;
@@ -183,51 +184,26 @@ function removeNames(bzlPackages: BzlPackages) {
 }
 
 function fixCycles(bzlPackages: BzlPackages) {
-  const current = new Set<string>();
-  const visited = new Set<string>();
-  const visit = (id: string) => {
-    if (visited.has(id)) {
-      return;
-    }
-    const package_ = bzlPackages.get(id)!;
-    if (current.has(id)) {
-      const idList = [...current];
-      idList.splice(0, idList.indexOf(id));
-      const ids = new Set(idList);
-      for (const id of ids) {
-        const package_ = bzlPackages.get(id)!;
-        for (const dep of package_.deps) {
-          if (!ids.has(dep.id)) {
-            continue;
-          }
-          for (const packageId of ids) {
-            const package_ = bzlPackages.get(packageId)!;
-            const deps = getOrSet(package_.extraDeps, id, () => []);
-            if (!deps.some((d) => d.id === dep.id && d.name == dep.name)) {
-              deps.push(dep);
-            }
-          }
-        }
-      }
-      return;
-    }
-    current.add(id);
-    for (const dep of package_.deps) {
-      visit(dep.id);
-    }
-    current.delete(id);
-    visited.add(id);
-  };
-  for (const id of bzlPackages.keys()) {
-    visit(id);
+  const graph: Graph<string> = new Map();
+  for (const [id, package_] of bzlPackages.entries()) {
+    graph.set(id, new Set(package_.deps.map((dep) => dep.id)));
   }
-  for (const package_ of bzlPackages.values()) {
-    const extraIds = new Set();
-    for (const deps of package_.extraDeps.values()) {
-      for (const dep of deps) {
-        extraIds.add(dep.id);
-      }
+  const components = stronglyConnectedComponents(graph);
+  for (const component of components) {
+    if (component.size === 1) {
+      continue;
     }
-    package_.deps = package_.deps.filter((dep) => !extraIds.has(dep.id));
+    const extraDeps = new Map<string, BzlDeps>();
+    for (const id of component) {
+      const d: BzlDeps = [];
+      const e: BzlDeps = [];
+      const bzlPackage = bzlPackages.get(id)!;
+      for (const dep of bzlPackage.deps) {
+        (component.has(dep.id) ? e : d).push(dep);
+      }
+      bzlPackage.deps = d;
+      bzlPackage.extraDeps = extraDeps;
+      extraDeps.set(id, e);
+    }
   }
 }

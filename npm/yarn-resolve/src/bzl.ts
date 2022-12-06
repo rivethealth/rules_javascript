@@ -19,7 +19,10 @@ export interface BzlPackage {
 export namespace BzlPackage {
   export function toStarlark(value: BzlPackage): StarlarkValue {
     const extraDepsEntries: [StarlarkValue, StarlarkValue][] = [];
-    for (const [id, deps] of value.extraDeps.entries()) {
+    const extraDeps = [...value.extraDeps.entries()].sort(
+      (a, b) => +(b[0] < a[0]) - +(a[0] < b[0]),
+    );
+    for (const [id, deps] of extraDeps) {
       extraDepsEntries.push([new StarlarkString(id), BzlDeps.toStarlark(deps)]);
     }
 
@@ -49,7 +52,12 @@ export namespace BzlPackages {
   }
 }
 
-export type BzlDeps = { name: string | null; id: string }[];
+export interface BzlDep {
+  name: string | null;
+  id: string;
+}
+
+export type BzlDeps = BzlDep[];
 
 export namespace BzlDeps {
   export function toStarlark(value: BzlDeps): StarlarkValue {
