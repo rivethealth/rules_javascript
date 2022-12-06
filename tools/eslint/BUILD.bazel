@@ -1,0 +1,14 @@
+load("//eslint:rules.bzl", "configure_eslint")
+
+configure_eslint(
+    name = "eslint",
+    config = ".eslintrc.js",
+    config_dep = "//:eslint_config",
+    dep = "@npm//eslint:lib",
+    plugins = [
+        "@npm//typescript:lib",
+        "@npm//@typescript-eslint/eslint-plugin:lib",
+        "@npm//@typescript-eslint/parser:lib",
+    ],
+    visibility = ["//:__subpackages__"],
+)

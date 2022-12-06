@@ -1,0 +1,7 @@
+load("//npm:rules.bzl", "yarn_resolve")
+
+yarn_resolve(
+    name = "resolve_npm",
+    output = "npm.bzl",
+    path = "/",
+)

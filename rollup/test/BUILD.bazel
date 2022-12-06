@@ -10,7 +10,7 @@ sh_test(
     data =
         [
             ":bazel",
-            "@better_rules_javascript_files//:common",
+            "@files//:common",
         ],
     tags = ["local"],
 )

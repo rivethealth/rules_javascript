@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+set -e
+cat > user.bazelrc <<EOF
+build --config=ci
+EOF

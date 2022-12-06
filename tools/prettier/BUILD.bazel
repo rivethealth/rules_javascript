@@ -1,0 +1,9 @@
+load("//prettier:rules.bzl", "configure_prettier")
+
+configure_prettier(
+    name = "prettier",
+    config = "prettierrc.yml",
+    config_dep = "//:prettier_config",
+    dep = "@npm//prettier:lib",
+    visibility = ["//:__subpackages__"],
+)

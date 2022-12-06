@@ -1,0 +1,54 @@
+load("@rules_file//generate:rules.bzl", "format", "generate_test", "multi_generate")
+
+format(
+    name = "buildifier_format",
+    srcs = ["@files//:buildifier_files"],
+    formatter = "//tools/buildifier",
+    strip_prefix = "/files",
+)
+
+multi_generate(
+    name = "format",
+    visibility = ["//:__subpackages__"],
+    deps = [
+        ":buildifier_format",
+        ":prettier_format",
+    ],
+)
+
+generate_test(
+    name = "format_test",
+    generate = ":format",
+    visibility = ["//:__subpackages__"],
+)
+
+format(
+    name = "eslint_lint",
+    srcs = ["@files//:eslint_files"],
+    formatter = "//tools/eslint",
+    strip_prefix = "/files",
+)
+
+generate_test(
+    name = "eslint_test",
+    generate = ":eslint_lint",
+)
+
+alias(
+    name = "lint",
+    actual = ":eslint_lint",
+    visibility = ["//:__subpackages__"],
+)
+
+alias(
+    name = "lint_test",
+    actual = ":eslint_test",
+    visibility = ["//:__subpackages__"],
+)
+
+format(
+    name = "prettier_format",
+    srcs = ["@files//:prettier_files"],
+    formatter = "//tools/prettier",
+    strip_prefix = "/files",
+)

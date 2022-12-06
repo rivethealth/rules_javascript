@@ -1,1 +1,1 @@
-import %workspace%/../../../external/better_rules_javascript_files/files/test/test.bazelrc
+import %workspace%/../../../external/files/files/test/test.bazelrc

@@ -2,7 +2,7 @@ load("@rules_file//generate:rules.bzl", "generate")
 load("//commonjs:rules.bzl", "cjs_root")
 load("//javascript:rules.bzl", "js_library")
 load("//rollup:rules.bzl", "configure_rollup", "rollup_bundle")
-load("//tools:rules.bzl", "js_gen")
+load("//tools/javascript:rules.bzl", "js_gen")
 load("//typescript:rules.bzl", "ts_library")
 
 package(default_visibility = ["//visibility:public"])

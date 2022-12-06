@@ -1,7 +1,7 @@
 load("//commonjs:rules.bzl", "cjs_root")
 load("//javascript:rules.bzl", "js_library")
 load("//nodejs:rules.bzl", "nodejs_modules_archive")
-load(":npm_data.bzl", "ROOTS")
+load("//tools/npm:npm.bzl", "ROOTS")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -13,24 +13,24 @@ js_library(
     root = ":root",
 )
 
-nodejs_modules_archive(
-    name = "nodejs_modules_archive",
-    links = [
-        "//angular/resource-compiler:root",
-        "//bazel/runfiles:root",
-        "//bazel/worker:root",
-        "//commonjs/package:root",
-        "//ibazel/notification:root",
-        "//nodejs/fs-linker:root",
-        "//rules:root",
-        "//util/cache:root",
-        "//util/json:root",
-        "//util/starlark:root",
-        "//util/util:root",
-        "//webpack/config:root",
-    ],
-    tags = ["no-cache"],
-    deps = ["@npm//%s:lib" % dep["name"] for dep in ROOTS],
+alias(
+    name = "format",
+    actual = "//tools/lint:format",
+)
+
+alias(
+    name = "bazelrc_gen",
+    actual = "//tools/bazel:bazelrc",
+)
+
+alias(
+    name = "js_gen",
+    actual = "//tools/javascript:js",
+)
+
+alias(
+    name = "lint",
+    actual = "//tools/lint",
 )
 
 js_library(

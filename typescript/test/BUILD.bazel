@@ -1,6 +1,6 @@
 filegroup(
     name = "bazel",
-    srcs = glob(["bazel/**/*"]) + ["@better_rules_javascript_files//:common"],
+    srcs = glob(["bazel/**/*"]) + ["@files//:common"],
 )
 
 sh_test(

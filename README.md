@@ -212,9 +212,4 @@ See [Differences with rules_nodejs](docs/rules_nodejs.md).
 
 ## Developing
 
-Some JS build products need to be boostrapped. They are checking into version
-control.
-
-To refresh these, run `bazel run //tools:gen_js`, which re-builds and copies
-them to source tree. If that breaks, you'll have to rollback to the last good
-state of the generated files.
+See [DEVELOPING.md](DEVELOPING.md).

@@ -1,5 +1,5 @@
 # Files
-import %workspace%/tools/deleted.bazelrc
+import %workspace%/tools/bazel/deleted.bazelrc
 
 # Cache
 build --disk_cache=~/.cache/bazel-disk

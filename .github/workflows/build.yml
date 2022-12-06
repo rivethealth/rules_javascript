@@ -1,4 +1,4 @@
-name: "Lint Check"
+name: Build
 on:
   pull_request:
   push:
@@ -15,8 +15,13 @@ jobs:
         with:
           path: "~/.cache/bazel"
           key: bazel
+      - name: Configure bazel
+        run: .github/configure-bazel
       - name: Test
-        run: bazel test tools:format_test tools:lint_test tools:diff_js
+        run:
+          bazel test tools/bazel:bazelrc.diff tools/lint:format_test
+          tools/lint:lint_test
+        # needs rules_file to work with generate directories tools/javascript:js_diff
   test:
     name: Test
     runs-on: ubuntu-latest
@@ -28,5 +33,7 @@ jobs:
         with:
           path: "~/.cache/bazel"
           key: bazel
+      - name: Configure bazel
+        run: .github/configure-bazel
       - name: Test
-        run: bazel test --config=ci :test
+        run: bazel test :test
