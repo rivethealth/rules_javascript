@@ -14770,6 +14770,24 @@ PACKAGES = {
         "name": "prelude-ls",
         "url": "https://registry.npmjs.org/prelude-ls/-/prelude-ls-1.2.1.tgz",
     },
+    "prettier-plugin-organize-imports@3.2.1-dc3fc578": {
+        "deps": [
+            {
+                "id": "@types/prettier@2.4.2",
+            },
+            {
+                "id": "prettier@2.5.1",
+            },
+            {
+                "id": "typescript@4.5.4-08e25320",
+            },
+        ],
+        "extra_deps": {
+        },
+        "integrity": "sha512-bty7C2Ecard5EOXirtzeCAqj4FU4epeuWrQt/Z+sh8UVEpBlBZ3m3KNPz2kFu7KgRTQx/C9o4/TdquPD1jOqjQ==",
+        "name": "prettier-plugin-organize-imports",
+        "url": "https://registry.npmjs.org/prettier-plugin-organize-imports/-/prettier-plugin-organize-imports-3.2.1.tgz",
+    },
     "prettier@2.5.1": {
         "deps": [
         ],
@@ -18297,6 +18315,10 @@ ROOTS = [
     {
         "id": "npm-registry-fetch@14.0.2",
         "name": "npm-registry-fetch",
+    },
+    {
+        "id": "prettier-plugin-organize-imports@3.2.1-dc3fc578",
+        "name": "prettier-plugin-organize-imports",
     },
     {
         "id": "prettier@2.5.1",

@@ -1,11 +1,11 @@
-import { ArgumentParser } from "argparse";
-import { JsonFormat } from "@better-rules-javascript/util-json";
 import { PackageTree } from "@better-rules-javascript/commonjs-package";
-import { createVfs } from "@better-rules-javascript/nodejs-fs-linker/package";
-import * as fs from "fs";
-import { WrapperVfs } from "@better-rules-javascript/nodejs-fs-linker/vfs";
 import { patchFs } from "@better-rules-javascript/nodejs-fs-linker/fs";
 import { patchFsPromises } from "@better-rules-javascript/nodejs-fs-linker/fs-promises";
+import { createVfs } from "@better-rules-javascript/nodejs-fs-linker/package";
+import { WrapperVfs } from "@better-rules-javascript/nodejs-fs-linker/vfs";
+import { JsonFormat } from "@better-rules-javascript/util-json";
+import { ArgumentParser } from "argparse";
+import * as fs from "fs";
 
 interface Args {
   digest: string;

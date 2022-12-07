@@ -1,5 +1,5 @@
-import { ArgumentParser } from "argparse";
 import { JsonFormat } from "@better-rules-javascript/util-json";
+import { ArgumentParser } from "argparse";
 import * as fs from "fs";
 import * as path from "path";
 

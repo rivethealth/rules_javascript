@@ -1,6 +1,6 @@
+import { workerMain } from "@better-rules-javascript/bazel-worker";
 import { ArgumentParser } from "argparse";
 import prettier from "prettier";
-import { workerMain } from "@better-rules-javascript/bazel-worker";
 
 workerMain(async (a) => {
   const parser = new ArgumentParser();

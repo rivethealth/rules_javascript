@@ -1,7 +1,7 @@
-import { URL, fileURLToPath } from "url";
 import * as fs from "fs";
-import { Vfs, VfsNode } from "./vfs";
 import * as path from "path";
+import { fileURLToPath, URL } from "url";
+import { Vfs, VfsNode } from "./vfs";
 
 /**
  * @filedescription Node.js fs implementation of Vfs

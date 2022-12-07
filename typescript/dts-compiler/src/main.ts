@@ -1,5 +1,5 @@
-import { ArgumentParser } from "argparse";
 import { workerMain } from "@better-rules-javascript/bazel-worker";
+import { ArgumentParser } from "argparse";
 import * as ts from "typescript";
 
 class DtsWorker {

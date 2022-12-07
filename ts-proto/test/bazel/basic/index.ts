@@ -1,5 +1,5 @@
-import { Person } from "./example/proto/person";
 import { Reader } from "protobufjs/minimal";
+import { Person } from "./example/proto/person";
 
 const person: Person = { name: "First Middle Last", place: undefined };
 const serialized = Person.encode(person).finish();

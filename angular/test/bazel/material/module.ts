@@ -1,9 +1,9 @@
+import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
 import { MatButtonToggleModule } from "@angular/material/button-toggle";
-import { ExampleComponent } from "./example.component";
 import { BrowserModule } from "@angular/platform-browser";
+import { ExampleComponent } from "./example.component";
 import { ExampleService } from "./service";
-import { CommonModule } from "@angular/common";
 
 @NgModule({
   bootstrap: [ExampleComponent],

@@ -2,10 +2,9 @@ import { JsonFormat } from "@better-rules-javascript/util-json";
 import { Locator, structUtils } from "@yarnpkg/core";
 import { patchUtils } from "@yarnpkg/plugin-patch";
 import { BzlDeps, BzlPackages } from "./bzl";
-import { getOrSet } from "@better-rules-javascript/util/collection";
+import { Graph, stronglyConnectedComponents } from "./graph";
 import { NpmRegistryClient } from "./npm";
 import { YarnDependencies, YarnPackageInfos } from "./yarn";
-import { Graph, stronglyConnectedComponents } from "./graph";
 
 export interface ResolvedNpmPackage {
   contentIntegrity: string;

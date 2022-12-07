@@ -1,5 +1,5 @@
-import * as fs from "fs";
 import { JsonFormat } from "@better-rules-javascript/util-json";
+import * as fs from "fs";
 import { WorkRequest, WorkResponse } from "./protocol";
 import { lines } from "./stream";
 

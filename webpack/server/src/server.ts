@@ -1,17 +1,17 @@
+import { PackageTree } from "@better-rules-javascript/commonjs-package";
 import {
   IbazelNotification,
   IbazelStatus,
   readNotifications,
 } from "@better-rules-javascript/ibazel-notification";
+import { createVfs } from "@better-rules-javascript/nodejs-fs-linker/package";
+import { WrapperVfs } from "@better-rules-javascript/nodejs-fs-linker/vfs";
+import { JsonFormat } from "@better-rules-javascript/util-json";
+import * as CachedInputFileSystem from "enhanced-resolve/lib/CachedInputFileSystem";
+import * as fs from "fs";
+import { Subject } from "rxjs";
 import * as webpack from "webpack";
 import * as WebpackDevServer from "webpack-dev-server";
-import { JsonFormat } from "@better-rules-javascript/util-json";
-import { PackageTree } from "@better-rules-javascript/commonjs-package";
-import { createVfs } from "@better-rules-javascript/nodejs-fs-linker/package";
-import * as fs from "fs";
-import { WrapperVfs } from "@better-rules-javascript/nodejs-fs-linker/vfs";
-import * as CachedInputFileSystem from "enhanced-resolve/lib/CachedInputFileSystem";
-import { Subject } from "rxjs";
 
 function refreshPackageTree(vfs: WrapperVfs, webpackManifestPath: string) {
   const packageTree = JsonFormat.parse(

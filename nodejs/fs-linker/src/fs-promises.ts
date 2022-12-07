@@ -1,6 +1,6 @@
 import { promises as fsPromises } from "fs";
-import { Vfs } from "./vfs";
 import { replaceArguments } from "./fs";
+import { Vfs } from "./vfs";
 
 function access(
   vfs: Vfs,

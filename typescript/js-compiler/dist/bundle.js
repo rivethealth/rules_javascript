@@ -1,8 +1,8 @@
 'use strict';
 
-var url = require('url');
 var fs = require('fs');
 var path = require('path');
+var url = require('url');
 var argparse = require('argparse');
 var ts = require('typescript');
 
@@ -27,6 +27,319 @@ function _interopNamespace(e) {
 var fs__namespace = /*#__PURE__*/_interopNamespace(fs);
 var path__namespace = /*#__PURE__*/_interopNamespace(path);
 var ts__namespace = /*#__PURE__*/_interopNamespace(ts);
+
+var JsonFormat;
+(function (JsonFormat) {
+    function parse(format, string) {
+        return format.fromJson(JSON.parse(string));
+    }
+    JsonFormat.parse = parse;
+    function stringify(format, value) {
+        return JSON.stringify(format.toJson(value));
+    }
+    JsonFormat.stringify = stringify;
+})(JsonFormat || (JsonFormat = {}));
+(function (JsonFormat) {
+    function array(elementFormat) {
+        return new ArrayJsonFormat(elementFormat);
+    }
+    JsonFormat.array = array;
+    function map(keyFormat, valueFormat) {
+        return new MapJsonFormat(keyFormat, valueFormat);
+    }
+    JsonFormat.map = map;
+    function object(format) {
+        return new ObjectJsonFormat(format);
+    }
+    JsonFormat.object = object;
+    function defer(format) {
+        return {
+            fromJson(json) {
+                return format().fromJson(json);
+            },
+            toJson(value) {
+                return format().toJson(value);
+            },
+        };
+    }
+    JsonFormat.defer = defer;
+    function any() {
+        return new AnyJsonFormat();
+    }
+    JsonFormat.any = any;
+    function boolean() {
+        return new IdentityJsonFormat();
+    }
+    JsonFormat.boolean = boolean;
+    function identity() {
+        return new IdentityJsonFormat();
+    }
+    JsonFormat.identity = identity;
+    function nullable(format) {
+        return new NullableJsonFormat(format);
+    }
+    JsonFormat.nullable = nullable;
+    function number() {
+        return new IdentityJsonFormat();
+    }
+    JsonFormat.number = number;
+    function set(format) {
+        return new SetJsonFormat(format);
+    }
+    JsonFormat.set = set;
+    function string() {
+        return new IdentityJsonFormat();
+    }
+    JsonFormat.string = string;
+})(JsonFormat || (JsonFormat = {}));
+class AnyJsonFormat {
+    fromJson(json) {
+        return json;
+    }
+    toJson(value) {
+        if (typeof value !== "object" || value === null || value instanceof Array) {
+            return value;
+        }
+        const json = {};
+        for (const key of Object.keys(value).sort()) {
+            json[key] = this.toJson(value[key]);
+        }
+        return json;
+    }
+}
+class ArrayJsonFormat {
+    constructor(elementFormat) {
+        this.elementFormat = elementFormat;
+    }
+    fromJson(json) {
+        return json.map((element) => this.elementFormat.fromJson(element));
+    }
+    toJson(json) {
+        return json.map((element) => this.elementFormat.toJson(element));
+    }
+}
+class IdentityJsonFormat {
+    fromJson(json) {
+        return json;
+    }
+    toJson(value) {
+        return value;
+    }
+}
+class ObjectJsonFormat {
+    constructor(format) {
+        this.properties = (Object.entries(format)).sort(([a], [b]) => (a < b ? -1 : b > a ? 1 : 0));
+    }
+    fromJson(json) {
+        const result = {};
+        for (const [key, format] of this.properties) {
+            if (key in json) {
+                result[key] = format.fromJson(json[key]);
+            }
+        }
+        return result;
+    }
+    toJson(value) {
+        const json = {};
+        for (const [key, format] of this.properties) {
+            if (key in value) {
+                json[key] = format.toJson(value[key]);
+            }
+        }
+        return json;
+    }
+}
+class MapJsonFormat {
+    constructor(keyFormat, valueFormat) {
+        this.keyFormat = keyFormat;
+        this.valueFormat = valueFormat;
+    }
+    fromJson(json) {
+        return new Map(json.map(({ key, value }) => [
+            this.keyFormat.fromJson(key),
+            this.valueFormat.fromJson(value),
+        ]));
+    }
+    toJson(value) {
+        return [...value.entries()].map(([key, value]) => ({
+            key: this.keyFormat.toJson(key),
+            value: this.valueFormat.toJson(value),
+        }));
+    }
+}
+class NullableJsonFormat {
+    constructor(format) {
+        this.format = format;
+    }
+    fromJson(json) {
+        if (json === null) {
+            return null;
+        }
+        return this.format.fromJson(json);
+    }
+    toJson(value) {
+        if (value === null) {
+            return null;
+        }
+        return this.format.toJson(value);
+    }
+}
+class SetJsonFormat {
+    constructor(format) {
+        this.format = format;
+    }
+    fromJson(json) {
+        return new Set(json.map((element) => this.format.fromJson(element)));
+    }
+    toJson(value) {
+        return [...value].map((element) => this.format.toJson(element));
+    }
+}
+
+var Input;
+(function (Input) {
+    function json() {
+        const digest = {
+            fromJson(json) {
+                return Buffer.from(json, "base64");
+            },
+            toJson(value) {
+                return Buffer.from(value).toString("base64");
+            },
+        };
+        return JsonFormat.object({
+            digest,
+            path: JsonFormat.string(),
+        });
+    }
+    Input.json = json;
+})(Input || (Input = {}));
+var WorkRequest;
+(function (WorkRequest) {
+    function json() {
+        return JsonFormat.object({
+            arguments: JsonFormat.array(JsonFormat.string()),
+            inputs: JsonFormat.array(Input.json()),
+            request_id: JsonFormat.number(),
+            verbosity: JsonFormat.number(),
+            sandbox_dir: JsonFormat.string(),
+        });
+    }
+    WorkRequest.json = json;
+})(WorkRequest || (WorkRequest = {}));
+var WorkResponse;
+(function (WorkResponse) {
+    function json() {
+        return JsonFormat.object({
+            exitCode: JsonFormat.number(),
+            output: JsonFormat.string(),
+            requestId: JsonFormat.number(),
+        });
+    }
+    WorkResponse.json = json;
+})(WorkResponse || (WorkResponse = {}));
+
+async function* lines(stream) {
+    let data = "";
+    for await (const chunk of stream) {
+        data += chunk;
+        let i = 0;
+        while (true) {
+            const j = data.indexOf("\n", i);
+            if (j < 0) {
+                break;
+            }
+            yield data.substring(i, j + 1);
+            i = j + 1;
+        }
+        data = data.substring(i);
+    }
+    if (data) {
+        yield data;
+    }
+}
+
+class CliError extends Error {
+}
+async function runWorker(worker) {
+    process.stdin.setEncoding("utf8");
+    let abort;
+    process.on("SIGINT", () => abort?.abort());
+    process.on("SIGTERM", () => abort?.abort());
+    for await (const line of lines(process.stdin)) {
+        const message = JsonFormat.parse(WorkRequest.json(), line);
+        if (message.request_id) {
+            throw new CliError("Does not support multiplexed requests");
+        }
+        if (abort) {
+            if (!message.cancel) {
+                throw new CliError("Unexpected request while processing existing request");
+            }
+            abort.abort();
+        }
+        else {
+            if (message.cancel) {
+                continue;
+            }
+            abort = new AbortController();
+            worker(message.arguments, message.inputs, abort.signal).then(({ exitCode, output }) => {
+                const response = {
+                    exitCode,
+                    output,
+                    requestId: message.request_id,
+                    // wasCancelled: abort.signal.aborted,
+                };
+                const outputData = JsonFormat.stringify(WorkResponse.json(), response);
+                process.stdout.write(outputData + "\n");
+                abort = undefined;
+                if (typeof gc !== "undefined") {
+                    gc();
+                }
+            }, (e) => {
+                console.error(e.stack);
+                process.exit(1);
+            });
+        }
+    }
+}
+async function runOnce(worker, args) {
+    const abort = new AbortController();
+    process.on("SIGINT", () => abort.abort());
+    process.on("SIGTERM", () => abort.abort());
+    const result = await worker(args, undefined, abort.signal);
+    console.error(result.output);
+    process.exitCode = result.exitCode;
+}
+/**
+ * Run program using the provided worker factory.
+ */
+async function workerMain(workerFactory) {
+    try {
+        const last = process.argv[process.argv.length - 1];
+        if (last === "--persistent_worker") {
+            const worker = await workerFactory(process.argv.slice(2, -1));
+            await runWorker(worker);
+        }
+        else if (last.startsWith("@")) {
+            const worker = await workerFactory(process.argv.slice(2, -1));
+            const file = await fs__namespace.promises.readFile(last.slice(1), "utf-8");
+            const args = file.trim().split("\n");
+            await runOnce(worker, args);
+        }
+        else {
+            const worker = await workerFactory([]);
+            await runOnce(worker, process.argv.slice(2));
+        }
+    }
+    catch (e) {
+        console.error(e instanceof CliError
+            ? e.message
+            : e instanceof Error
+                ? e.stack
+                : String(e));
+        process.exit(1);
+    }
+}
 
 var VfsNode;
 (function (VfsNode) {
@@ -1055,319 +1368,6 @@ function patchFsPromises(vfs, delegate) {
     // delegate.lchmod
     // delegate.lchown
     delegate.lutimes = lutimes(vfs, delegate.lutimes);
-}
-
-var JsonFormat;
-(function (JsonFormat) {
-    function parse(format, string) {
-        return format.fromJson(JSON.parse(string));
-    }
-    JsonFormat.parse = parse;
-    function stringify(format, value) {
-        return JSON.stringify(format.toJson(value));
-    }
-    JsonFormat.stringify = stringify;
-})(JsonFormat || (JsonFormat = {}));
-(function (JsonFormat) {
-    function array(elementFormat) {
-        return new ArrayJsonFormat(elementFormat);
-    }
-    JsonFormat.array = array;
-    function map(keyFormat, valueFormat) {
-        return new MapJsonFormat(keyFormat, valueFormat);
-    }
-    JsonFormat.map = map;
-    function object(format) {
-        return new ObjectJsonFormat(format);
-    }
-    JsonFormat.object = object;
-    function defer(format) {
-        return {
-            fromJson(json) {
-                return format().fromJson(json);
-            },
-            toJson(value) {
-                return format().toJson(value);
-            },
-        };
-    }
-    JsonFormat.defer = defer;
-    function any() {
-        return new AnyJsonFormat();
-    }
-    JsonFormat.any = any;
-    function boolean() {
-        return new IdentityJsonFormat();
-    }
-    JsonFormat.boolean = boolean;
-    function identity() {
-        return new IdentityJsonFormat();
-    }
-    JsonFormat.identity = identity;
-    function nullable(format) {
-        return new NullableJsonFormat(format);
-    }
-    JsonFormat.nullable = nullable;
-    function number() {
-        return new IdentityJsonFormat();
-    }
-    JsonFormat.number = number;
-    function set(format) {
-        return new SetJsonFormat(format);
-    }
-    JsonFormat.set = set;
-    function string() {
-        return new IdentityJsonFormat();
-    }
-    JsonFormat.string = string;
-})(JsonFormat || (JsonFormat = {}));
-class AnyJsonFormat {
-    fromJson(json) {
-        return json;
-    }
-    toJson(value) {
-        if (typeof value !== "object" || value === null || value instanceof Array) {
-            return value;
-        }
-        const json = {};
-        for (const key of Object.keys(value).sort()) {
-            json[key] = this.toJson(value[key]);
-        }
-        return json;
-    }
-}
-class ArrayJsonFormat {
-    constructor(elementFormat) {
-        this.elementFormat = elementFormat;
-    }
-    fromJson(json) {
-        return json.map((element) => this.elementFormat.fromJson(element));
-    }
-    toJson(json) {
-        return json.map((element) => this.elementFormat.toJson(element));
-    }
-}
-class IdentityJsonFormat {
-    fromJson(json) {
-        return json;
-    }
-    toJson(value) {
-        return value;
-    }
-}
-class ObjectJsonFormat {
-    constructor(format) {
-        this.properties = (Object.entries(format)).sort(([a], [b]) => (a < b ? -1 : b > a ? 1 : 0));
-    }
-    fromJson(json) {
-        const result = {};
-        for (const [key, format] of this.properties) {
-            if (key in json) {
-                result[key] = format.fromJson(json[key]);
-            }
-        }
-        return result;
-    }
-    toJson(value) {
-        const json = {};
-        for (const [key, format] of this.properties) {
-            if (key in value) {
-                json[key] = format.toJson(value[key]);
-            }
-        }
-        return json;
-    }
-}
-class MapJsonFormat {
-    constructor(keyFormat, valueFormat) {
-        this.keyFormat = keyFormat;
-        this.valueFormat = valueFormat;
-    }
-    fromJson(json) {
-        return new Map(json.map(({ key, value }) => [
-            this.keyFormat.fromJson(key),
-            this.valueFormat.fromJson(value),
-        ]));
-    }
-    toJson(value) {
-        return [...value.entries()].map(([key, value]) => ({
-            key: this.keyFormat.toJson(key),
-            value: this.valueFormat.toJson(value),
-        }));
-    }
-}
-class NullableJsonFormat {
-    constructor(format) {
-        this.format = format;
-    }
-    fromJson(json) {
-        if (json === null) {
-            return null;
-        }
-        return this.format.fromJson(json);
-    }
-    toJson(value) {
-        if (value === null) {
-            return null;
-        }
-        return this.format.toJson(value);
-    }
-}
-class SetJsonFormat {
-    constructor(format) {
-        this.format = format;
-    }
-    fromJson(json) {
-        return new Set(json.map((element) => this.format.fromJson(element)));
-    }
-    toJson(value) {
-        return [...value].map((element) => this.format.toJson(element));
-    }
-}
-
-var Input;
-(function (Input) {
-    function json() {
-        const digest = {
-            fromJson(json) {
-                return Buffer.from(json, "base64");
-            },
-            toJson(value) {
-                return Buffer.from(value).toString("base64");
-            },
-        };
-        return JsonFormat.object({
-            digest,
-            path: JsonFormat.string(),
-        });
-    }
-    Input.json = json;
-})(Input || (Input = {}));
-var WorkRequest;
-(function (WorkRequest) {
-    function json() {
-        return JsonFormat.object({
-            arguments: JsonFormat.array(JsonFormat.string()),
-            inputs: JsonFormat.array(Input.json()),
-            request_id: JsonFormat.number(),
-            verbosity: JsonFormat.number(),
-            sandbox_dir: JsonFormat.string(),
-        });
-    }
-    WorkRequest.json = json;
-})(WorkRequest || (WorkRequest = {}));
-var WorkResponse;
-(function (WorkResponse) {
-    function json() {
-        return JsonFormat.object({
-            exitCode: JsonFormat.number(),
-            output: JsonFormat.string(),
-            requestId: JsonFormat.number(),
-        });
-    }
-    WorkResponse.json = json;
-})(WorkResponse || (WorkResponse = {}));
-
-async function* lines(stream) {
-    let data = "";
-    for await (const chunk of stream) {
-        data += chunk;
-        let i = 0;
-        while (true) {
-            const j = data.indexOf("\n", i);
-            if (j < 0) {
-                break;
-            }
-            yield data.substring(i, j + 1);
-            i = j + 1;
-        }
-        data = data.substring(i);
-    }
-    if (data) {
-        yield data;
-    }
-}
-
-class CliError extends Error {
-}
-async function runWorker(worker) {
-    process.stdin.setEncoding("utf8");
-    let abort;
-    process.on("SIGINT", () => abort?.abort());
-    process.on("SIGTERM", () => abort?.abort());
-    for await (const line of lines(process.stdin)) {
-        const message = JsonFormat.parse(WorkRequest.json(), line);
-        if (message.request_id) {
-            throw new CliError("Does not support multiplexed requests");
-        }
-        if (abort) {
-            if (!message.cancel) {
-                throw new CliError("Unexpected request while processing existing request");
-            }
-            abort.abort();
-        }
-        else {
-            if (message.cancel) {
-                continue;
-            }
-            abort = new AbortController();
-            worker(message.arguments, message.inputs, abort.signal).then(({ exitCode, output }) => {
-                const response = {
-                    exitCode,
-                    output,
-                    requestId: message.request_id,
-                    // wasCancelled: abort.signal.aborted,
-                };
-                const outputData = JsonFormat.stringify(WorkResponse.json(), response);
-                process.stdout.write(outputData + "\n");
-                abort = undefined;
-                if (typeof gc !== "undefined") {
-                    gc();
-                }
-            }, (e) => {
-                console.error(e.stack);
-                process.exit(1);
-            });
-        }
-    }
-}
-async function runOnce(worker, args) {
-    const abort = new AbortController();
-    process.on("SIGINT", () => abort.abort());
-    process.on("SIGTERM", () => abort.abort());
-    const result = await worker(args, undefined, abort.signal);
-    console.error(result.output);
-    process.exitCode = result.exitCode;
-}
-/**
- * Run program using the provided worker factory.
- */
-async function workerMain(workerFactory) {
-    try {
-        const last = process.argv[process.argv.length - 1];
-        if (last === "--persistent_worker") {
-            const worker = await workerFactory(process.argv.slice(2, -1));
-            await runWorker(worker);
-        }
-        else if (last.startsWith("@")) {
-            const worker = await workerFactory(process.argv.slice(2, -1));
-            const file = await fs__namespace.promises.readFile(last.slice(1), "utf-8");
-            const args = file.trim().split("\n");
-            await runOnce(worker, args);
-        }
-        else {
-            const worker = await workerFactory([]);
-            await runOnce(worker, process.argv.slice(2));
-        }
-    }
-    catch (e) {
-        console.error(e instanceof CliError
-            ? e.message
-            : e instanceof Error
-                ? e.stack
-                : String(e));
-        process.exit(1);
-    }
 }
 
 workerMain(async () => {

@@ -1,8 +1,8 @@
 'use strict';
 
 var fs = require('fs');
-var url = require('url');
 var path = require('path');
+var url = require('url');
 
 function _interopNamespace(e) {
     if (e && e.__esModule) return e;

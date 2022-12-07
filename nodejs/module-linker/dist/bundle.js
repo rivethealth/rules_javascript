@@ -28,88 +28,6 @@ var path__namespace = /*#__PURE__*/_interopNamespace(path);
 var fs__namespace = /*#__PURE__*/_interopNamespace(fs);
 var Module__default = /*#__PURE__*/_interopDefaultLegacy(Module);
 
-class Trie {
-    constructor() {
-        this.data = { children: new Map() };
-    }
-    getClosest(key) {
-        let data = this.data;
-        let i;
-        for (i = 0; i < key.length && data; i++) {
-            const k = key[i];
-            const newData = data.children.get(k);
-            if (!newData) {
-                break;
-            }
-            data = newData;
-        }
-        return { rest: key.slice(i), value: data.value };
-    }
-    put(key, value) {
-        let data = this.data;
-        for (const k of key) {
-            let newData = data.children.get(k);
-            if (!newData) {
-                newData = { children: new Map() };
-                data.children.set(k, newData);
-            }
-            data = newData;
-        }
-        data.value = value;
-    }
-}
-
-function pathParts(path_) {
-    path_ = path__namespace.resolve(path_);
-    return path_.split("/").slice(1);
-}
-class Resolver {
-    constructor(packages) {
-        this.packages = packages;
-    }
-    root(path) {
-        const { value: package_ } = this.packages.getClosest(pathParts(path));
-        if (!package_) {
-            throw new Error(`File "${path}" is not part of any known package`);
-        }
-        return package_.id;
-    }
-    resolve(parent, request) {
-        if (request.startsWith(".") || request.startsWith("/")) {
-            throw new Error(`Specifier "${request}" is not for a package`);
-        }
-        const { value: package_ } = this.packages.getClosest(pathParts(parent));
-        if (!package_) {
-            throw new Error(`File "${parent}" is not part of any known package`);
-        }
-        const parts = request.split("/");
-        const i = request.startsWith("@") ? 2 : 1;
-        const dep = package_.deps.get(parts.slice(0, i).join("/"));
-        if (!dep) {
-            throw new Error(`Package "${package_.id}" does not have any dependency for "${request}", requested by ${parent}`);
-        }
-        return { package: dep, inner: parts.slice(i).join("/") };
-    }
-    static create(packageTree, baseDir = "/") {
-        const resolve = (path_) => path__namespace.resolve(baseDir, path_);
-        const packages = new Trie();
-        for (const [path, package_] of packageTree.packages.entries()) {
-            const resolvedPath = pathParts(resolve(path));
-            const deps = new Map();
-            for (const [name, dep] of package_.deps.entries()) {
-                deps.set(name, resolve(dep));
-            }
-            for (const [name, dep] of packageTree.globals.entries()) {
-                if (!package_.deps.has(name)) {
-                    deps.set(name, resolve(dep));
-                }
-            }
-            packages.put(resolvedPath, { id: path, deps });
-        }
-        return new Resolver(packages);
-    }
-}
-
 var JsonFormat;
 (function (JsonFormat) {
     function parse(format, string) {
@@ -305,6 +223,88 @@ var PackageTree;
     }
     PackageTree.json = json;
 })(PackageTree || (PackageTree = {}));
+
+class Trie {
+    constructor() {
+        this.data = { children: new Map() };
+    }
+    getClosest(key) {
+        let data = this.data;
+        let i;
+        for (i = 0; i < key.length && data; i++) {
+            const k = key[i];
+            const newData = data.children.get(k);
+            if (!newData) {
+                break;
+            }
+            data = newData;
+        }
+        return { rest: key.slice(i), value: data.value };
+    }
+    put(key, value) {
+        let data = this.data;
+        for (const k of key) {
+            let newData = data.children.get(k);
+            if (!newData) {
+                newData = { children: new Map() };
+                data.children.set(k, newData);
+            }
+            data = newData;
+        }
+        data.value = value;
+    }
+}
+
+function pathParts(path_) {
+    path_ = path__namespace.resolve(path_);
+    return path_.split("/").slice(1);
+}
+class Resolver {
+    constructor(packages) {
+        this.packages = packages;
+    }
+    root(path) {
+        const { value: package_ } = this.packages.getClosest(pathParts(path));
+        if (!package_) {
+            throw new Error(`File "${path}" is not part of any known package`);
+        }
+        return package_.id;
+    }
+    resolve(parent, request) {
+        if (request.startsWith(".") || request.startsWith("/")) {
+            throw new Error(`Specifier "${request}" is not for a package`);
+        }
+        const { value: package_ } = this.packages.getClosest(pathParts(parent));
+        if (!package_) {
+            throw new Error(`File "${parent}" is not part of any known package`);
+        }
+        const parts = request.split("/");
+        const i = request.startsWith("@") ? 2 : 1;
+        const dep = package_.deps.get(parts.slice(0, i).join("/"));
+        if (!dep) {
+            throw new Error(`Package "${package_.id}" does not have any dependency for "${request}", requested by ${parent}`);
+        }
+        return { package: dep, inner: parts.slice(i).join("/") };
+    }
+    static create(packageTree, baseDir = "/") {
+        const resolve = (path_) => path__namespace.resolve(baseDir, path_);
+        const packages = new Trie();
+        for (const [path, package_] of packageTree.packages.entries()) {
+            const resolvedPath = pathParts(resolve(path));
+            const deps = new Map();
+            for (const [name, dep] of package_.deps.entries()) {
+                deps.set(name, resolve(dep));
+            }
+            for (const [name, dep] of packageTree.globals.entries()) {
+                if (!package_.deps.has(name)) {
+                    deps.set(name, resolve(dep));
+                }
+            }
+            packages.put(resolvedPath, { id: path, deps });
+        }
+        return new Resolver(packages);
+    }
+}
 
 function resolveFilename(resolver, delegate) {
     return function (request, parent, isMain) {

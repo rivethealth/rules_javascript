@@ -1,9 +1,9 @@
 import { PackageTree } from "@better-rules-javascript/commonjs-package";
 import { JsonFormat } from "@better-rules-javascript/util-json";
-import * as tarStream from "tar-stream";
 import * as fs from "fs";
-import { promisify } from "util";
 import * as path from "path";
+import * as tarStream from "tar-stream";
+import { promisify } from "util";
 
 export interface ArchiveFile {
   name: string;

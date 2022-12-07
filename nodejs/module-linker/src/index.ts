@@ -1,5 +1,5 @@
-import { Resolver } from "@better-rules-javascript/commonjs-package/resolve";
 import { PackageTree } from "@better-rules-javascript/commonjs-package";
+import { Resolver } from "@better-rules-javascript/commonjs-package/resolve";
 import { JsonFormat } from "@better-rules-javascript/util-json";
 import * as fs from "fs";
 import { patchModule } from "./module";
