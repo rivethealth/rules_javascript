@@ -1,7 +1,7 @@
 #!/bin/sh -e
 export RUNFILES_DIR="$0.runfiles"
 
-"$RUNFILES_DIR/better_rules_javascript/tools/install_node_modules0"
+"$RUNFILES_DIR/better_rules_javascript/tools/javascript/install0"
 
 cd "$BUILD_WORKSPACE_DIRECTORY"
 

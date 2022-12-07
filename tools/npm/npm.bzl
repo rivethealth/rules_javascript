@@ -3313,6 +3313,21 @@ PACKAGES = {
         "name": "@types/istanbul-reports",
         "url": "https://registry.npmjs.org/@types/istanbul-reports/-/istanbul-reports-3.0.1.tgz",
     },
+    "@types/jest@28.1.8": {
+        "deps": [
+            {
+                "id": "expect@28.1.3",
+            },
+            {
+                "id": "pretty-format@28.1.3",
+            },
+        ],
+        "extra_deps": {
+        },
+        "integrity": "sha512-8TJkV++s7B6XqnDrzR1m/TT0A0h948Pnl/097veySPN67VRAgQ4gZ7n2KfJo2rVq6njQjdxU3GCCyDvAeuHoiw==",
+        "name": "@types/jest",
+        "url": "https://registry.npmjs.org/@types/jest/-/jest-28.1.8.tgz",
+    },
     "@types/json-schema@7.0.9": {
         "deps": [
         ],
@@ -18223,6 +18238,10 @@ ROOTS = [
     {
         "id": "@types/eslint@7.28.2",
         "name": "@types/eslint",
+    },
+    {
+        "id": "@types/jest@28.1.8",
+        "name": "@types/jest",
     },
     {
         "id": "@types/long@4.0.1",

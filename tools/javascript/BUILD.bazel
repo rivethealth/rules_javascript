@@ -28,7 +28,7 @@ nodejs_install(
 
 sh_binary(
     name = "install",
-    srcs = ["install-node-modules.sh"],
+    srcs = ["install.sh"],
     data = [":install0"],
 )
 
@@ -42,6 +42,7 @@ nodejs_modules_archive(
         "//ibazel/notification:root",
         "//nodejs/fs-linker:root",
         "//rules:root",
+        "//test:root",
         "//util/cache:root",
         "//util/json:root",
         "//util/starlark:root",
