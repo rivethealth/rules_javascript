@@ -80,8 +80,8 @@ js_library(
     srcs = ["rollup.config.js"],
     root = ":root",
     deps = [
-        "@better_rules_javascript_npm//@rollup/plugin-commonjs:lib",
-        "@better_rules_javascript_npm//@rollup/plugin-node-resolve:lib",
+        "@npm//@rollup/plugin-commonjs:lib",
+        "@npm//@rollup/plugin-node-resolve:lib",
     ],
 )
 
@@ -89,5 +89,5 @@ configure_rollup(
     name = "rollup",
     config = "rollup.config.js",
     config_dep = ":rollup_config",
-    dep = "@better_rules_javascript_npm//rollup:lib",
+    dep = "@npm//rollup:lib",
 )
