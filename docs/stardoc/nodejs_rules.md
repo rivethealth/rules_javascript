@@ -35,7 +35,7 @@ Node.js binary
 | <a id="nodejs_binary-dep"></a>dep                   | JavaScript library.            | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a>                        | required  |         |
 | <a id="nodejs_binary-env"></a>env                   | Environment variables          | <a href="https://bazel.build/docs/skylark/lib/dict.html">Dictionary: String -> String</a> | optional  | {}      |
 | <a id="nodejs_binary-main"></a>main                 | -                              | String                                                                                    | required  |         |
-| <a id="nodejs_binary-node"></a>node                 | -                              | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a>                        | required  |         |
+| <a id="nodejs_binary-node"></a>node                 | -                              | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a>                        | optional  | :nodejs |
 | <a id="nodejs_binary-node_options"></a>node_options | Node.js options                | List of strings                                                                           | optional  | []      |
 
 <a id="#nodejs_binary_archive"></a>

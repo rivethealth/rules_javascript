@@ -7,6 +7,6 @@ stardoc(
     "//npm:bzl",
     [
         "//npm:rules.bzl",
-        "//npm:workspace.bzl",
+        # "//npm:workspace.bzl",
     ],
 )

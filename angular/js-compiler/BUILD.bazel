@@ -7,6 +7,7 @@ ts_library(
     srcs = glob(["src/**/*.ts"]),
     compiler = "//tools/typescript:tsc",
     root = ":root",
+    visibility = ["//visibility:public"],
     deps = [
         "@better_rules_javascript//bazel/worker:lib",
         "@better_rules_javascript//commonjs/package:lib",
@@ -16,7 +17,6 @@ ts_library(
         "@better_rules_javascript_npm//@types/node:lib",
         "@better_rules_javascript_npm//argparse:lib",
     ],
-    visibility = ["//visibility:public"],
 )
 
 cjs_root(

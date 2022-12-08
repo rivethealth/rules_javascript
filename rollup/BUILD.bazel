@@ -9,6 +9,7 @@ bzl_library(
         "//commonjs:bzl",
         "//javascript:bzl",
         "//nodejs:bzl",
+        "@bazel_skylib//rules:common_settings",
         "@rules_proto//proto:defs",
     ],
 )

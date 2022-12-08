@@ -8,6 +8,11 @@ exports_files(
     visibility = ["//visibility:public"],
 )
 
+exports_files(
+    glob(["**/*.bzl"]),
+    visibility = ["//webpack/doc:__subpackages__"],
+)
+
 bzl_library(
     name = "bzl",
     srcs = glob(["*.bzl"]),

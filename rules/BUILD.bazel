@@ -9,6 +9,7 @@ bzl_library(
     deps = [
         "//commonjs:bzl",
         "//nodejs:bzl",
+        "//nodejs/default:bzl",
         "//npm:bzl",
         "//typescript:bzl",
     ],

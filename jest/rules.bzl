@@ -123,7 +123,6 @@ jest_test = rule(
         ),
         "node": attr.label(
             default = "//nodejs",
-            mandatory = True,
             providers = [NodejsInfo],
         ),
         "node_options": attr.string_list(
