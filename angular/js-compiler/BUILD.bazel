@@ -2,8 +2,6 @@ load("//commonjs:rules.bzl", "cjs_root")
 load("//javascript:rules.bzl", "js_library")
 load("//typescript:rules.bzl", "ts_library")
 
-package(default_visibility = ["//visibility:public"])
-
 ts_library(
     name = "lib",
     srcs = glob(["src/**/*.ts"]),
@@ -18,13 +16,14 @@ ts_library(
         "@better_rules_javascript_npm//@types/node:lib",
         "@better_rules_javascript_npm//argparse:lib",
     ],
+    visibility = ["//visibility:public"],
 )
 
 cjs_root(
     name = "root",
     package_name = "@better-rules-javascript/angular-js-compiler",
     descriptors = ["package.json"],
-    visibility = ["//visibility:private"],
+    visibility = ["//visibility:public"],
 )
 
 js_library(

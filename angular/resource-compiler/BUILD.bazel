@@ -3,8 +3,6 @@ load("//nodejs:rules.bzl", "nodejs_binary")
 load("//javascript:rules.bzl", "js_library")
 load("//typescript:rules.bzl", "ts_library")
 
-package(default_visibility = ["//visibility:public"])
-
 cjs_root(
     name = "root",
     package_name = "@better-rules-javascript/angular-resource-compiler",
@@ -21,7 +19,7 @@ js_library(
 ts_library(
     name = "lib",
     srcs = glob(["src/**/*.ts"]),
-    compiler = "//rules:tsc",
+    compiler = "//tools/typescript:tsc",
     config = "tsconfig.json",
     config_dep = ":tsconfig",
     root = ":root",
@@ -38,4 +36,5 @@ nodejs_binary(
     main = "src/main.js",
     node = "//tools/nodejs",
     node_options = ["--title=ng-resource-compiler"],
+    visibility = ["//visibility:public"],
 )

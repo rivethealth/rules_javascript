@@ -1,7 +1,5 @@
 load("//docs:rules.bzl", "stardoc")
 
-package(default_visibility = ["//visibility:public"])
-
 stardoc(
     "doc",
     "//angular:bzl",
@@ -9,4 +7,5 @@ stardoc(
         "//angular:providers.bzl",
         "//angular:rules.bzl",
     ],
+    visibility = ["//:__subpackages__"],
 )

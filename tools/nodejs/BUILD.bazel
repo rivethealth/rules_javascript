@@ -1,5 +1,5 @@
 alias(
     name = "nodejs",
     actual = "//nodejs:nodejs",
-    visibility = ["//:__subpackages__"],
+    visibility = ["//visibility:public"],
 )
