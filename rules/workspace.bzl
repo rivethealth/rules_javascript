@@ -1,10 +1,10 @@
 load("//commonjs:workspace.bzl", "cjs_npm_plugin")
 load("//nodejs:workspace.bzl", "nodejs_repositories", "nodejs_toolchains")
+load("//nodejs/default:nodejs.bzl", "NODEJS_REPOSITORIES")
 load("//npm:workspace.bzl", "npm")
 load("//typescript:workspace.bzl", "ts_npm_plugin")
 load("//commonjs:workspace.bzl", "cjs_directory_npm_plugin")
 load("//typescript:workspace.bzl", "ts_directory_npm_plugin")
-load(":nodejs.bzl", "NODEJS_REPOSITORIES")
 load(":npm_data.bzl", "PACKAGES", "ROOTS")
 
 def repositories(version = "18.8.0"):
@@ -14,7 +14,7 @@ def repositories(version = "18.8.0"):
     )
 
     nodejs_toolchains(
-        toolchain = "@better_rules_javascript//rules:nodejs_runtime",
+        toolchain = "@better_rules_javascript//nodejs/default:nodejs_runtime",
         repositories = NODEJS_REPOSITORIES[version],
     )
 

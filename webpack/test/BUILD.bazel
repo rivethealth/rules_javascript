@@ -22,7 +22,7 @@ jest_test(
     data = glob(["bazel/**/*"]) + ["@files//:common"],
     dep = ":test_lib",
     jest = "@npm//jest:lib",
-    node = "@better_rules_javascript//rules:nodejs",
+    node = "@better_rules_javascript//tools/nodejs",
     tags = ["local"],
     visibility = ["//visibility:public"],
 )
@@ -30,7 +30,7 @@ jest_test(
 ts_library(
     name = "test_lib",
     srcs = glob(["src/**/*.ts"]),
-    compiler = "//rules:tsc",
+    compiler = "//typescript:tsc",
     config = "tsconfig.json",
     config_dep = ":tsconfig",
     root = ":root",
@@ -45,5 +45,5 @@ js_library(
     name = "tsconfig",
     srcs = ["tsconfig.json"],
     root = ":root",
-    deps = ["//rules:tsconfig"],
+    deps = ["//tools/typescript:tsconfig"],
 )

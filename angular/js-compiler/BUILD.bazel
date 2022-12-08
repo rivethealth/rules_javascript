@@ -7,7 +7,7 @@ package(default_visibility = ["//visibility:public"])
 ts_library(
     name = "lib",
     srcs = glob(["src/**/*.ts"]),
-    compiler = "//rules:tsc",
+    compiler = "//tools/typescript:tsc",
     root = ":root",
     deps = [
         "@better_rules_javascript//bazel/worker:lib",

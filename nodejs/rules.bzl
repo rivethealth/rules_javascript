@@ -238,7 +238,7 @@ nodejs_binary = rule(
             mandatory = True,
         ),
         "node": attr.label(
-            mandatory = True,
+            default = ":nodejs",
             providers = [NodejsInfo],
         ),
         "node_options": attr.string_list(

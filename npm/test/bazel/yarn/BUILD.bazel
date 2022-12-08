@@ -16,12 +16,10 @@ js_library(
 nodejs_binary(
     name = "bin",
     dep = ":js",
-    node = "@better_rules_javascript//rules:nodejs",
 )
 
 nodejs_binary(
     name = "require_bin",
     dep = ":require",
     main = "require.js",
-    node = "@better_rules_javascript//rules:nodejs",
 )

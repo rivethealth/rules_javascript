@@ -1,0 +1,22 @@
+load("//commonjs:rules.bzl", "cjs_root")
+load("//javascript:rules.bzl", "js_library")
+
+alias(
+    name = "tsc",
+    actual = "//typescript:tsc",
+    visibility = ["//:__subpackages__"],
+)
+
+cjs_root(
+    name = "root",
+    package_name = "@better-rules-javascript/tools-typescript",
+    descriptors = ["package.json"],
+    visibility = ["//:__subpackages__"],
+)
+
+js_library(
+    name = "tsconfig",
+    srcs = ["tsconfig.common.json"],
+    root = ":root",
+    visibility = ["//visibility:public"],  # tests
+)

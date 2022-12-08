@@ -58,7 +58,7 @@ def configure_ts_protoc(name, tsc, ts_proto, deps, options = [], visibility = No
         ],
         dep = ts_proto,
         main = "build/plugin.js",
-        node = "@better_rules_javascript//rules:nodejs",
+        node = "@better_rules_javascript//tools/nodejs",
         visibility = ["//visibility:private"],
     )
 

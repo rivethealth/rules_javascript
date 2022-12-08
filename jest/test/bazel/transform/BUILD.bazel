@@ -45,5 +45,4 @@ jest_test(
     data = ["//:babel_config"],
     dep = ":main",
     jest = "@npm//jest:lib",
-    node = "@better_rules_javascript//rules:nodejs",
 )

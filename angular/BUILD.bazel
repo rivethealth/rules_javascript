@@ -18,3 +18,8 @@ bzl_library(
         "@rules_file//util:bzl",
     ],
 )
+
+test_suite(
+    name = "test",
+    tests = ["//angular/test"],
+)

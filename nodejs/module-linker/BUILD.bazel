@@ -35,7 +35,7 @@ js_gen(
 ts_library(
     name = "lib",
     srcs = glob(["src/**/*.ts"]),
-    compiler = "//rules:tsc",
+    compiler = "//tools/typescript:tsc",
     config = "tsconfig.json",
     config_dep = ":tsconfig",
     root = ":root",
@@ -73,5 +73,5 @@ js_library(
     name = "tsconfig",
     srcs = ["tsconfig.json"],
     root = ":root",
-    deps = ["//rules:tsconfig"],
+    deps = ["//tools/typescript:tsconfig"],
 )

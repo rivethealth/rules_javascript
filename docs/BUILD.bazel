@@ -42,6 +42,6 @@ nodejs_binary(
     name = "doctoc",
     dep = "@npm//doctoc:lib",
     main = "doctoc.js",
-    node = "//rules:nodejs",
+    node = "//tools/nodejs",
     node_options = ["--title=doctoc"],
 )

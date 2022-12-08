@@ -48,14 +48,14 @@ cjs_root(
 test_suite(
     name = "test",
     tests = [
-        "//angular/test",
-        "//commonjs/test",
-        "//javascript/test",
-        "//jest/test",
-        "//nodejs/test",
-        "//rollup/test",
+        "//angular:test",
+        "//commonjs:test",
+        "//javascript:test",
+        "//jest:test",
+        "//nodejs:test",
+        "//rollup:test",
         # "//ts-proto/test",
-        "//typescript/test",
-        "//webpack/test",
+        "//typescript:test",
+        "//webpack:test",
     ],
 )

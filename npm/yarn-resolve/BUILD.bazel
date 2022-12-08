@@ -15,13 +15,13 @@ js_library(
     name = "config",
     srcs = ["tsconfig.json"],
     root = ":root",
-    deps = ["//rules:tsconfig"],
+    deps = ["//tools/typescript:tsconfig"],
 )
 
 ts_library(
     name = "lib",
     srcs = glob(["src/**/*.ts"]),
-    compiler = "//rules:tsc",
+    compiler = "//tools/typescript:tsc",
     config = "tsconfig.json",
     config_dep = ":config",
     root = ":root",
@@ -47,6 +47,6 @@ nodejs_binary(
     name = "bin",
     dep = ":lib",
     main = "src/main.js",
-    node = "//rules:nodejs",
+    node = "//tools/nodejs",
     # node_options = ["--title=yarn-resolve"],
 )

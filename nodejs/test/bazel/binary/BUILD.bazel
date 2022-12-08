@@ -16,5 +16,4 @@ nodejs_binary(
     name = "bin",
     dep = ":main",
     main = "better_rules_javascript_test/binary/main.js",
-    node = "@better_rules_javascript//rules:nodejs",
 )

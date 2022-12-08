@@ -33,13 +33,13 @@ js_library(
     name = "tsconfig",
     srcs = ["tsconfig.json"],
     root = ":root",
-    deps = ["//rules:tsconfig"],
+    deps = ["//tools/typescript:tsconfig"],
 )
 
 nodejs_binary(
     name = "bin",
     dep = ":lib",
     main = "src/main.js",
-    node = "//rules:nodejs",
+    node = "//tools/nodejs",
     node_options = ["--title=node-archive-linker"],
 )

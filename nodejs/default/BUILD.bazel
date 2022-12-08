@@ -1,0 +1,16 @@
+load("//nodejs:rules.bzl", "configure_nodejs_runtime", "nodejs")
+load(":rules.bzl", "nodejs_runtime")
+
+configure_nodejs_runtime(
+    name = "nodejs_runtime",
+    nodejs_runtime_rule = nodejs_runtime,
+    repo_name = "better_rules_javascript_nodejs",
+    visibility = ["//visibility:public"],
+)
+
+nodejs(
+    name = "nodejs",
+    options = ["--enable-source-maps"],
+    runtime = ":nodejs_runtime",
+    visibility = ["//visibility:public"],
+)

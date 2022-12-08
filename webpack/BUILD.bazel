@@ -1,20 +1,17 @@
 load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
 
-package(default_visibility = ["//visibility:public"])
-
-filegroup(
-    name = "skip_package_check",
-    srcs = ["skip-package-check.js"],
-)
-
-filegroup(
-    name = "server_runner",
-    srcs = ["server-runner.sh.tpl"],
+exports_files(
+    [
+        "skip-package-check.js",
+        "server-runner.sh.tpl",
+    ],
+    visibility = ["//visibility:public"],
 )
 
 bzl_library(
     name = "bzl",
     srcs = glob(["*.bzl"]),
+    visibility = ["//visibility:public"],
     deps = [
         "//commonjs:bzl",
         "//javascript:bzl",
@@ -23,4 +20,10 @@ bzl_library(
         "@rivet_bazel_util//bazel:bzl",
         "@rules_proto//proto:defs",
     ],
+)
+
+test_suite(
+    name = "test",
+    tests = ["//webpack/test"],
+    visibility = ["//:__subpackages__"],
 )

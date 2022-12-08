@@ -23,3 +23,8 @@ bzl_library(
         "@bazel_skylib//lib:shell",
     ],
 )
+
+test_suite(
+    name = "test",
+    tests = ["//jest/test"],
+)

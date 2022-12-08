@@ -47,13 +47,13 @@ js_library(
     name = "tsconfig",
     srcs = ["tsconfig.json"],
     root = ":root",
-    deps = ["//rules:tsconfig"],
+    deps = ["//tools/typescript:tsconfig"],
 )
 
 ts_library(
     name = "lib",
     srcs = glob(["src/**/*.ts"]),
-    compiler = "//rules:tsc",
+    compiler = "//tools/typescript:tsc",
     config = "tsconfig.json",
     config_dep = ":tsconfig",
     root = ":root",
@@ -70,7 +70,7 @@ ts_library(
 nodejs_simple_binary(
     name = "bin",
     src = "dist/bundle.js",
-    node = "//rules:nodejs",
+    node = "//tools/nodejs",
 )
 
 configure_rollup(

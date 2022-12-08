@@ -1,18 +1,24 @@
 load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
-load("//javascript:rules.bzl", "js_library")
-load("//nodejs:rules.bzl", "nodejs_binary")
 
-package(default_visibility = ["//visibility:public"])
-
-exports_files(["runner.sh.tpl"])
+exports_files(
+    ["runner.sh.tpl"],
+    visibility = ["//visibility:public"],
+)
 
 bzl_library(
     name = "bzl",
     srcs = glob(["**/*.bzl"]),
+    visibility = ["//visibility:public"],
     deps = [
         "//javascript:bzl",
         "//nodejs:bzl",
         "//typescript:bzl",
         "@rules_file//generate:bzl",
     ],
+)
+
+alias(
+    name = "prettier_lib",
+    actual = "@npm//prettier:lib",
+    visibility = ["//visibility:public"],
 )

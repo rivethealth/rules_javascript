@@ -36,3 +36,8 @@ bool_flag(
     name = "source_map",
     build_setting_default = True,
 )
+
+test_suite(
+    name = "test",
+    tests = ["//javascript/test"],
+)

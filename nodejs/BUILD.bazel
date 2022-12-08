@@ -14,6 +14,11 @@ filegroup(
     srcs = ["install-runner.sh.tpl"],
 )
 
+alias(
+    name = "nodejs",
+    actual = "//nodejs/default:nodejs",
+)
+
 filegroup(
     name = "simple_runner",
     srcs = ["simple-runner.sh.tpl"],
@@ -33,4 +38,9 @@ bzl_library(
         "//util:bzl",
         "@bazel_skylib//lib:shell",
     ],
+)
+
+test_suite(
+    name = "test",
+    tests = ["//nodejs/test"],
 )

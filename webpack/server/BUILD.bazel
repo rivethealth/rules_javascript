@@ -11,7 +11,7 @@ ts_library(
         "@better_rules_javascript_npm//webpack:lib",
         "@better_rules_javascript_npm//webpack-dev-server:lib",
     ],
-    compiler = "//rules:tsc",
+    compiler = "//tools/typescript:tsc",
     config = "tsconfig.json",
     config_dep = ":tsconfig",
     root = ":root",
@@ -39,5 +39,5 @@ js_library(
     name = "tsconfig",
     srcs = ["tsconfig.json"],
     root = ":root",
-    deps = ["//rules:tsconfig"],
+    deps = ["//tools/typescript:tsconfig"],
 )

@@ -25,5 +25,4 @@ jest_test(
     config_dep = ":jest_config",
     dep = ":test_lib",
     jest = "@npm//jest:lib",
-    node = "@better_rules_javascript//rules:nodejs",
 )

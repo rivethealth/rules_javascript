@@ -43,7 +43,7 @@ js_library(
 ts_library(
     name = "lib",
     srcs = glob(["src/**/*.ts"]),
-    compiler = "//rules:tsc",
+    compiler = "//tools/typescript:tsc",
     config = "tsconfig.json",
     config_dep = ":tsconfig",
     root = ":root",
@@ -59,7 +59,7 @@ nodejs_binary(
     name = "bin",
     dep = ":dist_lib",
     main = "dist/bundle.js",
-    node = "//rules:nodejs",
+    node = "//tools/nodejs",
     node_options = ["--title=ts-config"],
 )
 
@@ -84,5 +84,5 @@ js_library(
     name = "tsconfig",
     srcs = ["tsconfig.json"],
     root = ":root",
-    deps = ["//rules:tsconfig"],
+    deps = ["//tools/typescript:tsconfig"],
 )

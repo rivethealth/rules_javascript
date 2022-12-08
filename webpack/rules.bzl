@@ -107,7 +107,7 @@ def configure_webpack(name, cli, webpack, dev_server, config, config_dep, node_o
 
     nodejs_binary(
         main = "bin/cli.js",
-        node = "@better_rules_javascript//rules:nodejs",
+        node = "@better_rules_javascript//nodejs",
         name = "%s.bin" % name,
         dep = ":%s.main" % name,
         node_options = node_options,
@@ -124,7 +124,7 @@ def configure_webpack(name, cli, webpack, dev_server, config, config_dep, node_o
         name = "%s.server_bin" % name,
         node_options = node_options,
         main = "src/main.js",
-        node = "@better_rules_javascript//rules:nodejs",
+        node = "@better_rules_javascript//nodejs",
         dep = ":%s.server_main" % name,
         visibility = ["//visibility:private"],
     )
@@ -226,7 +226,7 @@ webpack_bundle = rule(
         ),
         "_skip_package_check": attr.label(
             allow_single_file = True,
-            default = "//webpack:skip_package_check",
+            default = "//webpack:skip-package-check.js",
         ),
         "_source_map": attr.label(
             default = "//javascript:source_map",
@@ -383,11 +383,11 @@ webpack_server = rule(
         ),
         "_skip_package_check": attr.label(
             allow_single_file = True,
-            default = "//webpack:skip_package_check",
+            default = "//webpack:skip-package-check.js",
         ),
         "_runner": attr.label(
             allow_single_file = True,
-            default = "//webpack:server_runner",
+            default = "//webpack:server-runner.sh.tpl",
         ),
         "_source_map": attr.label(
             default = "//javascript:source_map",

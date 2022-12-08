@@ -7,7 +7,7 @@ load("//nodejs:rules.bzl", "nodejs_binary")
 load("//typescript:rules.bzl", "ts_library")
 load("//util:path.bzl", "runfile_path")
 
-def configure_eslint(name, dep, config, config_dep, plugins = [], visibility = None):
+def configure_eslint(name, config, config_dep, dep = "@better_rules_javascript//eslint:eslint_lib", plugins = [], visibility = None):
     cjs_root(
         name = "%s.root" % name,
         package_name = "@better-rules-javascript/eslint-format",
@@ -22,7 +22,7 @@ def configure_eslint(name, dep, config, config_dep, plugins = [], visibility = N
         name = "%s.config" % name,
         root = ":%s.root" % name,
         srcs = ["@better_rules_javascript//eslint/linter:tsconfig"],
-        deps = ["@better_rules_javascript//rules:tsconfig"],
+        deps = ["@better_rules_javascript//tools/typescript:tsconfig"],
         strip_prefix = "/eslint/linter",
         prefix = "%s.root" % name,
         visibility = ["//visibility:private"],
@@ -32,7 +32,7 @@ def configure_eslint(name, dep, config, config_dep, plugins = [], visibility = N
         name = "%s.lib" % name,
         srcs = ["@better_rules_javascript//eslint/linter:src"],
         strip_prefix = "/eslint/linter",
-        compiler = "@better_rules_javascript//rules:tsc",
+        compiler = "@better_rules_javascript//typescript:tsc",
         config = "tsconfig.json",
         config_dep = ":%s.config" % name,
         deps = [
@@ -62,7 +62,7 @@ def configure_eslint(name, dep, config, config_dep, plugins = [], visibility = N
         name = "%s.bin" % name,
         dep = ":%s.main" % name,
         main = "src/main.js",
-        node = "@better_rules_javascript//rules:nodejs",
+        node = "@better_rules_javascript//nodejs",
         node_options = ["--title=eslint"],
         visibility = ["//visibility:private"],
     )

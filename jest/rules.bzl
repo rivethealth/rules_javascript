@@ -122,6 +122,7 @@ jest_test = rule(
             providers = [CjsInfo, JsInfo],
         ),
         "node": attr.label(
+            default = "//nodejs",
             mandatory = True,
             providers = [NodejsInfo],
         ),

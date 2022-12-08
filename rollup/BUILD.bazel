@@ -12,3 +12,8 @@ bzl_library(
         "@rules_proto//proto:defs",
     ],
 )
+
+test_suite(
+    name = "test",
+    tests = ["//rollup/test"],
+)

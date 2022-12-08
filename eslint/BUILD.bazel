@@ -1,1 +1,10 @@
-exports_files(["runner.sh.tpl"])
+exports_files(
+    ["runner.sh.tpl"],
+    visibility = ["//visibility:public"],
+)
+
+alias(
+    name = "eslint_lib",
+    actual = "@npm//eslint:lib",
+    visibility = ["//visibility:public"],
+)

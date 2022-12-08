@@ -4,5 +4,5 @@
     "moduleResolution": "node",
     "module": "commonjs"
   },
-  "extends": "@better-rules-javascript/rules/tsconfig.common.json"
+  "extends": "@better-rules-javascript/tools-typescript/tsconfig.common.json"
 }
