@@ -1,37 +1,30 @@
 load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
 
-package(default_visibility = ["//visibility:public"])
-
-exports_files(["nodejs.BUILD.bazel"])
-
-filegroup(
-    name = "archive_runner",
-    srcs = ["archive-runner.sh.tpl"],
+exports_files(
+    glob(["**/*.bzl"]),
+    visibility = ["//nodejs/doc:__subpackages__"],
 )
 
-filegroup(
-    name = "install_runner",
-    srcs = ["install-runner.sh.tpl"],
+exports_files(
+    [
+        "archive-runner.sh.tpl",
+        "install-runner.sh.tpl",
+        "simple-runner.sh.tpl",
+        "runner.sh.tpl",
+    ],
+    visibility = ["//visibility:public"],
 )
 
 alias(
     name = "nodejs",
     actual = "//nodejs/default:nodejs",
-)
-
-filegroup(
-    name = "simple_runner",
-    srcs = ["simple-runner.sh.tpl"],
-)
-
-filegroup(
-    name = "runner",
-    srcs = ["runner.sh.tpl"],
+    visibility = ["//visibility:public"],
 )
 
 bzl_library(
     name = "bzl",
     srcs = glob(["**/*.bzl"]),
+    visibility = ["//visibility:public"],
     deps = [
         "//javascript:bzl",
         "//third-party:repo_bzl",
@@ -44,9 +37,11 @@ sh_binary(
     name = "nodejs_resolve",
     srcs = ["nodejs-resolve.sh"],
     data = ["//nodejs/resolve:bin"],
+    visibility = ["//:__subpackages__"],
 )
 
 test_suite(
     name = "test",
     tests = ["//nodejs/test"],
+    visibility = ["//:__subpackages__"],
 )

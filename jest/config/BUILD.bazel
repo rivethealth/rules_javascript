@@ -4,11 +4,10 @@ load("//rollup:rules.bzl", "configure_rollup", "rollup_bundle")
 load("//javascript:rules.bzl", "js_library")
 load("//typescript:rules.bzl", "ts_library")
 
-package(default_visibility = ["//visibility:public"])
-
 cjs_root(
     name = "root",
     package_name = "@better-rules-javascript/jest-config",
+    visibility = ["//visibility:public"],
 )
 
 js_library(
@@ -25,6 +24,7 @@ ts_library(
     config = "tsconfig.json",
     config_dep = ":tsconfig",
     root = ":root",
+    visibility = ["//visibility:public"],
     deps = [
         "@better_rules_javascript_npm//@jest/types:lib",
         "@better_rules_javascript_npm//@types/node:lib",

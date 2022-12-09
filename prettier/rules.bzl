@@ -1,55 +1,11 @@
 load("@rules_file//generate:providers.bzl", "FormatterInfo")
-load("//commonjs:rules.bzl", "cjs_root")
 load("//commonjs:providers.bzl", "CjsInfo")
 load("//javascript:providers.bzl", "JsInfo")
-load("//javascript:rules.bzl", "js_export", "js_library")
+load("//javascript:rules.bzl", "js_export")
 load("//nodejs:rules.bzl", "nodejs_binary")
-load("//typescript:rules.bzl", "ts_library")
 load("//util:path.bzl", "runfile_path")
 
 def configure_prettier(name, config, config_dep, dep = "@better_rules_javascript//prettier:prettier_lib", plugins = [], visibility = None):
-    cjs_root(
-        name = "%s.root" % name,
-        package_name = "@better-rules-javascript/prettier-format",
-        descriptors = ["@better_rules_javascript//prettier/format:descriptors"],
-        path = "%s.root" % name,
-        prefix = "%s.root" % name,
-        strip_prefix = "/prettier/format",
-        visibility = ["//visibility:private"],
-    )
-
-    js_library(
-        name = "%s.config" % name,
-        root = ":%s.root" % name,
-        srcs = ["@better_rules_javascript//prettier/format:tsconfig"],
-        deps = ["@better_rules_javascript//tools/typescript:tsconfig"],
-        strip_prefix = "/prettier/format",
-        prefix = "%s.root" % name,
-        visibility = ["//visibility:private"],
-    )
-
-    ts_library(
-        name = "%s.lib" % name,
-        srcs = ["@better_rules_javascript//prettier/format:src"],
-        strip_prefix = "/prettier/format",
-        compiler = "@better_rules_javascript//typescript:tsc",
-        config = "tsconfig.json",
-        config_dep = ":%s.config" % name,
-        deps = [
-            dep,
-            "@better_rules_javascript//bazel/worker:lib",
-            "@better_rules_javascript_npm//@types/argparse:lib",
-            "@better_rules_javascript_npm//@types/node:lib",
-            "@better_rules_javascript_npm//@types/prettier:lib",
-            "@better_rules_javascript_npm//argparse:lib",
-        ],
-        declaration_prefix = "%s.root" % name,
-        js_prefix = "%s.root" % name,
-        src_prefix = "%s.root" % name,
-        root = ":%s.root" % name,
-        visibility = ["//visibility:private"],
-    )
-
     js_export(
         name = "%s.prettier" % name,
         dep = dep,
@@ -59,7 +15,8 @@ def configure_prettier(name, config, config_dep, dep = "@better_rules_javascript
 
     js_export(
         name = "%s.main" % name,
-        dep = ":%s.lib" % name,
+        dep = "@better_rules_javascript//prettier/format:lib",
+        deps = [dep],
         extra_deps = [config_dep, ":%s.prettier" % name],
         visibility = ["//visibility:private"],
     )

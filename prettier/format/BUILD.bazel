@@ -1,16 +1,33 @@
-package(default_visibility = ["//visibility:public"])
+load("//commonjs:rules.bzl", "cjs_root")
+load("//javascript:rules.bzl", "js_library")
+load("//typescript:rules.bzl", "ts_library")
 
-filegroup(
-    name = "descriptors",
-    srcs = ["package.json"],
+cjs_root(
+    name = "root",
+    package_name = "@better-rules-javascript/prettier-format",
+    descriptors = ["package.json"],
 )
 
-filegroup(
+js_library(
     name = "tsconfig",
     srcs = ["tsconfig.json"],
+    root = ":root",
+    deps = ["//tools/typescript:tsconfig"],
 )
 
-filegroup(
-    name = "src",
+ts_library(
+    name = "lib",
     srcs = glob(["src/**/*.ts"]),
+    compile_deps = ["@better_rules_javascript_npm//@types/prettier:lib"],
+    compiler = "@better_rules_javascript//typescript:tsc",
+    config = "tsconfig.json",
+    config_dep = ":tsconfig",
+    root = ":root",
+    visibility = ["//visibility:public"],
+    deps = [
+        "@better_rules_javascript//bazel/worker:lib",
+        "@better_rules_javascript_npm//@types/argparse:lib",
+        "@better_rules_javascript_npm//@types/node:lib",
+        "@better_rules_javascript_npm//argparse:lib",
+    ],
 )

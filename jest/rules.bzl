@@ -138,7 +138,7 @@ jest_test = rule(
         ),
         "_runner": attr.label(
             allow_single_file = True,
-            default = "//jest:runner",
+            default = "//jest:runner.sh.tpl",
         ),
         "_fs_linker": attr.label(
             default = "//nodejs/fs-linker:dist_lib",

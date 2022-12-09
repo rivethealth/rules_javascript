@@ -1,11 +1,15 @@
 load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
 load("//npm:rules.bzl", "yarn_resolve")
 
-package(default_visibility = ["//visibility:public"])
+exports_files(
+    glob(["**/*.bzl"]),
+    visibility = ["//rules/doc:__subpackages__"],
+)
 
 bzl_library(
     name = "bzl",
     srcs = glob(["**/*.bzl"]),
+    visibility = ["//visibility:public"],
     deps = [
         "//commonjs:bzl",
         "//nodejs:bzl",
@@ -18,4 +22,5 @@ bzl_library(
 yarn_resolve(
     name = "resolve_npm",
     output = "npm_data.bzl",
+    visibility = ["//:__subpackages__"],
 )
