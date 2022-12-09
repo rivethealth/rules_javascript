@@ -1,3 +1,40 @@
+# Contents
+
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+- [//rollup:providers.bzl](#rollupprovidersbzl)
+  - [RollupInfo](#rollupinfo)
+- [//rollup:rules.bzl](#rolluprulesbzl)
+  - [rollup](#rollup)
+  - [rollup_bundle](#rollup_bundle)
+  - [configure_rollup](#configure_rollup)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+# //rollup:providers.bzl
+
+<!-- Generated with Stardoc: http://skydoc.bazel.build -->
+
+<a id="#RollupInfo"></a>
+
+## RollupInfo
+
+<pre>
+RollupInfo(<a href="#RollupInfo-bin">bin</a>, <a href="#RollupInfo-config_path">config_path</a>)
+</pre>
+
+Rollup configuration
+
+**FIELDS**
+
+| Name                                           | Description       |
+| :--------------------------------------------- | :---------------- |
+| <a id="RollupInfo-bin"></a>bin                 | Rollup executable |
+| <a id="RollupInfo-config_path"></a>config_path | -                 |
+
+# //rollup:rules.bzl
+
 <!-- Generated with Stardoc: http://skydoc.bazel.build -->
 
 <a id="#rollup"></a>

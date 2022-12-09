@@ -5,12 +5,17 @@ Jest tests JavaScript.
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
+- [Reference](#reference)
 - [Install](#install)
 - [Options](#options)
 - [Use](#use)
 - [Snapshots](#snapshots)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+## Reference
+
+[Starlark reference](stardoc/jest.md)
 
 ## Install
 

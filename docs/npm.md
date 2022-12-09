@@ -5,12 +5,17 @@ Better_rules_javascript can use npm packages.
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
+- [Reference](#reference)
 - [Strategy](#strategy)
 - [Yarn](#yarn)
 - [IDE](#ide)
 - [Limitations](#limitations)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+## Reference
+
+[Starlark reference](stardoc/npm.md)
 
 ## Strategy
 
@@ -102,11 +107,6 @@ js_library(
     deps = ["@npm//@org/package:lib"],
 )
 ```
-
-### Executable
-
-For convenience, the yarn executable is available as
-`@better_rules_javascript//npm:yarn`.
 
 ## IDE
 

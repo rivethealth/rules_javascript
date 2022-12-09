@@ -1,3 +1,16 @@
+# Contents
+
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+- [//prettier:rules.bzl](#prettierrulesbzl)
+  - [prettier](#prettier)
+  - [configure_prettier](#configure_prettier)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+# //prettier:rules.bzl
+
 <!-- Generated with Stardoc: http://skydoc.bazel.build -->
 
 <a id="#prettier"></a>

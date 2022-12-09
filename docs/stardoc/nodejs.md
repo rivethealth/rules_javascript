@@ -1,3 +1,80 @@
+# Contents
+
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+- [//nodejs:providers.bzl](#nodejsprovidersbzl)
+  - [NodejsInfo](#nodejsinfo)
+  - [NodejsRuntimeInfo](#nodejsruntimeinfo)
+  - [nodejs_runtime_rule](#nodejs_runtime_rule)
+- [//nodejs:rules.bzl](#nodejsrulesbzl)
+  - [nodejs](#nodejs)
+  - [nodejs_binary](#nodejs_binary)
+  - [nodejs_binary_archive](#nodejs_binary_archive)
+  - [nodejs_install](#nodejs_install)
+  - [nodejs_modules_archive](#nodejs_modules_archive)
+  - [nodejs_simple_binary](#nodejs_simple_binary)
+  - [nodejs_toolchain](#nodejs_toolchain)
+  - [configure_nodejs_runtime](#configure_nodejs_runtime)
+- [//nodejs:workspace.bzl](#nodejsworkspacebzl)
+  - [nodejs_repositories](#nodejs_repositories)
+  - [nodejs_toolchains](#nodejs_toolchains)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+# //nodejs:providers.bzl
+
+<!-- Generated with Stardoc: http://skydoc.bazel.build -->
+
+<a id="#NodejsInfo"></a>
+
+## NodejsInfo
+
+<pre>
+NodejsInfo(<a href="#NodejsInfo-bin">bin</a>, <a href="#NodejsInfo-options">options</a>)
+</pre>
+
+Node.js executable information.
+
+**FIELDS**
+
+| Name                                   | Description        |
+| :------------------------------------- | :----------------- |
+| <a id="NodejsInfo-bin"></a>bin         | Node.js executable |
+| <a id="NodejsInfo-options"></a>options | Node.js options    |
+
+<a id="#NodejsRuntimeInfo"></a>
+
+## NodejsRuntimeInfo
+
+<pre>
+NodejsRuntimeInfo(<a href="#NodejsRuntimeInfo-bin">bin</a>)
+</pre>
+
+Node.js runtime.
+
+**FIELDS**
+
+| Name                                  | Description        |
+| :------------------------------------ | :----------------- |
+| <a id="NodejsRuntimeInfo-bin"></a>bin | Node.js executable |
+
+<a id="#nodejs_runtime_rule"></a>
+
+## nodejs_runtime_rule
+
+<pre>
+nodejs_runtime_rule(<a href="#nodejs_runtime_rule-name">name</a>)
+</pre>
+
+**PARAMETERS**
+
+| Name                                      | Description               | Default Value |
+| :---------------------------------------- | :------------------------ | :------------ |
+| <a id="nodejs_runtime_rule-name"></a>name | <p align="center"> - </p> | none          |
+
+# //nodejs:rules.bzl
+
 <!-- Generated with Stardoc: http://skydoc.bazel.build -->
 
 <a id="#nodejs"></a>
@@ -143,3 +220,37 @@ configure_nodejs_runtime(<a href="#configure_nodejs_runtime-name">name</a>, <a h
 | <a id="configure_nodejs_runtime-repo_name"></a>repo_name                     | <p align="center"> - </p> | none              |
 | <a id="configure_nodejs_runtime-nodejs_runtime_rule"></a>nodejs_runtime_rule | <p align="center"> - </p> | none              |
 | <a id="configure_nodejs_runtime-visibility"></a>visibility                   | <p align="center"> - </p> | <code>None</code> |
+
+# //nodejs:workspace.bzl
+
+<!-- Generated with Stardoc: http://skydoc.bazel.build -->
+
+<a id="#nodejs_repositories"></a>
+
+## nodejs_repositories
+
+<pre>
+nodejs_repositories(<a href="#nodejs_repositories-name">name</a>, <a href="#nodejs_repositories-repositories">repositories</a>)
+</pre>
+
+**PARAMETERS**
+
+| Name                                                      | Description               | Default Value |
+| :-------------------------------------------------------- | :------------------------ | :------------ |
+| <a id="nodejs_repositories-name"></a>name                 | <p align="center"> - </p> | none          |
+| <a id="nodejs_repositories-repositories"></a>repositories | <p align="center"> - </p> | none          |
+
+<a id="#nodejs_toolchains"></a>
+
+## nodejs_toolchains
+
+<pre>
+nodejs_toolchains(<a href="#nodejs_toolchains-toolchain">toolchain</a>, <a href="#nodejs_toolchains-repositories">repositories</a>)
+</pre>
+
+**PARAMETERS**
+
+| Name                                                    | Description               | Default Value |
+| :------------------------------------------------------ | :------------------------ | :------------ |
+| <a id="nodejs_toolchains-toolchain"></a>toolchain       | <p align="center"> - </p> | none          |
+| <a id="nodejs_toolchains-repositories"></a>repositories | <p align="center"> - </p> | none          |

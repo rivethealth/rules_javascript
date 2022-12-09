@@ -1,4 +1,4 @@
-# Module resolution
+# Module Resolution
 
 Perhaps the most difficult part of JavaScript tooling is resolving modules.
 

@@ -1,3 +1,88 @@
+# Contents
+
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+- [//javascript:providers.bzl](#javascriptprovidersbzl)
+  - [JsInfo](#jsinfo)
+  - [create_js_info](#create_js_info)
+  - [js_npm_inner_label](#js_npm_inner_label)
+  - [js_npm_label](#js_npm_label)
+- [//javascript:rules.bzl](#javascriptrulesbzl)
+  - [js_export](#js_export)
+  - [js_library](#js_library)
+- [//javascript:workspace.bzl](#javascriptworkspacebzl)
+  - [js_directory_npm_plugin](#js_directory_npm_plugin)
+  - [js_npm_plugin](#js_npm_plugin)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+# //javascript:providers.bzl
+
+<!-- Generated with Stardoc: http://skydoc.bazel.build -->
+
+<a id="#JsInfo"></a>
+
+## JsInfo
+
+<pre>
+JsInfo(<a href="#JsInfo-transitive_files">transitive_files</a>)
+</pre>
+
+JavaScript
+
+**FIELDS**
+
+| Name                                                 | Description                                           |
+| :--------------------------------------------------- | :---------------------------------------------------- |
+| <a id="JsInfo-transitive_files"></a>transitive_files | Depset of files (descriptors, JavaScript, data files) |
+
+<a id="#create_js_info"></a>
+
+## create_js_info
+
+<pre>
+create_js_info(<a href="#create_js_info-cjs_root">cjs_root</a>, <a href="#create_js_info-files">files</a>, <a href="#create_js_info-deps">deps</a>)
+</pre>
+
+**PARAMETERS**
+
+| Name                                         | Description               | Default Value   |
+| :------------------------------------------- | :------------------------ | :-------------- |
+| <a id="create_js_info-cjs_root"></a>cjs_root | <p align="center"> - </p> | none            |
+| <a id="create_js_info-files"></a>files       | <p align="center"> - </p> | <code>[]</code> |
+| <a id="create_js_info-deps"></a>deps         | <p align="center"> - </p> | <code>[]</code> |
+
+<a id="#js_npm_inner_label"></a>
+
+## js_npm_inner_label
+
+<pre>
+js_npm_inner_label(<a href="#js_npm_inner_label-repo">repo</a>)
+</pre>
+
+**PARAMETERS**
+
+| Name                                     | Description               | Default Value |
+| :--------------------------------------- | :------------------------ | :------------ |
+| <a id="js_npm_inner_label-repo"></a>repo | <p align="center"> - </p> | none          |
+
+<a id="#js_npm_label"></a>
+
+## js_npm_label
+
+<pre>
+js_npm_label(<a href="#js_npm_label-repo">repo</a>)
+</pre>
+
+**PARAMETERS**
+
+| Name                               | Description               | Default Value |
+| :--------------------------------- | :------------------------ | :------------ |
+| <a id="js_npm_label-repo"></a>repo | <p align="center"> - </p> | none          |
+
+# //javascript:rules.bzl
+
 <!-- Generated with Stardoc: http://skydoc.bazel.build -->
 
 <a id="#js_export"></a>
@@ -43,3 +128,29 @@ JavaScript library
 | <a id="js_library-root"></a>root                 | -                                                                              | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a>          | optional  | None    |
 | <a id="js_library-srcs"></a>srcs                 | JavaScript files and data.                                                     | <a href="https://bazel.build/docs/build-ref.html#labels">List of labels</a> | optional  | []      |
 | <a id="js_library-strip_prefix"></a>strip_prefix | Package-relative prefix to remove.                                             | String                                                                      | optional  | ""      |
+
+# //javascript:workspace.bzl
+
+<!-- Generated with Stardoc: http://skydoc.bazel.build -->
+
+<a id="#js_directory_npm_plugin"></a>
+
+## js_directory_npm_plugin
+
+<pre>
+js_directory_npm_plugin()
+</pre>
+
+<a id="#js_npm_plugin"></a>
+
+## js_npm_plugin
+
+<pre>
+js_npm_plugin(<a href="#js_npm_plugin-exclude_suffixes">exclude_suffixes</a>)
+</pre>
+
+**PARAMETERS**
+
+| Name                                                        | Description               | Default Value   |
+| :---------------------------------------------------------- | :------------------------ | :-------------- |
+| <a id="js_npm_plugin-exclude_suffixes"></a>exclude_suffixes | <p align="center"> - </p> | <code>[]</code> |

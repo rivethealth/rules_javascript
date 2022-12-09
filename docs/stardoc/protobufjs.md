@@ -1,3 +1,38 @@
+# Contents
+
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+- [//protobufjs:providers.bzl](#protobufjsprovidersbzl)
+  - [JsProtobuf](#jsprotobuf)
+- [//protobufjs:rules.bzl](#protobufjsrulesbzl)
+  - [js_proto](#js_proto)
+  - [js_proto_library](#js_proto_library)
+  - [configure_js_proto](#configure_js_proto)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+# //protobufjs:providers.bzl
+
+<!-- Generated with Stardoc: http://skydoc.bazel.build -->
+
+<a id="#JsProtobuf"></a>
+
+## JsProtobuf
+
+<pre>
+JsProtobuf(<a href="#JsProtobuf-runtime">runtime</a>, <a href="#JsProtobuf-bin">bin</a>)
+</pre>
+
+**FIELDS**
+
+| Name                                   | Description          |
+| :------------------------------------- | :------------------- |
+| <a id="JsProtobuf-runtime"></a>runtime | Runtime dependencies |
+| <a id="JsProtobuf-bin"></a>bin         | Executable           |
+
+# //protobufjs:rules.bzl
+
 <!-- Generated with Stardoc: http://skydoc.bazel.build -->
 
 <a id="#js_proto"></a>

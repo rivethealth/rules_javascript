@@ -5,10 +5,15 @@ Webpack bundles modules into one or more files.
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
+- [Reference](#reference)
 - [Install](#install)
 - [Use](#use)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+## Reference
+
+[Starlark reference](stardoc/webpack.md)
 
 ## Install
 

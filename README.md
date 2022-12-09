@@ -5,54 +5,20 @@ Bazel rules for JavaScript, TypeScript, and related technologies.
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
-- [Priorities](#priorities)
-- [Features](#features)
+- [Philosophy](#philosophy)
 - [Install](#install)
 - [Example](#example)
 - [Documentation](#documentation)
-- [Differences with rules_nodejs](#differences-with-rules_nodejs)
 - [Developing](#developing)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-## Priorities
+## Philosophy
 
 1. Flexibility and extensibility
 1. Performance
 1. Bazel idioms
-1. Clear factorization
-
-## Features
-
-- [x] languages
-  - [ ] Angular
-  - [x] JavaScript
-  - [x] TypeScript
-- [ ] bundle
-  - [x] rollup
-  - [ ] webpack
-- [ ] runtime
-  - [x] nodejs_binary
-  - [ ] docker
-- [ ] test
-  - [ ] mocha
-  - [ ] jasmine
-  - [ ] jest
-  - [ ] sharding
-  - [ ] JUnit output
-- [ ] serialization
-  - [x] protobuf
-  - [x] protobufjs
-  - [x] ts-proto
-- [ ] external dependencies
-  - [x] yarn
-  - [ ] node-gyp
-- [x] lint
-  - [x] eslint
-  - [x] prettier
-- [ ] dev
-  - [x] Stardoc
-  - [ ] CI
+1. Clear separation of concerns
 
 ## Install
 
@@ -86,129 +52,82 @@ javascript_respositories()
 
 ## Example
 
-**package.json**
-
-```json
-{
-  "type": "module"
-}
-```
-
-**lib.ts**
-
-```ts
-export const TEXT = "Hello world";
-```
-
 **main.ts**
 
 ```ts
-import { TEXT } from "./lib";
-console.log(TEXT);
+console.log("Hello world");
 ```
 
 **tsconfig.json**
 
-```
-{
-  "compilerOptions": {
-    "lib": ["dom"]
-  }
-}
+```json
+{ "compilerOptions": { "lib": ["dom"] } }
 ```
 
 **BUILD.bazel**
 
 ```bzl
 load("@better_rules_javascript//commonjs:rules.bzl", "cjs_root")
-load("@better_rules_javascript//javascript:rules.bzl", "tsconfig", "ts_library")
+load("@better_rules_javascript//javascript:rules.bzl", "js_library")
+load("@better_rules_javascript//typescript:rules.bzl", "tsconfig", "ts_library")
 load("@better_rules_javascript//nodejs:rules.bzl", "nodejs_binary")
 
-# package root
-cjs_root(
-  name = "root",
-  descriptors = ["package.json"],
-  package_name = "example",
+nodejs_binary(
+    name = "bin",
+    dep = ":lib",
+    main = "main.js",
 )
 
-# tsconfig
-tsconfig(
-    name = "tsconfig",
-    root = ":root",
-    src = "tsconfig.json",
-)
-
-# TypeScript library
 ts_library(
     name = "lib",
-    config = ":tsconfig",
-    root = ":root",
-    srcs = ["lib.ts"],
-)
-
-# TypeScript library
-ts_library(
-    name = "main",
     config = ":tsconfig",
     root = ":root",
     srcs = ["main.ts"],
     deps = [":lib"],
 )
 
-# Node.js executable
-nodejs_binary(
-    name = "bin",
-    dep = ":main",
-    main = "main.js",
-    node = "@better_rules_javascript//rules:nodejs",
+cjs_root(
+  name = "root",
+  package_name = "example",
+)
+
+js_library(
+    name = "tsconfig",
+    root = ":root",
+    srcs = ["tsconfig.json"],
 )
 ```
 
-Running
+Running:
 
 ```sh
-bazel run //:bin
-```
-
-outputs
-
-```txt
+$ bazel run //:bin
 Hello world
 ```
 
 ## Documentation
 
+### Features
+
+- [Angular](docs/angular.md)
+- [CommonJS](docs/commonjs.md)
+- [JavaScript](docs/javascript.md)
+- [Jest](docs/jest.md)
+- [Node.js](docs/nodejs.md)
+- [Npm](docs/npm.md)
+- [Prettier](docs/npm.md)
+- [Protobuf](docs/protobuf.md)
+- [Protobuf.js](docs/protobufjs.md)
+- [Rollup](docs/rollup.md)
+- [Rules](docs/rules.md)
+- [Ts-proto](docs/ts-proto.md)
+- [TypeScript](docs/typescript.md)
+- [Webpack](docs/webpack.md)
+
 ### Topics
 
-[CommonJS](docs/commonjs.md)
-
-[JavaScript](docs/javascript.md)
-
-[Node.js](docs/nodejs.md)
-
-[Npm](docs/npm.md)
-
-[Prettier](docs/prettier.md)
-
-[Protobuf](docs/protobuf.md)
-
-[Protobuf.js](docs/protobufjs.md)
-
-[Rollup](docs/rollup.md)
-
-[Ts-proto](docs/ts-proto.md)
-
-[TypeScript](docs/typescript.md)
-
-[Webpack](docs/webpack.md)
-
-### Stardoc
-
-See auto-generated [Stardoc documentation](docs/stardoc).
-
-## Differences with rules_nodejs
-
-See [Differences with rules_nodejs](docs/rules_nodejs.md).
+- [Differences with Rules_nodejs](docs/rules_nodejs.md)
+- [Module Resolution](docs/module.md)
 
 ## Developing
 
