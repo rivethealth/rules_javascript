@@ -3,14 +3,16 @@ load("//javascript:rules.bzl", "js_library")
 load("//nodejs:rules.bzl", "nodejs_modules_archive")
 load("//tools/npm:npm.bzl", "ROOTS")
 
-package(default_visibility = ["//visibility:public"])
-
-exports_files(["yarn.lock"])
+exports_files(
+    ["yarn.lock"],
+    visibility = [":__subpackages__"],
+)
 
 js_library(
     name = "eslint_config",
     srcs = [".eslintrc.js"],
     root = ":root",
+    visibility = [":__subpackages__"],
 )
 
 alias(
@@ -37,6 +39,7 @@ js_library(
     name = "prettier_config",
     srcs = ["prettierrc.yml"],
     root = ":root",
+    visibility = [":__subpackages__"],
 )
 
 alias(
@@ -48,6 +51,7 @@ cjs_root(
     name = "root",
     package_name = "@better-rules-javascript/root",
     descriptors = ["package.json"],
+    visibility = [":__subpackages__"],
 )
 
 test_suite(

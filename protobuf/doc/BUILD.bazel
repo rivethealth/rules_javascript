@@ -1,7 +1,5 @@
 load("//docs:rules.bzl", "stardoc")
 
-package(default_visibility = ["//visibility:public"])
-
 stardoc(
     "doc",
     "//protobuf:bzl",
@@ -10,4 +8,5 @@ stardoc(
         "//protobuf:providers.bzl",
         "//protobuf:rules.bzl",
     ],
+    visibility = ["//docs:__subpackages__"],
 )

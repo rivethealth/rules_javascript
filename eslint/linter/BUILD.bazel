@@ -1,16 +1,35 @@
-package(default_visibility = ["//visibility:public"])
+load("//commonjs:rules.bzl", "cjs_root")
+load("//javascript:rules.bzl", "js_library")
+load("//typescript:rules.bzl", "ts_library")
 
-filegroup(
-    name = "descriptors",
-    srcs = ["package.json"],
+ts_library(
+    name = "lib",
+    srcs = glob(["src/**/*.ts"]),
+    compile_deps = ["@better_rules_javascript_npm//eslint:lib"],
+    compiler = "//tools/typescript:tsc",
+    config = "tsconfig.json",
+    config_dep = ":tsconfig",
+    root = ":root",
+    visibility = ["//visibility:public"],
+    deps = [
+        "@better_rules_javascript//bazel/worker:lib",
+        "@better_rules_javascript_npm//@types/argparse:lib",
+        "@better_rules_javascript_npm//@types/eslint:lib",
+        "@better_rules_javascript_npm//@types/node:lib",
+        "@better_rules_javascript_npm//argparse:lib",
+    ],
 )
 
-filegroup(
+cjs_root(
+    name = "root",
+    package_name = "@better-rules-javascript/eslint-format",
+    descriptors = ["package.json"],
+    visibility = ["//visibility:public"],
+)
+
+js_library(
     name = "tsconfig",
     srcs = ["tsconfig.json"],
-)
-
-filegroup(
-    name = "src",
-    srcs = glob(["src/**/*.ts"]),
+    root = ":root",
+    deps = ["//tools/typescript:tsconfig"],
 )

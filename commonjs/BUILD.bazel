@@ -1,14 +1,14 @@
 load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
 
-package(default_visibility = ["//visibility:public"])
-
 exports_files(
     glob(["**/*.bzl"]),
+    visibility = ["//commonjs/doc:__subpackages__"],
 )
 
 bzl_library(
     name = "bzl",
     srcs = glob(["**/*.bzl"]),
+    visibility = ["//visibility:public"],
     deps = [
         "//util:bzl",
         "@rules_file//util:bzl",
@@ -18,4 +18,5 @@ bzl_library(
 test_suite(
     name = "test",
     tests = ["//commonjs/test"],
+    visibility = ["//:__subpackages__"],
 )

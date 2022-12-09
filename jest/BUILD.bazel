@@ -1,20 +1,19 @@
 load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
 
-package(default_visibility = ["//visibility:public"])
-
-filegroup(
-    name = "runner",
-    srcs = ["runner.sh.tpl"],
+exports_files(
+    glob(["**/*.bzl"]),
+    visibility = ["//javascript/doc:__subpackages__"],
 )
 
-filegroup(
-    name = "haste_map",
-    srcs = ["haste-map.js"],
+exports_files(
+    ["runner.sh.tpl"],
+    visibility = ["//visibility:public"],
 )
 
 bzl_library(
     name = "bzl",
     srcs = glob(["**/*.bzl"]),
+    visibility = ["//visibility:public"],
     deps = [
         "//commonjs:bzl",
         "//javascript:bzl",
@@ -27,4 +26,5 @@ bzl_library(
 test_suite(
     name = "test",
     tests = ["//jest/test"],
+    visibility = ["//:__subpackages__"],
 )

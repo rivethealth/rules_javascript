@@ -15,11 +15,11 @@ http_archive(
 
 # File
 
-FILE_VERSION = "5448dc4167d39166c120c3ab56cf31631f668e8f"
+FILE_VERSION = "a8c11bbae6d8a0fa2c12941b4dbf113aedb44463"
 
 http_archive(
     name = "rules_file",
-    sha256 = "4cba987d5f3394e810e719b81e50ec4f0b4a2044d5660c4575dbe865a70f83c2",
+    sha256 = "46ee86a9df485feaaf561f0d42cd0856edb8d6d8667eb12d5514e4f1b1ad21aa",
     strip_prefix = "rules_file-%s" % FILE_VERSION,
     url = "https://github.com/hello-seer/rules_file/archive/%s.zip" % FILE_VERSION,
 )

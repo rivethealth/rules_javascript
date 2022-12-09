@@ -1,8 +1,7 @@
-package(default_visibility = ["//visibility:public"])
-
 filegroup(
     name = "buildifier_files",
     srcs = glob(["files/**/*.bazel", "files/**/*.bzl"]),
+    visibility = ["//visibility:public"],
 )
 
 filegroup(
@@ -14,6 +13,7 @@ filegroup(
         "files/**/*.mts",
         "files/**/*.ts",
     ], ["files/**/dist/**"]),
+    visibility = ["//visibility:public"],
 )
 
 filegroup(
@@ -29,9 +29,11 @@ filegroup(
         "files/**/*.ts",
         "files/**/*.yml",
     ], ["files/**/dist/**"]),
+    visibility = ["//visibility:public"],
 )
 
 filegroup(
     name = "common",
     srcs = glob(["files/**"], ["files/**/docs/**", "files/**/test/**"]) + glob(["files/test/**"]),
+    visibility = ["//visibility:public"],
 )

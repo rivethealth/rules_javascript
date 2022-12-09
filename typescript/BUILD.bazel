@@ -3,11 +3,10 @@ load("@better_rules_javascript//commonjs:rules.bzl", "cjs_root")
 load("@better_rules_javascript//nodejs:rules.bzl", "nodejs_binary")
 load("//javascript:rules.bzl", "js_library")
 
-package(default_visibility = ["//visibility:public"])
-
 bzl_library(
     name = "bzl",
     srcs = glob(["**/*.bzl"]),
+    visibility = ["//visibility:public"],
     deps = [
         "//commonjs:bzl",
         "//javascript:bzl",
@@ -21,9 +20,11 @@ bzl_library(
 test_suite(
     name = "test",
     tests = ["//typescript/test"],
+    visibility = ["//:__subpackages__"],
 )
 
 alias(
     name = "tsc",
     actual = "//typescript/default:tsc",
+    visibility = ["//visibility:public"],
 )

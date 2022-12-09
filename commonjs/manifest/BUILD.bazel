@@ -6,8 +6,6 @@ load("//rollup:rules.bzl", "configure_rollup", "rollup_bundle")
 load("//tools/javascript:rules.bzl", "js_gen")
 load("//typescript:rules.bzl", "ts_library")
 
-package(default_visibility = ["//visibility:public"])
-
 rollup_bundle(
     name = "bundle",
     dep = ":lib",
@@ -20,6 +18,7 @@ generate(
     data = [":gen_bundle"],
     data_prefix = "dist",
     data_strip_prefix = "bundle",
+    visibility = ["//:__subpackages__"],
 )
 
 js_gen(
@@ -71,6 +70,7 @@ nodejs_simple_binary(
     name = "bin",
     src = "dist/bundle.js",
     node = "//tools/nodejs",
+    visibility = ["//visibility:public"],
 )
 
 configure_rollup(

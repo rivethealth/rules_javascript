@@ -134,7 +134,7 @@ nodejs_simple_binary = rule(
         ),
         "_runner": attr.label(
             allow_single_file = True,
-            default = "//nodejs:simple_runner",
+            default = "simple-runner.sh.tpl",
         ),
     },
     doc = "Node.js executable, from a single file.",
@@ -262,7 +262,7 @@ nodejs_binary = rule(
         ),
         "_runner": attr.label(
             allow_single_file = True,
-            default = "//nodejs:runner",
+            default = "runner.sh.tpl",
         ),
         "_runtime": attr.label(
             default = "//nodejs/runtime:dist_lib",
@@ -414,7 +414,7 @@ nodejs_install = rule(
         ),
         "_runner": attr.label(
             allow_single_file = True,
-            default = ":install_runner",
+            default = "install-runner.sh.tpl",
         ),
         "archive": attr.label(
             allow_single_file = [".tar"],
@@ -525,7 +525,7 @@ nodejs_binary_archive = rule(
         ),
         "_archive_runner": attr.label(
             allow_single_file = True,
-            default = "//nodejs:archive_runner",
+            default = "archive-runner.sh.tpl",
         ),
         "_manifest": attr.label(
             cfg = "exec",

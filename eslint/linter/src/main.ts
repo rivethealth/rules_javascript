@@ -74,7 +74,7 @@ workerMain(async (a) => {
         return { exitCode: 2, output: errors.join("\n") };
       }
     } catch (error) {
-      return { exitCode: 1, output: String(error?.stack || error) };
+      return { exitCode: 1, output: error instanceof Error ? error.stack! : String(error) };
     }
     return { exitCode: 0, output: "" };
   };

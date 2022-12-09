@@ -1,58 +1,15 @@
 load("@rules_file//generate:providers.bzl", "FormatterInfo")
 load("//commonjs:providers.bzl", "CjsInfo")
-load("//commonjs:rules.bzl", "cjs_root")
-load("//javascript:rules.bzl", "js_export", "js_library")
+load("//javascript:rules.bzl", "js_export")
 load("//javascript:providers.bzl", "JsInfo")
 load("//nodejs:rules.bzl", "nodejs_binary")
-load("//typescript:rules.bzl", "ts_library")
 load("//util:path.bzl", "runfile_path")
 
 def configure_eslint(name, config, config_dep, dep = "@better_rules_javascript//eslint:eslint_lib", plugins = [], visibility = None):
-    cjs_root(
-        name = "%s.root" % name,
-        package_name = "@better-rules-javascript/eslint-format",
-        descriptors = ["@better_rules_javascript//eslint/linter:descriptors"],
-        path = "%s.root" % name,
-        prefix = "%s.root" % name,
-        strip_prefix = "/eslint/linter",
-        visibility = ["//visibility:private"],
-    )
-
-    js_library(
-        name = "%s.config" % name,
-        root = ":%s.root" % name,
-        srcs = ["@better_rules_javascript//eslint/linter:tsconfig"],
-        deps = ["@better_rules_javascript//tools/typescript:tsconfig"],
-        strip_prefix = "/eslint/linter",
-        prefix = "%s.root" % name,
-        visibility = ["//visibility:private"],
-    )
-
-    ts_library(
-        name = "%s.lib" % name,
-        srcs = ["@better_rules_javascript//eslint/linter:src"],
-        strip_prefix = "/eslint/linter",
-        compiler = "@better_rules_javascript//typescript:tsc",
-        config = "tsconfig.json",
-        config_dep = ":%s.config" % name,
-        deps = [
-            dep,
-            "@better_rules_javascript//bazel/worker:lib",
-            "@better_rules_javascript_npm//argparse:lib",
-            "@better_rules_javascript_npm//@types/argparse:lib",
-            "@better_rules_javascript_npm//@types/eslint:lib",
-            "@better_rules_javascript_npm//@types/node:lib",
-        ],
-        declaration_prefix = "%s.root" % name,
-        js_prefix = "%s.root" % name,
-        src_prefix = "%s.root" % name,
-        root = "%s.root" % name,
-        visibility = ["//visibility:private"],
-    )
-
     js_export(
         name = "%s.main" % name,
-        dep = ":%s.lib" % name,
+        dep = "@better_rules_javascript//eslint/linter:lib",
+        deps = [dep],
         extra_deps = [config_dep],
         global_deps = plugins,
         visibility = ["//visibility:private"],

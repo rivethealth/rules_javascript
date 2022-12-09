@@ -1,19 +1,28 @@
 load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
 load("//nodejs:rules.bzl", "nodejs_binary")
 
-package(default_visibility = ["//visibility:public"])
+exports_files(
+    glob(["**/*.bzl"]),
+    visibility = ["//npm/doc:__subpackages__"],
+)
 
-exports_files([
-    "yarn-audit-runner.sh.tpl",
-    "yarn-resolve.sh.tpl",
-])
+exports_files(
+    [
+        "yarn-audit-runner.sh.tpl",
+        "yarn-resolve.sh.tpl",
+    ],
+    visibility = ["//visibility:public"],
+)
 
 bzl_library(
     name = "bzl",
     srcs = glob(["**/*.bzl"]),
+    visibility = ["//visibility:public"],
+    visibility = ["//visibility:public"],
     deps = [
         "//commonjs:bzl",
         "//javascript:bzl",
+        "//third-party:repo_bzl",
         "//util:bzl",
         "@bazel_skylib//lib:shell",
     ],
@@ -24,4 +33,5 @@ nodejs_binary(
     dep = "@better_rules_javascript_npm//@yarnpkg/cli-dist:lib",
     main = "bin/yarn.js",
     node = "//tools/nodejs",
+    visibility = ["//visibility:public"],
 )
