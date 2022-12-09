@@ -6,4 +6,4 @@ import { ExampleModule } from "./module";
 
 platformBrowserDynamic()
   .bootstrapModule(ExampleModule)
-  .catch((e) => console.error(e));
+  .catch((error) => console.error(error));

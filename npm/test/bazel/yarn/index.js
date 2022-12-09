@@ -1,6 +1,6 @@
 console.time("require");
 const express = require("express");
-const http = require("http");
+const http = require("node:http");
 console.timeEnd("require");
 
 const app = express();

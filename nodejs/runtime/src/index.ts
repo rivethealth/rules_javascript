@@ -10,5 +10,5 @@ process.emit = <any>function (name: string, data: any) {
     return;
   }
 
-  return emit.apply(this, arguments);
+  return Reflect.apply(emit, this, arguments);
 };

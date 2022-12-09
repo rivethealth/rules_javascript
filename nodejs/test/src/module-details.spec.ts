@@ -7,7 +7,7 @@ test("Module details", () => {
     ["run", "module-details:bin"],
     {
       cwd: "nodejs/test/bazel",
-      encoding: "utf-8",
+      encoding: "utf8",
       stdio: ["ignore", "pipe", "inherit"],
       ...spawnOptions(),
     },

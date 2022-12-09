@@ -9,5 +9,5 @@ process.emit = function (name, data) {
     if (name === "warning" && data?.name === "ExperimentalWarning") {
         return;
     }
-    return emit.apply(this, arguments);
+    return Reflect.apply(emit, this, arguments);
 };

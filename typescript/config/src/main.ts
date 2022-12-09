@@ -1,7 +1,7 @@
 import { JsonFormat } from "@better-rules-javascript/util-json";
 import { ArgumentParser } from "argparse";
-import * as fs from "fs";
-import * as path from "path";
+import * as fs from "node:fs";
+import * as path from "node:path";
 
 const parser = new ArgumentParser({
   prog: "typescript-config",
@@ -93,7 +93,7 @@ interface Args {
 
   const content = JsonFormat.stringify(JsonFormat.any(), tsconfig);
   await fs.promises.writeFile(args.output, content, "utf8");
-})().catch((e) => {
-  console.error(e);
+})().catch((error) => {
+  console.error(error);
   process.exit(1);
 });

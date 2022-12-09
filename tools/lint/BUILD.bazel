@@ -40,9 +40,9 @@ alias(
     visibility = ["//:__subpackages__"],
 )
 
-alias(
+test_suite(
     name = "lint_test",
-    actual = ":eslint_test",
+    tests = [":eslint_test"],
     visibility = ["//:__subpackages__"],
 )
 

@@ -11,8 +11,8 @@ export class StackSet<T> {
   }
 
   pop() {
-    if (!this.stack.length) {
-      return undefined;
+    if (this.stack.length === 0) {
+      return;
     }
     const result = this.stack.pop()!;
     this.set.delete(result);

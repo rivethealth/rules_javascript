@@ -79,7 +79,7 @@ class AnyJsonFormat implements JsonFormat<any> {
   }
 
   toJson(value: any) {
-    if (typeof value !== "object" || value === null || value instanceof Array) {
+    if (typeof value !== "object" || value === null || Array.isArray(value)) {
       return value;
     }
     const json = <Json>{};

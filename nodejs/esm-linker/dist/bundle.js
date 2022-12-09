@@ -2,11 +2,11 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-var path = require('path');
-var fs = require('fs');
-var Module = require('module');
-var os = require('os');
-var url = require('url');
+var path = require('node:path');
+var fs = require('node:fs');
+var Module = require('node:module');
+var os = require('node:os');
+var url = require('node:url');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
@@ -103,7 +103,7 @@ class AnyJsonFormat {
         return json;
     }
     toJson(value) {
-        if (typeof value !== "object" || value === null || value instanceof Array) {
+        if (typeof value !== "object" || value === null || Array.isArray(value)) {
             return value;
         }
         const json = {};
@@ -346,7 +346,7 @@ async function resolve(specifier, context, defaultResolve) {
     try {
         parentPath = url__namespace.fileURLToPath(context.parentURL);
     }
-    catch (e) { }
+    catch { }
     if (parentPath === undefined ||
         Module__default["default"].builtinModules.includes(specifier) ||
         specifier.startsWith("node:") ||

@@ -1,7 +1,7 @@
 import { Resolver } from "@better-rules-javascript/commonjs-package/resolve";
-import * as fs from "fs";
-import Module from "module";
-import * as path from "path";
+import * as fs from "node:fs";
+import Module from "node:module";
+import * as path from "node:path";
 
 function parse(resolver: Resolver) {
   return (path_: string) => {
@@ -12,19 +12,19 @@ function parse(resolver: Resolver) {
       );
       const packageContent = fs.readFileSync(
         path.join(root, "package.json"),
-        "utf-8",
+        "utf8",
       );
       const packageJson = JSON.parse(packageContent);
       if (!packageJson.name) {
-        return undefined;
+        return;
       }
       return {
         basedir: root,
         name: packageJson.name,
         path: path_.slice(root.length + 1),
       };
-    } catch (e) {
-      console.error(e);
+    } catch (error) {
+      console.error(error);
     }
   };
 }

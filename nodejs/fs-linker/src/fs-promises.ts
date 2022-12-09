@@ -1,4 +1,4 @@
-import { promises as fsPromises } from "fs";
+import { promises as fsPromises } from "node:fs";
 import { replaceArguments } from "./fs";
 import { Vfs } from "./vfs";
 

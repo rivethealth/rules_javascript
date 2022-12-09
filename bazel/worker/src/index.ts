@@ -1,5 +1,5 @@
 import { JsonFormat } from "@better-rules-javascript/util-json";
-import * as fs from "fs";
+import * as fs from "node:fs";
 import { WorkRequest, WorkResponse } from "./protocol";
 import { lines } from "./stream";
 
@@ -84,8 +84,8 @@ async function runWorker(worker: Worker) {
             gc();
           }
         },
-        (e) => {
-          console.error(e.stack);
+        (error) => {
+          console.error(error.stack);
           process.exit(1);
         },
       );
@@ -113,20 +113,20 @@ export async function workerMain(workerFactory: WorkerFactory) {
       await runWorker(worker);
     } else if (last.startsWith("@")) {
       const worker = await workerFactory(process.argv.slice(2, -1));
-      const file = await fs.promises.readFile(last.slice(1), "utf-8");
+      const file = await fs.promises.readFile(last.slice(1), "utf8");
       const args = file.trim().split("\n");
       await runOnce(worker, args);
     } else {
       const worker = await workerFactory([]);
       await runOnce(worker, process.argv.slice(2));
     }
-  } catch (e) {
+  } catch (error) {
     console.error(
-      e instanceof CliError
-        ? e.message
-        : e instanceof Error
-        ? e.stack
-        : String(e),
+      error instanceof CliError
+        ? error.message
+        : error instanceof Error
+        ? error.stack
+        : String(error),
     );
     process.exit(1);
   }

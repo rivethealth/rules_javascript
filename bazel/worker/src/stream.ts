@@ -10,10 +10,10 @@ export async function* lines(
       if (j < 0) {
         break;
       }
-      yield data.substring(i, j + 1);
+      yield data.slice(i, j + 1);
       i = j + 1;
     }
-    data = data.substring(i);
+    data = data.slice(i);
   }
   if (data) {
     yield data;

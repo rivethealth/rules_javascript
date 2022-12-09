@@ -3,8 +3,8 @@ import { createVfs } from "@better-rules-javascript/nodejs-fs-linker/package";
 import { WrapperVfs } from "@better-rules-javascript/nodejs-fs-linker/vfs";
 import { JsonFormat } from "@better-rules-javascript/util-json";
 import { ArgumentParser } from "argparse";
-import * as fs from "fs";
-import * as path from "path";
+import * as fs from "node:fs";
+import * as path from "node:path";
 import * as ts from "typescript";
 import { formatDiagnostics } from "./diagnostic";
 
@@ -43,9 +43,9 @@ export class JsWorker {
       },
     )!;
     const errors = parsed.errors.filter(
-      (diagnostic) => diagnostic.code !== 18002,
+      (diagnostic) => diagnostic.code !== 18_002,
     );
-    if (errors.length) {
+    if (errors.length > 0) {
       throw new JsWorkerError(formatDiagnostics(errors));
     }
     return parsed;
@@ -56,7 +56,7 @@ export class JsWorker {
       PackageTree.json(),
       await fs.promises.readFile(manifest, "utf8"),
     );
-    const vfs = createVfs(packageTree, undefined);
+    const vfs = createVfs(packageTree);
     this.vfs.delegate = vfs;
   }
 
@@ -106,7 +106,7 @@ async function transpileFile(src: string, parsed: ts.ParsedCommandLine) {
     fileName: name,
     compilerOptions: parsed.options,
   });
-  if (result.diagnostics!.length) {
+  if (result.diagnostics!.length > 0) {
     throw new JsWorkerError(formatDiagnostics(result.diagnostics!));
   }
 

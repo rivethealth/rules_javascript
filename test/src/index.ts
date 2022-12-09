@@ -12,7 +12,7 @@ export async function bazelBin(
   options: string[] = [],
 ): Promise<string> {
   const result = spawnSync("bazel", ["info", ...options, "bazel-bin"], {
-    encoding: "utf-8",
+    encoding: "utf8",
     cwd: dir,
     stdio: ["ignore", "pipe", "inherit"],
     ...spawnOptions(),

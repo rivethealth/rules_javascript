@@ -13,7 +13,7 @@ function createImport(
   imports: ts.Statement[],
   path: string,
 ): ts.Expression {
-  const identifier = factory.createTempVariable(undefined);
+  const identifier = factory.createTempVariable();
   imports.push(
     factory.createImportDeclaration(
       undefined,

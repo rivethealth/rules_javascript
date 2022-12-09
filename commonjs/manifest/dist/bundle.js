@@ -1,8 +1,9 @@
 'use strict';
 
-var fs = require('fs');
+var fs = require('node:fs');
 var assert = require('assert');
 var util = require('util');
+var fs$1 = require('fs');
 var path = require('path');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
@@ -26,9 +27,9 @@ function _interopNamespace(e) {
 }
 
 var fs__namespace = /*#__PURE__*/_interopNamespace(fs);
-var fs__default = /*#__PURE__*/_interopDefaultLegacy(fs);
 var assert__default = /*#__PURE__*/_interopDefaultLegacy(assert);
 var util__default = /*#__PURE__*/_interopDefaultLegacy(util);
+var fs__default = /*#__PURE__*/_interopDefaultLegacy(fs$1);
 var path__default = /*#__PURE__*/_interopDefaultLegacy(path);
 
 var JsonFormat;
@@ -100,7 +101,7 @@ class AnyJsonFormat {
         return json;
     }
     toJson(value) {
-        if (typeof value !== "object" || value === null || value instanceof Array) {
+        if (typeof value !== "object" || value === null || Array.isArray(value)) {
             return value;
         }
         const json = {};
@@ -252,10 +253,10 @@ async function* lines(stream) {
             if (j < 0) {
                 break;
             }
-            yield data.substring(i, j + 1);
+            yield data.slice(i, j + 1);
             i = j + 1;
         }
-        data = data.substring(i);
+        data = data.slice(i);
     }
     if (data) {
         yield data;
@@ -298,8 +299,8 @@ async function runWorker(worker) {
                 if (typeof gc !== "undefined") {
                     gc();
                 }
-            }, (e) => {
-                console.error(e.stack);
+            }, (error) => {
+                console.error(error.stack);
                 process.exit(1);
             });
         }
@@ -325,7 +326,7 @@ async function workerMain(workerFactory) {
         }
         else if (last.startsWith("@")) {
             const worker = await workerFactory(process.argv.slice(2, -1));
-            const file = await fs__namespace.promises.readFile(last.slice(1), "utf-8");
+            const file = await fs__namespace.promises.readFile(last.slice(1), "utf8");
             const args = file.trim().split("\n");
             await runOnce(worker, args);
         }
@@ -334,12 +335,12 @@ async function workerMain(workerFactory) {
             await runOnce(worker, process.argv.slice(2));
         }
     }
-    catch (e) {
-        console.error(e instanceof CliError
-            ? e.message
-            : e instanceof Error
-                ? e.stack
-                : String(e));
+    catch (error) {
+        console.error(error instanceof CliError
+            ? error.message
+            : error instanceof Error
+                ? error.stack
+                : String(error));
         process.exit(1);
     }
 }
@@ -351,11 +352,14 @@ workerMain(async () => {
         try {
             await worker$1.run(a);
         }
-        catch (e) {
-            if (e instanceof ManifestWorkerError) {
-                return { exitCode: 2, output: e.message };
+        catch (error) {
+            if (error instanceof ManifestWorkerError) {
+                return { exitCode: 2, output: error.message };
             }
-            return { exitCode: 1, output: String(e instanceof Error ? e.stack : e) };
+            return {
+                exitCode: 1,
+                output: String(error instanceof Error ? error.stack : error),
+            };
         }
         return { exitCode: 0, output: "" };
     };

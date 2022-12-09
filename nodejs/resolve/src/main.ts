@@ -108,7 +108,7 @@ async function main() {
   process.stdout.write(printStarlark(file));
 }
 
-main().catch((e) => {
-  console.error(e.stack);
+main().catch((error) => {
+  console.error(error.stack);
   process.exit(1);
 });

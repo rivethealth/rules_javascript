@@ -1,6 +1,6 @@
 import { PackageTree } from "@better-rules-javascript/commonjs-package";
 import { JsonFormat } from "@better-rules-javascript/util-json";
-import * as fs from "fs";
+import * as fs from "node:fs";
 import { patchFs } from "./fs";
 import { patchFsPromises } from "./fs-promises";
 import { patchModule } from "./module";
@@ -25,6 +25,6 @@ if (process.env.NODE_FS_TRACE === "true") {
   process.stderr.write(vfs.print());
 }
 
-patchFs(vfs, require("fs"));
-patchFsPromises(vfs, require("fs").promises);
-patchModule(require("module"));
+patchFs(vfs, require("node:fs"));
+patchFsPromises(vfs, require("node:fs").promises);
+patchModule(require("node:module"));

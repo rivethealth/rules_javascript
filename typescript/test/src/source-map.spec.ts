@@ -4,7 +4,7 @@ import * as childProcess from "node:child_process";
 test("Compiles TSX to JSX", () => {
   const result = childProcess.spawnSync("bazel", ["run", "source-map:bin"], {
     cwd: "typescript/test/bazel",
-    encoding: "utf-8",
+    encoding: "utf8",
     stdio: "pipe",
     ...spawnOptions(),
   });

@@ -1,7 +1,7 @@
 import { workerMain } from "@better-rules-javascript/bazel-worker";
 import { ArgumentParser } from "argparse";
 import { ESLint, Linter } from "eslint";
-import * as fs from "fs";
+import * as fs from "node:fs";
 
 class EslintWorker {
   constructor(private linter: Linter, private readonly options: any) {}
@@ -70,11 +70,11 @@ workerMain(async (a) => {
   return async (a) => {
     try {
       const errors = await worker.run(a);
-      if (errors.length) {
+      if (errors.length > 0) {
         return { exitCode: 2, output: errors.join("\n") };
       }
-    } catch (e) {
-      return { exitCode: 1, output: String(e?.stack || e) };
+    } catch (error) {
+      return { exitCode: 1, output: String(error?.stack || error) };
     }
     return { exitCode: 0, output: "" };
   };

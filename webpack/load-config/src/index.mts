@@ -1,5 +1,5 @@
 import configure from "@better-rules-javascript/webpack-config";
-import * as path from "path";
+import * as path from "node:path";
 
 const runfilesDir = process.env.RUNFILES_DIR;
 const configRunfilePath = process.env.WEBPACK_CONFIG;

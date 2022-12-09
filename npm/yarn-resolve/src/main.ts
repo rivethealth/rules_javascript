@@ -3,8 +3,8 @@ import { JsonFormat } from "@better-rules-javascript/util-json";
 import { printStarlark } from "@better-rules-javascript/util-starlark";
 import { structUtils } from "@yarnpkg/core";
 import { ArgumentParser } from "argparse";
-import * as fs from "fs";
-import * as path from "path";
+import * as fs from "node:fs";
+import * as path from "node:path";
 import { toStarlarkFile } from "./bzl";
 import { NpmRegistryClient } from "./npm";
 import { getPackage, ResolvedNpmPackage, resolvePackages } from "./resolve";
@@ -56,7 +56,7 @@ import { getPackageInfos, yarnProject } from "./yarn";
   const starlarkFile = toStarlarkFile(bzlPackages, bzlRoots);
   await fs.promises.writeFile(args.output, printStarlark(starlarkFile));
   console.error(`Created ${bzlPackages.size} packages`);
-})().catch((e) => {
-  console.error(e);
+})().catch((error) => {
+  console.error(error);
   process.exit(1);
 });

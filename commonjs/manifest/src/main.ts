@@ -7,11 +7,14 @@ workerMain(async () => {
   return async (a) => {
     try {
       await worker.run(a);
-    } catch (e) {
-      if (e instanceof ManifestWorkerError) {
-        return { exitCode: 2, output: e.message };
+    } catch (error) {
+      if (error instanceof ManifestWorkerError) {
+        return { exitCode: 2, output: error.message };
       }
-      return { exitCode: 1, output: String(e instanceof Error ? e.stack : e) };
+      return {
+        exitCode: 1,
+        output: String(error instanceof Error ? error.stack : error),
+      };
     }
     return { exitCode: 0, output: "" };
   };

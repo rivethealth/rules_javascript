@@ -4,7 +4,7 @@ import * as childProcess from "node:child_process";
 test("Works with directory", () => {
   const result = childProcess.spawnSync("bazel", ["run", "directory:bin"], {
     cwd: "commonjs/test/bazel",
-    encoding: "utf-8",
+    encoding: "utf8",
     stdio: ["ignore", "pipe", "inherit"],
     ...spawnOptions(),
   });

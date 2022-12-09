@@ -1,8 +1,8 @@
 'use strict';
 
 var argparse = require('argparse');
-var fs = require('fs');
-var path = require('path');
+var fs = require('node:fs');
+var path = require('node:path');
 
 function _interopNamespace(e) {
     if (e && e.__esModule) return e;
@@ -94,7 +94,7 @@ class AnyJsonFormat {
         return json;
     }
     toJson(value) {
-        if (typeof value !== "object" || value === null || value instanceof Array) {
+        if (typeof value !== "object" || value === null || Array.isArray(value)) {
             return value;
         }
         const json = {};
@@ -261,7 +261,7 @@ parser.add_argument("output");
     }
     const content = JsonFormat.stringify(JsonFormat.any(), tsconfig);
     await fs__namespace.promises.writeFile(args.output, content, "utf8");
-})().catch((e) => {
-    console.error(e);
+})().catch((error) => {
+    console.error(error);
     process.exit(1);
 });

@@ -61,7 +61,7 @@ function printDict(value: StarlarkDict, indent: string | undefined): string {
     if (indent !== undefined) {
       output += indent + "    ";
     }
-    output += printValue(k, undefined);
+    output += printValue(k);
     output += ": ";
     output += printValue(v, indent === undefined ? indent : indent + "    ");
     output += ",";
@@ -95,7 +95,7 @@ function printValue(value: StarlarkValue, indent: string | undefined): string {
   if (value instanceof StarlarkString) {
     return printString(value);
   }
-  throw new Error();
+  throw new Error("Unreognized value");
 }
 
 function printVariable(value: StarlarkVariable): string {
@@ -115,7 +115,7 @@ function printStatement(value: StarlarkStatement): string {
   if (value instanceof StarlarkEqualStatement) {
     return printEqualStatement(value);
   }
-  throw new Error();
+  throw new Error("Unrecognized value");
 }
 
 export function printStarlark(file: StarlarkFile): string {

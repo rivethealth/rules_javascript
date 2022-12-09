@@ -1,5 +1,5 @@
 import { Config } from "@jest/types";
-import * as path from "path";
+import * as path from "node:path";
 import { Configuration } from "./config";
 import { touch } from "./fs";
 

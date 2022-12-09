@@ -20,5 +20,5 @@ function formatDiagnostic(diagnostic: ts.Diagnostic): string {
 export function formatDiagnostics(diagnostics: ts.Diagnostic[]): string {
   return diagnostics
     .map((diagnostic) => `${formatDiagnostic(diagnostic)}\n`)
-    .join();
+    .join(",");
 }

@@ -2,11 +2,11 @@ import { PackageTree } from "@better-rules-javascript/commonjs-package";
 import { Resolver } from "@better-rules-javascript/commonjs-package/resolve";
 import { JsonFormat } from "@better-rules-javascript/util-json";
 import { lazy } from "@better-rules-javascript/util/cache";
-import * as fs from "fs";
-import Module from "module";
-import * as os from "os";
-import * as path from "path";
-import * as url from "url";
+import * as fs from "node:fs";
+import Module from "node:module";
+import * as os from "node:os";
+import * as path from "node:path";
+import * as url from "node:url";
 
 const manifestPath = process.env.NODE_PACKAGE_MANIFEST;
 if (!manifestPath) {
@@ -42,7 +42,7 @@ export async function resolve(
   let parentPath: string | undefined;
   try {
     parentPath = url.fileURLToPath(context.parentURL);
-  } catch (e) {}
+  } catch {}
 
   if (
     parentPath === undefined ||

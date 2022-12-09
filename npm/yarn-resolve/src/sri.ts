@@ -1,4 +1,4 @@
-import { createHash } from "crypto";
+import { createHash } from "node:crypto";
 
 export function getIntegrity(buffer: ArrayBuffer) {
   const hash = createHash("sha256");

@@ -1,5 +1,5 @@
 import { PackageTree } from "@better-rules-javascript/commonjs-package";
-import * as path from "path";
+import * as path from "node:path";
 import { VfsImpl, VfsNode } from "./vfs";
 
 class DependencyConflictError extends Error {}
@@ -46,10 +46,7 @@ function addDep(root: VfsNode.Path, name: string, path: string) {
   });
 }
 
-export function createVfs(
-  packageTree: PackageTree,
-  base: string | undefined,
-): VfsImpl {
+export function createVfs(packageTree: PackageTree, base?: string): VfsImpl {
   const resolve = (path_: string) =>
     base === undefined ? path.resolve(path_) : path.resolve(base, path_);
 
@@ -73,9 +70,9 @@ export function createVfs(
     for (const [name, dep] of package_.deps) {
       try {
         addDep(nodeModules, name, resolve(dep));
-      } catch (e) {
-        if (!(e instanceof DependencyConflictError)) {
-          throw e;
+      } catch (error) {
+        if (!(error instanceof DependencyConflictError)) {
+          throw error;
         }
         throw new Error(
           `Dependency "${name}" of "${path}" conflicts with another`,
@@ -85,9 +82,9 @@ export function createVfs(
     for (const [name, dep] of packageTree.globals.entries()) {
       try {
         addDep(nodeModules, name, resolve(dep));
-      } catch (e) {
-        if (!(e instanceof DependencyConflictError)) {
-          throw e;
+      } catch (error) {
+        if (!(error instanceof DependencyConflictError)) {
+          throw error;
         }
       }
     }

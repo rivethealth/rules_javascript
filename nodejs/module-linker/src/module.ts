@@ -1,6 +1,6 @@
 import { Resolver } from "@better-rules-javascript/commonjs-package/resolve";
-import Module from "module";
-import * as path from "path";
+import Module from "node:module";
+import * as path from "node:path";
 
 function resolveFilename(resolver: Resolver, delegate: Function): Function {
   return function (
@@ -21,7 +21,7 @@ function resolveFilename(resolver: Resolver, delegate: Function): Function {
       request.startsWith("/") ||
       request.startsWith("#")
     ) {
-      return delegate.apply(this, arguments);
+      return Reflect.apply(delegate, this, arguments);
     }
 
     const resolved = resolver.resolve(parent.path, request);

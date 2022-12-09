@@ -42,10 +42,10 @@ async function* lines(
       if (j < 0) {
         break;
       }
-      yield data.substring(i, j + 1);
+      yield data.slice(i, j + 1);
       i = j + 1;
     }
-    data = data.substring(i);
+    data = data.slice(i);
   }
   if (data) {
     yield data;
@@ -54,18 +54,21 @@ async function* lines(
 
 function parseNotification(string: string): IbazelNotification {
   switch (string) {
-    case "IBAZEL_BUILD_STARTED":
+    case "IBAZEL_BUILD_STARTED": {
       return { type: IbazelNotification.STARTED };
-    case "IBAZEL_BUILD_COMPLETED FAILURE":
+    }
+    case "IBAZEL_BUILD_COMPLETED FAILURE": {
       return {
         type: IbazelNotification.COMPLETED,
         status: IbazelStatus.FAILURE,
       };
-    case "IBAZEL_BUILD_COMPLETED SUCCESS":
+    }
+    case "IBAZEL_BUILD_COMPLETED SUCCESS": {
       return {
         type: IbazelNotification.COMPLETED,
         status: IbazelStatus.SUCCESS,
       };
+    }
   }
   throw new Error(`Unrecognized notification: ${string}`);
 }

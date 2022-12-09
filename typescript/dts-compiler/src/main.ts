@@ -32,11 +32,12 @@ class DtsWorker {
 
     const result = program.emit();
 
-    const diagnostics = ts
-      .getPreEmitDiagnostics(program)
-      .concat(result.diagnostics);
+    const diagnostics = [
+      ...ts.getPreEmitDiagnostics(program),
+      ...result.diagnostics,
+    ];
 
-    if (!diagnostics.length) {
+    if (diagnostics.length === 0) {
       return;
     }
 
@@ -70,8 +71,8 @@ workerMain(async () => {
   return async (a) => {
     try {
       worker.run(a);
-    } catch (e) {
-      return { exitCode: 1, output: String(e?.stack || e) };
+    } catch (error) {
+      return { exitCode: 1, output: String(error?.stack || error) };
     }
     return { exitCode: 0, output: "" };
   };

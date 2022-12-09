@@ -1,8 +1,8 @@
 'use strict';
 
-var path = require('path');
-var fs = require('fs');
-var Module = require('module');
+var path = require('node:path');
+var fs = require('node:fs');
+var Module = require('node:module');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
@@ -97,7 +97,7 @@ class AnyJsonFormat {
         return json;
     }
     toJson(value) {
-        if (typeof value !== "object" || value === null || value instanceof Array) {
+        if (typeof value !== "object" || value === null || Array.isArray(value)) {
             return value;
         }
         const json = {};
@@ -318,7 +318,7 @@ function resolveFilename(resolver, delegate) {
             request.startsWith("../") ||
             request.startsWith("/") ||
             request.startsWith("#")) {
-            return delegate.apply(this, arguments);
+            return Reflect.apply(delegate, this, arguments);
         }
         const resolved = resolver.resolve(parent.path, request);
         request = path__namespace.basename(resolved.package);
@@ -338,10 +338,10 @@ function parse(resolver) {
     return (path_) => {
         try {
             const root = path__namespace.resolve(process.env.RUNFILES_DIR, resolver.root(path_));
-            const packageContent = fs__namespace.readFileSync(path__namespace.join(root, "package.json"), "utf-8");
+            const packageContent = fs__namespace.readFileSync(path__namespace.join(root, "package.json"), "utf8");
             const packageJson = JSON.parse(packageContent);
             if (!packageJson.name) {
-                return undefined;
+                return;
             }
             return {
                 basedir: root,
@@ -349,8 +349,8 @@ function parse(resolver) {
                 path: path_.slice(root.length + 1),
             };
         }
-        catch (e) {
-            console.error(e);
+        catch (error) {
+            console.error(error);
         }
     };
 }
@@ -379,5 +379,5 @@ if (!manifestPath) {
 }
 const packageTree = JsonFormat.parse(PackageTree.json(), fs__namespace.readFileSync(manifestPath, "utf8"));
 const resolver = Resolver.create(packageTree, process.env.RUNFILES_DIR);
-patchModule(resolver, require("module"));
-patchModuleDetails(resolver, require("module"));
+patchModule(resolver, require("node:module"));
+patchModuleDetails(resolver, require("node:module"));

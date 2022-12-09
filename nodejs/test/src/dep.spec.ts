@@ -4,7 +4,7 @@ import * as childProcess from "node:child_process";
 test("Dep", () => {
   const result = childProcess.spawnSync("bazel", ["run", "dep:bin"], {
     cwd: "nodejs/test/bazel",
-    encoding: "utf-8",
+    encoding: "utf8",
     stdio: ["ignore", "pipe", "inherit"],
     ...spawnOptions(),
   });

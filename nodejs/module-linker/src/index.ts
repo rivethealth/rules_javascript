@@ -1,7 +1,7 @@
 import { PackageTree } from "@better-rules-javascript/commonjs-package";
 import { Resolver } from "@better-rules-javascript/commonjs-package/resolve";
 import { JsonFormat } from "@better-rules-javascript/util-json";
-import * as fs from "fs";
+import * as fs from "node:fs";
 import { patchModule } from "./module";
 import { patchModuleDetails } from "./module-details";
 
@@ -15,5 +15,5 @@ const packageTree = JsonFormat.parse(
 );
 
 const resolver = Resolver.create(packageTree, process.env.RUNFILES_DIR);
-patchModule(resolver, require("module"));
-patchModuleDetails(resolver, require("module"));
+patchModule(resolver, require("node:module"));
+patchModuleDetails(resolver, require("node:module"));

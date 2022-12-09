@@ -13,7 +13,7 @@ test("Dev mode", async () => {
   expect(result.status).toBe(0);
   const content = await fs.promises.readFile(
     path.join(bin, "basic/bundle/main.js"),
-    { encoding: "utf-8" },
+    { encoding: "utf8" },
   );
   expect(content).toContain("eval");
 });
@@ -32,7 +32,7 @@ test("Optimized mode", async () => {
   expect(result.status).toBe(0);
   const content = await fs.promises.readFile(
     path.join(bin, "basic/bundle/main.js"),
-    { encoding: "utf-8" },
+    { encoding: "utf8" },
   );
   expect(content).not.toContain("eval");
 });

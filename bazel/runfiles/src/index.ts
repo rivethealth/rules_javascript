@@ -1,5 +1,5 @@
-import * as fs from "fs";
-import * as path from "path";
+import * as fs from "node:fs";
+import * as path from "node:path";
 
 export function parseManifest(runfilesDir: string, content: string) {
   const entries: [string, string][] = content
@@ -16,7 +16,7 @@ export function loadManifest() {
   const runfilesDir = process.env.RUNFILES_DIR;
   const manifest = fs.readFileSync(
     path.resolve(runfilesDir, "MANIFEST"),
-    "utf-8",
+    "utf8",
   );
   return parseManifest(runfilesDir, manifest);
 }

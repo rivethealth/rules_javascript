@@ -5,8 +5,8 @@ import { WrapperVfs } from "@better-rules-javascript/nodejs-fs-linker/vfs";
 
 workerMain(async () => {
   const vfs = new WrapperVfs();
-  patchFs(vfs, require("fs"));
-  patchFsPromises(vfs, require("fs").promises);
+  patchFs(vfs, require("node:fs"));
+  patchFsPromises(vfs, require("node:fs").promises);
 
   const { AngularWorker, AngularWorkerError } = await import("./worker");
 
@@ -14,11 +14,14 @@ workerMain(async () => {
   return async (a) => {
     try {
       await worker.run(a);
-    } catch (e) {
-      if (e instanceof AngularWorkerError) {
-        return { exitCode: 2, output: e.message };
+    } catch (error) {
+      if (error instanceof AngularWorkerError) {
+        return { exitCode: 2, output: error.message };
       }
-      return { exitCode: 1, output: e instanceof Error ? e.stack : String(e) };
+      return {
+        exitCode: 1,
+        output: error instanceof Error ? error.stack : String(error),
+      };
     }
     return { exitCode: 0, output: "" };
   };

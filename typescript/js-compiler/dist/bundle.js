@@ -1,8 +1,8 @@
 'use strict';
 
-var fs = require('fs');
-var path = require('path');
-var url = require('url');
+var fs = require('node:fs');
+var path = require('node:path');
+var node_url = require('node:url');
 var argparse = require('argparse');
 var ts = require('typescript');
 
@@ -97,7 +97,7 @@ class AnyJsonFormat {
         return json;
     }
     toJson(value) {
-        if (typeof value !== "object" || value === null || value instanceof Array) {
+        if (typeof value !== "object" || value === null || Array.isArray(value)) {
             return value;
         }
         const json = {};
@@ -249,10 +249,10 @@ async function* lines(stream) {
             if (j < 0) {
                 break;
             }
-            yield data.substring(i, j + 1);
+            yield data.slice(i, j + 1);
             i = j + 1;
         }
-        data = data.substring(i);
+        data = data.slice(i);
     }
     if (data) {
         yield data;
@@ -295,8 +295,8 @@ async function runWorker(worker) {
                 if (typeof gc !== "undefined") {
                     gc();
                 }
-            }, (e) => {
-                console.error(e.stack);
+            }, (error) => {
+                console.error(error.stack);
                 process.exit(1);
             });
         }
@@ -322,7 +322,7 @@ async function workerMain(workerFactory) {
         }
         else if (last.startsWith("@")) {
             const worker = await workerFactory(process.argv.slice(2, -1));
-            const file = await fs__namespace.promises.readFile(last.slice(1), "utf-8");
+            const file = await fs__namespace.promises.readFile(last.slice(1), "utf8");
             const args = file.trim().split("\n");
             await runOnce(worker, args);
         }
@@ -331,12 +331,12 @@ async function workerMain(workerFactory) {
             await runOnce(worker, process.argv.slice(2));
         }
     }
-    catch (e) {
-        console.error(e instanceof CliError
-            ? e.message
-            : e instanceof Error
-                ? e.stack
-                : String(e));
+    catch (error) {
+        console.error(error instanceof CliError
+            ? error.message
+            : error instanceof Error
+                ? error.stack
+                : String(error));
         process.exit(1);
     }
 }
@@ -481,8 +481,9 @@ class VfsImpl {
                     }
                     return result;
                 }
-                case VfsNode.SYMLINK:
+                case VfsNode.SYMLINK: {
                     return `${prefix}${name} -> ${node.path}\n`;
+                }
             }
         })("", this.root, "");
     }
@@ -651,7 +652,7 @@ class VfsDir {
             return this.delegate.close.apply(this.delegate, arguments);
         }
         if (cb) {
-            setImmediate(() => cb(undefined));
+            setImmediate(() => cb(null));
         }
         else {
             return Promise.resolve();
@@ -729,21 +730,23 @@ class VfsDir {
 }
 function dirent(name, entry) {
     switch (entry.type) {
-        case VfsNode.PATH:
+        case VfsNode.PATH: {
             return new fs__namespace.Dirent(name, fs__namespace.constants.UV_DIRENT_DIR);
-        case VfsNode.SYMLINK:
+        }
+        case VfsNode.SYMLINK: {
             return new fs__namespace.Dirent(name, fs__namespace.constants.UV_DIRENT_LINK);
+        }
     }
 }
 function stringPath(value) {
     if (value instanceof Buffer) {
         value = value.toString();
     }
-    if (value instanceof url.URL) {
+    if (value instanceof node_url.URL) {
         if (value.protocol !== "file:") {
             throw new Error(`Invalid protocol: ${value.protocol}`);
         }
-        value = url.fileURLToPath(value);
+        value = node_url.fileURLToPath(value);
     }
     return path__namespace.resolve(value);
 }
@@ -901,10 +904,10 @@ function opendir(vfs, delegate) {
         if (resolved && filePath !== resolved.path) {
             args[0] = resolved.path;
         }
-        if (resolved && resolved.extraChildren.size) {
+        if (resolved && resolved.extraChildren.size > 0) {
             args[typeof args[1] === "function" ? 1 : 2] = function (err, dir) {
                 if (err) {
-                    return callback.apply(this, arguments);
+                    return Reflect.apply(callback, this, arguments);
                 }
                 callback(null, new VfsDir(resolved, dir));
             };
@@ -924,7 +927,7 @@ function opendirSync(vfs, delegate) {
             args[0] = resolved.path;
         }
         const dir = delegate.apply(this, args);
-        if (resolved && resolved.extraChildren.size) {
+        if (resolved && resolved.extraChildren.size > 0) {
             return new VfsDir(resolved, dir);
         }
         return dir;
@@ -945,7 +948,7 @@ function readdir(vfs, delegate) {
         }
         const resolved = vfs.resolve(filePath);
         let extra = [];
-        if (resolved && resolved.extraChildren.size) {
+        if (resolved && resolved.extraChildren.size > 0) {
             if (options.withFileTypes) {
                 extra = [...resolved.extraChildren.entries()].map(([name, entry]) => dirent(name, entry));
             }
@@ -966,7 +969,7 @@ function readdir(vfs, delegate) {
         }
         args[typeof args[1] === "function" ? 1 : 2] = function (err, files) {
             if (err) {
-                return callback.apply(this, arguments);
+                return Reflect.apply(callback, this, arguments);
             }
             if (options.withFileTypes && resolved.hardenSymlinks) {
                 files = files.map((file) => {
@@ -999,7 +1002,7 @@ function readdirSync(vfs, delegate) {
         }
         const resolved = vfs.resolve(filePath);
         let extra = [];
-        if (resolved && resolved.extraChildren.size) {
+        if (resolved && resolved.extraChildren.size > 0) {
             if (options.withFileTypes) {
                 extra = [...resolved.extraChildren.entries()].map(([name, entry]) => dirent(name, entry));
             }
@@ -1033,7 +1036,7 @@ function readdirSync(vfs, delegate) {
                 return file;
             });
         }
-        if (extra.length) {
+        if (extra.length > 0) {
             return [...result, ...extra];
         }
         return result;
@@ -1082,20 +1085,12 @@ function readlink(vfs, delegate) {
 function readlinkSync(vfs, delegate) {
     return function (path, options) {
         const filePath = stringPath(path);
-        if (typeof options === "string") {
-            options = { encoding: options };
-        }
-        else {
-            options = {};
-        }
+        options = typeof options === "string" ? { encoding: options } : {};
         const resolved = vfs.entry(filePath);
         if (resolved.type === VfsNode.SYMLINK) {
-            if (options.encoding === "buffer") {
-                return Buffer.from(resolved.path);
-            }
-            else {
-                return resolved.path;
-            }
+            return options.encoding === "buffer"
+                ? Buffer.from(resolved.path)
+                : resolved.path;
         }
         if (resolved.hardenSymlinks) {
             throw invalidError("readlink", filePath);
@@ -1121,7 +1116,7 @@ function realpath(vfs, delegate) {
         if (resolved?.hardenSymlinks) {
             args[typeof args[1] === "function" ? 1 : 2] = function (err) {
                 if (err) {
-                    return callback.apply(this, arguments);
+                    return Reflect.apply(callback, this, arguments);
                 }
                 else {
                     callback(null, options === "buffer" ? Buffer.from(resolved.path) : resolved.path);
@@ -1143,7 +1138,7 @@ function realpath(vfs, delegate) {
         if (resolved?.hardenSymlinks) {
             args[typeof args[1] === "function" ? 1 : 2] = function (err) {
                 if (err) {
-                    return callback.apply(this, arguments);
+                    return Reflect.apply(callback, this, arguments);
                 }
                 else {
                     callback(null, options === "buffer" ? Buffer.from(resolved.path) : resolved.path);
@@ -1372,21 +1367,21 @@ function patchFsPromises(vfs, delegate) {
 
 workerMain(async () => {
     const vfs = new WrapperVfs();
-    patchFs(vfs, require("fs"));
-    patchFsPromises(vfs, require("fs").promises);
+    patchFs(vfs, require("node:fs"));
+    patchFsPromises(vfs, require("node:fs").promises);
     const { JsWorker, JsWorkerError } = await Promise.resolve().then(function () { return worker; });
     const worker$1 = new JsWorker(vfs);
     return async (a) => {
         try {
             await worker$1.run(a);
         }
-        catch (e) {
-            if (e instanceof JsWorkerError) {
-                return { exitCode: 2, output: e.message };
+        catch (error) {
+            if (error instanceof JsWorkerError) {
+                return { exitCode: 2, output: error.message };
             }
             return {
                 exitCode: 1,
-                output: e instanceof Error ? e.stack || "" : String(e),
+                output: error instanceof Error ? error.stack || "" : String(error),
             };
         }
         return { exitCode: 0, output: "" };
@@ -1486,9 +1481,9 @@ function createVfs(packageTree, base) {
             try {
                 addDep(nodeModules, name, resolve(dep));
             }
-            catch (e) {
-                if (!(e instanceof DependencyConflictError)) {
-                    throw e;
+            catch (error) {
+                if (!(error instanceof DependencyConflictError)) {
+                    throw error;
                 }
                 throw new Error(`Dependency "${name}" of "${path}" conflicts with another`);
             }
@@ -1497,9 +1492,9 @@ function createVfs(packageTree, base) {
             try {
                 addDep(nodeModules, name, resolve(dep));
             }
-            catch (e) {
-                if (!(e instanceof DependencyConflictError)) {
-                    throw e;
+            catch (error) {
+                if (!(error instanceof DependencyConflictError)) {
+                    throw error;
                 }
             }
         }
@@ -1520,7 +1515,7 @@ function formatDiagnostic(diagnostic) {
 function formatDiagnostics(diagnostics) {
     return diagnostics
         .map((diagnostic) => `${formatDiagnostic(diagnostic)}\n`)
-        .join();
+        .join(",");
 }
 
 class JsWorkerError extends Error {
@@ -1546,14 +1541,14 @@ class JsWorker {
             },
         });
         const errors = parsed.errors.filter((diagnostic) => diagnostic.code !== 18002);
-        if (errors.length) {
+        if (errors.length > 0) {
             throw new JsWorkerError(formatDiagnostics(errors));
         }
         return parsed;
     }
     async setupVfs(manifest) {
         const packageTree = JsonFormat.parse(PackageTree.json(), await fs__namespace.promises.readFile(manifest, "utf8"));
-        const vfs = createVfs(packageTree, undefined);
+        const vfs = createVfs(packageTree);
         this.vfs.delegate = vfs;
     }
     async run(a) {
@@ -1593,7 +1588,7 @@ async function transpileFile(src, parsed) {
         fileName: name,
         compilerOptions: parsed.options,
     });
-    if (result.diagnostics.length) {
+    if (result.diagnostics.length > 0) {
         throw new JsWorkerError(formatDiagnostics(result.diagnostics));
     }
     await fs__namespace.promises.mkdir(path__namespace.dirname(outputPath), { recursive: true });

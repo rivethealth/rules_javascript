@@ -4,7 +4,7 @@ import * as childProcess from "node:child_process";
 test("Binary archive", () => {
   const result = childProcess.spawnSync("bazel", ["run", "binary:bin"], {
     cwd: "nodejs/test/bazel",
-    encoding: "utf-8",
+    encoding: "utf8",
     stdio: ["ignore", "pipe", "inherit"],
     ...spawnOptions(),
   });

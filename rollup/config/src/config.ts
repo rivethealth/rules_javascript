@@ -1,4 +1,4 @@
-import * as path from "path";
+import * as path from "node:path";
 import type { OutputOptions, RollupOptions } from "rollup";
 
 const compilationMode = process.env.COMPILATION_MODE!;
@@ -10,7 +10,7 @@ const outputRoot = process.env.ROLLUP_OUTPUT_ROOT!;
 export async function configure(config: RollupOptions): Promise<RollupOptions> {
   config = { ...config };
 
-  if (config.output instanceof Array) {
+  if (Array.isArray(config.output)) {
     config.output = config.output.map(output);
   } else if (config.output) {
     config.output = output(config.output);
@@ -18,7 +18,7 @@ export async function configure(config: RollupOptions): Promise<RollupOptions> {
 
   if (typeof config.input === "string") {
     config.input = input(config.input);
-  } else if (config.input instanceof Array) {
+  } else if (Array.isArray(config.input)) {
     config.input = config.input.map(input);
   } else if (config.input) {
     config.input = Object.fromEntries(
@@ -46,23 +46,28 @@ function output(output: OutputOptions) {
   }
   if (output.format === undefined) {
     switch (jsModule) {
-      case "amd":
+      case "amd": {
         output.format = "amd";
         break;
+      }
       case "commonjs":
-      case "node":
+      case "node": {
         output.format = "commonjs";
         break;
+      }
       case "es2015":
       case "es2020":
-      case "esnext":
+      case "esnext": {
         output.format = "es";
         break;
-      case "umd":
+      }
+      case "umd": {
         output.format = "umd";
         break;
-      case "system":
+      }
+      case "system": {
         output.format = "system";
+      }
     }
   }
   return output;

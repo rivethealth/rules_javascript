@@ -5,6 +5,7 @@ configure_eslint(
     config = ".eslintrc.js",
     config_dep = "//:eslint_config",
     plugins = [
+        "@npm//eslint-plugin-unicorn:lib",
         "@npm//typescript:lib",
         "@npm//@typescript-eslint/eslint-plugin:lib",
         "@npm//@typescript-eslint/parser:lib",

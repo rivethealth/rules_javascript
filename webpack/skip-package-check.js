@@ -2,9 +2,11 @@
 
 Object.defineProperty(process.versions, "pnp", {
   get() {
+    // eslint-disable-next-line unicorn/error-message
     if (new Error().stack.includes("checkPackageExists")) {
       return "bazel";
     }
-    return undefined;
+    // eslint-disable-next-line getter-return
+    return;
   },
 });

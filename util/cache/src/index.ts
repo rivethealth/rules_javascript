@@ -1,7 +1,7 @@
 import { JsonFormat } from "@better-rules-javascript/util-json";
 import { getOrSetAync } from "@better-rules-javascript/util/collection";
 import { ManagedResource } from "@better-rules-javascript/util/resource";
-import * as fs from "fs";
+import * as fs from "node:fs";
 
 interface Versioned<T> {
   _version: string;
@@ -37,8 +37,8 @@ export function withFileCache<K, V>(
   return async (f) => {
     let cacheContent: string | undefined;
     try {
-      cacheContent = await fs.promises.readFile(path, "utf-8");
-    } catch (e) {}
+      cacheContent = await fs.promises.readFile(path, "utf8");
+    } catch {}
     if (
       cacheContent !== undefined &&
       !cacheContent.startsWith(`{"_version":${JSON.stringify(version)}`)

@@ -8,7 +8,7 @@ import { createVfs } from "@better-rules-javascript/nodejs-fs-linker/package";
 import { WrapperVfs } from "@better-rules-javascript/nodejs-fs-linker/vfs";
 import { JsonFormat } from "@better-rules-javascript/util-json";
 import * as CachedInputFileSystem from "enhanced-resolve/lib/CachedInputFileSystem";
-import * as fs from "fs";
+import * as fs from "node:fs";
 import { Subject } from "rxjs";
 import * as webpack from "webpack";
 import * as WebpackDevServer from "webpack-dev-server";
@@ -28,7 +28,7 @@ function clearTimeout_(delegate: typeof clearTimeout): typeof clearTimeout {
       handle.unsubscribe();
       return;
     }
-    return delegate.apply(this, arguments);
+    return Reflect.apply(delegate, this, arguments);
   };
 }
 
@@ -46,7 +46,7 @@ function setTimeout_(
       });
       return subscription;
     }
-    return delegate.apply(this, arguments);
+    return Reflect.apply(delegate, this, arguments);
   };
 }
 
@@ -97,6 +97,6 @@ export async function startServer(
     digest = newDigest;
 
     refreshPackageTree(vfs, webpackManifestPath);
-    refresh.next(undefined);
+    refresh.next();
   }
 }

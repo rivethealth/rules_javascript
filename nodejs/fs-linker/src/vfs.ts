@@ -179,8 +179,9 @@ export class VfsImpl implements Vfs {
           }
           return result;
         }
-        case VfsNode.SYMLINK:
+        case VfsNode.SYMLINK: {
           return `${prefix}${name} -> ${node.path}\n`;
+        }
       }
     })("", this.root, "");
   }
