@@ -39,6 +39,11 @@ js_library(
     root = ":root",
 )
 
+alias(
+    name = "nodejs_resolve",
+    actual = "//nodejs:nodejs_resolve",
+)
+
 cjs_root(
     name = "root",
     package_name = "@better-rules-javascript/root",

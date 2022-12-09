@@ -57,9 +57,6 @@
     "@types/react": "~15.0.0",
     "@types/tar-stream": "~2.2.0"
   },
-  "scripts": {
-    "update-node-versions": "node scripts/update_node_versions.js > rules/nodejs.bzl"
-  },
   "private": true,
   "version": "0.0.0"
 }

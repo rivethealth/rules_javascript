@@ -40,6 +40,12 @@ bzl_library(
     ],
 )
 
+sh_binary(
+    name = "nodejs_resolve",
+    srcs = ["nodejs-resolve.sh"],
+    data = ["//nodejs/resolve:bin"],
+)
+
 test_suite(
     name = "test",
     tests = ["//nodejs/test"],

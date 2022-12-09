@@ -6,6 +6,10 @@ To format, run `bazel run :format`.
 
 To lint, run `bazel run :lint`.
 
+## Node.js
+
+To resolve additional Node.js versions, run `bazel run :nodejs_resolve`.
+
 ## NPM
 
 After updating `package.json`, run `bazel run tools/npm:resolve` to resolve the
