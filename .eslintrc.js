@@ -10,9 +10,6 @@ module.exports = {
   ],
   rules: {
     "@typescript-eslint/no-var-requires": "off",
-    // https://github.com/typescript-eslint/typescript-eslint/issues/930
-    // https://github.com/typescript-eslint/typescript-eslint/issues/1640
-    "@typescript-eslint/no-empty-interface": "off",
     // arrow functions cannot be generators
     "@typescript-eslint/no-this-alias": "off",
     // can be useful to have await inside Promise callback
@@ -27,8 +24,6 @@ module.exports = {
     "@typescript-eslint/ban-ts-comment": "off",
     // too many exceptions
     "@typescript-eslint/ban-types": "off",
-    // onerous
-    "@typescript-eslint/explicit-module-boundary-types": "off",
     // no-ops are legitimate
     "@typescript-eslint/no-empty-function": "off",
     // helpful for typing
@@ -47,8 +42,6 @@ module.exports = {
     "no-inner-declarations": "off",
     // prettier causes this
     "no-unexpected-multiline": "off",
-    // lots of false positives
-    "no-undef": "off",
     // https://github.com/typescript-eslint/typescript-eslint/issues/291
     "no-dupe-class-members": "off",
     "unicorn/no-array-callback-reference": "off",
@@ -60,5 +53,10 @@ module.exports = {
     "unicorn/prefer-top-level-await": "off",
     "unicorn/prevent-abbreviations": "off",
   },
-  env: { node: true },
+  env: { jest: true, node: true },
+  globals: {
+    gc: true,
+    //https://github.com/Chatie/eslint-config/issues/45
+    NodeJS: true,
+  },
 };

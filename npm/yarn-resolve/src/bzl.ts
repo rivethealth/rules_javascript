@@ -36,7 +36,7 @@ export namespace BzlPackage {
   }
 }
 
-export interface BzlPackages extends Map<string, BzlPackage> {}
+export type BzlPackages = Map<string, BzlPackage>
 
 export namespace BzlPackages {
   export function toStarlark(value: BzlPackages) {
