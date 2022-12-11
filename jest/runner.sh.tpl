@@ -13,6 +13,7 @@ if [ -z "${RUNFILES_DIR-}" ]; then
 fi
 
 export JEST_CONFIG="$RUNFILES_DIR"/%{config}
+export JEST_ROOT="$RUNFILES_DIR"/%{root}
 export NODE_PACKAGE_MANIFEST="$RUNFILES_DIR"/%{package_manifest}
 export NODE_FS_PACKAGE_MANIFEST="$RUNFILES_DIR"/%{package_manifest}
 export NODE_FS_RUNFILES=true
@@ -35,14 +36,16 @@ if [ ! -z "${TESTBRIDGE_TEST_ONLY-}" ]; then
   args+=("$TESTBRIDGE_TEST_ONLY")
 fi
 
+[[ "$RUNFILES_DIR" = /* ]] || RUNFILES_DIR="$(pwd)/$RUNFILES_DIR"
+
 %{env} \
   exec -a "$0" "$RUNFILES_DIR"/%{node} \
-  -r "$(realpath -s "$RUNFILES_DIR"/%{module_linker})" \
-  -r "$(realpath -s "$RUNFILES_DIR"/%{fs_linker})" \
+  -r "$RUNFILES_DIR"/%{module_linker} \
+  -r "$RUNFILES_DIR"/%{fs_linker} \
   --preserve-symlinks \
   --preserve-symlinks-main \
   %{node_options} \
-  "$(realpath -s "$RUNFILES_DIR"/%{main_module})" \
+  "$RUNFILES_DIR"/%{main_module} \
   -i \
   --config="$RUNFILES_DIR"/%{config_loader} \
   --no-cache \

@@ -1,9 +1,11 @@
+const path = require("node:path");
+
 module.exports = {
   transformIgnorePatterns: [],
   transform: {
     "\\.m?js$": [
       "babel-jest",
-      { configFile: process.cwd() + "/babel.config.js" },
+      { configFile: path.join(__dirname, "babel.config.js") },
     ],
   },
 };

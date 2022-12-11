@@ -27,6 +27,12 @@ bzl_library(
     ],
 )
 
+test_suite(
+    name = "test",
+    tests = ["//npm/test"],
+    visibility = ["//:__subpackages__"],
+)
+
 nodejs_binary(
     name = "yarn",
     dep = "@better_rules_javascript_npm//@yarnpkg/cli-dist:lib",

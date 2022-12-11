@@ -28,7 +28,10 @@ js_library(
 
 js_library(
     name = "jest_config",
-    srcs = ["jest.config.js"],
+    srcs = [
+        "babel.config.js",
+        "jest.config.js",
+    ],
     root = ":root",
 )
 
@@ -42,7 +45,7 @@ jest_test(
     name = "test",
     config = "jest.config.js",
     config_dep = ":jest_config",
-    data = ["//:babel_config"],
     dep = ":main",
+    env = {"DEBUG": "true"},
     jest = "@npm//jest:lib",
 )

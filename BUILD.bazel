@@ -5,7 +5,7 @@ load("//tools/npm:npm.bzl", "ROOTS")
 
 exports_files(
     ["yarn.lock"],
-    visibility = [":__subpackages__"],
+    visibility = ["//visibility:public"],  # tests
 )
 
 js_library(
@@ -62,6 +62,7 @@ test_suite(
         "//javascript:test",
         "//jest:test",
         "//nodejs:test",
+        "//npm:test",
         "//rollup:test",
         # "//ts-proto/test",
         "//typescript:test",
