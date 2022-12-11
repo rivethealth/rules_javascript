@@ -3,6 +3,7 @@ import { spawnSync } from "node:child_process";
 export function spawnOptions() {
   const env = { ...process.env };
   delete env.RUNFILES_DIR;
+  delete env.RUNFILES_MANIFEST_FILE;
   delete env.TEST_TMPDIR;
   return { env };
 }

@@ -39,10 +39,10 @@ def _jest_test_impl(ctx):
     cjs_deps = [config_loader_cjs, config_cjs, cjs_info] + [ctx.attr.dep[0][CjsInfo]]
     js_deps = [config_loader_js, config_js, js_info] + [ctx.attr.dep[0][JsInfo]]
     output_ = output(label = ctx.label, actions = actions)
-    workspace_name = ctx.workspace_name
+    workspace = ctx.workspace_name
 
     def package_path(package):
-        return runfile_path(workspace_name, package)
+        return runfile_path(workspace, package)
 
     package_manifest = actions.declare_file("%s.packages.json" % name)
     gen_manifest(
@@ -54,24 +54,25 @@ def _jest_test_impl(ctx):
         package_path = package_path,
     )
 
-    main_module = "%s/bin/jest.js" % runfile_path(workspace_name, cjs_info.package)
+    main_module = "%s/bin/jest.js" % runfile_path(workspace, cjs_info.package)
 
     bin = actions.declare_file(name)
     actions.expand_template(
         output = bin,
         is_executable = True,
         substitutions = {
-            "%{config_loader}": shell.quote("%s/src/index.js" % runfile_path(workspace_name, config_loader_cjs.package)),
-            "%{config}": shell.quote("%s/%s" % (runfile_path(workspace_name, config_cjs.package), config)),
+            "%{config_loader}": shell.quote("%s/src/index.js" % runfile_path(workspace, config_loader_cjs.package)),
+            "%{config}": shell.quote("%s/%s" % (runfile_path(workspace, config_cjs.package), config)),
             "%{env}": " ".join(["%s=%s" % (name, shell.quote(value)) for name, value in env.items()]),
-            "%{fs_linker}": shell.quote("%s/dist/bundle.js" % runfile_path(workspace_name, fs_linker_cjs.package)),
+            "%{fs_linker}": shell.quote("%s/dist/bundle.js" % runfile_path(workspace, fs_linker_cjs.package)),
             "%{main_module}": shell.quote(main_module),
-            "%{module_linker}": shell.quote("%s/dist/bundle.js" % runfile_path(workspace_name, module_linker_cjs.package)),
+            "%{module_linker}": shell.quote("%s/dist/bundle.js" % runfile_path(workspace, module_linker_cjs.package)),
             "%{node_options}": " ".join([shell.quote(option) for option in node_options]),
-            "%{node}": shell.quote(runfile_path(workspace_name, node.bin)),
-            "%{package_manifest}": shell.quote(runfile_path(ctx.workspace_name, package_manifest)),
+            "%{node}": shell.quote(runfile_path(workspace, node.bin)),
+            "%{package_manifest}": shell.quote(runfile_path(workspace, package_manifest)),
             "%{preamble}": bash_preamble,
-            "%{workspace}": shell.quote(workspace_name),
+            "%{root}": shell.quote(runfile_path(workspace, cjs_dep.package)),
+            "%{workspace}": shell.quote(workspace),
         },
         template = ctx.file._runner,
     )
@@ -138,7 +139,7 @@ jest_test = rule(
         ),
         "_runner": attr.label(
             allow_single_file = True,
-            default = "//jest:runner",
+            default = "//jest:runner.sh.tpl",
         ),
         "_fs_linker": attr.label(
             default = "//nodejs/fs-linker:dist_lib",

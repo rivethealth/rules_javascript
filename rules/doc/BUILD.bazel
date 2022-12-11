@@ -1,11 +1,10 @@
 load("//docs:rules.bzl", "stardoc")
 
-package(default_visibility = ["//visibility:public"])
-
 stardoc(
     "doc",
     "//rules:bzl",
     [
         "//rules:workspace.bzl",
     ],
+    visibility = ["//docs:__subpackages__"],
 )

@@ -1,7 +1,5 @@
 load("//docs:rules.bzl", "stardoc")
 
-package(default_visibility = ["//visibility:public"])
-
 stardoc(
     "doc",
     "//webpack:bzl",
@@ -9,4 +7,5 @@ stardoc(
         "//webpack:providers.bzl",
         "//webpack:rules.bzl",
     ],
+    visibility = ["//docs:__subpackages__"],
 )

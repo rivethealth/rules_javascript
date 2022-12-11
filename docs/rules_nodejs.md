@@ -1,4 +1,4 @@
-# Differences with rules_nodejs
+# Differences with Rules_nodejs
 
 <!-- DOCTOC SKIP -->
 

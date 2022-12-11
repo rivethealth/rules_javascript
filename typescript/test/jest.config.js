@@ -1,3 +1,3 @@
-module.exports = {
-  testTimeout: 60 * 1000,
-};
+const { jestConfig } = require("@better-rules-javascript/test/jest-config");
+
+module.exports = jestConfig();

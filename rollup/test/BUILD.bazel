@@ -7,6 +7,7 @@ js_library(
     name = "jest_config",
     srcs = ["jest.config.js"],
     root = ":root",
+    deps = ["//test:lib"],
 )
 
 cjs_root(

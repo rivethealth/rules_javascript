@@ -2,12 +2,11 @@ load("//commonjs:rules.bzl", "cjs_root")
 load("//javascript:rules.bzl", "js_library")
 load("//typescript:rules.bzl", "ts_library")
 
-package(default_visibility = ["//visibility:public"])
-
 cjs_root(
     name = "root",
     package_name = "@better-rules-javascript/bazel-worker",
     descriptors = ["package.json"],
+    visibility = ["//visibility:public"],
 )
 
 ts_library(
@@ -17,6 +16,7 @@ ts_library(
     config = "tsconfig.json",
     config_dep = ":tsconfig",
     root = ":root",
+    visibility = ["//visibility:public"],
     deps = [
         "//util/json:lib",
         "@better_rules_javascript_npm//@types/node:lib",

@@ -3,8 +3,6 @@ load("//nodejs:rules.bzl", "nodejs_binary")
 load("//javascript:rules.bzl", "js_library")
 load("//typescript:rules.bzl", "ts_library")
 
-package(default_visibility = ["//visibility:public"])
-
 ts_library(
     name = "lib",
     srcs = glob(["src/**/*.ts"]),
@@ -42,4 +40,5 @@ nodejs_binary(
     main = "src/main.js",
     node = "//tools/nodejs",
     node_options = ["--title=node-archive-linker"],
+    visibility = ["//visibility:public"],
 )

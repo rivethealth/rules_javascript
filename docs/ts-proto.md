@@ -1,14 +1,18 @@
+# TS Proto
+
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
-- [TS Proto](#ts-proto)
-  - [Install](#install)
-  - [Configure](#configure)
-  - [Use](#use)
+- [Reference](#reference)
+- [Install](#install)
+- [Configure](#configure)
+- [Use](#use)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# TS Proto
+## Reference
+
+[Starlark reference](stardoc/ts-proto.md)
 
 ## Install
 

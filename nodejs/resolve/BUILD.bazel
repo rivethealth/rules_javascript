@@ -3,12 +3,11 @@ load("//javascript:rules.bzl", "js_library")
 load("//nodejs:rules.bzl", "nodejs_binary")
 load("//typescript:rules.bzl", "ts_library")
 
-package(default_visibility = ["//visibility:public"])
-
 nodejs_binary(
     name = "bin",
     dep = ":lib",
     main = "src/main.js",
+    visibility = ["//:__subpackages__"],
 )
 
 ts_library(

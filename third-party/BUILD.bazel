@@ -1,11 +1,10 @@
 load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
 
-package(default_visibility = ["//visibility:public"])
-
 bzl_library(
     name = "repo_bzl",
     srcs = [
         "@bazel_tools//tools/build_defs/repo:http.bzl",
         "@bazel_tools//tools/build_defs/repo:utils.bzl",
     ],
+    visibility = ["//:__subpackages__"],
 )
