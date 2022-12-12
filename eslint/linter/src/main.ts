@@ -16,6 +16,7 @@ workerMain(async (a) => {
   parser.add_argument("--config", { required: true });
   const args = parser.parse_args(a);
 
+  const eslint = await createEslint(args.config);
   const worker = new EslintWorker(eslint);
 
   return async (a) => {
