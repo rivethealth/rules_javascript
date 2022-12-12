@@ -1,5 +1,7 @@
 # rules_javascript
 
+[![Build](https://github.com/rivethealth/rules_javascript/actions/workflows/build.yml/badge.svg)](https://github.com/rivethealth/rules_javascript/actions/workflows/build.yml)
+
 Bazel rules for JavaScript, TypeScript, and related technologies.
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
