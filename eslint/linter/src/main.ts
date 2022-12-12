@@ -1,61 +1,14 @@
 import { workerMain } from "@better-rules-javascript/bazel-worker";
 import { ArgumentParser } from "argparse";
-import { ESLint, Linter } from "eslint";
-import * as fs from "node:fs";
+import { ESLint } from "eslint";
+import { EslintWorker } from "./worker";
 
-class EslintWorker {
-  constructor(private linter: Linter, private readonly options: any) {}
-
-  async run(a: string[]) {
-    const parser = new ArgumentParser();
-    parser.add_argument("--config");
-    parser.add_argument("input");
-    parser.add_argument("output");
-    const args = parser.parse_args(a);
-    const input = fs.readFileSync(args.input, "utf8");
-
-    const report = this.linter.verifyAndFix(input, this.options, args.input);
-
-    fs.writeFileSync(args.output, report.output, "utf8");
-    return report.messages.map((message) => messageString(args.input, message));
-  }
-}
-
-function messageString(file: string, message: Linter.LintMessage) {
-  return `${file} ${message.line}:${message.column}: ${message.ruleId} ${message.message}`;
-}
-
-function pluginPackage(name: string) {
-  if (name.includes("/")) {
-    const [scope, package_] = name.split("/", 2);
-    return `${scope}/eslint-plugin-${package_}`;
-  }
-  if (name.startsWith("@")) {
-    return `${name}/eslint-plugin`;
-  }
-  return `eslint-plugin-${name}`;
-}
-
-async function resolveOptions(file: string) {
-  const esLint = new ESLint({ overrideConfigFile: file, useEslintrc: false });
-  return await esLint.calculateConfigForFile("_dummy");
-}
-
-async function createLinter(options: any) {
-  const linter = new Linter();
-  if (options.parser) {
-    linter.defineParser(options.parser, await import(options.parser));
-  }
-  linter.defineRules(options);
-  for (const plugin of options.plugins) {
-    const module = await import(pluginPackage(plugin));
-    if (module.rules) {
-      for (const name in module.rules) {
-        linter.defineRule(`${plugin}/${name}`, module.rules[name]);
-      }
-    }
-  }
-  return linter;
+async function createEslint(file: string) {
+  return new ESLint({
+    fix: true,
+    overrideConfigFile: file,
+    useEslintrc: false,
+  });
 }
 
 workerMain(async (a) => {
@@ -63,9 +16,7 @@ workerMain(async (a) => {
   parser.add_argument("--config", { required: true });
   const args = parser.parse_args(a);
 
-  const options = await resolveOptions(args.config);
-  const linter = await createLinter(options);
-  const worker = new EslintWorker(linter, options);
+  const worker = new EslintWorker(eslint);
 
   return async (a) => {
     try {

@@ -1,17 +1,39 @@
 module.exports = {
   root: true,
-  parser: "@typescript-eslint/parser",
   plugins: ["@typescript-eslint", "unicorn"],
-  extends: [
-    "eslint:recommended",
-    "plugin:unicorn/recommended",
-    "plugin:@typescript-eslint/eslint-recommended",
-    "plugin:@typescript-eslint/recommended",
+  extends: ["eslint:recommended", "plugin:unicorn/recommended"],
+  overrides: [
+    {
+      files: ["**/*.ts"],
+      extends: [
+        "plugin:@typescript-eslint/eslint-recommended",
+        "plugin:@typescript-eslint/recommended",
+      ],
+      parser: "@typescript-eslint/parser",
+      rules: {
+        // arrow functions cannot be generators
+        "@typescript-eslint/no-this-alias": "off",
+        // helpful for typing
+        "@typescript-eslint/ban-ts-comment": "off",
+        // too many exceptions
+        "@typescript-eslint/ban-types": "off",
+        // no-ops are legitimate
+        "@typescript-eslint/no-empty-function": "off",
+        // helpful for typing
+        "@typescript-eslint/no-explicit-any": "off",
+        // helpful for documentation
+        "@typescript-eslint/no-inferrable-types": "off",
+        // helpful for organization
+        "@typescript-eslint/no-namespace": "off",
+        // helpful for typing
+        "@typescript-eslint/no-non-null-assertion": "off",
+        "@typescript-eslint/no-var-requires": "off",
+        "prefer-rest-params": "off",
+        "prefer-spread": "off",
+      },
+    },
   ],
   rules: {
-    "@typescript-eslint/no-var-requires": "off",
-    // arrow functions cannot be generators
-    "@typescript-eslint/no-this-alias": "off",
     // can be useful to have await inside Promise callback
     "no-async-promise-executor": "off",
     // https://github.com/typescript-eslint/typescript-eslint/issues/2818
@@ -20,20 +42,6 @@ module.exports = {
     "no-control-regex": "off",
     // only err if all variables can be constant
     "prefer-const": ["error", { destructuring: "all" }],
-    // helpful for typing
-    "@typescript-eslint/ban-ts-comment": "off",
-    // too many exceptions
-    "@typescript-eslint/ban-types": "off",
-    // no-ops are legitimate
-    "@typescript-eslint/no-empty-function": "off",
-    // helpful for typing
-    "@typescript-eslint/no-explicit-any": "off",
-    // helpful for documentation
-    "@typescript-eslint/no-inferrable-types": "off",
-    // helpful for organization
-    "@typescript-eslint/no-namespace": "off",
-    // helpful for typing
-    "@typescript-eslint/no-non-null-assertion": "off",
     // while(true) is legitimate
     "no-constant-condition": ["error", { checkLoops: false }],
     // catch {} is legitimate
