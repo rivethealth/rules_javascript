@@ -11,9 +11,7 @@ sync --disk_cache ~/.cache/bazel-disk
 
 # Build
 build -k
-build --experimental_worker_allow_json_protocol
 build --experimental_strict_action_env
-build --incompatible_disable_depset_items=false
 build --verbose_failures
 
 # Test

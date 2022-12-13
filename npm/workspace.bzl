@@ -1,29 +1,16 @@
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_file")
 load("//commonjs:workspace.bzl", "cjs_npm_plugin")
 load("//javascript:workspace.bzl", "js_npm_plugin")
-load("@bazel_tools//tools/build_defs/repo:utils.bzl", "read_netrc", "read_user_netrc", "use_netrc")
-
-# See https://github.com/bazelbuild/bazel/blob/5.3.2/tools/build_defs/repo/http.bzl
-def _get_auth(ctx, urls):
-    """Given the list of URLs obtain the correct auth dict."""
-    if ctx.attr.netrc:
-        netrc = read_netrc(ctx, ctx.attr.netrc)
-    else:
-        netrc = read_user_netrc(ctx)
-    return use_netrc(netrc, urls, ctx.attr.auth_patterns)
 
 def npm_import_external_rule(plugins):
     def impl(ctx):
-        auth = _get_auth(ctx, ctx.attr.urls)
-
         deps = [struct(id = dep["id"], name = dep["name"]) for dep in [json.decode(d) for d in ctx.attr.deps]]
         extra_deps = {id: [json.decode(d) for d in deps] for id, deps in ctx.attr.extra_deps.items()}
         package_name = ctx.attr.package_name
 
-        ctx.download_and_extract(
-            ctx.attr.urls,
-            "tmp",
-            auth = auth,
-            integrity = ctx.attr.integrity,
+        ctx.extract(
+            archive = ctx.attr.package,
+            output = "tmp",
         )
 
         # packages can have different prefixes
@@ -75,23 +62,17 @@ def npm_import_external_rule(plugins):
     return repository_rule(
         implementation = impl,
         attrs = {
-            "auth_patterns": attr.string_dict(),
             "deps": attr.string_list(
                 doc = "Dependencies.",
             ),
             "extra_deps": attr.string_list_dict(
                 doc = "Extra dependencies.",
             ),
-            "integrity": attr.string(
-                doc = "Integrity",
-            ),
-            "netrc": attr.string(),
-            "package_name": attr.string(
-                doc = "Package name.",
+            "package": attr.label(
                 mandatory = True,
             ),
-            "urls": attr.string_list(
-                doc = "URLs",
+            "package_name": attr.string(
+                doc = "Package name.",
                 mandatory = True,
             ),
         },
@@ -145,15 +126,25 @@ def npm(name, packages, roots, plugins = DEFAULT_PLUGINS, auth_patterns = None, 
             package_repo_name(name, id): [json.encode({"id": package_repo_name(name, d["id"]), "name": d.get("name")}) for d in deps]
             for id, deps in package["extra_deps"].items()
         }
+        if "file" in package:
+            file = package["file"]
+        elif "url" in package:
+            package_repo = "%s.package" % repo_name
+            http_file(
+                name = package_repo,
+                auth_patterns = auth_patterns,
+                integrity = package.get("integrity"),
+                downloaded_file_path = "package.tgz",
+                netrc = netrc,
+                url = package["url"],
+            )
+            file = "@%s//file:package.tgz" % package_repo
         npm_import_external(
             name = repo_name,
-            auth_patterns = auth_patterns,
-            netrc = netrc,
+            package = file,
             package_name = package["name"],
             deps = [json.encode({"id": package_repo_name(name, dep["id"]), "name": dep.get("name")}) for dep in package["deps"]],
             extra_deps = extra_deps,
-            urls = [package["url"]],
-            integrity = package.get("integrity"),
         )
     root_packages = {root["name"]: package_repo_name(name, root["id"]) for root in roots}
     npm_import(name = name, packages = root_packages)

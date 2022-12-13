@@ -10,8 +10,8 @@ def configure_nodejs_runtime(name, repo_name, nodejs_runtime_rule, visibility = 
     native.toolchain(
         name = "%s.darwin_x86_64_toolchain" % name,
         target_compatible_with = [
-            "@bazel_tools//platforms:osx",
-            "@bazel_tools//platforms:x86_64",
+            "@platforms//cpu:x86_64",
+            "@platforms//os:osx",
         ],
         toolchain = "@%s_darwin_x86_64//:nodejs" % repo_name,
         toolchain_type = ":%s.toolchain_type" % name,
@@ -21,8 +21,8 @@ def configure_nodejs_runtime(name, repo_name, nodejs_runtime_rule, visibility = 
     native.toolchain(
         name = "%s.linux_x86_64_toolchain" % name,
         target_compatible_with = [
-            "@bazel_tools//platforms:linux",
-            "@bazel_tools//platforms:x86_64",
+            "@platforms//cpu:x86_64",
+            "@platforms//os:linux",
         ],
         toolchain = "@%s_linux_x86_64//:nodejs" % repo_name,
         toolchain_type = ":%s.toolchain_type" % name,
@@ -32,8 +32,8 @@ def configure_nodejs_runtime(name, repo_name, nodejs_runtime_rule, visibility = 
     native.toolchain(
         name = "%s.windows_x86_64_toolchain" % name,
         target_compatible_with = [
-            "@bazel_tools//platforms:windows",
-            "@bazel_tools//platforms:x86_64",
+            "@platforms//cpu:x86_64",
+            "@platforms//os:windows",
         ],
         toolchain = "@%s_windows_x86_64//:nodejs" % repo_name,
         toolchain_type = ":%s.toolchain_type" % name,
