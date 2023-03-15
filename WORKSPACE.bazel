@@ -38,19 +38,19 @@ http_archive(
 )
 
 # Go
-GO_VERSION = "v0.24.5"
+GO_VERSION = "v0.38.1"
 
 http_archive(
     name = "io_bazel_rules_go",
-    sha256 = "d1ffd055969c8f8d431e2d439813e42326961d0942bdf734d2c95dc30c369566",
-    url = "https://github.com/bazelbuild/rules_go/releases/download/%s/rules_go-%s.tar.gz" % (GO_VERSION, GO_VERSION),
+    sha256 = "dd926a88a564a9246713a9c00b35315f54cbd46b31a26d5d8fb264c07045f05d",
+    url = "https://github.com/bazelbuild/rules_go/releases/download/%s/rules_go-%s.zip" % (GO_VERSION, GO_VERSION),
 )
 
 load("@io_bazel_rules_go//go:deps.bzl", "go_register_toolchains", "go_rules_dependencies")
 
 go_rules_dependencies()
 
-go_register_toolchains()
+go_register_toolchains(version = "1.19.5")
 
 # Pkg
 
@@ -110,11 +110,11 @@ load("@com_google_protobuf//:protobuf_deps.bzl", "protobuf_deps")
 protobuf_deps()
 
 # Buildtools
-BUILDTOOLS_VERSION = "3.5.0"
+BUILDTOOLS_VERSION = "6.0.1"
 
 http_archive(
     name = "com_github_bazelbuild_buildtools",
-    sha256 = "f5b666935a827bc2b6e2ca86ea56c796d47f2821c2ff30452d270e51c2a49708",
+    sha256 = "2abb7494488d7232acf43a13f6be886dff2c72c4b928a9861074089493015312",
     strip_prefix = "buildtools-%s" % BUILDTOOLS_VERSION,
     url = "https://github.com/bazelbuild/buildtools/archive/%s.zip" % BUILDTOOLS_VERSION,
 )
