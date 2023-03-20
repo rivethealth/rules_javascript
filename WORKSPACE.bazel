@@ -64,11 +64,11 @@ http_archive(
 
 # Protobuf
 
-PROTO_VERSION = "4.0.0"
+PROTO_VERSION = "5.3.0-21.7"
 
 http_archive(
     name = "rules_proto",
-    sha256 = "66bfdf8782796239d3875d37e7de19b1d94301e8972b3cbd2446b332429b4df1",
+    sha256 = "dc3fb206a2cb3441b485eb1e423165b231235a1ea9b031b4433cf7bc1fa460dd",
     strip_prefix = "rules_proto-%s" % PROTO_VERSION,
     urls = ["https://github.com/bazelbuild/rules_proto/archive/%s.tar.gz" % PROTO_VERSION],
 )

@@ -1,6 +1,6 @@
 """
 Generated. Do not edit.
-bazel run //nodejs:resolve
+bazel run //nodejs:nodejs_resolve
 """
 
 NODEJS_REPOSITORIES = {
@@ -752,6 +752,40 @@ NODEJS_REPOSITORIES = {
             "url": "v14.21.1/node-v14.21.1-win-x64.zip",
         },
     },
+    "14.21.2": {
+        "darwin_x86_64": {
+            "sha256": "4a3e7b12cc24b97331c8424ac9b508c61cc97ed327dafda5f3d785e8230cd7e0",
+            "prefix": "node-v14.21.2-darwin-x64",
+            "url": "v14.21.2/node-v14.21.2-darwin-x64.tar.gz",
+        },
+        "linux_x86_64": {
+            "sha256": "c73b52b6f2ae5a07e8c8eb626915557065b7f02b7e7c2faff293a71101461f86",
+            "prefix": "node-v14.21.2-linux-x64",
+            "url": "v14.21.2/node-v14.21.2-linux-x64.tar.xz",
+        },
+        "windows_x86_64": {
+            "sha256": "3a53cd029a050b979fd1a112e2ada1a5ba56cfa90ae5e135752bf29d44f1a8eb",
+            "prefix": "node-v14.21.2-win-x64",
+            "url": "v14.21.2/node-v14.21.2-win-x64.zip",
+        },
+    },
+    "14.21.3": {
+        "darwin_x86_64": {
+            "sha256": "a024f0dd5a4c1f951b79959c3e991b30a5919a734ab3e197ae0ef439e5a538b5",
+            "prefix": "node-v14.21.3-darwin-x64",
+            "url": "v14.21.3/node-v14.21.3-darwin-x64.tar.gz",
+        },
+        "linux_x86_64": {
+            "sha256": "05c08a107c50572ab39ce9e8663a2a2d696b5d262d5bd6f98d84b997ce932d9a",
+            "prefix": "node-v14.21.3-linux-x64",
+            "url": "v14.21.3/node-v14.21.3-linux-x64.tar.xz",
+        },
+        "windows_x86_64": {
+            "sha256": "47cfb919bb86ab681369636a9cb925e2bd61991aad1638b2e38e61ec956796a6",
+            "prefix": "node-v14.21.3-win-x64",
+            "url": "v14.21.3/node-v14.21.3-win-x64.zip",
+        },
+    },
     "15.0.0": {
         "darwin_x86_64": {
             "sha256": "f9eee1f659d96991bc629ec1cec986f504242fc0f046f4487d2fe13b9ab37c99",
@@ -1059,6 +1093,11 @@ NODEJS_REPOSITORIES = {
         },
     },
     "16.0.0": {
+        "darwin_arm64": {
+            "sha256": "2d6d412abcf7c9375f19fde14086a6423e5bb9415eeca1ccad49638ffc476ea3",
+            "prefix": "node-v16.0.0-darwin-arm64",
+            "url": "v16.0.0/node-v16.0.0-darwin-arm64.tar.gz",
+        },
         "darwin_x86_64": {
             "sha256": "b00457dd7da6cc00d0248dc57b4ddd01a71eed6009ddadd8c854678232091dfb",
             "prefix": "node-v16.0.0-darwin-x64",
@@ -1076,6 +1115,11 @@ NODEJS_REPOSITORIES = {
         },
     },
     "16.1.0": {
+        "darwin_arm64": {
+            "sha256": "4ed9f6d78528fc80997a02a461437a3c3e82ba530fe8338ecf970e733883f8a8",
+            "prefix": "node-v16.1.0-darwin-arm64",
+            "url": "v16.1.0/node-v16.1.0-darwin-arm64.tar.gz",
+        },
         "darwin_x86_64": {
             "sha256": "22525ecc3b91f4d9a5d44dffe061cdb23f1a3e4a5555552e7940987883a93547",
             "prefix": "node-v16.1.0-darwin-x64",
@@ -1093,6 +1137,11 @@ NODEJS_REPOSITORIES = {
         },
     },
     "16.2.0": {
+        "darwin_arm64": {
+            "sha256": "451d87c07c522e24152a584b2d5461d4e3a7c690bd8882bef9ae8bf6b19d1dfd",
+            "prefix": "node-v16.2.0-darwin-arm64",
+            "url": "v16.2.0/node-v16.2.0-darwin-arm64.tar.gz",
+        },
         "darwin_x86_64": {
             "sha256": "3fc49b69de9491b45491f880217f8220d489b28ba3c1fff53e849dcf3ad77343",
             "prefix": "node-v16.2.0-darwin-x64",
@@ -1110,6 +1159,11 @@ NODEJS_REPOSITORIES = {
         },
     },
     "16.3.0": {
+        "darwin_arm64": {
+            "sha256": "aeac294dbe54a4dfd222eedfbae704b185c40702254810e2c5917f6dbc80e017",
+            "prefix": "node-v16.3.0-darwin-arm64",
+            "url": "v16.3.0/node-v16.3.0-darwin-arm64.tar.gz",
+        },
         "darwin_x86_64": {
             "sha256": "3e075bcfb6130dda84bfd04633cb228ec71e72d9a844c57efb7cfff130b4be89",
             "prefix": "node-v16.3.0-darwin-x64",
@@ -1127,6 +1181,11 @@ NODEJS_REPOSITORIES = {
         },
     },
     "16.4.0": {
+        "darwin_arm64": {
+            "sha256": "771469be99d6af048d9b192cd7b338c68a4604e0fcc7f8804278c91b5ad3f74f",
+            "prefix": "node-v16.4.0-darwin-arm64",
+            "url": "v16.4.0/node-v16.4.0-darwin-arm64.tar.gz",
+        },
         "darwin_x86_64": {
             "sha256": "95c81b54ea3069fcf230664d5d80b10e46f8fff5163644b7076fe48df13fc2fb",
             "prefix": "node-v16.4.0-darwin-x64",
@@ -1144,6 +1203,11 @@ NODEJS_REPOSITORIES = {
         },
     },
     "16.4.1": {
+        "darwin_arm64": {
+            "sha256": "c6e2a79873c4afbd9fcd7e9d2889e2a7b84860bea472a07ccbe33387397990f5",
+            "prefix": "node-v16.4.1-darwin-arm64",
+            "url": "v16.4.1/node-v16.4.1-darwin-arm64.tar.gz",
+        },
         "darwin_x86_64": {
             "sha256": "c78fecdfb062c51ba0432d1c6bb8f30eb14daf47001a5f68d17b3ae6d4d9eb31",
             "prefix": "node-v16.4.1-darwin-x64",
@@ -1161,6 +1225,11 @@ NODEJS_REPOSITORIES = {
         },
     },
     "16.4.2": {
+        "darwin_arm64": {
+            "sha256": "94f2890a3f68044bb89891d25063cc07bcd1e3754d27cfbcdeffeb0dc8cff592",
+            "prefix": "node-v16.4.2-darwin-arm64",
+            "url": "v16.4.2/node-v16.4.2-darwin-arm64.tar.gz",
+        },
         "darwin_x86_64": {
             "sha256": "51baebe96a70287fcbabafaca4c1704c610514e629e7c895b1d145ea0adc9ce6",
             "prefix": "node-v16.4.2-darwin-x64",
@@ -1178,6 +1247,11 @@ NODEJS_REPOSITORIES = {
         },
     },
     "16.5.0": {
+        "darwin_arm64": {
+            "sha256": "4296521e8b5d73d4c3b9b7f6f9f666e577342ea92a520f33040f1a252387d079",
+            "prefix": "node-v16.5.0-darwin-arm64",
+            "url": "v16.5.0/node-v16.5.0-darwin-arm64.tar.gz",
+        },
         "darwin_x86_64": {
             "sha256": "b779bd40b7c9366adcbe4f9fd2afd9ee5f085e333200380b34d285eb32c121bc",
             "prefix": "node-v16.5.0-darwin-x64",
@@ -1195,6 +1269,11 @@ NODEJS_REPOSITORIES = {
         },
     },
     "16.6.0": {
+        "darwin_arm64": {
+            "sha256": "07720d1bc18dca0bb3abdcd3c2e4f39a7cb532ca7f56c48bd42a4233de7fcd89",
+            "prefix": "node-v16.6.0-darwin-arm64",
+            "url": "v16.6.0/node-v16.6.0-darwin-arm64.tar.gz",
+        },
         "darwin_x86_64": {
             "sha256": "4dc28f83bc1165ae28c937458b7277b4af3ff8c6e61cccf2d9b87b4bfbcbffec",
             "prefix": "node-v16.6.0-darwin-x64",
@@ -1212,6 +1291,11 @@ NODEJS_REPOSITORIES = {
         },
     },
     "16.6.1": {
+        "darwin_arm64": {
+            "sha256": "8b766a2bcc686f968146b09892f24cfbeaebb547a4d50744d9af80def5221613",
+            "prefix": "node-v16.6.1-darwin-arm64",
+            "url": "v16.6.1/node-v16.6.1-darwin-arm64.tar.gz",
+        },
         "darwin_x86_64": {
             "sha256": "bca84deb7bf6c57537b3af44997d985045c95b5048fc5665cdc7f54d5c147516",
             "prefix": "node-v16.6.1-darwin-x64",
@@ -1229,6 +1313,11 @@ NODEJS_REPOSITORIES = {
         },
     },
     "16.6.2": {
+        "darwin_arm64": {
+            "sha256": "29e46e83f6837ff1c815c49f590c25fa51b0811a6590c62120a9d464ba431fc6",
+            "prefix": "node-v16.6.2-darwin-arm64",
+            "url": "v16.6.2/node-v16.6.2-darwin-arm64.tar.gz",
+        },
         "darwin_x86_64": {
             "sha256": "74e95aca0ea88ed2d9270dccc1e3e62500912be5fef1528bb11f178c468f312c",
             "prefix": "node-v16.6.2-darwin-x64",
@@ -1246,6 +1335,11 @@ NODEJS_REPOSITORIES = {
         },
     },
     "16.7.0": {
+        "darwin_arm64": {
+            "sha256": "969875c1a6b2790663d7b25d7641d1e3919225659921a98d2f1e4711bbec5ef3",
+            "prefix": "node-v16.7.0-darwin-arm64",
+            "url": "v16.7.0/node-v16.7.0-darwin-arm64.tar.gz",
+        },
         "darwin_x86_64": {
             "sha256": "c9bf23c765c584f635a4065d58dadff9737aeb605676d1e45873eba66adaab8a",
             "prefix": "node-v16.7.0-darwin-x64",
@@ -1263,6 +1357,11 @@ NODEJS_REPOSITORIES = {
         },
     },
     "16.8.0": {
+        "darwin_arm64": {
+            "sha256": "891e72d166abbb1b838b5113cc8cfaf2fe905dfe77afe84a5af56e426ff74ddf",
+            "prefix": "node-v16.8.0-darwin-arm64",
+            "url": "v16.8.0/node-v16.8.0-darwin-arm64.tar.gz",
+        },
         "darwin_x86_64": {
             "sha256": "9c013cb82830ab5adb9630ff28046f420a7805bb4a930ec2b3f5b162c5f6de88",
             "prefix": "node-v16.8.0-darwin-x64",
@@ -1280,6 +1379,11 @@ NODEJS_REPOSITORIES = {
         },
     },
     "16.9.0": {
+        "darwin_arm64": {
+            "sha256": "13105eb6623f474e4596c725bd4d6fcd500c68155f9f954bd3332c46f5df7378",
+            "prefix": "node-v16.9.0-darwin-arm64",
+            "url": "v16.9.0/node-v16.9.0-darwin-arm64.tar.gz",
+        },
         "darwin_x86_64": {
             "sha256": "37cea8ce6f88c501ed2ed191fc4335e5c4ecbeb0e85247c07b35825f07a60351",
             "prefix": "node-v16.9.0-darwin-x64",
@@ -1297,6 +1401,11 @@ NODEJS_REPOSITORIES = {
         },
     },
     "16.9.1": {
+        "darwin_arm64": {
+            "sha256": "cf7ec489e2250e9837cb608cb14123ea6645b14943dbfdc9de206d62f0de6fa2",
+            "prefix": "node-v16.9.1-darwin-arm64",
+            "url": "v16.9.1/node-v16.9.1-darwin-arm64.tar.gz",
+        },
         "darwin_x86_64": {
             "sha256": "90ff3ce95882ad41ae5c7a2f4f7303e9ba445caf5ef41d270a385c0a76e43bc6",
             "prefix": "node-v16.9.1-darwin-x64",
@@ -1314,6 +1423,11 @@ NODEJS_REPOSITORIES = {
         },
     },
     "16.10.0": {
+        "darwin_arm64": {
+            "sha256": "dfdaf4149365e170929b99692520388e89f618e8d64ddd3ded7126bccf4583ed",
+            "prefix": "node-v16.10.0-darwin-arm64",
+            "url": "v16.10.0/node-v16.10.0-darwin-arm64.tar.gz",
+        },
         "darwin_x86_64": {
             "sha256": "66a42483908aabd6d5fb19e9f3cebd6927dc84206b75b8801d9e010815083906",
             "prefix": "node-v16.10.0-darwin-x64",
@@ -1331,6 +1445,11 @@ NODEJS_REPOSITORIES = {
         },
     },
     "16.11.0": {
+        "darwin_arm64": {
+            "sha256": "b8f75887d6e94f8f38df9b6016258ea742677ffb45e6d513d55dc09bcd9c1fd3",
+            "prefix": "node-v16.11.0-darwin-arm64",
+            "url": "v16.11.0/node-v16.11.0-darwin-arm64.tar.gz",
+        },
         "darwin_x86_64": {
             "sha256": "abcf083d1c5f83c6d12fbe0f0ff2b3ff61fc0d3e06b43ebbbd0761804c62c468",
             "prefix": "node-v16.11.0-darwin-x64",
@@ -1348,6 +1467,11 @@ NODEJS_REPOSITORIES = {
         },
     },
     "16.11.1": {
+        "darwin_arm64": {
+            "sha256": "5e772e478390fab3001b7148a923e4f22fca50170000f18b28475337d3a97248",
+            "prefix": "node-v16.11.1-darwin-arm64",
+            "url": "v16.11.1/node-v16.11.1-darwin-arm64.tar.gz",
+        },
         "darwin_x86_64": {
             "sha256": "ba54b8ed504bd934d03eb860fefe991419b4209824280d4274f6a911588b5e45",
             "prefix": "node-v16.11.1-darwin-x64",
@@ -1365,6 +1489,11 @@ NODEJS_REPOSITORIES = {
         },
     },
     "16.12.0": {
+        "darwin_arm64": {
+            "sha256": "1d681c528205f56531084a09e9648586f91e68726ee73851c8e4b1098df2f603",
+            "prefix": "node-v16.12.0-darwin-arm64",
+            "url": "v16.12.0/node-v16.12.0-darwin-arm64.tar.gz",
+        },
         "darwin_x86_64": {
             "sha256": "35ee05c9392742f934a3058fa64837b14e184b26aa9bd621ec499a83f9fdfe67",
             "prefix": "node-v16.12.0-darwin-x64",
@@ -1382,6 +1511,11 @@ NODEJS_REPOSITORIES = {
         },
     },
     "16.13.0": {
+        "darwin_arm64": {
+            "sha256": "46d83fc0bd971db5050ef1b15afc44a6665dee40bd6c1cbaec23e1b40fa49e6d",
+            "prefix": "node-v16.13.0-darwin-arm64",
+            "url": "v16.13.0/node-v16.13.0-darwin-arm64.tar.gz",
+        },
         "darwin_x86_64": {
             "sha256": "37e09a8cf2352f340d1204c6154058d81362fef4ec488b0197b2ce36b3f0367a",
             "prefix": "node-v16.13.0-darwin-x64",
@@ -1399,6 +1533,11 @@ NODEJS_REPOSITORIES = {
         },
     },
     "16.13.1": {
+        "darwin_arm64": {
+            "sha256": "2d27c10c49af87a8d87bce4d32ca0e37afbc8dcc73d524ec7de3506c6309d4fc",
+            "prefix": "node-v16.13.1-darwin-arm64",
+            "url": "v16.13.1/node-v16.13.1-darwin-arm64.tar.gz",
+        },
         "darwin_x86_64": {
             "sha256": "a139fc6a4c8daf160989420535378d69b53a0d9f5ae43871e9befeb2b8a44187",
             "prefix": "node-v16.13.1-darwin-x64",
@@ -1416,6 +1555,11 @@ NODEJS_REPOSITORIES = {
         },
     },
     "16.13.2": {
+        "darwin_arm64": {
+            "sha256": "09d300008ad58792c12622a5eafdb14c931587bb88713df4df64cdf4ff2188d1",
+            "prefix": "node-v16.13.2-darwin-arm64",
+            "url": "v16.13.2/node-v16.13.2-darwin-arm64.tar.gz",
+        },
         "darwin_x86_64": {
             "sha256": "900a952bb77533d349e738ff8a5179a4344802af694615f36320a888b49b07e6",
             "prefix": "node-v16.13.2-darwin-x64",
@@ -1433,6 +1577,11 @@ NODEJS_REPOSITORIES = {
         },
     },
     "16.14.0": {
+        "darwin_arm64": {
+            "sha256": "56e547d22bc7be8aa40c8cfd604c156a5bcf8692f643ec1801c1fa2390498542",
+            "prefix": "node-v16.14.0-darwin-arm64",
+            "url": "v16.14.0/node-v16.14.0-darwin-arm64.tar.gz",
+        },
         "darwin_x86_64": {
             "sha256": "26702ab17903ad1ea4e13133bd423c1176db3384b8cf08559d385817c9ca58dc",
             "prefix": "node-v16.14.0-darwin-x64",
@@ -1450,6 +1599,11 @@ NODEJS_REPOSITORIES = {
         },
     },
     "16.14.1": {
+        "darwin_arm64": {
+            "sha256": "8f6d45796f3d996484dcf53bb0e53cd019cd0ef7a1a247bd0178ebaa7e63a184",
+            "prefix": "node-v16.14.1-darwin-arm64",
+            "url": "v16.14.1/node-v16.14.1-darwin-arm64.tar.gz",
+        },
         "darwin_x86_64": {
             "sha256": "af35abd727b051c8cdb8dcda9815ae93f96ef2c224d71f4ec52034a2ab5d8b61",
             "prefix": "node-v16.14.1-darwin-x64",
@@ -1467,6 +1621,11 @@ NODEJS_REPOSITORIES = {
         },
     },
     "16.14.2": {
+        "darwin_arm64": {
+            "sha256": "a66d9217d2003bd416d3dd06dfd2c7a044c4c9ff2e43a27865790bd0d59c682d",
+            "prefix": "node-v16.14.2-darwin-arm64",
+            "url": "v16.14.2/node-v16.14.2-darwin-arm64.tar.gz",
+        },
         "darwin_x86_64": {
             "sha256": "d3076ca7fcc7269c8ff9b03fe7d1c277d913a7e84a46a14eff4af7791ff9d055",
             "prefix": "node-v16.14.2-darwin-x64",
@@ -1484,6 +1643,11 @@ NODEJS_REPOSITORIES = {
         },
     },
     "16.15.0": {
+        "darwin_arm64": {
+            "sha256": "ad8d8fc5330ef47788f509c2af398c8060bb59acbe914070d0df684cd2d8d39b",
+            "prefix": "node-v16.15.0-darwin-arm64",
+            "url": "v16.15.0/node-v16.15.0-darwin-arm64.tar.gz",
+        },
         "darwin_x86_64": {
             "sha256": "a6bb12bbf979d32137598e49d56d61bcddf8a8596c3442b44a9b3ace58dd4de8",
             "prefix": "node-v16.15.0-darwin-x64",
@@ -1501,6 +1665,11 @@ NODEJS_REPOSITORIES = {
         },
     },
     "16.15.1": {
+        "darwin_arm64": {
+            "sha256": "7f492d01bed05c982fd55d6ba68711fe29bd7a1bb97b528909ac5aa9e3ab951d",
+            "prefix": "node-v16.15.1-darwin-arm64",
+            "url": "v16.15.1/node-v16.15.1-darwin-arm64.tar.gz",
+        },
         "darwin_x86_64": {
             "sha256": "965f4c44d53be8c7fd718ecb8ca3889c49e9877e68382851e8bf3b9b26eb3b69",
             "prefix": "node-v16.15.1-darwin-x64",
@@ -1518,6 +1687,11 @@ NODEJS_REPOSITORIES = {
         },
     },
     "16.16.0": {
+        "darwin_arm64": {
+            "sha256": "167721c2d72402e54adc0f8c87ca840796216c4d98946509d73221b771ad3e4c",
+            "prefix": "node-v16.16.0-darwin-arm64",
+            "url": "v16.16.0/node-v16.16.0-darwin-arm64.tar.gz",
+        },
         "darwin_x86_64": {
             "sha256": "982edd0fad364ad6e2d72161671544ab9399bd0ca8c726bde3cd07775c4c709a",
             "prefix": "node-v16.16.0-darwin-x64",
@@ -1535,6 +1709,11 @@ NODEJS_REPOSITORIES = {
         },
     },
     "16.17.0": {
+        "darwin_arm64": {
+            "sha256": "96eefac1e168ec1bf39c5ae1e7b2760522624adfbe2e0c92875cd33ef9a07792",
+            "prefix": "node-v16.17.0-darwin-arm64",
+            "url": "v16.17.0/node-v16.17.0-darwin-arm64.tar.gz",
+        },
         "darwin_x86_64": {
             "sha256": "b85eaa537f9d60a68c704e23839db65b5a75f14b37d6855c5d4e31a6bcef26c6",
             "prefix": "node-v16.17.0-darwin-x64",
@@ -1552,6 +1731,11 @@ NODEJS_REPOSITORIES = {
         },
     },
     "16.17.1": {
+        "darwin_arm64": {
+            "sha256": "f9f02f7872e2e8ee54320fce13deb9d56904f32bb0615b6e21aa3371d8899150",
+            "prefix": "node-v16.17.1-darwin-arm64",
+            "url": "v16.17.1/node-v16.17.1-darwin-arm64.tar.gz",
+        },
         "darwin_x86_64": {
             "sha256": "3db26761ad8493b894d42260d7e65094b7af9bc473588739e61bc1c32d6ff955",
             "prefix": "node-v16.17.1-darwin-x64",
@@ -1569,6 +1753,11 @@ NODEJS_REPOSITORIES = {
         },
     },
     "16.18.0": {
+        "darwin_arm64": {
+            "sha256": "8ceee891d0171381520e9017326589a9a616d6be2689493304970290d9b6e3b2",
+            "prefix": "node-v16.18.0-darwin-arm64",
+            "url": "v16.18.0/node-v16.18.0-darwin-arm64.tar.gz",
+        },
         "darwin_x86_64": {
             "sha256": "bd1476e95856879710026a344572c1b77add48da0f2d15bda48513d0b2667ed5",
             "prefix": "node-v16.18.0-darwin-x64",
@@ -1586,6 +1775,11 @@ NODEJS_REPOSITORIES = {
         },
     },
     "16.18.1": {
+        "darwin_arm64": {
+            "sha256": "71720bb0a80cf158d8fdf492def08048befd953ad45e2458b1d095e32c612ba7",
+            "prefix": "node-v16.18.1-darwin-arm64",
+            "url": "v16.18.1/node-v16.18.1-darwin-arm64.tar.gz",
+        },
         "darwin_x86_64": {
             "sha256": "c190e106d4ac6177d1db3a5a739d39dd68bd276ba17f3d3c84039a93717e081e",
             "prefix": "node-v16.18.1-darwin-x64",
@@ -1602,7 +1796,56 @@ NODEJS_REPOSITORIES = {
             "url": "v16.18.1/node-v16.18.1-win-x64.zip",
         },
     },
+    "16.19.0": {
+        "darwin_arm64": {
+            "sha256": "5c9434fbb0f323fecf3d261b23a2e544919380c5043d0046d9745682fefd9cde",
+            "prefix": "node-v16.19.0-darwin-arm64",
+            "url": "v16.19.0/node-v16.19.0-darwin-arm64.tar.gz",
+        },
+        "darwin_x86_64": {
+            "sha256": "491e5a5592eca1961dcbb1fae28567428ce56ce9cc7977b04041e163e0c1670c",
+            "prefix": "node-v16.19.0-darwin-x64",
+            "url": "v16.19.0/node-v16.19.0-darwin-x64.tar.gz",
+        },
+        "linux_x86_64": {
+            "sha256": "c88b52497ab38a3ddf526e5b46a41270320409109c3f74171b241132984fd08f",
+            "prefix": "node-v16.19.0-linux-x64",
+            "url": "v16.19.0/node-v16.19.0-linux-x64.tar.xz",
+        },
+        "windows_x86_64": {
+            "sha256": "534ca7a24e999c81cec847a498cc43d47e2bb158f6edf639e5297f2718350e96",
+            "prefix": "node-v16.19.0-win-x64",
+            "url": "v16.19.0/node-v16.19.0-win-x64.zip",
+        },
+    },
+    "16.19.1": {
+        "darwin_arm64": {
+            "sha256": "168f787f457bf645f3fc41e7419b62071db7d42519ce461b1d7ebfc0acbdbfb1",
+            "prefix": "node-v16.19.1-darwin-arm64",
+            "url": "v16.19.1/node-v16.19.1-darwin-arm64.tar.gz",
+        },
+        "darwin_x86_64": {
+            "sha256": "d7f683b2a8f78db8a28235a175e130c760f0d3cd335404e02f223e3a9adc30c7",
+            "prefix": "node-v16.19.1-darwin-x64",
+            "url": "v16.19.1/node-v16.19.1-darwin-x64.tar.gz",
+        },
+        "linux_x86_64": {
+            "sha256": "fa796a23837dc5c22914b1349b6117df4d497e2001a4cd7b28b0767e22f3bb51",
+            "prefix": "node-v16.19.1-linux-x64",
+            "url": "v16.19.1/node-v16.19.1-linux-x64.tar.xz",
+        },
+        "windows_x86_64": {
+            "sha256": "77e0198497fee24552d6a6f1737eed595b619af1b749ee0bee4b938026e55f73",
+            "prefix": "node-v16.19.1-win-x64",
+            "url": "v16.19.1/node-v16.19.1-win-x64.zip",
+        },
+    },
     "17.0.0": {
+        "darwin_arm64": {
+            "sha256": "bba3a1d2638ee194f82a6173296bebabf1b28897a5cd41bbc146629ac05e0751",
+            "prefix": "node-v17.0.0-darwin-arm64",
+            "url": "v17.0.0/node-v17.0.0-darwin-arm64.tar.gz",
+        },
         "darwin_x86_64": {
             "sha256": "091f29119bfb2a9004171f4626e0e76021f7f8db07148bd45caa6a61eb2a4e3d",
             "prefix": "node-v17.0.0-darwin-x64",
@@ -1620,6 +1863,11 @@ NODEJS_REPOSITORIES = {
         },
     },
     "17.0.1": {
+        "darwin_arm64": {
+            "sha256": "b49c65be9112f7e5de4e39f4f01e541ee73b3d28d3e2bbd3ea85a86952d0dc2d",
+            "prefix": "node-v17.0.1-darwin-arm64",
+            "url": "v17.0.1/node-v17.0.1-darwin-arm64.tar.gz",
+        },
         "darwin_x86_64": {
             "sha256": "0dfe6f904f3f20652e3d34c60885b790603f120d5d51a53031355827a4eaf6a9",
             "prefix": "node-v17.0.1-darwin-x64",
@@ -1637,6 +1885,11 @@ NODEJS_REPOSITORIES = {
         },
     },
     "17.1.0": {
+        "darwin_arm64": {
+            "sha256": "5e89e1cd17c58ef795d3bb420dd2a473c72a642422328c66dec59eb6d9243408",
+            "prefix": "node-v17.1.0-darwin-arm64",
+            "url": "v17.1.0/node-v17.1.0-darwin-arm64.tar.gz",
+        },
         "darwin_x86_64": {
             "sha256": "5255978096ea249a8b155f6cc7f8f81e3bc2f7e9371c9f263bdb484359d740b2",
             "prefix": "node-v17.1.0-darwin-x64",
@@ -1654,6 +1907,11 @@ NODEJS_REPOSITORIES = {
         },
     },
     "17.2.0": {
+        "darwin_arm64": {
+            "sha256": "436d2c069069302615d24fd663494277eca183af25776fb4ce40008422666c6e",
+            "prefix": "node-v17.2.0-darwin-arm64",
+            "url": "v17.2.0/node-v17.2.0-darwin-arm64.tar.gz",
+        },
         "darwin_x86_64": {
             "sha256": "6fc9e1c428cc6427d4926e8895dfc5c476718b2d02c3c5c1b6aa845c13602caa",
             "prefix": "node-v17.2.0-darwin-x64",
@@ -1671,6 +1929,11 @@ NODEJS_REPOSITORIES = {
         },
     },
     "17.3.0": {
+        "darwin_arm64": {
+            "sha256": "b504ba3628337f7ac2c67d04bf30e56082942345aa1a50e0e464f51df6662ff3",
+            "prefix": "node-v17.3.0-darwin-arm64",
+            "url": "v17.3.0/node-v17.3.0-darwin-arm64.tar.gz",
+        },
         "darwin_x86_64": {
             "sha256": "d4fa7d01c3b08cecdb71eee1da27a5e0e2d31bd25ad3bee1807df95811c2ce3f",
             "prefix": "node-v17.3.0-darwin-x64",
@@ -1688,6 +1951,11 @@ NODEJS_REPOSITORIES = {
         },
     },
     "17.3.1": {
+        "darwin_arm64": {
+            "sha256": "e664dd753777c813d893aad2b797847e2f0dc4c537cfefc377e3c88716934d38",
+            "prefix": "node-v17.3.1-darwin-arm64",
+            "url": "v17.3.1/node-v17.3.1-darwin-arm64.tar.gz",
+        },
         "darwin_x86_64": {
             "sha256": "a5d08b39a3f4af25c512247a2604eb84ffd41cbf66426d91df6ef165be94ae08",
             "prefix": "node-v17.3.1-darwin-x64",
@@ -1705,6 +1973,11 @@ NODEJS_REPOSITORIES = {
         },
     },
     "17.4.0": {
+        "darwin_arm64": {
+            "sha256": "9bd53805faf6df658ecd4f54321b25eff89818efdcb52c20435ff1703fd7064c",
+            "prefix": "node-v17.4.0-darwin-arm64",
+            "url": "v17.4.0/node-v17.4.0-darwin-arm64.tar.gz",
+        },
         "darwin_x86_64": {
             "sha256": "27e24d9f7a9a83bb59353249cce7cff16067e0483a627b5b9a1f1478101e64ee",
             "prefix": "node-v17.4.0-darwin-x64",
@@ -1722,6 +1995,11 @@ NODEJS_REPOSITORIES = {
         },
     },
     "17.5.0": {
+        "darwin_arm64": {
+            "sha256": "b5b5d8557d1556cc8224e0e0b0711b6baba79be74b22e6eaf9870ac71fcd757a",
+            "prefix": "node-v17.5.0-darwin-arm64",
+            "url": "v17.5.0/node-v17.5.0-darwin-arm64.tar.gz",
+        },
         "darwin_x86_64": {
             "sha256": "c5863c6ecdd6a3a1d14ef5d75135a82d33b68afb7a6a47558b86c72463d26877",
             "prefix": "node-v17.5.0-darwin-x64",
@@ -1739,6 +2017,11 @@ NODEJS_REPOSITORIES = {
         },
     },
     "17.6.0": {
+        "darwin_arm64": {
+            "sha256": "801ec54f30e43c0513aa390b0a5e67afd2287c3bd81861afa744df6e7e8c109f",
+            "prefix": "node-v17.6.0-darwin-arm64",
+            "url": "v17.6.0/node-v17.6.0-darwin-arm64.tar.gz",
+        },
         "darwin_x86_64": {
             "sha256": "0a88e772b11eb0145272ee70bf2785f1c159ce6783237dc7b4f865ce97c8f916",
             "prefix": "node-v17.6.0-darwin-x64",
@@ -1756,6 +2039,11 @@ NODEJS_REPOSITORIES = {
         },
     },
     "17.7.0": {
+        "darwin_arm64": {
+            "sha256": "4badbaf77e80cdc7333fdddbfaea80bf019adc4d09f71378ffa7e903eebd3b33",
+            "prefix": "node-v17.7.0-darwin-arm64",
+            "url": "v17.7.0/node-v17.7.0-darwin-arm64.tar.gz",
+        },
         "darwin_x86_64": {
             "sha256": "6cf672f1b26105ea42f36f6834fb1a7ede86f6a39aee497e69e1dd319775b1fc",
             "prefix": "node-v17.7.0-darwin-x64",
@@ -1773,6 +2061,11 @@ NODEJS_REPOSITORIES = {
         },
     },
     "17.7.1": {
+        "darwin_arm64": {
+            "sha256": "d5bb0974a881e017a178b33dab1e90d1fe1e183602d1e86b62fed1e2ea1960a6",
+            "prefix": "node-v17.7.1-darwin-arm64",
+            "url": "v17.7.1/node-v17.7.1-darwin-arm64.tar.gz",
+        },
         "darwin_x86_64": {
             "sha256": "94bfec7b7c034da3b626de77b9c8e6ba26418b160e805fc8a8106fbb0b797355",
             "prefix": "node-v17.7.1-darwin-x64",
@@ -1790,6 +2083,11 @@ NODEJS_REPOSITORIES = {
         },
     },
     "17.7.2": {
+        "darwin_arm64": {
+            "sha256": "9b078739799239adb3a0aea051e3cf60be886f28bb39d34d75780297dddd7af1",
+            "prefix": "node-v17.7.2-darwin-arm64",
+            "url": "v17.7.2/node-v17.7.2-darwin-arm64.tar.gz",
+        },
         "darwin_x86_64": {
             "sha256": "57be6ba9e505c6b4b3b59c2878a1679fa11c1160773ec2d082cff74ed79e5ea1",
             "prefix": "node-v17.7.2-darwin-x64",
@@ -1807,6 +2105,11 @@ NODEJS_REPOSITORIES = {
         },
     },
     "17.8.0": {
+        "darwin_arm64": {
+            "sha256": "b0bdcddc070a559018f876e0810a678415f99d69ed6e4df15fd1c7cf5fc2e45f",
+            "prefix": "node-v17.8.0-darwin-arm64",
+            "url": "v17.8.0/node-v17.8.0-darwin-arm64.tar.gz",
+        },
         "darwin_x86_64": {
             "sha256": "f253b705284f35f3ccea03ed7b97b8d5bd8002cfea3bb734289e2e9b38d0844b",
             "prefix": "node-v17.8.0-darwin-x64",
@@ -1824,6 +2127,11 @@ NODEJS_REPOSITORIES = {
         },
     },
     "17.9.0": {
+        "darwin_arm64": {
+            "sha256": "bad50341f8a1fd737c53efc01aa3f4eaf63df5601adf9ba036a8adb695d13428",
+            "prefix": "node-v17.9.0-darwin-arm64",
+            "url": "v17.9.0/node-v17.9.0-darwin-arm64.tar.gz",
+        },
         "darwin_x86_64": {
             "sha256": "0920116e6507fdc8dcf16bdd717e08797b6d1b97a7a6990294bbf62da9471256",
             "prefix": "node-v17.9.0-darwin-x64",
@@ -1841,6 +2149,11 @@ NODEJS_REPOSITORIES = {
         },
     },
     "17.9.1": {
+        "darwin_arm64": {
+            "sha256": "d6add5bbe10203a76d9ed964a2e5075a45aaf76137dbf3ee772fe6a679a34f36",
+            "prefix": "node-v17.9.1-darwin-arm64",
+            "url": "v17.9.1/node-v17.9.1-darwin-arm64.tar.gz",
+        },
         "darwin_x86_64": {
             "sha256": "ef8ef450425db95a1e91c1dd4bc6d05ca40bbbbdab9a71f59c5a02e13cc039fb",
             "prefix": "node-v17.9.1-darwin-x64",
@@ -1858,6 +2171,11 @@ NODEJS_REPOSITORIES = {
         },
     },
     "18.0.0": {
+        "darwin_arm64": {
+            "sha256": "35c05023a5d1ca647e2364e7383b6cf6299e8fed648b03597ca9be52ed0c4d59",
+            "prefix": "node-v18.0.0-darwin-arm64",
+            "url": "v18.0.0/node-v18.0.0-darwin-arm64.tar.gz",
+        },
         "darwin_x86_64": {
             "sha256": "cf94dd0dc95574775769de7ed7cea5a44a99bb813ab786fb90f764c17555b505",
             "prefix": "node-v18.0.0-darwin-x64",
@@ -1875,6 +2193,11 @@ NODEJS_REPOSITORIES = {
         },
     },
     "18.1.0": {
+        "darwin_arm64": {
+            "sha256": "8bc7b56fb7660dac5e981fd8724b95414fb52f698e8ce87dda92a683e5d2f4fa",
+            "prefix": "node-v18.1.0-darwin-arm64",
+            "url": "v18.1.0/node-v18.1.0-darwin-arm64.tar.gz",
+        },
         "darwin_x86_64": {
             "sha256": "2f1809e5e9cbda9c271051351a62d9d60e893bbb85f8810c815be03d121ee58c",
             "prefix": "node-v18.1.0-darwin-x64",
@@ -1892,6 +2215,11 @@ NODEJS_REPOSITORIES = {
         },
     },
     "18.2.0": {
+        "darwin_arm64": {
+            "sha256": "d140f15ca709767365e09edd0cb345f10f32f582d82d726f67f63dd7db4443d1",
+            "prefix": "node-v18.2.0-darwin-arm64",
+            "url": "v18.2.0/node-v18.2.0-darwin-arm64.tar.gz",
+        },
         "darwin_x86_64": {
             "sha256": "0b03647ac5805df335c6601d1a1838c6a2f4edbed7d098982bfd39e71b5fd8f8",
             "prefix": "node-v18.2.0-darwin-x64",
@@ -1909,6 +2237,11 @@ NODEJS_REPOSITORIES = {
         },
     },
     "18.3.0": {
+        "darwin_arm64": {
+            "sha256": "5800be1084a61dbbe6748535c7f0aefa8bc9b2a5aeb6482916f4b7500d6fc892",
+            "prefix": "node-v18.3.0-darwin-arm64",
+            "url": "v18.3.0/node-v18.3.0-darwin-arm64.tar.gz",
+        },
         "darwin_x86_64": {
             "sha256": "e4d4b81d08adbf34c40d46d4143ec1fab92372b459b466e9e6ec9a228a93badd",
             "prefix": "node-v18.3.0-darwin-x64",
@@ -1926,6 +2259,11 @@ NODEJS_REPOSITORIES = {
         },
     },
     "18.4.0": {
+        "darwin_arm64": {
+            "sha256": "90850d1ff13ef07e5ae2c8c2f29c29bd2654308def2776eb73be0f7aa6a4f9bd",
+            "prefix": "node-v18.4.0-darwin-arm64",
+            "url": "v18.4.0/node-v18.4.0-darwin-arm64.tar.gz",
+        },
         "darwin_x86_64": {
             "sha256": "9d97b2efc0b7f1d0877c319f6c1b3da24c8c4218d4c4eab7d6ebee0d95f69701",
             "prefix": "node-v18.4.0-darwin-x64",
@@ -1943,6 +2281,11 @@ NODEJS_REPOSITORIES = {
         },
     },
     "18.5.0": {
+        "darwin_arm64": {
+            "sha256": "8d4012c137ba18d8a3e650c01f83d995235dcef87a65d2be55471594b33be52f",
+            "prefix": "node-v18.5.0-darwin-arm64",
+            "url": "v18.5.0/node-v18.5.0-darwin-arm64.tar.gz",
+        },
         "darwin_x86_64": {
             "sha256": "bb72c852c249fde250418cd4dcef633d932e49414194aa25d199168e64207b77",
             "prefix": "node-v18.5.0-darwin-x64",
@@ -1960,6 +2303,11 @@ NODEJS_REPOSITORIES = {
         },
     },
     "18.6.0": {
+        "darwin_arm64": {
+            "sha256": "b68009204398118dd2806a96a9a4cec35f19c2ba454a325519e0f74ffb9c855e",
+            "prefix": "node-v18.6.0-darwin-arm64",
+            "url": "v18.6.0/node-v18.6.0-darwin-arm64.tar.gz",
+        },
         "darwin_x86_64": {
             "sha256": "9a4ba2455fdb4f1fe8c07d0aa17ae8369dd4843855e4de8b9d6fc8bc50e473a9",
             "prefix": "node-v18.6.0-darwin-x64",
@@ -1977,6 +2325,11 @@ NODEJS_REPOSITORIES = {
         },
     },
     "18.7.0": {
+        "darwin_arm64": {
+            "sha256": "ea24b35067bd0dc40ea8fda1087acc87672cbcbba881f7477dbd432e3c03343d",
+            "prefix": "node-v18.7.0-darwin-arm64",
+            "url": "v18.7.0/node-v18.7.0-darwin-arm64.tar.gz",
+        },
         "darwin_x86_64": {
             "sha256": "ce95b924b450edbcfeaf422b3635a6b44b17ad23cd1f5efff6b051c60db548c8",
             "prefix": "node-v18.7.0-darwin-x64",
@@ -1994,6 +2347,11 @@ NODEJS_REPOSITORIES = {
         },
     },
     "18.8.0": {
+        "darwin_arm64": {
+            "sha256": "4952a8ec7ca07328571ba0b06d228c2a8220041a6f07df4f46765c341a80ccd4",
+            "prefix": "node-v18.8.0-darwin-arm64",
+            "url": "v18.8.0/node-v18.8.0-darwin-arm64.tar.gz",
+        },
         "darwin_x86_64": {
             "sha256": "57457aeb1b3bfa2295235a134ebcdb58a72144b88049b72d9f7739f6591f850f",
             "prefix": "node-v18.8.0-darwin-x64",
@@ -2011,6 +2369,11 @@ NODEJS_REPOSITORIES = {
         },
     },
     "18.9.0": {
+        "darwin_arm64": {
+            "sha256": "60300b40f539fc93005859fcb7ea585bfd111800e90b6ee744a07f2380512bbb",
+            "prefix": "node-v18.9.0-darwin-arm64",
+            "url": "v18.9.0/node-v18.9.0-darwin-arm64.tar.gz",
+        },
         "darwin_x86_64": {
             "sha256": "dce1144cbfc01e03c2e84582461c3ce83541968b2b52a3d3a6f2bbfb09183fba",
             "prefix": "node-v18.9.0-darwin-x64",
@@ -2028,6 +2391,11 @@ NODEJS_REPOSITORIES = {
         },
     },
     "18.9.1": {
+        "darwin_arm64": {
+            "sha256": "289dca525c5535bddf389b69386ceb12d7c77eeae9aa2f666652877f982f9b5d",
+            "prefix": "node-v18.9.1-darwin-arm64",
+            "url": "v18.9.1/node-v18.9.1-darwin-arm64.tar.gz",
+        },
         "darwin_x86_64": {
             "sha256": "ef7d92bb3b21b50242175483dca6ccd98052d6f4be3ce5b9ae55f0b95c0db25d",
             "prefix": "node-v18.9.1-darwin-x64",
@@ -2045,6 +2413,11 @@ NODEJS_REPOSITORIES = {
         },
     },
     "18.10.0": {
+        "darwin_arm64": {
+            "sha256": "0689815cdd69a9a977ee3bab20c6228d03966a1f988464f18ce490678dc5cdc3",
+            "prefix": "node-v18.10.0-darwin-arm64",
+            "url": "v18.10.0/node-v18.10.0-darwin-arm64.tar.gz",
+        },
         "darwin_x86_64": {
             "sha256": "06b1b6381dfa952ae95fc927b740b660bc08f26bcf02cad61f64b36485dab6d4",
             "prefix": "node-v18.10.0-darwin-x64",
@@ -2062,6 +2435,11 @@ NODEJS_REPOSITORIES = {
         },
     },
     "18.11.0": {
+        "darwin_arm64": {
+            "sha256": "db5f8d16967d8b04129d77013101c9b0bb8a3b98e5895cf4bfd9a9af21ff8e27",
+            "prefix": "node-v18.11.0-darwin-arm64",
+            "url": "v18.11.0/node-v18.11.0-darwin-arm64.tar.gz",
+        },
         "darwin_x86_64": {
             "sha256": "3d3a4368c35f0bce45b1dc2eeb0b25765afee8a188441a81db93d16bc08bb861",
             "prefix": "node-v18.11.0-darwin-x64",
@@ -2079,6 +2457,11 @@ NODEJS_REPOSITORIES = {
         },
     },
     "18.12.0": {
+        "darwin_arm64": {
+            "sha256": "7aa5ef109086be0adf433b851504f0522a71a02c6d675e729375cd591a854f3c",
+            "prefix": "node-v18.12.0-darwin-arm64",
+            "url": "v18.12.0/node-v18.12.0-darwin-arm64.tar.gz",
+        },
         "darwin_x86_64": {
             "sha256": "cb3ca15bec3e5732a82bf321af30da8105f61df3934c0e79e6d3e54f84ca7913",
             "prefix": "node-v18.12.0-darwin-x64",
@@ -2096,6 +2479,11 @@ NODEJS_REPOSITORIES = {
         },
     },
     "18.12.1": {
+        "darwin_arm64": {
+            "sha256": "9857042e18a0530a19f22f29a38de4fed5608e32543216f9afb6edea8d0dfdd3",
+            "prefix": "node-v18.12.1-darwin-arm64",
+            "url": "v18.12.1/node-v18.12.1-darwin-arm64.tar.gz",
+        },
         "darwin_x86_64": {
             "sha256": "90ac0e8148f3fb52bcfc01d9f7d7963ce565dd0add0cd8d3e0698fbd7ecf1e5a",
             "prefix": "node-v18.12.1-darwin-x64",
@@ -2112,7 +2500,122 @@ NODEJS_REPOSITORIES = {
             "url": "v18.12.1/node-v18.12.1-win-x64.zip",
         },
     },
+    "18.13.0": {
+        "darwin_arm64": {
+            "sha256": "418d535e64dbcbd628715180c2de4ffcecb8a84b81f233c60e6ab9f0d795c249",
+            "prefix": "node-v18.13.0-darwin-arm64",
+            "url": "v18.13.0/node-v18.13.0-darwin-arm64.tar.gz",
+        },
+        "darwin_x86_64": {
+            "sha256": "8b57c4da4ff6cca19d5ef7953f8816e3406d1508a2e4ee7f997984b3b1d11b77",
+            "prefix": "node-v18.13.0-darwin-x64",
+            "url": "v18.13.0/node-v18.13.0-darwin-x64.tar.gz",
+        },
+        "linux_x86_64": {
+            "sha256": "7f5d6922a91986ef059ba8a4396aa435440adacfe6fc6fab60a857c8f2cf5e7a",
+            "prefix": "node-v18.13.0-linux-x64",
+            "url": "v18.13.0/node-v18.13.0-linux-x64.tar.xz",
+        },
+        "windows_x86_64": {
+            "sha256": "29c99ad1167ddbd72f2b15e91b560e36ac785b1873ba6791ab50d9d62f1957e2",
+            "prefix": "node-v18.13.0-win-x64",
+            "url": "v18.13.0/node-v18.13.0-win-x64.zip",
+        },
+    },
+    "18.14.0": {
+        "darwin_arm64": {
+            "sha256": "514438c258ee87e3083c21359f6d5e84988946db8a5ed5fa8bb0485276ea99f0",
+            "prefix": "node-v18.14.0-darwin-arm64",
+            "url": "v18.14.0/node-v18.14.0-darwin-arm64.tar.gz",
+        },
+        "darwin_x86_64": {
+            "sha256": "274a62f2f1c21e6216a9be1445c53ef63814db4a3ffeea8028b507fb6453c0ac",
+            "prefix": "node-v18.14.0-darwin-x64",
+            "url": "v18.14.0/node-v18.14.0-darwin-x64.tar.gz",
+        },
+        "linux_x86_64": {
+            "sha256": "1ccec74b6240fce8754813e31fdbc93ad520df2e814729cea29efe9075e48350",
+            "prefix": "node-v18.14.0-linux-x64",
+            "url": "v18.14.0/node-v18.14.0-linux-x64.tar.xz",
+        },
+        "windows_x86_64": {
+            "sha256": "2e8f00da72f6bd993e3b980ff844b948baf936e1e67e3694a7a3e5f6f7c9beb4",
+            "prefix": "node-v18.14.0-win-x64",
+            "url": "v18.14.0/node-v18.14.0-win-x64.zip",
+        },
+    },
+    "18.14.1": {
+        "darwin_arm64": {
+            "sha256": "513f3ab25244c5ea3eedc6218b7418dcd7a0f20e143fdbf8955f0ea74f53c2d8",
+            "prefix": "node-v18.14.1-darwin-arm64",
+            "url": "v18.14.1/node-v18.14.1-darwin-arm64.tar.gz",
+        },
+        "darwin_x86_64": {
+            "sha256": "940cfc29b42d174bf8fa271644508ab357b282a669b73adf0935982382ef5f38",
+            "prefix": "node-v18.14.1-darwin-x64",
+            "url": "v18.14.1/node-v18.14.1-darwin-x64.tar.gz",
+        },
+        "linux_x86_64": {
+            "sha256": "ea3bd72ad5ccaa1d9bcb40da69a60f249d29672d41740fe8f3e976d0e9078f65",
+            "prefix": "node-v18.14.1-linux-x64",
+            "url": "v18.14.1/node-v18.14.1-linux-x64.tar.xz",
+        },
+        "windows_x86_64": {
+            "sha256": "b0ec709961ab9b2e46d616d33f26d0ff1548b02045c7650f018e809e7a6cbbda",
+            "prefix": "node-v18.14.1-win-x64",
+            "url": "v18.14.1/node-v18.14.1-win-x64.zip",
+        },
+    },
+    "18.14.2": {
+        "darwin_arm64": {
+            "sha256": "19f2e5f0659909e6f4b583fe581c0a5f14d079232f24093a55722d1bcf1b9991",
+            "prefix": "node-v18.14.2-darwin-arm64",
+            "url": "v18.14.2/node-v18.14.2-darwin-arm64.tar.gz",
+        },
+        "darwin_x86_64": {
+            "sha256": "137fbd2abf59db87033a1114fab7afb497e3d747c3726dd881b6297d59782da2",
+            "prefix": "node-v18.14.2-darwin-x64",
+            "url": "v18.14.2/node-v18.14.2-darwin-x64.tar.gz",
+        },
+        "linux_x86_64": {
+            "sha256": "de15b44738578367cfb250b6551b4c97e0e0e8050fa931a4a9a7262d374d6034",
+            "prefix": "node-v18.14.2-linux-x64",
+            "url": "v18.14.2/node-v18.14.2-linux-x64.tar.xz",
+        },
+        "windows_x86_64": {
+            "sha256": "fccac5e259f1196a2a30e82f42211dd7dddd9a48e4fd3f1627900aa23dff4ffa",
+            "prefix": "node-v18.14.2-win-x64",
+            "url": "v18.14.2/node-v18.14.2-win-x64.zip",
+        },
+    },
+    "18.15.0": {
+        "darwin_arm64": {
+            "sha256": "bd302a689c3c34e2b61d86b97de66d26a335881a17af09b6a0a4bb1019df56e4",
+            "prefix": "node-v18.15.0-darwin-arm64",
+            "url": "v18.15.0/node-v18.15.0-darwin-arm64.tar.gz",
+        },
+        "darwin_x86_64": {
+            "sha256": "76add174d2d3f98da08907412e82add7352b8cb6f639324d352a65c084b99c7e",
+            "prefix": "node-v18.15.0-darwin-x64",
+            "url": "v18.15.0/node-v18.15.0-darwin-x64.tar.gz",
+        },
+        "linux_x86_64": {
+            "sha256": "c8c5fa53ce0c0f248e45983e86368e0b1daf84b77e88b310f769c3cfc12682ef",
+            "prefix": "node-v18.15.0-linux-x64",
+            "url": "v18.15.0/node-v18.15.0-linux-x64.tar.xz",
+        },
+        "windows_x86_64": {
+            "sha256": "118fbcae58bc8c53cbe97a10c019734ed90685da8dda98aa0b0f4aeead42a647",
+            "prefix": "node-v18.15.0-win-x64",
+            "url": "v18.15.0/node-v18.15.0-win-x64.zip",
+        },
+    },
     "19.0.0": {
+        "darwin_arm64": {
+            "sha256": "e30054d93857d3b2f55d22a4305e379ba9544adea885428900ff57bae465435e",
+            "prefix": "node-v19.0.0-darwin-arm64",
+            "url": "v19.0.0/node-v19.0.0-darwin-arm64.tar.gz",
+        },
         "darwin_x86_64": {
             "sha256": "a1b46d199bbc307f6ef8621b118e71356c626a279eb421c6b3ce7a7741573041",
             "prefix": "node-v19.0.0-darwin-x64",
@@ -2130,6 +2633,11 @@ NODEJS_REPOSITORIES = {
         },
     },
     "19.0.1": {
+        "darwin_arm64": {
+            "sha256": "96bcdf51e92320a79ada8ef9f97ab6eda8426e84fb2aad4b290719d8d749f4de",
+            "prefix": "node-v19.0.1-darwin-arm64",
+            "url": "v19.0.1/node-v19.0.1-darwin-arm64.tar.gz",
+        },
         "darwin_x86_64": {
             "sha256": "55dffff4ef8e82c6e241d89fd124c7620dff83880c5e33c4ec2b19bd2d6399aa",
             "prefix": "node-v19.0.1-darwin-x64",
@@ -2147,6 +2655,11 @@ NODEJS_REPOSITORIES = {
         },
     },
     "19.1.0": {
+        "darwin_arm64": {
+            "sha256": "d05a4a3c9f081c7fbab131f447714fa708328c5c1634c278716adfbdbae0ff26",
+            "prefix": "node-v19.1.0-darwin-arm64",
+            "url": "v19.1.0/node-v19.1.0-darwin-arm64.tar.gz",
+        },
         "darwin_x86_64": {
             "sha256": "63f4284fa1474b779f0e4fa93985ddc2efa227484476f33d923ae44922637080",
             "prefix": "node-v19.1.0-darwin-x64",
@@ -2164,6 +2677,11 @@ NODEJS_REPOSITORIES = {
         },
     },
     "19.2.0": {
+        "darwin_arm64": {
+            "sha256": "394341380de1b1c6e5a5ab8af86e08e8f097ba7d101d4315bdd7cdcf3b306467",
+            "prefix": "node-v19.2.0-darwin-arm64",
+            "url": "v19.2.0/node-v19.2.0-darwin-arm64.tar.gz",
+        },
         "darwin_x86_64": {
             "sha256": "e3cfa8f82ea334c3c23bc1d9c9c3a87c4ffff8d29eab17e6bb9d53008103b08b",
             "prefix": "node-v19.2.0-darwin-x64",
@@ -2178,6 +2696,182 @@ NODEJS_REPOSITORIES = {
             "sha256": "689ca4285fb924dbd6e26adb156b3df0178a20f0e9a9cea59eca79d34c8dd9da",
             "prefix": "node-v19.2.0-win-x64",
             "url": "v19.2.0/node-v19.2.0-win-x64.zip",
+        },
+    },
+    "19.3.0": {
+        "darwin_arm64": {
+            "sha256": "a50be904794d083fa8ecd4113845cea37968cbe3e5c1e758b0ec6215e1e7495e",
+            "prefix": "node-v19.3.0-darwin-arm64",
+            "url": "v19.3.0/node-v19.3.0-darwin-arm64.tar.gz",
+        },
+        "darwin_x86_64": {
+            "sha256": "d9692a5f153d2527ec43860e40fa0e77825543f554384aa8d26d33417ffb9069",
+            "prefix": "node-v19.3.0-darwin-x64",
+            "url": "v19.3.0/node-v19.3.0-darwin-x64.tar.gz",
+        },
+        "linux_x86_64": {
+            "sha256": "de94d6db26edee92a03512552c8be9db38a7bfefa7b3228328afdfb5094e3a76",
+            "prefix": "node-v19.3.0-linux-x64",
+            "url": "v19.3.0/node-v19.3.0-linux-x64.tar.xz",
+        },
+        "windows_x86_64": {
+            "sha256": "9b93f6cb78e23a4cab9e401a8418daa9112bbf5bd3127642adf22cfdd4241348",
+            "prefix": "node-v19.3.0-win-x64",
+            "url": "v19.3.0/node-v19.3.0-win-x64.zip",
+        },
+    },
+    "19.4.0": {
+        "darwin_arm64": {
+            "sha256": "9b6bfec4787ec5e500d21e835467fc4bb67689ef7d30a66e31d5bc372405eb42",
+            "prefix": "node-v19.4.0-darwin-arm64",
+            "url": "v19.4.0/node-v19.4.0-darwin-arm64.tar.gz",
+        },
+        "darwin_x86_64": {
+            "sha256": "13ec36d26994432731c33a24b55e29a0137e688386adb3254f54ecdbb5ab19c7",
+            "prefix": "node-v19.4.0-darwin-x64",
+            "url": "v19.4.0/node-v19.4.0-darwin-x64.tar.gz",
+        },
+        "linux_x86_64": {
+            "sha256": "2f3b7a02e41eeda113326370f51bd1d2a54de6b8a3628b0d36623c40ca4db783",
+            "prefix": "node-v19.4.0-linux-x64",
+            "url": "v19.4.0/node-v19.4.0-linux-x64.tar.xz",
+        },
+        "windows_x86_64": {
+            "sha256": "91d627e8eda9bd78af7316d98657df58d7f32b272b733f8a5a2cc1f06aa83608",
+            "prefix": "node-v19.4.0-win-x64",
+            "url": "v19.4.0/node-v19.4.0-win-x64.zip",
+        },
+    },
+    "19.5.0": {
+        "darwin_arm64": {
+            "sha256": "6b2ee18d9e888840411086151ab7f2fe519ff9b9292ed450aa98838b7eb58009",
+            "prefix": "node-v19.5.0-darwin-arm64",
+            "url": "v19.5.0/node-v19.5.0-darwin-arm64.tar.gz",
+        },
+        "darwin_x86_64": {
+            "sha256": "ebb3798171ce65fb11420aa21696ef6aadc9a1969998d6e00bbea46961c07045",
+            "prefix": "node-v19.5.0-darwin-x64",
+            "url": "v19.5.0/node-v19.5.0-darwin-x64.tar.gz",
+        },
+        "linux_x86_64": {
+            "sha256": "9a3b39a7835d6d1010f09a31c9bd7074af44ff4f9831fee1b93d9e26b56d7df6",
+            "prefix": "node-v19.5.0-linux-x64",
+            "url": "v19.5.0/node-v19.5.0-linux-x64.tar.xz",
+        },
+        "windows_x86_64": {
+            "sha256": "b58eb47e044f765db01d74ab0d623be8413a789cc9ab917e0417e336bdcc66a1",
+            "prefix": "node-v19.5.0-win-x64",
+            "url": "v19.5.0/node-v19.5.0-win-x64.zip",
+        },
+    },
+    "19.6.0": {
+        "darwin_arm64": {
+            "sha256": "a759366eea06f3433f1f1f7778b6e22d68bbf75661a2de1cd03fc85e30f649cf",
+            "prefix": "node-v19.6.0-darwin-arm64",
+            "url": "v19.6.0/node-v19.6.0-darwin-arm64.tar.gz",
+        },
+        "darwin_x86_64": {
+            "sha256": "6b97f9e434a3a3b4cfef35ae1881ced9e80adc3fb536b3060d2ceda5c446a6d3",
+            "prefix": "node-v19.6.0-darwin-x64",
+            "url": "v19.6.0/node-v19.6.0-darwin-x64.tar.gz",
+        },
+        "linux_x86_64": {
+            "sha256": "4624f307b13a8ef56686c6ad714caaa3513497eb48ea15ed6a73b95687d3589f",
+            "prefix": "node-v19.6.0-linux-x64",
+            "url": "v19.6.0/node-v19.6.0-linux-x64.tar.xz",
+        },
+        "windows_x86_64": {
+            "sha256": "8c0219c5937603e029c6ab9f0b08f1de52169e284548e6683f8ef369c63ba3bb",
+            "prefix": "node-v19.6.0-win-x64",
+            "url": "v19.6.0/node-v19.6.0-win-x64.zip",
+        },
+    },
+    "19.6.1": {
+        "darwin_arm64": {
+            "sha256": "f95951571baaf2180ce41eb5f3e878f6580bc5b203d79fedb479bf5a1b147138",
+            "prefix": "node-v19.6.1-darwin-arm64",
+            "url": "v19.6.1/node-v19.6.1-darwin-arm64.tar.gz",
+        },
+        "darwin_x86_64": {
+            "sha256": "a79442a282dec5a6bb1cb73adb926dbc4aa97fa3960193b9ecf56cc76fd6c114",
+            "prefix": "node-v19.6.1-darwin-x64",
+            "url": "v19.6.1/node-v19.6.1-darwin-x64.tar.gz",
+        },
+        "linux_x86_64": {
+            "sha256": "2b11e02f29772b7ec475854bb40bc46efc0d380d4245e2480db56455c5120c3e",
+            "prefix": "node-v19.6.1-linux-x64",
+            "url": "v19.6.1/node-v19.6.1-linux-x64.tar.xz",
+        },
+        "windows_x86_64": {
+            "sha256": "b3716a822786936879332abc16bc6df8bac0775dfdd4777268ad4f08d7f9aa8c",
+            "prefix": "node-v19.6.1-win-x64",
+            "url": "v19.6.1/node-v19.6.1-win-x64.zip",
+        },
+    },
+    "19.7.0": {
+        "darwin_arm64": {
+            "sha256": "7a96935baf731d0917a96370dda707b8195ae0a123d6c5ff777d41c3fdda949d",
+            "prefix": "node-v19.7.0-darwin-arm64",
+            "url": "v19.7.0/node-v19.7.0-darwin-arm64.tar.gz",
+        },
+        "darwin_x86_64": {
+            "sha256": "2b8593445a4ffc6f42020827dce134497204d55d1ac4a705c0919583d2e6a781",
+            "prefix": "node-v19.7.0-darwin-x64",
+            "url": "v19.7.0/node-v19.7.0-darwin-x64.tar.gz",
+        },
+        "linux_x86_64": {
+            "sha256": "66d352bd96bc947828e29d3524716fdf0569f900eaa4bbc0517b618ffd597970",
+            "prefix": "node-v19.7.0-linux-x64",
+            "url": "v19.7.0/node-v19.7.0-linux-x64.tar.xz",
+        },
+        "windows_x86_64": {
+            "sha256": "b7a6df0d6f14c90ca11b9989a4d135ed5b9a1edc2b16227b353287cf2e750e4a",
+            "prefix": "node-v19.7.0-win-x64",
+            "url": "v19.7.0/node-v19.7.0-win-x64.zip",
+        },
+    },
+    "19.8.0": {
+        "darwin_arm64": {
+            "sha256": "a4cd2534f84d4c1399ac6bc970492440bb35c91b08023703f09346d02973b148",
+            "prefix": "node-v19.8.0-darwin-arm64",
+            "url": "v19.8.0/node-v19.8.0-darwin-arm64.tar.gz",
+        },
+        "darwin_x86_64": {
+            "sha256": "ebcba3767de967593624be989aaaf143d53ed81aeb5e7d861d1abb6b0bd6db57",
+            "prefix": "node-v19.8.0-darwin-x64",
+            "url": "v19.8.0/node-v19.8.0-darwin-x64.tar.gz",
+        },
+        "linux_x86_64": {
+            "sha256": "9e336589505e969912cf15a7d760d0e48085c3985c309273513a8aac0b12f241",
+            "prefix": "node-v19.8.0-linux-x64",
+            "url": "v19.8.0/node-v19.8.0-linux-x64.tar.xz",
+        },
+        "windows_x86_64": {
+            "sha256": "2309de329aba9d206b9a516279e44376f420032ed6282d7055e32fa1ba61f659",
+            "prefix": "node-v19.8.0-win-x64",
+            "url": "v19.8.0/node-v19.8.0-win-x64.zip",
+        },
+    },
+    "19.8.1": {
+        "darwin_arm64": {
+            "sha256": "aafae50af9af911771c766e529eb2522a14bc4695331260e4280be7f526dcaf4",
+            "prefix": "node-v19.8.1-darwin-arm64",
+            "url": "v19.8.1/node-v19.8.1-darwin-arm64.tar.gz",
+        },
+        "darwin_x86_64": {
+            "sha256": "f19cb444924dc0168696445ea7b8ec0b0ccdb5c84c59f289aaa847dc20a9defc",
+            "prefix": "node-v19.8.1-darwin-x64",
+            "url": "v19.8.1/node-v19.8.1-darwin-x64.tar.gz",
+        },
+        "linux_x86_64": {
+            "sha256": "b8ecd95eebda5882bb70c1088595d87a1fd69cc4be81c317191f4f5ebb34b7ac",
+            "prefix": "node-v19.8.1-linux-x64",
+            "url": "v19.8.1/node-v19.8.1-linux-x64.tar.xz",
+        },
+        "windows_x86_64": {
+            "sha256": "e9f16d2f987137fbede00d4e11c423b5929e8967f0568df48cf185af902af262",
+            "prefix": "node-v19.8.1-win-x64",
+            "url": "v19.8.1/node-v19.8.1-win-x64.zip",
         },
     },
 }

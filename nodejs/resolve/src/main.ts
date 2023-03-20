@@ -12,6 +12,7 @@ import fetch from "node-fetch";
 import { Version } from "./version";
 
 const PLATFORMS: { [key: string]: string } = {
+  "darwin-arm64.tar.gz": "darwin_arm64",
   "darwin-x64.tar.gz": "darwin_x86_64",
   "linux-x64.tar.xz": "linux_x86_64",
   "win-x64.zip": "windows_x86_64",
@@ -85,6 +86,7 @@ function starlarkFile(
 
 async function main() {
   const parser = new ArgumentParser();
+  parser.add_argument("--command");
   parser.add_argument("--min-version", { dest: "minVersion", required: true });
   const args = parser.parse_args();
 
@@ -101,7 +103,9 @@ async function main() {
   );
   console.log('"""');
   console.log("Generated. Do not edit.");
-  console.log("bazel run //nodejs:resolve");
+  if (args.command) {
+    console.log(args.command);
+  }
   console.log('"""');
   console.log();
   const file = starlarkFile(resolved);

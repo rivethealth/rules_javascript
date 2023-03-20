@@ -10,5 +10,5 @@ if [ -z "${RUNFILES_DIR-}" ]; then
 fi
 
 tmp="$(mktemp)"
-"$RUNFILES_DIR"/better_rules_javascript/nodejs/resolve/bin --min-version=14 > "$tmp"
+"$RUNFILES_DIR"/better_rules_javascript/nodejs/resolve/bin --command='bazel run //nodejs:nodejs_resolve' --min-version=14 > "$tmp"
 mv "$tmp" "$BUILD_WORKSPACE_DIRECTORY"/nodejs/default/nodejs.bzl
