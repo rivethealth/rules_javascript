@@ -18,7 +18,7 @@
 
 <!-- Generated with Stardoc: http://skydoc.bazel.build -->
 
-<a id="#yarn_audit_test"></a>
+<a id="yarn_audit_test"></a>
 
 ## yarn_audit_test
 
@@ -28,13 +28,13 @@ yarn_audit_test(<a href="#yarn_audit_test-name">name</a>, <a href="#yarn_audit_t
 
 **ATTRIBUTES**
 
-| Name                                  | Description                    | Type                                                                        | Mandatory | Default |
-| :------------------------------------ | :----------------------------- | :-------------------------------------------------------------------------- | :-------- | :------ |
-| <a id="yarn_audit_test-name"></a>name | A unique name for this target. | <a href="https://bazel.build/docs/build-ref.html#name">Name</a>             | required  |         |
-| <a id="yarn_audit_test-data"></a>data | -                              | <a href="https://bazel.build/docs/build-ref.html#labels">List of labels</a> | optional  | []      |
-| <a id="yarn_audit_test-path"></a>path | Package relative path          | String                                                                      | optional  | ""      |
+| Name                                  | Description                    | Type                                                                | Mandatory | Default         |
+| :------------------------------------ | :----------------------------- | :------------------------------------------------------------------ | :-------- | :-------------- |
+| <a id="yarn_audit_test-name"></a>name | A unique name for this target. | <a href="https://bazel.build/concepts/labels#target-names">Name</a> | required  |                 |
+| <a id="yarn_audit_test-data"></a>data | -                              | <a href="https://bazel.build/concepts/labels">List of labels</a>    | optional  | <code>[]</code> |
+| <a id="yarn_audit_test-path"></a>path | Package relative path          | String                                                              | optional  | <code>""</code> |
 
-<a id="#yarn_resolve"></a>
+<a id="yarn_resolve"></a>
 
 ## yarn_resolve
 
@@ -44,18 +44,18 @@ yarn_resolve(<a href="#yarn_resolve-name">name</a>, <a href="#yarn_resolve-outpu
 
 **ATTRIBUTES**
 
-| Name                                     | Description                                                   | Type                                                            | Mandatory | Default        |
-| :--------------------------------------- | :------------------------------------------------------------ | :-------------------------------------------------------------- | :-------- | :------------- |
-| <a id="yarn_resolve-name"></a>name       | A unique name for this target.                                | <a href="https://bazel.build/docs/build-ref.html#name">Name</a> | required  |                |
-| <a id="yarn_resolve-output"></a>output   | Package-relative output path                                  | String                                                          | optional  | "npm_data.bzl" |
-| <a id="yarn_resolve-path"></a>path       | Package-relative path to package.json and yarn.lock directory | String                                                          | optional  | ""             |
-| <a id="yarn_resolve-refresh"></a>refresh | Whether to refresh                                            | Boolean                                                         | optional  | True           |
+| Name                                     | Description                                                   | Type                                                                | Mandatory | Default                     |
+| :--------------------------------------- | :------------------------------------------------------------ | :------------------------------------------------------------------ | :-------- | :-------------------------- |
+| <a id="yarn_resolve-name"></a>name       | A unique name for this target.                                | <a href="https://bazel.build/concepts/labels#target-names">Name</a> | required  |                             |
+| <a id="yarn_resolve-output"></a>output   | Package-relative output path                                  | String                                                              | optional  | <code>"npm_data.bzl"</code> |
+| <a id="yarn_resolve-path"></a>path       | Package-relative path to package.json and yarn.lock directory | String                                                              | optional  | <code>""</code>             |
+| <a id="yarn_resolve-refresh"></a>refresh | Whether to refresh                                            | Boolean                                                             | optional  | <code>True</code>           |
 
 # //npm:workspace.bzl
 
 <!-- Generated with Stardoc: http://skydoc.bazel.build -->
 
-<a id="#npm"></a>
+<a id="npm"></a>
 
 ## npm
 
@@ -65,16 +65,16 @@ npm(<a href="#npm-name">name</a>, <a href="#npm-packages">packages</a>, <a href=
 
 **PARAMETERS**
 
-| Name                                        | Description               | Default Value                                                                                                                                                                                 |
-| :------------------------------------------ | :------------------------ | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| <a id="npm-name"></a>name                   | <p align="center"> - </p> | none                                                                                                                                                                                          |
-| <a id="npm-packages"></a>packages           | <p align="center"> - </p> | none                                                                                                                                                                                          |
-| <a id="npm-roots"></a>roots                 | <p align="center"> - </p> | none                                                                                                                                                                                          |
-| <a id="npm-plugins"></a>plugins             | <p align="center"> - </p> | <code>[struct(alias_build = <function alias_build>, package_build = <function package_build>), struct(alias_build = <function alias_build>, package_build = <function package_build>)]</code> |
-| <a id="npm-auth_patterns"></a>auth_patterns | <p align="center"> - </p> | <code>None</code>                                                                                                                                                                             |
-| <a id="npm-netrc"></a>netrc                 | <p align="center"> - </p> | <code>None</code>                                                                                                                                                                             |
+| Name                                        | Description               | Default Value                                                                                                                                                                                                         |
+| :------------------------------------------ | :------------------------ | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| <a id="npm-name"></a>name                   | <p align="center"> - </p> | none                                                                                                                                                                                                                  |
+| <a id="npm-packages"></a>packages           | <p align="center"> - </p> | none                                                                                                                                                                                                                  |
+| <a id="npm-roots"></a>roots                 | <p align="center"> - </p> | none                                                                                                                                                                                                                  |
+| <a id="npm-plugins"></a>plugins             | <p align="center"> - </p> | <code>[struct(alias_build = &lt;function alias_build&gt;, package_build = &lt;function package_build&gt;), struct(alias_build = &lt;function alias_build&gt;, package_build = &lt;function package_build&gt;)]</code> |
+| <a id="npm-auth_patterns"></a>auth_patterns | <p align="center"> - </p> | <code>None</code>                                                                                                                                                                                                     |
+| <a id="npm-netrc"></a>netrc                 | <p align="center"> - </p> | <code>None</code>                                                                                                                                                                                                     |
 
-<a id="#npm_import_external_rule"></a>
+<a id="npm_import_external_rule"></a>
 
 ## npm_import_external_rule
 
@@ -88,7 +88,7 @@ npm_import_external_rule(<a href="#npm_import_external_rule-plugins">plugins</a>
 | :--------------------------------------------------- | :------------------------ | :------------ |
 | <a id="npm_import_external_rule-plugins"></a>plugins | <p align="center"> - </p> | none          |
 
-<a id="#npm_import_rule"></a>
+<a id="npm_import_rule"></a>
 
 ## npm_import_rule
 
@@ -102,7 +102,7 @@ npm_import_rule(<a href="#npm_import_rule-plugins">plugins</a>)
 | :------------------------------------------ | :------------------------ | :------------ |
 | <a id="npm_import_rule-plugins"></a>plugins | <p align="center"> - </p> | none          |
 
-<a id="#package_repo_name"></a>
+<a id="package_repo_name"></a>
 
 ## package_repo_name
 

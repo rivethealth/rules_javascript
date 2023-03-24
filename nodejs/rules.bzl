@@ -446,6 +446,7 @@ def _nodejs_binary_archive_impl(ctx):
     env = ctx.attr.env
     main = ctx.attr.main
     name = ctx.attr.name
+    node = ctx.attr.node[NodejsInfo]
     label = ctx.label
     node_options = ctx.attr.node_options
     manifest_bin = ctx.attr._manifest[DefaultInfo]
@@ -462,6 +463,7 @@ def _nodejs_binary_archive_impl(ctx):
         substitutions = {
             "%{env}": " ".join(["%s=%s" % (name, shell.quote(value)) for name, value in env.items()]),
             "%{main_module}": shell.quote(main_module),
+            "%{node}": shell.quote(node.bin) if type(node.bin) == "str" else '"$(dirname "$0")"/node',
             "%{node_options}": " ".join([shell.quote(option) for option in ctx.attr.node_options]),
         },
         is_executable = True,
@@ -483,11 +485,17 @@ def _nodejs_binary_archive_impl(ctx):
 
     archive = actions.declare_file("%s.tar" % name)
 
+    inputs = [bin, manifest]
+
     file_args = actions.args()
     file_args.use_param_file("@%s")
     file_args.set_param_file_format("multiline")
     file_args.add("--file", "bin")
     file_args.add(bin)
+    if type(node.bin) != "str":
+        inputs.append(node.bin)
+        file_args.add("--file", "node")
+        file_args.add(node.bin)
 
     def file_arg(file):
         return ["--file", runfile_path(workspace_name, file), file.path]
@@ -500,7 +508,7 @@ def _nodejs_binary_archive_impl(ctx):
 
     actions.run(
         arguments = [file_args, args],
-        inputs = depset([bin, manifest], transitive = [js_info.transitive_files]),
+        inputs = depset(inputs, transitive = [js_info.transitive_files]),
         outputs = [archive],
         executable = archive_linker.files_to_run.executable,
         tools = [archive_linker.files_to_run],
@@ -522,6 +530,10 @@ nodejs_binary_archive = rule(
         ),
         "main": attr.string(
             mandatory = True,
+        ),
+        "node": attr.label(
+            default = ":nodejs",
+            providers = [NodejsInfo],
         ),
         "node_options": attr.string_list(
             doc = "Node.js options",
@@ -546,4 +558,19 @@ nodejs_binary_archive = rule(
     },
     doc = "Create executable tar",
     implementation = _nodejs_binary_archive_impl,
+)
+
+def _nodejs_system_runtime_impl(ctx):
+    node = ctx.attr.node
+
+    nodejs_runtime_info = NodejsRuntimeInfo(bin = node)
+
+    return [nodejs_runtime_info]
+
+nodejs_system_runtime = rule(
+    attrs = {
+        "node": attr.string(mandatory = True),
+    },
+    implementation = _nodejs_system_runtime_impl,
+    provides = [NodejsRuntimeInfo],
 )

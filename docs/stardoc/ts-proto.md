@@ -20,7 +20,7 @@
 
 <!-- Generated with Stardoc: http://skydoc.bazel.build -->
 
-<a id="#TsProtoInfo"></a>
+<a id="TsProtoInfo"></a>
 
 ## TsProtoInfo
 
@@ -36,7 +36,7 @@ TS proto info
 | :------------------------------------------------------ | :------------------- |
 | <a id="TsProtoInfo-transitive_libs"></a>transitive_libs | Transitive libraries |
 
-<a id="#TsProtobuf"></a>
+<a id="TsProtobuf"></a>
 
 ## TsProtobuf
 
@@ -57,7 +57,7 @@ TypeScript Protobuf compiler
 | <a id="TsProtobuf-deps_ts"></a>deps_ts   | List of TsInfo      |
 | <a id="TsProtobuf-options"></a>options   | Options             |
 
-<a id="#TsProtosInfo"></a>
+<a id="TsProtosInfo"></a>
 
 ## TsProtosInfo
 
@@ -74,7 +74,7 @@ TsProtosInfo(<a href="#TsProtosInfo-cjs">cjs</a>, <a href="#TsProtosInfo-js">js<
 | <a id="TsProtosInfo-ts"></a>ts           | Dict of TsInfo by label      |
 | <a id="TsProtosInfo-default"></a>default | Dict of DefaultInfo by label |
 
-<a id="#create_lib"></a>
+<a id="create_lib"></a>
 
 ## create_lib
 
@@ -97,7 +97,7 @@ create_lib(<a href="#create_lib-label">label</a>, <a href="#create_lib-path">pat
 
 <!-- Generated with Stardoc: http://skydoc.bazel.build -->
 
-<a id="#ts_proto_export"></a>
+<a id="ts_proto_export"></a>
 
 ## ts_proto_export
 
@@ -109,13 +109,13 @@ TypeScript protobuf library
 
 **ATTRIBUTES**
 
-| Name                                  | Description                    | Type                                                               | Mandatory | Default |
-| :------------------------------------ | :----------------------------- | :----------------------------------------------------------------- | :-------- | :------ |
-| <a id="ts_proto_export-name"></a>name | A unique name for this target. | <a href="https://bazel.build/docs/build-ref.html#name">Name</a>    | required  |         |
-| <a id="ts_proto_export-dep"></a>dep   | -                              | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a> | optional  | None    |
-| <a id="ts_proto_export-lib"></a>lib   | -                              | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a> | optional  | None    |
+| Name                                  | Description                    | Type                                                                | Mandatory | Default           |
+| :------------------------------------ | :----------------------------- | :------------------------------------------------------------------ | :-------- | :---------------- |
+| <a id="ts_proto_export-name"></a>name | A unique name for this target. | <a href="https://bazel.build/concepts/labels#target-names">Name</a> | required  |                   |
+| <a id="ts_proto_export-dep"></a>dep   | -                              | <a href="https://bazel.build/concepts/labels">Label</a>             | optional  | <code>None</code> |
+| <a id="ts_proto_export-lib"></a>lib   | -                              | <a href="https://bazel.build/concepts/labels">Label</a>             | optional  | <code>None</code> |
 
-<a id="#ts_protoc"></a>
+<a id="ts_protoc"></a>
 
 ## ts_protoc
 
@@ -125,15 +125,15 @@ ts_protoc(<a href="#ts_protoc-name">name</a>, <a href="#ts_protoc-bin">bin</a>, 
 
 **ATTRIBUTES**
 
-| Name                                  | Description                    | Type                                                                        | Mandatory | Default |
-| :------------------------------------ | :----------------------------- | :-------------------------------------------------------------------------- | :-------- | :------ |
-| <a id="ts_protoc-name"></a>name       | A unique name for this target. | <a href="https://bazel.build/docs/build-ref.html#name">Name</a>             | required  |         |
-| <a id="ts_protoc-bin"></a>bin         | Protoc plugin                  | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a>          | required  |         |
-| <a id="ts_protoc-deps"></a>deps       | Dependencies                   | <a href="https://bazel.build/docs/build-ref.html#labels">List of labels</a> | required  |         |
-| <a id="ts_protoc-options"></a>options | -                              | List of strings                                                             | optional  | []      |
-| <a id="ts_protoc-tsc"></a>tsc         | TypeScript compiler            | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a>          | required  |         |
+| Name                                  | Description                    | Type                                                                | Mandatory | Default         |
+| :------------------------------------ | :----------------------------- | :------------------------------------------------------------------ | :-------- | :-------------- |
+| <a id="ts_protoc-name"></a>name       | A unique name for this target. | <a href="https://bazel.build/concepts/labels#target-names">Name</a> | required  |                 |
+| <a id="ts_protoc-bin"></a>bin         | Protoc plugin                  | <a href="https://bazel.build/concepts/labels">Label</a>             | required  |                 |
+| <a id="ts_protoc-deps"></a>deps       | Dependencies                   | <a href="https://bazel.build/concepts/labels">List of labels</a>    | required  |                 |
+| <a id="ts_protoc-options"></a>options | -                              | List of strings                                                     | optional  | <code>[]</code> |
+| <a id="ts_protoc-tsc"></a>tsc         | TypeScript compiler            | <a href="https://bazel.build/concepts/labels">Label</a>             | required  |                 |
 
-<a id="#configure_ts_protoc"></a>
+<a id="configure_ts_protoc"></a>
 
 ## configure_ts_protoc
 
@@ -152,7 +152,7 @@ configure_ts_protoc(<a href="#configure_ts_protoc-name">name</a>, <a href="#conf
 | <a id="configure_ts_protoc-options"></a>options       | <p align="center"> - </p> | <code>[]</code>   |
 | <a id="configure_ts_protoc-visibility"></a>visibility | <p align="center"> - </p> | <code>None</code> |
 
-<a id="#ts_proto_libraries_rule"></a>
+<a id="ts_proto_libraries_rule"></a>
 
 ## ts_proto_libraries_rule
 

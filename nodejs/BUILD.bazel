@@ -40,6 +40,12 @@ sh_binary(
     visibility = ["//:__subpackages__"],
 )
 
+alias(
+    name = "system_nodejs",
+    actual = "//nodejs/default:system_nodejs",
+    visibility = ["//visibility:public"],
+)
+
 test_suite(
     name = "test",
     tests = ["//nodejs/test"],

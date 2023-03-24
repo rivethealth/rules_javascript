@@ -27,7 +27,7 @@
 
 <!-- Generated with Stardoc: http://skydoc.bazel.build -->
 
-<a id="#CjsInfo"></a>
+<a id="CjsInfo"></a>
 
 ## CjsInfo
 
@@ -47,7 +47,7 @@ CommonJS-style package info
 | <a id="CjsInfo-transitive_packages"></a>transitive_packages | Packages    |
 | <a id="CjsInfo-transitive_links"></a>transitive_links       | Links       |
 
-<a id="#cjs_npm_label"></a>
+<a id="cjs_npm_label"></a>
 
 ## cjs_npm_label
 
@@ -61,7 +61,7 @@ cjs_npm_label(<a href="#cjs_npm_label-repo">repo</a>)
 | :---------------------------------- | :------------------------ | :------------ |
 | <a id="cjs_npm_label-repo"></a>repo | <p align="center"> - </p> | none          |
 
-<a id="#create_cjs_info"></a>
+<a id="create_cjs_info"></a>
 
 ## create_cjs_info
 
@@ -79,7 +79,7 @@ create_cjs_info(<a href="#create_cjs_info-cjs_root">cjs_root</a>, <a href="#crea
 | <a id="create_cjs_info-deps"></a>deps         | <p align="center"> - </p> | <code>[]</code> |
 | <a id="create_cjs_info-globals"></a>globals   | <p align="center"> - </p> | <code>[]</code> |
 
-<a id="#create_extra_deps"></a>
+<a id="create_extra_deps"></a>
 
 ## create_extra_deps
 
@@ -95,7 +95,7 @@ create_extra_deps(<a href="#create_extra_deps-package">package</a>, <a href="#cr
 | <a id="create_extra_deps-label"></a>label           | <p align="center"> - </p> | none          |
 | <a id="create_extra_deps-extra_deps"></a>extra_deps | <p align="center"> - </p> | none          |
 
-<a id="#create_globals"></a>
+<a id="create_globals"></a>
 
 ## create_globals
 
@@ -112,7 +112,7 @@ Create globals.
 | <a id="create_globals-label"></a>label         | Source label | none          |
 | <a id="create_globals-cjs_infos"></a>cjs_infos | CjsInfo      | none          |
 
-<a id="#create_link"></a>
+<a id="create_link"></a>
 
 ## create_link
 
@@ -131,7 +131,7 @@ Create link for CommonJs package.
 | <a id="create_link-dep"></a>dep     | Dependency package path | none          |
 | <a id="create_link-label"></a>label | Source label            | none          |
 
-<a id="#create_links"></a>
+<a id="create_links"></a>
 
 ## create_links
 
@@ -149,7 +149,7 @@ Create deps.
 | <a id="create_links-label"></a>label         | Source label   | none          |
 | <a id="create_links-cjs_infos"></a>cjs_infos | CjsInfo        | none          |
 
-<a id="#create_package"></a>
+<a id="create_package"></a>
 
 ## create_package
 
@@ -168,7 +168,7 @@ Create CommonJs package definition.
 | <a id="create_package-short_path"></a>short_path | Short path of root directory | none          |
 | <a id="create_package-label"></a>label           | Source label                 | none          |
 
-<a id="#gen_manifest"></a>
+<a id="gen_manifest"></a>
 
 ## gen_manifest
 
@@ -189,7 +189,7 @@ Create package manifest.
 | <a id="gen_manifest-deps"></a>deps                 | Depset of dependencies         | none          |
 | <a id="gen_manifest-package_path"></a>package_path | Function for package path      | none          |
 
-<a id="#package_path"></a>
+<a id="package_path"></a>
 
 ## package_path
 
@@ -207,7 +207,7 @@ package_path(<a href="#package_path-package">package</a>)
 
 <!-- Generated with Stardoc: http://skydoc.bazel.build -->
 
-<a id="#cjs_descriptors"></a>
+<a id="cjs_descriptors"></a>
 
 ## cjs_descriptors
 
@@ -219,14 +219,14 @@ CommonJS descriptors.
 
 **ATTRIBUTES**
 
-| Name                                                  | Description                        | Type                                                                        | Mandatory | Default |
-| :---------------------------------------------------- | :--------------------------------- | :-------------------------------------------------------------------------- | :-------- | :------ |
-| <a id="cjs_descriptors-name"></a>name                 | A unique name for this target.     | <a href="https://bazel.build/docs/build-ref.html#name">Name</a>             | required  |         |
-| <a id="cjs_descriptors-prefix"></a>prefix             | Prefix to add.                     | String                                                                      | optional  | ""      |
-| <a id="cjs_descriptors-srcs"></a>srcs                 | Descriptors.                       | <a href="https://bazel.build/docs/build-ref.html#labels">List of labels</a> | required  |         |
-| <a id="cjs_descriptors-strip_prefix"></a>strip_prefix | Package-relative prefix to remove. | String                                                                      | optional  | ""      |
+| Name                                                  | Description                        | Type                                                                | Mandatory | Default         |
+| :---------------------------------------------------- | :--------------------------------- | :------------------------------------------------------------------ | :-------- | :-------------- |
+| <a id="cjs_descriptors-name"></a>name                 | A unique name for this target.     | <a href="https://bazel.build/concepts/labels#target-names">Name</a> | required  |                 |
+| <a id="cjs_descriptors-prefix"></a>prefix             | Prefix to add.                     | String                                                              | optional  | <code>""</code> |
+| <a id="cjs_descriptors-srcs"></a>srcs                 | Descriptors.                       | <a href="https://bazel.build/concepts/labels">List of labels</a>    | required  |                 |
+| <a id="cjs_descriptors-strip_prefix"></a>strip_prefix | Package-relative prefix to remove. | String                                                              | optional  | <code>""</code> |
 
-<a id="#cjs_root"></a>
+<a id="cjs_root"></a>
 
 ## cjs_root
 
@@ -238,20 +238,20 @@ CommonJS-style package root.
 
 **ATTRIBUTES**
 
-| Name                                           | Description                                                 | Type                                                                        | Mandatory | Default |
-| :--------------------------------------------- | :---------------------------------------------------------- | :-------------------------------------------------------------------------- | :-------- | :------ |
-| <a id="cjs_root-name"></a>name                 | A unique name for this target.                              | <a href="https://bazel.build/docs/build-ref.html#name">Name</a>             | required  |         |
-| <a id="cjs_root-descriptors"></a>descriptors   | package.json descriptors.                                   | <a href="https://bazel.build/docs/build-ref.html#labels">List of labels</a> | optional  | []      |
-| <a id="cjs_root-package_name"></a>package_name | Package name. By default, @workspace_name/path-to-directory | String                                                                      | optional  | ""      |
-| <a id="cjs_root-path"></a>path                 | Root path, relative to package                              | String                                                                      | optional  | ""      |
-| <a id="cjs_root-prefix"></a>prefix             | -                                                           | String                                                                      | optional  | ""      |
-| <a id="cjs_root-strip_prefix"></a>strip_prefix | -                                                           | String                                                                      | optional  | ""      |
+| Name                                           | Description                                                 | Type                                                                | Mandatory | Default         |
+| :--------------------------------------------- | :---------------------------------------------------------- | :------------------------------------------------------------------ | :-------- | :-------------- |
+| <a id="cjs_root-name"></a>name                 | A unique name for this target.                              | <a href="https://bazel.build/concepts/labels#target-names">Name</a> | required  |                 |
+| <a id="cjs_root-descriptors"></a>descriptors   | package.json descriptors.                                   | <a href="https://bazel.build/concepts/labels">List of labels</a>    | optional  | <code>[]</code> |
+| <a id="cjs_root-package_name"></a>package_name | Package name. By default, @workspace_name/path-to-directory | String                                                              | optional  | <code>""</code> |
+| <a id="cjs_root-path"></a>path                 | Root path, relative to package                              | String                                                              | optional  | <code>""</code> |
+| <a id="cjs_root-prefix"></a>prefix             | -                                                           | String                                                              | optional  | <code>""</code> |
+| <a id="cjs_root-strip_prefix"></a>strip_prefix | -                                                           | String                                                              | optional  | <code>""</code> |
 
 # //commonjs:workspace.bzl
 
 <!-- Generated with Stardoc: http://skydoc.bazel.build -->
 
-<a id="#cjs_directory_npm_plugin"></a>
+<a id="cjs_directory_npm_plugin"></a>
 
 ## cjs_directory_npm_plugin
 
@@ -259,7 +259,7 @@ CommonJS-style package root.
 cjs_directory_npm_plugin()
 </pre>
 
-<a id="#cjs_npm_plugin"></a>
+<a id="cjs_npm_plugin"></a>
 
 ## cjs_npm_plugin
 

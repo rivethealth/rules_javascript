@@ -13,7 +13,7 @@
 
 <!-- Generated with Stardoc: http://skydoc.bazel.build -->
 
-<a id="#prettier"></a>
+<a id="prettier"></a>
 
 ## prettier
 
@@ -23,14 +23,14 @@ prettier(<a href="#prettier-name">name</a>, <a href="#prettier-bin">bin</a>, <a 
 
 **ATTRIBUTES**
 
-| Name                                       | Description                    | Type                                                               | Mandatory | Default |
-| :----------------------------------------- | :----------------------------- | :----------------------------------------------------------------- | :-------- | :------ |
-| <a id="prettier-name"></a>name             | A unique name for this target. | <a href="https://bazel.build/docs/build-ref.html#name">Name</a>    | required  |         |
-| <a id="prettier-bin"></a>bin               | Prettier                       | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a> | required  |         |
-| <a id="prettier-config"></a>config         | -                              | String                                                             | required  |         |
-| <a id="prettier-config_dep"></a>config_dep | Configuration file             | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a> | required  |         |
+| Name                                       | Description                    | Type                                                                | Mandatory | Default |
+| :----------------------------------------- | :----------------------------- | :------------------------------------------------------------------ | :-------- | :------ |
+| <a id="prettier-name"></a>name             | A unique name for this target. | <a href="https://bazel.build/concepts/labels#target-names">Name</a> | required  |         |
+| <a id="prettier-bin"></a>bin               | Prettier                       | <a href="https://bazel.build/concepts/labels">Label</a>             | required  |         |
+| <a id="prettier-config"></a>config         | -                              | String                                                              | required  |         |
+| <a id="prettier-config_dep"></a>config_dep | Configuration file             | <a href="https://bazel.build/concepts/labels">Label</a>             | required  |         |
 
-<a id="#configure_prettier"></a>
+<a id="configure_prettier"></a>
 
 ## configure_prettier
 

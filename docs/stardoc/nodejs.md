@@ -14,6 +14,7 @@
   - [nodejs_install](#nodejs_install)
   - [nodejs_modules_archive](#nodejs_modules_archive)
   - [nodejs_simple_binary](#nodejs_simple_binary)
+  - [nodejs_system_runtime](#nodejs_system_runtime)
   - [nodejs_toolchain](#nodejs_toolchain)
   - [configure_nodejs_runtime](#configure_nodejs_runtime)
 - [//nodejs:workspace.bzl](#nodejsworkspacebzl)
@@ -26,7 +27,7 @@
 
 <!-- Generated with Stardoc: http://skydoc.bazel.build -->
 
-<a id="#NodejsInfo"></a>
+<a id="NodejsInfo"></a>
 
 ## NodejsInfo
 
@@ -43,7 +44,7 @@ Node.js executable information.
 | <a id="NodejsInfo-bin"></a>bin         | Node.js executable |
 | <a id="NodejsInfo-options"></a>options | Node.js options    |
 
-<a id="#NodejsRuntimeInfo"></a>
+<a id="NodejsRuntimeInfo"></a>
 
 ## NodejsRuntimeInfo
 
@@ -59,7 +60,7 @@ Node.js runtime.
 | :------------------------------------ | :----------------- |
 | <a id="NodejsRuntimeInfo-bin"></a>bin | Node.js executable |
 
-<a id="#nodejs_runtime_rule"></a>
+<a id="nodejs_runtime_rule"></a>
 
 ## nodejs_runtime_rule
 
@@ -77,7 +78,7 @@ nodejs_runtime_rule(<a href="#nodejs_runtime_rule-name">name</a>)
 
 <!-- Generated with Stardoc: http://skydoc.bazel.build -->
 
-<a id="#nodejs"></a>
+<a id="nodejs"></a>
 
 ## nodejs
 
@@ -87,13 +88,13 @@ nodejs(<a href="#nodejs-name">name</a>, <a href="#nodejs-options">options</a>, <
 
 **ATTRIBUTES**
 
-| Name                               | Description                    | Type                                                               | Mandatory | Default |
-| :--------------------------------- | :----------------------------- | :----------------------------------------------------------------- | :-------- | :------ |
-| <a id="nodejs-name"></a>name       | A unique name for this target. | <a href="https://bazel.build/docs/build-ref.html#name">Name</a>    | required  |         |
-| <a id="nodejs-options"></a>options | -                              | List of strings                                                    | optional  | []      |
-| <a id="nodejs-runtime"></a>runtime | -                              | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a> | required  |         |
+| Name                               | Description                    | Type                                                                | Mandatory | Default         |
+| :--------------------------------- | :----------------------------- | :------------------------------------------------------------------ | :-------- | :-------------- |
+| <a id="nodejs-name"></a>name       | A unique name for this target. | <a href="https://bazel.build/concepts/labels#target-names">Name</a> | required  |                 |
+| <a id="nodejs-options"></a>options | -                              | List of strings                                                     | optional  | <code>[]</code> |
+| <a id="nodejs-runtime"></a>runtime | -                              | <a href="https://bazel.build/concepts/labels">Label</a>             | required  |                 |
 
-<a id="#nodejs_binary"></a>
+<a id="nodejs_binary"></a>
 
 ## nodejs_binary
 
@@ -105,37 +106,38 @@ Node.js binary
 
 **ATTRIBUTES**
 
-| Name                                                | Description                    | Type                                                                                      | Mandatory | Default |
-| :-------------------------------------------------- | :----------------------------- | :---------------------------------------------------------------------------------------- | :-------- | :------ |
-| <a id="nodejs_binary-name"></a>name                 | A unique name for this target. | <a href="https://bazel.build/docs/build-ref.html#name">Name</a>                           | required  |         |
-| <a id="nodejs_binary-data"></a>data                 | Runtime data                   | <a href="https://bazel.build/docs/build-ref.html#labels">List of labels</a>               | optional  | []      |
-| <a id="nodejs_binary-dep"></a>dep                   | JavaScript library.            | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a>                        | required  |         |
-| <a id="nodejs_binary-env"></a>env                   | Environment variables          | <a href="https://bazel.build/docs/skylark/lib/dict.html">Dictionary: String -> String</a> | optional  | {}      |
-| <a id="nodejs_binary-main"></a>main                 | -                              | String                                                                                    | required  |         |
-| <a id="nodejs_binary-node"></a>node                 | -                              | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a>                        | optional  | :nodejs |
-| <a id="nodejs_binary-node_options"></a>node_options | Node.js options                | List of strings                                                                           | optional  | []      |
+| Name                                                | Description                    | Type                                                                          | Mandatory | Default              |
+| :-------------------------------------------------- | :----------------------------- | :---------------------------------------------------------------------------- | :-------- | :------------------- |
+| <a id="nodejs_binary-name"></a>name                 | A unique name for this target. | <a href="https://bazel.build/concepts/labels#target-names">Name</a>           | required  |                      |
+| <a id="nodejs_binary-data"></a>data                 | Runtime data                   | <a href="https://bazel.build/concepts/labels">List of labels</a>              | optional  | <code>[]</code>      |
+| <a id="nodejs_binary-dep"></a>dep                   | JavaScript library.            | <a href="https://bazel.build/concepts/labels">Label</a>                       | required  |                      |
+| <a id="nodejs_binary-env"></a>env                   | Environment variables          | <a href="https://bazel.build/rules/lib/dict">Dictionary: String -> String</a> | optional  | <code>{}</code>      |
+| <a id="nodejs_binary-main"></a>main                 | -                              | String                                                                        | required  |                      |
+| <a id="nodejs_binary-node"></a>node                 | -                              | <a href="https://bazel.build/concepts/labels">Label</a>                       | optional  | <code>:nodejs</code> |
+| <a id="nodejs_binary-node_options"></a>node_options | Node.js options                | List of strings                                                               | optional  | <code>[]</code>      |
 
-<a id="#nodejs_binary_archive"></a>
+<a id="nodejs_binary_archive"></a>
 
 ## nodejs_binary_archive
 
 <pre>
-nodejs_binary_archive(<a href="#nodejs_binary_archive-name">name</a>, <a href="#nodejs_binary_archive-dep">dep</a>, <a href="#nodejs_binary_archive-env">env</a>, <a href="#nodejs_binary_archive-main">main</a>, <a href="#nodejs_binary_archive-node_options">node_options</a>)
+nodejs_binary_archive(<a href="#nodejs_binary_archive-name">name</a>, <a href="#nodejs_binary_archive-dep">dep</a>, <a href="#nodejs_binary_archive-env">env</a>, <a href="#nodejs_binary_archive-main">main</a>, <a href="#nodejs_binary_archive-node">node</a>, <a href="#nodejs_binary_archive-node_options">node_options</a>)
 </pre>
 
 Create executable tar
 
 **ATTRIBUTES**
 
-| Name                                                        | Description                    | Type                                                                                      | Mandatory | Default |
-| :---------------------------------------------------------- | :----------------------------- | :---------------------------------------------------------------------------------------- | :-------- | :------ |
-| <a id="nodejs_binary_archive-name"></a>name                 | A unique name for this target. | <a href="https://bazel.build/docs/build-ref.html#name">Name</a>                           | required  |         |
-| <a id="nodejs_binary_archive-dep"></a>dep                   | -                              | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a>                        | required  |         |
-| <a id="nodejs_binary_archive-env"></a>env                   | Environment variables          | <a href="https://bazel.build/docs/skylark/lib/dict.html">Dictionary: String -> String</a> | optional  | {}      |
-| <a id="nodejs_binary_archive-main"></a>main                 | -                              | String                                                                                    | required  |         |
-| <a id="nodejs_binary_archive-node_options"></a>node_options | Node.js options                | List of strings                                                                           | optional  | []      |
+| Name                                                        | Description                    | Type                                                                          | Mandatory | Default              |
+| :---------------------------------------------------------- | :----------------------------- | :---------------------------------------------------------------------------- | :-------- | :------------------- |
+| <a id="nodejs_binary_archive-name"></a>name                 | A unique name for this target. | <a href="https://bazel.build/concepts/labels#target-names">Name</a>           | required  |                      |
+| <a id="nodejs_binary_archive-dep"></a>dep                   | -                              | <a href="https://bazel.build/concepts/labels">Label</a>                       | required  |                      |
+| <a id="nodejs_binary_archive-env"></a>env                   | Environment variables          | <a href="https://bazel.build/rules/lib/dict">Dictionary: String -> String</a> | optional  | <code>{}</code>      |
+| <a id="nodejs_binary_archive-main"></a>main                 | -                              | String                                                                        | required  |                      |
+| <a id="nodejs_binary_archive-node"></a>node                 | -                              | <a href="https://bazel.build/concepts/labels">Label</a>                       | optional  | <code>:nodejs</code> |
+| <a id="nodejs_binary_archive-node_options"></a>node_options | Node.js options                | List of strings                                                               | optional  | <code>[]</code>      |
 
-<a id="#nodejs_install"></a>
+<a id="nodejs_install"></a>
 
 ## nodejs_install
 
@@ -145,13 +147,13 @@ nodejs_install(<a href="#nodejs_install-name">name</a>, <a href="#nodejs_install
 
 **ATTRIBUTES**
 
-| Name                                       | Description                    | Type                                                               | Mandatory | Default |
-| :----------------------------------------- | :----------------------------- | :----------------------------------------------------------------- | :-------- | :------ |
-| <a id="nodejs_install-name"></a>name       | A unique name for this target. | <a href="https://bazel.build/docs/build-ref.html#name">Name</a>    | required  |         |
-| <a id="nodejs_install-archive"></a>archive | -                              | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a> | required  |         |
-| <a id="nodejs_install-path"></a>path       | Path from root of workspace    | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a> | optional  | None    |
+| Name                                       | Description                    | Type                                                                | Mandatory | Default           |
+| :----------------------------------------- | :----------------------------- | :------------------------------------------------------------------ | :-------- | :---------------- |
+| <a id="nodejs_install-name"></a>name       | A unique name for this target. | <a href="https://bazel.build/concepts/labels#target-names">Name</a> | required  |                   |
+| <a id="nodejs_install-archive"></a>archive | -                              | <a href="https://bazel.build/concepts/labels">Label</a>             | required  |                   |
+| <a id="nodejs_install-path"></a>path       | Path from root of workspace    | <a href="https://bazel.build/concepts/labels">Label</a>             | optional  | <code>None</code> |
 
-<a id="#nodejs_modules_archive"></a>
+<a id="nodejs_modules_archive"></a>
 
 ## nodejs_modules_archive
 
@@ -163,13 +165,13 @@ node_modules tar
 
 **ATTRIBUTES**
 
-| Name                                           | Description                    | Type                                                                        | Mandatory | Default |
-| :--------------------------------------------- | :----------------------------- | :-------------------------------------------------------------------------- | :-------- | :------ |
-| <a id="nodejs_modules_archive-name"></a>name   | A unique name for this target. | <a href="https://bazel.build/docs/build-ref.html#name">Name</a>             | required  |         |
-| <a id="nodejs_modules_archive-deps"></a>deps   | -                              | <a href="https://bazel.build/docs/build-ref.html#labels">List of labels</a> | optional  | []      |
-| <a id="nodejs_modules_archive-links"></a>links | -                              | <a href="https://bazel.build/docs/build-ref.html#labels">List of labels</a> | optional  | []      |
+| Name                                           | Description                    | Type                                                                | Mandatory | Default         |
+| :--------------------------------------------- | :----------------------------- | :------------------------------------------------------------------ | :-------- | :-------------- |
+| <a id="nodejs_modules_archive-name"></a>name   | A unique name for this target. | <a href="https://bazel.build/concepts/labels#target-names">Name</a> | required  |                 |
+| <a id="nodejs_modules_archive-deps"></a>deps   | -                              | <a href="https://bazel.build/concepts/labels">List of labels</a>    | optional  | <code>[]</code> |
+| <a id="nodejs_modules_archive-links"></a>links | -                              | <a href="https://bazel.build/concepts/labels">List of labels</a>    | optional  | <code>[]</code> |
 
-<a id="#nodejs_simple_binary"></a>
+<a id="nodejs_simple_binary"></a>
 
 ## nodejs_simple_binary
 
@@ -181,15 +183,30 @@ Node.js executable, from a single file.
 
 **ATTRIBUTES**
 
-| Name                                                       | Description                       | Type                                                               | Mandatory | Default |
-| :--------------------------------------------------------- | :-------------------------------- | :----------------------------------------------------------------- | :-------- | :------ |
-| <a id="nodejs_simple_binary-name"></a>name                 | A unique name for this target.    | <a href="https://bazel.build/docs/build-ref.html#name">Name</a>    | required  |         |
-| <a id="nodejs_simple_binary-node"></a>node                 | -                                 | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a> | required  |         |
-| <a id="nodejs_simple_binary-node_options"></a>node_options | -                                 | List of strings                                                    | optional  | []      |
-| <a id="nodejs_simple_binary-path"></a>path                 | Path to file, if src is directory | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a> | optional  | None    |
-| <a id="nodejs_simple_binary-src"></a>src                   | Source file                       | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a> | required  |         |
+| Name                                                       | Description                       | Type                                                                | Mandatory | Default           |
+| :--------------------------------------------------------- | :-------------------------------- | :------------------------------------------------------------------ | :-------- | :---------------- |
+| <a id="nodejs_simple_binary-name"></a>name                 | A unique name for this target.    | <a href="https://bazel.build/concepts/labels#target-names">Name</a> | required  |                   |
+| <a id="nodejs_simple_binary-node"></a>node                 | -                                 | <a href="https://bazel.build/concepts/labels">Label</a>             | required  |                   |
+| <a id="nodejs_simple_binary-node_options"></a>node_options | -                                 | List of strings                                                     | optional  | <code>[]</code>   |
+| <a id="nodejs_simple_binary-path"></a>path                 | Path to file, if src is directory | <a href="https://bazel.build/concepts/labels">Label</a>             | optional  | <code>None</code> |
+| <a id="nodejs_simple_binary-src"></a>src                   | Source file                       | <a href="https://bazel.build/concepts/labels">Label</a>             | required  |                   |
 
-<a id="#nodejs_toolchain"></a>
+<a id="nodejs_system_runtime"></a>
+
+## nodejs_system_runtime
+
+<pre>
+nodejs_system_runtime(<a href="#nodejs_system_runtime-name">name</a>, <a href="#nodejs_system_runtime-node">node</a>)
+</pre>
+
+**ATTRIBUTES**
+
+| Name                                        | Description                    | Type                                                                | Mandatory | Default |
+| :------------------------------------------ | :----------------------------- | :------------------------------------------------------------------ | :-------- | :------ |
+| <a id="nodejs_system_runtime-name"></a>name | A unique name for this target. | <a href="https://bazel.build/concepts/labels#target-names">Name</a> | required  |         |
+| <a id="nodejs_system_runtime-node"></a>node | -                              | String                                                              | required  |         |
+
+<a id="nodejs_toolchain"></a>
 
 ## nodejs_toolchain
 
@@ -199,12 +216,12 @@ nodejs_toolchain(<a href="#nodejs_toolchain-name">name</a>, <a href="#nodejs_too
 
 **ATTRIBUTES**
 
-| Name                                   | Description                    | Type                                                               | Mandatory | Default |
-| :------------------------------------- | :----------------------------- | :----------------------------------------------------------------- | :-------- | :------ |
-| <a id="nodejs_toolchain-name"></a>name | A unique name for this target. | <a href="https://bazel.build/docs/build-ref.html#name">Name</a>    | required  |         |
-| <a id="nodejs_toolchain-bin"></a>bin   | Node.js executable             | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a> | required  |         |
+| Name                                   | Description                    | Type                                                                | Mandatory | Default |
+| :------------------------------------- | :----------------------------- | :------------------------------------------------------------------ | :-------- | :------ |
+| <a id="nodejs_toolchain-name"></a>name | A unique name for this target. | <a href="https://bazel.build/concepts/labels#target-names">Name</a> | required  |         |
+| <a id="nodejs_toolchain-bin"></a>bin   | Node.js executable             | <a href="https://bazel.build/concepts/labels">Label</a>             | required  |         |
 
-<a id="#configure_nodejs_runtime"></a>
+<a id="configure_nodejs_runtime"></a>
 
 ## configure_nodejs_runtime
 
@@ -225,7 +242,7 @@ configure_nodejs_runtime(<a href="#configure_nodejs_runtime-name">name</a>, <a h
 
 <!-- Generated with Stardoc: http://skydoc.bazel.build -->
 
-<a id="#nodejs_repositories"></a>
+<a id="nodejs_repositories"></a>
 
 ## nodejs_repositories
 
@@ -240,7 +257,7 @@ nodejs_repositories(<a href="#nodejs_repositories-name">name</a>, <a href="#node
 | <a id="nodejs_repositories-name"></a>name                 | <p align="center"> - </p> | none          |
 | <a id="nodejs_repositories-repositories"></a>repositories | <p align="center"> - </p> | none          |
 
-<a id="#nodejs_toolchains"></a>
+<a id="nodejs_toolchains"></a>
 
 ## nodejs_toolchains
 

@@ -17,7 +17,7 @@
 
 <!-- Generated with Stardoc: http://skydoc.bazel.build -->
 
-<a id="#WebpackInfo"></a>
+<a id="WebpackInfo"></a>
 
 ## WebpackInfo
 
@@ -41,7 +41,7 @@ Webpack configuration
 
 <!-- Generated with Stardoc: http://skydoc.bazel.build -->
 
-<a id="#webpack"></a>
+<a id="webpack"></a>
 
 ## webpack
 
@@ -53,18 +53,18 @@ Webpack tools
 
 **ATTRIBUTES**
 
-| Name                                      | Description                    | Type                                                                        | Mandatory | Default  |
-| :---------------------------------------- | :----------------------------- | :-------------------------------------------------------------------------- | :-------- | :------- |
-| <a id="webpack-name"></a>name             | A unique name for this target. | <a href="https://bazel.build/docs/build-ref.html#name">Name</a>             | required  |          |
-| <a id="webpack-bin"></a>bin               | Webpack executable             | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a>          | required  |          |
-| <a id="webpack-client"></a>client         | -                              | <a href="https://bazel.build/docs/build-ref.html#labels">List of labels</a> | required  |          |
-| <a id="webpack-config"></a>config         | -                              | String                                                                      | required  |          |
-| <a id="webpack-config_dep"></a>config_dep | -                              | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a>          | required  |          |
-| <a id="webpack-language"></a>language     | -                              | String                                                                      | optional  | "es2020" |
-| <a id="webpack-module"></a>module         | -                              | String                                                                      | optional  | "esnext" |
-| <a id="webpack-server"></a>server         | -                              | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a>          | required  |          |
+| Name                                      | Description                    | Type                                                                | Mandatory | Default               |
+| :---------------------------------------- | :----------------------------- | :------------------------------------------------------------------ | :-------- | :-------------------- |
+| <a id="webpack-name"></a>name             | A unique name for this target. | <a href="https://bazel.build/concepts/labels#target-names">Name</a> | required  |                       |
+| <a id="webpack-bin"></a>bin               | Webpack executable             | <a href="https://bazel.build/concepts/labels">Label</a>             | required  |                       |
+| <a id="webpack-client"></a>client         | -                              | <a href="https://bazel.build/concepts/labels">List of labels</a>    | required  |                       |
+| <a id="webpack-config"></a>config         | -                              | String                                                              | required  |                       |
+| <a id="webpack-config_dep"></a>config_dep | -                              | <a href="https://bazel.build/concepts/labels">Label</a>             | required  |                       |
+| <a id="webpack-language"></a>language     | -                              | String                                                              | optional  | <code>"es2020"</code> |
+| <a id="webpack-module"></a>module         | -                              | String                                                              | optional  | <code>"esnext"</code> |
+| <a id="webpack-server"></a>server         | -                              | <a href="https://bazel.build/concepts/labels">Label</a>             | required  |                       |
 
-<a id="#webpack_bundle"></a>
+<a id="webpack_bundle"></a>
 
 ## webpack_bundle
 
@@ -76,15 +76,15 @@ Webpack bundle
 
 **ATTRIBUTES**
 
-| Name                                       | Description                                        | Type                                                               | Mandatory | Default |
-| :----------------------------------------- | :------------------------------------------------- | :----------------------------------------------------------------- | :-------- | :------ |
-| <a id="webpack_bundle-name"></a>name       | A unique name for this target.                     | <a href="https://bazel.build/docs/build-ref.html#name">Name</a>    | required  |         |
-| <a id="webpack_bundle-dep"></a>dep         | JavaScript dependencies                            | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a> | required  |         |
-| <a id="webpack_bundle-output"></a>output   | Output directory. Defaults to the name of the rule | String                                                             | optional  | ""      |
-| <a id="webpack_bundle-root"></a>root       | CommonJS package root                              | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a> | required  |         |
-| <a id="webpack_bundle-webpack"></a>webpack | Webpack tools                                      | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a> | required  |         |
+| Name                                       | Description                                        | Type                                                                | Mandatory | Default         |
+| :----------------------------------------- | :------------------------------------------------- | :------------------------------------------------------------------ | :-------- | :-------------- |
+| <a id="webpack_bundle-name"></a>name       | A unique name for this target.                     | <a href="https://bazel.build/concepts/labels#target-names">Name</a> | required  |                 |
+| <a id="webpack_bundle-dep"></a>dep         | JavaScript dependencies                            | <a href="https://bazel.build/concepts/labels">Label</a>             | required  |                 |
+| <a id="webpack_bundle-output"></a>output   | Output directory. Defaults to the name of the rule | String                                                              | optional  | <code>""</code> |
+| <a id="webpack_bundle-root"></a>root       | CommonJS package root                              | <a href="https://bazel.build/concepts/labels">Label</a>             | required  |                 |
+| <a id="webpack_bundle-webpack"></a>webpack | Webpack tools                                      | <a href="https://bazel.build/concepts/labels">Label</a>             | required  |                 |
 
-<a id="#webpack_server"></a>
+<a id="webpack_server"></a>
 
 ## webpack_server
 
@@ -96,15 +96,15 @@ Run a webpack server
 
 **ATTRIBUTES**
 
-| Name                                         | Description                    | Type                                                               | Mandatory | Default |
-| :------------------------------------------- | :----------------------------- | :----------------------------------------------------------------- | :-------- | :------ |
-| <a id="webpack_server-name"></a>name         | A unique name for this target. | <a href="https://bazel.build/docs/build-ref.html#name">Name</a>    | required  |         |
-| <a id="webpack_server-dep"></a>dep           | JavaScript dependencies        | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a> | required  |         |
-| <a id="webpack_server-language"></a>language | -                              | String                                                             | optional  | ""      |
-| <a id="webpack_server-module"></a>module     | -                              | String                                                             | optional  | ""      |
-| <a id="webpack_server-webpack"></a>webpack   | Webpack tools                  | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a> | required  |         |
+| Name                                         | Description                    | Type                                                                | Mandatory | Default         |
+| :------------------------------------------- | :----------------------------- | :------------------------------------------------------------------ | :-------- | :-------------- |
+| <a id="webpack_server-name"></a>name         | A unique name for this target. | <a href="https://bazel.build/concepts/labels#target-names">Name</a> | required  |                 |
+| <a id="webpack_server-dep"></a>dep           | JavaScript dependencies        | <a href="https://bazel.build/concepts/labels">Label</a>             | required  |                 |
+| <a id="webpack_server-language"></a>language | -                              | String                                                              | optional  | <code>""</code> |
+| <a id="webpack_server-module"></a>module     | -                              | String                                                              | optional  | <code>""</code> |
+| <a id="webpack_server-webpack"></a>webpack   | Webpack tools                  | <a href="https://bazel.build/concepts/labels">Label</a>             | required  |                 |
 
-<a id="#configure_webpack"></a>
+<a id="configure_webpack"></a>
 
 ## configure_webpack
 

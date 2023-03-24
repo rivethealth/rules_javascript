@@ -17,7 +17,7 @@
 
 <!-- Generated with Stardoc: http://skydoc.bazel.build -->
 
-<a id="#AngularCompilerInfo"></a>
+<a id="AngularCompilerInfo"></a>
 
 ## AngularCompilerInfo
 
@@ -39,7 +39,7 @@ TypeScript compiler
 | <a id="AngularCompilerInfo-resource_compiler"></a>resource_compiler | Resource compiler   |
 | <a id="AngularCompilerInfo-tsc_bin"></a>tsc_bin                     | TypeScript compiler |
 
-<a id="#resource_path"></a>
+<a id="resource_path"></a>
 
 ## resource_path
 
@@ -57,7 +57,7 @@ resource_path(<a href="#resource_path-path">path</a>)
 
 <!-- Generated with Stardoc: http://skydoc.bazel.build -->
 
-<a id="#angular_compiler"></a>
+<a id="angular_compiler"></a>
 
 ## angular_compiler
 
@@ -67,16 +67,16 @@ angular_compiler(<a href="#angular_compiler-name">name</a>, <a href="#angular_co
 
 **ATTRIBUTES**
 
-| Name                                                             | Description                    | Type                                                                        | Mandatory | Default                         |
-| :--------------------------------------------------------------- | :----------------------------- | :-------------------------------------------------------------------------- | :-------- | :------------------------------ |
-| <a id="angular_compiler-name"></a>name                           | A unique name for this target. | <a href="https://bazel.build/docs/build-ref.html#name">Name</a>             | required  |                                 |
-| <a id="angular_compiler-bin"></a>bin                             | -                              | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a>          | required  |                                 |
-| <a id="angular_compiler-js_compiler"></a>js_compiler             | -                              | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a>          | required  |                                 |
-| <a id="angular_compiler-lib"></a>lib                             | -                              | <a href="https://bazel.build/docs/build-ref.html#labels">List of labels</a> | required  |                                 |
-| <a id="angular_compiler-resource_compiler"></a>resource_compiler | -                              | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a>          | optional  | //angular/resource-compiler:bin |
-| <a id="angular_compiler-tsc_bin"></a>tsc_bin                     | -                              | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a>          | required  |                                 |
+| Name                                                             | Description                    | Type                                                                | Mandatory | Default                                      |
+| :--------------------------------------------------------------- | :----------------------------- | :------------------------------------------------------------------ | :-------- | :------------------------------------------- |
+| <a id="angular_compiler-name"></a>name                           | A unique name for this target. | <a href="https://bazel.build/concepts/labels#target-names">Name</a> | required  |                                              |
+| <a id="angular_compiler-bin"></a>bin                             | -                              | <a href="https://bazel.build/concepts/labels">Label</a>             | required  |                                              |
+| <a id="angular_compiler-js_compiler"></a>js_compiler             | -                              | <a href="https://bazel.build/concepts/labels">Label</a>             | required  |                                              |
+| <a id="angular_compiler-lib"></a>lib                             | -                              | <a href="https://bazel.build/concepts/labels">List of labels</a>    | required  |                                              |
+| <a id="angular_compiler-resource_compiler"></a>resource_compiler | -                              | <a href="https://bazel.build/concepts/labels">Label</a>             | optional  | <code>//angular/resource-compiler:bin</code> |
+| <a id="angular_compiler-tsc_bin"></a>tsc_bin                     | -                              | <a href="https://bazel.build/concepts/labels">Label</a>             | required  |                                              |
 
-<a id="#angular_library"></a>
+<a id="angular_library"></a>
 
 ## angular_library
 
@@ -87,24 +87,24 @@ angular_library(<a href="#angular_library-name">name</a>, <a href="#angular_libr
 
 **ATTRIBUTES**
 
-| Name                                                              | Description                                               | Type                                                                                      | Mandatory | Default |
-| :---------------------------------------------------------------- | :-------------------------------------------------------- | :---------------------------------------------------------------------------------------- | :-------- | :------ |
-| <a id="angular_library-name"></a>name                             | A unique name for this target.                            | <a href="https://bazel.build/docs/build-ref.html#name">Name</a>                           | required  |         |
-| <a id="angular_library-compiler"></a>compiler                     | Angular compiler.                                         | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a>                        | required  |         |
-| <a id="angular_library-config"></a>config                         | -                                                         | String                                                                                    | optional  | ""      |
-| <a id="angular_library-config_dep"></a>config_dep                 | Tsconfig.                                                 | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a>                        | optional  | None    |
-| <a id="angular_library-declaration_prefix"></a>declaration_prefix | Prepend path to TypeScript declarations.                  | String                                                                                    | optional  | ""      |
-| <a id="angular_library-deps"></a>deps                             | Dependencies.                                             | <a href="https://bazel.build/docs/build-ref.html#labels">List of labels</a>               | optional  | []      |
-| <a id="angular_library-extra_deps"></a>extra_deps                 | Extra dependencies.                                       | <a href="https://bazel.build/docs/skylark/lib/dict.html">Dictionary: String -> String</a> | optional  | {}      |
-| <a id="angular_library-js_prefix"></a>js_prefix                   | Prepend path to JavaScript.                               | String                                                                                    | optional  | ""      |
-| <a id="angular_library-jsx"></a>jsx                               | How JSX is emitted: react (default) or preserve           | String                                                                                    | optional  | "react" |
-| <a id="angular_library-resources"></a>resources                   | Style and template files.                                 | <a href="https://bazel.build/docs/build-ref.html#labels">List of labels</a>               | optional  | []      |
-| <a id="angular_library-root"></a>root                             | CommonJS root                                             | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a>                        | required  |         |
-| <a id="angular_library-src_prefix"></a>src_prefix                 | Prepend path to TypeScript sources and Angular resources. | String                                                                                    | optional  | ""      |
-| <a id="angular_library-srcs"></a>srcs                             | TypeScript sources.                                       | <a href="https://bazel.build/docs/build-ref.html#labels">List of labels</a>               | required  |         |
-| <a id="angular_library-strip_prefix"></a>strip_prefix             | Root directory (relative to runfile)                      | String                                                                                    | optional  | ""      |
+| Name                                                              | Description                                               | Type                                                                          | Mandatory | Default              |
+| :---------------------------------------------------------------- | :-------------------------------------------------------- | :---------------------------------------------------------------------------- | :-------- | :------------------- |
+| <a id="angular_library-name"></a>name                             | A unique name for this target.                            | <a href="https://bazel.build/concepts/labels#target-names">Name</a>           | required  |                      |
+| <a id="angular_library-compiler"></a>compiler                     | Angular compiler.                                         | <a href="https://bazel.build/concepts/labels">Label</a>                       | required  |                      |
+| <a id="angular_library-config"></a>config                         | -                                                         | String                                                                        | optional  | <code>""</code>      |
+| <a id="angular_library-config_dep"></a>config_dep                 | Tsconfig.                                                 | <a href="https://bazel.build/concepts/labels">Label</a>                       | optional  | <code>None</code>    |
+| <a id="angular_library-declaration_prefix"></a>declaration_prefix | Prepend path to TypeScript declarations.                  | String                                                                        | optional  | <code>""</code>      |
+| <a id="angular_library-deps"></a>deps                             | Dependencies.                                             | <a href="https://bazel.build/concepts/labels">List of labels</a>              | optional  | <code>[]</code>      |
+| <a id="angular_library-extra_deps"></a>extra_deps                 | Extra dependencies.                                       | <a href="https://bazel.build/rules/lib/dict">Dictionary: String -> String</a> | optional  | <code>{}</code>      |
+| <a id="angular_library-js_prefix"></a>js_prefix                   | Prepend path to JavaScript.                               | String                                                                        | optional  | <code>""</code>      |
+| <a id="angular_library-jsx"></a>jsx                               | How JSX is emitted: react (default) or preserve           | String                                                                        | optional  | <code>"react"</code> |
+| <a id="angular_library-resources"></a>resources                   | Style and template files.                                 | <a href="https://bazel.build/concepts/labels">List of labels</a>              | optional  | <code>[]</code>      |
+| <a id="angular_library-root"></a>root                             | CommonJS root                                             | <a href="https://bazel.build/concepts/labels">Label</a>                       | required  |                      |
+| <a id="angular_library-src_prefix"></a>src_prefix                 | Prepend path to TypeScript sources and Angular resources. | String                                                                        | optional  | <code>""</code>      |
+| <a id="angular_library-srcs"></a>srcs                             | TypeScript sources.                                       | <a href="https://bazel.build/concepts/labels">List of labels</a>              | required  |                      |
+| <a id="angular_library-strip_prefix"></a>strip_prefix             | Root directory (relative to runfile)                      | String                                                                        | optional  | <code>""</code>      |
 
-<a id="#configure_angular_compiler"></a>
+<a id="configure_angular_compiler"></a>
 
 ## configure_angular_compiler
 

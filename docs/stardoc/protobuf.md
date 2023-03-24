@@ -20,7 +20,7 @@
 
 <!-- Generated with Stardoc: http://skydoc.bazel.build -->
 
-<a id="#js_proto_aspect"></a>
+<a id="js_proto_aspect"></a>
 
 ## js_proto_aspect
 
@@ -40,7 +40,7 @@ Create js_proto aspect.
 
 <!-- Generated with Stardoc: http://skydoc.bazel.build -->
 
-<a id="#JsProtoInfo"></a>
+<a id="JsProtoInfo"></a>
 
 ## JsProtoInfo
 
@@ -54,7 +54,7 @@ JsProtoInfo(<a href="#JsProtoInfo-transitive_libs">transitive_libs</a>)
 | :------------------------------------------------------ | :------------------------- |
 | <a id="JsProtoInfo-transitive_libs"></a>transitive_libs | Transitive library structs |
 
-<a id="#JsProtobuf"></a>
+<a id="JsProtobuf"></a>
 
 ## JsProtobuf
 
@@ -68,7 +68,7 @@ JsProtobuf(<a href="#JsProtobuf-runtime">runtime</a>)
 | :------------------------------------- | :------------------- |
 | <a id="JsProtobuf-runtime"></a>runtime | Runtime dependencies |
 
-<a id="#create_lib"></a>
+<a id="create_lib"></a>
 
 ## create_lib
 
@@ -92,7 +92,7 @@ create_lib(<a href="#create_lib-label">label</a>, <a href="#create_lib-path">pat
 
 <!-- Generated with Stardoc: http://skydoc.bazel.build -->
 
-<a id="#js_proto_export"></a>
+<a id="js_proto_export"></a>
 
 ## js_proto_export
 
@@ -104,13 +104,13 @@ JavaScript protobuf library
 
 **ATTRIBUTES**
 
-| Name                                  | Description                    | Type                                                               | Mandatory | Default |
-| :------------------------------------ | :----------------------------- | :----------------------------------------------------------------- | :-------- | :------ |
-| <a id="js_proto_export-name"></a>name | A unique name for this target. | <a href="https://bazel.build/docs/build-ref.html#name">Name</a>    | required  |         |
-| <a id="js_proto_export-dep"></a>dep   | -                              | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a> | optional  | None    |
-| <a id="js_proto_export-lib"></a>lib   | -                              | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a> | optional  | None    |
+| Name                                  | Description                    | Type                                                                | Mandatory | Default           |
+| :------------------------------------ | :----------------------------- | :------------------------------------------------------------------ | :-------- | :---------------- |
+| <a id="js_proto_export-name"></a>name | A unique name for this target. | <a href="https://bazel.build/concepts/labels#target-names">Name</a> | required  |                   |
+| <a id="js_proto_export-dep"></a>dep   | -                              | <a href="https://bazel.build/concepts/labels">Label</a>             | optional  | <code>None</code> |
+| <a id="js_proto_export-lib"></a>lib   | -                              | <a href="https://bazel.build/concepts/labels">Label</a>             | optional  | <code>None</code> |
 
-<a id="#js_protoc"></a>
+<a id="js_protoc"></a>
 
 ## js_protoc
 
@@ -122,12 +122,12 @@ JavaScript protobuf tools
 
 **ATTRIBUTES**
 
-| Name                                  | Description                    | Type                                                               | Mandatory | Default |
-| :------------------------------------ | :----------------------------- | :----------------------------------------------------------------- | :-------- | :------ |
-| <a id="js_protoc-name"></a>name       | A unique name for this target. | <a href="https://bazel.build/docs/build-ref.html#name">Name</a>    | required  |         |
-| <a id="js_protoc-runtime"></a>runtime | Runtime dependencies           | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a> | optional  | None    |
+| Name                                  | Description                    | Type                                                                | Mandatory | Default           |
+| :------------------------------------ | :----------------------------- | :------------------------------------------------------------------ | :-------- | :---------------- |
+| <a id="js_protoc-name"></a>name       | A unique name for this target. | <a href="https://bazel.build/concepts/labels#target-names">Name</a> | required  |                   |
+| <a id="js_protoc-runtime"></a>runtime | Runtime dependencies           | <a href="https://bazel.build/concepts/labels">Label</a>             | optional  | <code>None</code> |
 
-<a id="#js_proto_libraries_rule"></a>
+<a id="js_proto_libraries_rule"></a>
 
 ## js_proto_libraries_rule
 

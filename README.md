@@ -113,6 +113,7 @@ Hello world
 
 - [Angular](docs/angular.md)
 - [CommonJS](docs/commonjs.md)
+- [Docker](docs/docker.md)
 - [JavaScript](docs/javascript.md)
 - [Jest](docs/jest.md)
 - [Node.js](docs/nodejs.md)

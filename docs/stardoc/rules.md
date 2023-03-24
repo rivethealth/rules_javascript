@@ -12,7 +12,7 @@
 
 <!-- Generated with Stardoc: http://skydoc.bazel.build -->
 
-<a id="#repositories"></a>
+<a id="repositories"></a>
 
 ## repositories
 

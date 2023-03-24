@@ -1,5 +1,5 @@
 load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
-load("//nodejs:rules.bzl", "configure_nodejs_runtime", "nodejs")
+load("//nodejs:rules.bzl", "configure_nodejs_runtime", "nodejs", "nodejs_system_runtime")
 load(":rules.bzl", "nodejs_runtime")
 
 bzl_library(
@@ -19,5 +19,18 @@ nodejs(
     name = "nodejs",
     options = ["--enable-source-maps"],
     runtime = ":nodejs_runtime",
+    visibility = ["//visibility:public"],
+)
+
+nodejs(
+    name = "system_nodejs",
+    options = ["--enable-source-maps"],
+    runtime = ":system_nodejs_runtime",
+    visibility = ["//visibility:public"],
+)
+
+nodejs_system_runtime(
+    name = "system_nodejs_runtime",
+    node = "node",
     visibility = ["//visibility:public"],
 )

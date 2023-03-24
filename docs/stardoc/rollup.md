@@ -16,7 +16,7 @@
 
 <!-- Generated with Stardoc: http://skydoc.bazel.build -->
 
-<a id="#RollupInfo"></a>
+<a id="RollupInfo"></a>
 
 ## RollupInfo
 
@@ -37,7 +37,7 @@ Rollup configuration
 
 <!-- Generated with Stardoc: http://skydoc.bazel.build -->
 
-<a id="#rollup"></a>
+<a id="rollup"></a>
 
 ## rollup
 
@@ -49,14 +49,14 @@ Rollup tools.
 
 **ATTRIBUTES**
 
-| Name                                     | Description                    | Type                                                               | Mandatory | Default |
-| :--------------------------------------- | :----------------------------- | :----------------------------------------------------------------- | :-------- | :------ |
-| <a id="rollup-name"></a>name             | A unique name for this target. | <a href="https://bazel.build/docs/build-ref.html#name">Name</a>    | required  |         |
-| <a id="rollup-bin"></a>bin               | Rollup executable              | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a> | required  |         |
-| <a id="rollup-config"></a>config         | Config.                        | String                                                             | required  |         |
-| <a id="rollup-config_dep"></a>config_dep | Config dependency.             | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a> | required  |         |
+| Name                                     | Description                    | Type                                                                | Mandatory | Default |
+| :--------------------------------------- | :----------------------------- | :------------------------------------------------------------------ | :-------- | :------ |
+| <a id="rollup-name"></a>name             | A unique name for this target. | <a href="https://bazel.build/concepts/labels#target-names">Name</a> | required  |         |
+| <a id="rollup-bin"></a>bin               | Rollup executable              | <a href="https://bazel.build/concepts/labels">Label</a>             | required  |         |
+| <a id="rollup-config"></a>config         | Config.                        | String                                                              | required  |         |
+| <a id="rollup-config_dep"></a>config_dep | Config dependency.             | <a href="https://bazel.build/concepts/labels">Label</a>             | required  |         |
 
-<a id="#rollup_bundle"></a>
+<a id="rollup_bundle"></a>
 
 ## rollup_bundle
 
@@ -68,14 +68,14 @@ Rollup bundle
 
 **ATTRIBUTES**
 
-| Name                                    | Description                                           | Type                                                               | Mandatory | Default |
-| :-------------------------------------- | :---------------------------------------------------- | :----------------------------------------------------------------- | :-------- | :------ |
-| <a id="rollup_bundle-name"></a>name     | A unique name for this target.                        | <a href="https://bazel.build/docs/build-ref.html#name">Name</a>    | required  |         |
-| <a id="rollup_bundle-dep"></a>dep       | JavaScript dependencies                               | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a> | optional  | None    |
-| <a id="rollup_bundle-output"></a>output | Output directory. Defaults to the name as the target. | String                                                             | optional  | ""      |
-| <a id="rollup_bundle-rollup"></a>rollup | Rollup tools                                          | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a> | required  |         |
+| Name                                    | Description                                           | Type                                                                | Mandatory | Default           |
+| :-------------------------------------- | :---------------------------------------------------- | :------------------------------------------------------------------ | :-------- | :---------------- |
+| <a id="rollup_bundle-name"></a>name     | A unique name for this target.                        | <a href="https://bazel.build/concepts/labels#target-names">Name</a> | required  |                   |
+| <a id="rollup_bundle-dep"></a>dep       | JavaScript dependencies                               | <a href="https://bazel.build/concepts/labels">Label</a>             | optional  | <code>None</code> |
+| <a id="rollup_bundle-output"></a>output | Output directory. Defaults to the name as the target. | String                                                              | optional  | <code>""</code>   |
+| <a id="rollup_bundle-rollup"></a>rollup | Rollup tools                                          | <a href="https://bazel.build/concepts/labels">Label</a>             | required  |                   |
 
-<a id="#configure_rollup"></a>
+<a id="configure_rollup"></a>
 
 ## configure_rollup
 
