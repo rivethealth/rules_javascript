@@ -282,7 +282,10 @@ class Resolver {
         const i = request.startsWith("@") ? 2 : 1;
         const dep = package_.deps.get(parts.slice(0, i).join("/"));
         if (!dep) {
-            throw new Error(`Package "${package_.id}" does not have any dependency for "${request}", requested by ${parent}`);
+            // make error similar to Node.jsv implementation, for optional-require
+            const error = new Error(`Cannot find module '${request}', requested by ${parent} in package '${package_.id}'`);
+            error.code = "MODULE_NOT_FOUND";
+            throw error;
         }
         return { package: dep, inner: parts.slice(i).join("/") };
     }
