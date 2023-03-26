@@ -337,7 +337,7 @@ ts_library = rule(
             providers = [TsInfo],
         ),
         "compiler": attr.label(
-            mandatory = True,
+            default = ":tsc",
             providers = [TsCompilerInfo],
         ),
         "config": attr.string(
