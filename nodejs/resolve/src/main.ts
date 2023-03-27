@@ -14,6 +14,7 @@ import { Version } from "./version";
 const PLATFORMS: { [key: string]: string } = {
   "darwin-arm64.tar.gz": "darwin_arm64",
   "darwin-x64.tar.gz": "darwin_x86_64",
+  "linux-arm64.tar.xz": "linux_arm64",
   "linux-x64.tar.xz": "linux_x86_64",
   "win-x64.zip": "windows_x86_64",
 };

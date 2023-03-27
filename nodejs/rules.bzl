@@ -30,6 +30,17 @@ def configure_nodejs_runtime(name, repo_name, nodejs_runtime_rule, visibility = 
     )
 
     native.toolchain(
+        name = "%s.linux_arm64_toolchain" % name,
+        target_compatible_with = [
+            "@platforms//cpu:arm64",
+            "@platforms//os:linux",
+        ],
+        toolchain = "@%s_linux_arm64//:nodejs" % repo_name,
+        toolchain_type = ":%s.toolchain_type" % name,
+        visibility = visibility,
+    )
+
+    native.toolchain(
         name = "%s.linux_x86_64_toolchain" % name,
         target_compatible_with = [
             "@platforms//cpu:x86_64",
