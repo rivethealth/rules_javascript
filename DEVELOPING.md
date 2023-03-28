@@ -1,5 +1,9 @@
 # Developing
 
+## IDE
+
+To create `node_modules`, run `bazel run tools/nodejs:install`.
+
 ## Format
 
 To format, run `bazel run :format`.

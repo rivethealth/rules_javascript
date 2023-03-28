@@ -1,3 +1,37 @@
+load("//nodejs:rules.bzl", "nodejs_install", "nodejs_modules_archive")
+load("//tools/npm:npm.bzl", "ROOTS")
+
+nodejs_install(
+    name = "install0",
+    archive = ":node_modules",
+)
+
+sh_binary(
+    name = "install",
+    srcs = ["install.sh"],
+    data = [":install0"],
+)
+
+nodejs_modules_archive(
+    name = "node_modules",
+    links = [
+        "//angular/resource-compiler:root",
+        "//bazel/runfiles:root",
+        "//bazel/worker:root",
+        "//commonjs/package:root",
+        "//ibazel/notification:root",
+        "//nodejs/fs-linker:root",
+        "//test:root",
+        "//util/cache:root",
+        "//util/json:root",
+        "//util/starlark:root",
+        "//util/util:root",
+        "//webpack/config:root",
+    ],
+    tags = ["no-cache"],
+    deps = ["@npm//%s:lib" % dep["name"] for dep in ROOTS],
+)
+
 alias(
     name = "nodejs",
     actual = "//nodejs:nodejs",

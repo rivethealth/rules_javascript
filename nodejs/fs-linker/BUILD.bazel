@@ -37,6 +37,7 @@ cjs_root(
     name = "root",
     package_name = "@better-rules-javascript/nodejs-fs-linker",
     descriptors = ["package.json"],
+    visibility = ["//:__subpackages__"],
 )
 
 js_library(

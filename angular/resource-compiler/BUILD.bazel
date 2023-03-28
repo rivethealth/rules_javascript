@@ -7,6 +7,7 @@ cjs_root(
     name = "root",
     package_name = "@better-rules-javascript/angular-resource-compiler",
     descriptors = ["package.json"],
+    visibility = ["//:__subpackages__"],
 )
 
 js_library(
