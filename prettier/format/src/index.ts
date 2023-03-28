@@ -18,7 +18,10 @@ workerMain(async (a) => {
     try {
       worker.run(a);
     } catch (error) {
-      return { exitCode: 1, output: String(error?.stack || error) };
+      return {
+        exitCode: 1,
+        output: error instanceof Error ? error.stack : String(error),
+      };
     }
     return { exitCode: 0, output: "" };
   };
