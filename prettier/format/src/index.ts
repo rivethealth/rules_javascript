@@ -20,7 +20,7 @@ workerMain(async (a) => {
     } catch (error) {
       return {
         exitCode: 1,
-        output: error instanceof Error ? error.stack : String(error),
+        output: (error instanceof Error && error.stack) || String(error),
       };
     }
     return { exitCode: 0, output: "" };
