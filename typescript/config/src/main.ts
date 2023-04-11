@@ -61,7 +61,7 @@ interface Args {
     tsconfig.files = [];
   } else {
     tsconfig.include = [`${tsconfig.compilerOptions.rootDir}/**/*`];
-    tsconfig.exclude = [];
+    tsconfig.exclude = [`${tsconfig.compilerOptions.rootDir}/external/**/*`];
   }
 
   if (args.module) {

@@ -236,7 +236,7 @@ parser.add_argument("output");
     }
     else {
         tsconfig.include = [`${tsconfig.compilerOptions.rootDir}/**/*`];
-        tsconfig.exclude = [];
+        tsconfig.exclude = [`${tsconfig.compilerOptions.rootDir}/external/**/*`];
     }
     if (args.module) {
         tsconfig.compilerOptions.module = args.module;

@@ -218,11 +218,11 @@ def _nodejs_binary_implementation(ctx):
     )
 
     runfiles = ctx.runfiles(
-        files = [node.bin, package_manifest],
+        files = [node.bin, package_manifest] + ctx.files.data,
         transitive_files = depset(transitive = [js_dep.transitive_files] + [esm_linker_js.transitive_files, module_linker_js.transitive_files, runtime_js.transitive_files]),
     )
     runfiles = runfiles.merge_all(
-        [dep[DefaultInfo].default_runfiles for dep in ctx.attr.data if dep[DefaultInfo].default_runfiles != None],
+        [dep[DefaultInfo].default_runfiles for dep in ctx.attr.data],
     )
 
     default_info = DefaultInfo(
