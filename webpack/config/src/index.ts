@@ -57,7 +57,7 @@ export async function configure(
   // Node.js runtime
   config.resolveLoader.plugins = [
     ...config.resolveLoader.plugins,
-    new RequirePlugin([dirname(configPath)]),
+    new RequirePlugin(configPath),
   ];
   // don't escape symlink tree
   config.resolveLoader.symlinks = false;
