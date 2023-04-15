@@ -7,6 +7,7 @@ ts_library(
     srcs = glob(["src/**/*.ts"]),
     compile_deps = [
         "@better_rules_javascript_npm//@types/node:lib",
+        "@better_rules_javascript_npm//enhanced-resolve:lib",
         "@better_rules_javascript_npm//webpack:lib",
     ],
     compiler = "//tools/typescript:tsc",

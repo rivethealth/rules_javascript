@@ -28,7 +28,7 @@ if (compilationMode === "opt") {
 }
 
 export default {
-  entry: `main.${compilationMode === "opt" ? "prod" : "dev"}.js`,
+  entry: `./main.${compilationMode === "opt" ? "prod" : "dev"}.js`,
   module: { rules },
   plugins,
   optimization: {

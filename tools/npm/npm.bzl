@@ -9900,6 +9900,21 @@ PACKAGES = {
         "name": "end-of-stream",
         "url": "https://registry.npmjs.org/end-of-stream/-/end-of-stream-1.4.4.tgz",
     },
+    "enhanced-resolve@5.12.0": {
+        "deps": [
+            {
+                "id": "graceful-fs@4.2.8",
+            },
+            {
+                "id": "tapable@2.2.1",
+            },
+        ],
+        "extra_deps": {
+        },
+        "integrity": "sha512-QHTXI/sZQmko1cbDoNAa3mJ5qhWUUNAq3vR0/YiD379fWQrcfuoX1+HW2S0MTt7XmoPLapdaDKUtelUSPic7hQ==",
+        "name": "enhanced-resolve",
+        "url": "https://registry.npmjs.org/enhanced-resolve/-/enhanced-resolve-5.12.0.tgz",
+    },
     "enhanced-resolve@5.8.3": {
         "deps": [
             {
@@ -19107,6 +19122,10 @@ ROOTS = [
     {
         "id": "doctoc@2.1.0",
         "name": "doctoc",
+    },
+    {
+        "id": "enhanced-resolve@5.12.0",
+        "name": "enhanced-resolve",
     },
     {
         "id": "eslint-plugin-unicorn@45.0.1-dc3fc578",
