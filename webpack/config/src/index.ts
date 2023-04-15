@@ -1,4 +1,4 @@
-import * as path from "node:path";
+import { dirname, resolve } from "node:path";
 import type { Configuration } from "webpack";
 import { RequirePlugin } from "./resolve";
 
@@ -34,11 +34,11 @@ export async function configure(
 
   config.output = config.output ? { ...config.output } : {};
   // use output
-  config.output.path = path.resolve(output);
+  config.output.path = resolve(output);
 
   // use input root as default context
   if (config.context === undefined) {
-    config.context = path.resolve(inputRoot);
+    config.context = resolve(inputRoot);
   }
 
   // use compilation_mode as default optimization
@@ -57,7 +57,7 @@ export async function configure(
   // Node.js runtime
   config.resolveLoader.plugins = [
     ...config.resolveLoader.plugins,
-    new RequirePlugin(),
+    new RequirePlugin([dirname(configPath)]),
   ];
   // don't escape symlink tree
   config.resolveLoader.symlinks = false;
