@@ -13,10 +13,12 @@
   - [nodejs_binary_archive](#nodejs_binary_archive)
   - [nodejs_install](#nodejs_install)
   - [nodejs_modules_archive](#nodejs_modules_archive)
+  - [nodejs_modules_binary](#nodejs_modules_binary)
   - [nodejs_simple_binary](#nodejs_simple_binary)
   - [nodejs_system_runtime](#nodejs_system_runtime)
   - [nodejs_toolchain](#nodejs_toolchain)
   - [configure_nodejs_runtime](#configure_nodejs_runtime)
+  - [nodejs_modules](#nodejs_modules)
 - [//nodejs:workspace.bzl](#nodejsworkspacebzl)
   - [nodejs_repositories](#nodejs_repositories)
   - [nodejs_toolchains](#nodejs_toolchains)
@@ -171,6 +173,27 @@ node_modules tar
 | <a id="nodejs_modules_archive-deps"></a>deps   | -                              | <a href="https://bazel.build/concepts/labels">List of labels</a>    | optional  | <code>[]</code> |
 | <a id="nodejs_modules_archive-links"></a>links | -                              | <a href="https://bazel.build/concepts/labels">List of labels</a>    | optional  | <code>[]</code> |
 
+<a id="nodejs_modules_binary"></a>
+
+## nodejs_modules_binary
+
+<pre>
+nodejs_modules_binary(<a href="#nodejs_modules_binary-name">name</a>, <a href="#nodejs_modules_binary-env">env</a>, <a href="#nodejs_modules_binary-main">main</a>, <a href="#nodejs_modules_binary-main_package">main_package</a>, <a href="#nodejs_modules_binary-modules">modules</a>, <a href="#nodejs_modules_binary-node">node</a>, <a href="#nodejs_modules_binary-node_options">node_options</a>, <a href="#nodejs_modules_binary-path">path</a>)
+</pre>
+
+**ATTRIBUTES**
+
+| Name                                                        | Description                    | Type                                                                          | Mandatory | Default              |
+| :---------------------------------------------------------- | :----------------------------- | :---------------------------------------------------------------------------- | :-------- | :------------------- |
+| <a id="nodejs_modules_binary-name"></a>name                 | A unique name for this target. | <a href="https://bazel.build/concepts/labels#target-names">Name</a>           | required  |                      |
+| <a id="nodejs_modules_binary-env"></a>env                   | -                              | <a href="https://bazel.build/rules/lib/dict">Dictionary: String -> String</a> | optional  | <code>{}</code>      |
+| <a id="nodejs_modules_binary-main"></a>main                 | -                              | String                                                                        | optional  | <code>""</code>      |
+| <a id="nodejs_modules_binary-main_package"></a>main_package | -                              | String                                                                        | required  |                      |
+| <a id="nodejs_modules_binary-modules"></a>modules           | -                              | <a href="https://bazel.build/concepts/labels">Label</a>                       | required  |                      |
+| <a id="nodejs_modules_binary-node"></a>node                 | -                              | <a href="https://bazel.build/concepts/labels">Label</a>                       | optional  | <code>:nodejs</code> |
+| <a id="nodejs_modules_binary-node_options"></a>node_options | -                              | List of strings                                                               | optional  | <code>[]</code>      |
+| <a id="nodejs_modules_binary-path"></a>path                 | -                              | String                                                                        | optional  | <code>""</code>      |
+
 <a id="nodejs_simple_binary"></a>
 
 ## nodejs_simple_binary
@@ -237,6 +260,22 @@ configure_nodejs_runtime(<a href="#configure_nodejs_runtime-name">name</a>, <a h
 | <a id="configure_nodejs_runtime-repo_name"></a>repo_name                     | <p align="center"> - </p> | none              |
 | <a id="configure_nodejs_runtime-nodejs_runtime_rule"></a>nodejs_runtime_rule | <p align="center"> - </p> | none              |
 | <a id="configure_nodejs_runtime-visibility"></a>visibility                   | <p align="center"> - </p> | <code>None</code> |
+
+<a id="nodejs_modules"></a>
+
+## nodejs_modules
+
+<pre>
+nodejs_modules(<a href="#nodejs_modules-name">name</a>, <a href="#nodejs_modules-deps">deps</a>, <a href="#nodejs_modules-kwargs">kwargs</a>)
+</pre>
+
+**PARAMETERS**
+
+| Name                                     | Description               | Default Value |
+| :--------------------------------------- | :------------------------ | :------------ |
+| <a id="nodejs_modules-name"></a>name     | <p align="center"> - </p> | none          |
+| <a id="nodejs_modules-deps"></a>deps     | <p align="center"> - </p> | none          |
+| <a id="nodejs_modules-kwargs"></a>kwargs | <p align="center"> - </p> | none          |
 
 # //nodejs:workspace.bzl
 

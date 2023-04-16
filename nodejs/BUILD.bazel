@@ -9,6 +9,7 @@ exports_files(
     [
         "archive-runner.sh.tpl",
         "install-runner.sh.tpl",
+        "modules-binary-runner.sh.tpl",
         "simple-runner.sh.tpl",
         "runner.sh.tpl",
     ],
@@ -30,6 +31,7 @@ bzl_library(
         "//third-party:repo_bzl",
         "//util:bzl",
         "@bazel_skylib//lib:shell",
+        "@rules_file//file:bzl",
     ],
 )
 

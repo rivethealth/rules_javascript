@@ -8,7 +8,6 @@ cd "$BUILD_WORKSPACE_DIRECTORY"
 rm -fr docs/stardoc
 mkdir -p docs/stardoc
 bazel build docs
-tar x --touch -f "$RUNFILES_DIR/better_rules_javascript/docs/docs.tar" -C docs/stardoc
+tar x -m -f "$RUNFILES_DIR/better_rules_javascript/docs/docs.tar" -C docs/stardoc
 
 "$RUNFILES_DIR/better_rules_javascript/docs/doctoc" --maxlevel 2 --notitle README.md docs/*.md docs/stardoc/*.md
-

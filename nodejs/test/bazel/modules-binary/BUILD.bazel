@@ -1,0 +1,28 @@
+load("@better_rules_javascript//commonjs:rules.bzl", "cjs_root")
+load("@better_rules_javascript//javascript:rules.bzl", "js_library")
+load("@better_rules_javascript//nodejs:rules.bzl", "nodejs_modules", "nodejs_modules_binary")
+
+cjs_root(
+    name = "root",
+    package_name = "@better-rules-javascript-test/modules-binary",
+    descriptors = ["package.json"],
+)
+
+js_library(
+    name = "lib",
+    srcs = ["main.js"],
+    root = ":root",
+    deps = ["@npm//lodash3:lib"],
+)
+
+nodejs_modules(
+    name = "modules",
+    deps = [":lib"],
+)
+
+nodejs_modules_binary(
+    name = "bin",
+    main = "main.js",
+    main_package = "@better-rules-javascript-test/modules-binary",
+    modules = ":modules",
+)

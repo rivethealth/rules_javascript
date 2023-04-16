@@ -1,4 +1,4 @@
-import { dirname, resolve } from "node:path";
+import { resolve } from "node:path";
 import type { Configuration } from "webpack";
 import { RequirePlugin } from "./resolve";
 

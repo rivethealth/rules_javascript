@@ -1,4 +1,5 @@
 load("@bazel_skylib//lib:shell.bzl", "shell")
+load("@rules_file//file:rules.bzl", "untar")
 load("//commonjs:providers.bzl", "CjsInfo", "create_globals", "gen_manifest", "package_path")
 load("//javascript:providers.bzl", "JsInfo")
 load("//util:path.bzl", "runfile_path")
@@ -295,6 +296,69 @@ nodejs_binary = rule(
     executable = True,
     implementation = _nodejs_binary_implementation,
 )
+
+def _nodejs_modules_binary_impl(ctx):
+    actions = ctx.actions
+    env = ctx.attr.env
+    modules = ctx.file.modules
+    main = ctx.attr.main
+    main_package = ctx.attr.main_package
+    name = ctx.attr.name
+    node = ctx.attr.node[NodejsInfo]
+    node_options = ctx.attr.node_options
+    runner = ctx.file._runner
+    workspace = ctx.workspace_name
+
+    main_module = "/".join([part for part in [runfile_path(workspace, modules), main_package, main] if part])
+
+    executable = actions.declare_file(name)
+    actions.expand_template(
+        is_executable = True,
+        output = executable,
+        substitutions = {
+            "%{env}": " ".join(["%s=%s" % (name, shell.quote(value)) for name, value in env.items()]),
+            "%{main_module}": shell.quote(main_module),
+            "%{node}": shell.quote(runfile_path(workspace, node.bin)),
+            "%{node_options}": " ".join([shell.quote(option) for option in node_options]),
+        },
+        template = runner,
+    )
+
+    runfiles = ctx.runfiles(files = [modules, node.bin])
+    default_info = DefaultInfo(executable = executable, runfiles = runfiles)
+
+    return [default_info]
+
+nodejs_modules_binary = rule(
+    attrs = {
+        "env": attr.string_dict(),
+        "main": attr.string(),
+        "main_package": attr.string(mandatory = True),
+        "modules": attr.label(allow_single_file = True, mandatory = True),
+        "node": attr.label(default = ":nodejs", providers = [NodejsInfo]),
+        "node_options": attr.string_list(),
+        "path": attr.string(),
+        "_runner": attr.label(
+            allow_single_file = True,
+            default = "modules-binary-runner.sh.tpl",
+        ),
+    },
+    executable = True,
+    implementation = _nodejs_modules_binary_impl,
+)
+
+def nodejs_modules(name, deps, **kwargs):
+    untar(
+        name = name,
+        src = ":%s.archive" % name,
+        **kwargs
+    )
+
+    nodejs_modules_archive(
+        name = "%s.archive" % name,
+        deps = deps,
+        **kwargs
+    )
 
 def _nodejs_modules_archive_impl(ctx):
     actions = ctx.actions
