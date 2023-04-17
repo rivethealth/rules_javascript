@@ -7,14 +7,17 @@ Bazel rules for JavaScript, TypeScript, and related technologies.
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
+- [Documentation](#documentation)
 - [Philosophy](#philosophy)
 - [Install](#install)
 - [Example](#example)
-- [Documentation](#documentation)
-- [Differences with rules_nodejs](#differences-with-rules_nodejs)
 - [Developing](#developing)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+## Documentation
+
+See [documentation](docs/index.md).
 
 ## Philosophy
 
@@ -107,10 +110,6 @@ Running:
 $ bazel run //:bin
 Hello world
 ```
-
-## Documentation
-
-See [documentation](docs/index.md).
 
 ## Developing
 

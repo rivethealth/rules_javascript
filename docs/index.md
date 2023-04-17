@@ -1,33 +1,33 @@
 # Documentation
 
-[Angular](docs/angular.md)
+[Angular](angular.md)
 
-[CommonJS](docs/commonjs.md)
+[CommonJS](commonjs.md)
 
-[Differences with Rules_nodejs](docs/rules_nodejs.md)
+[Differences with Rules_nodejs](rules_nodejs.md)
 
-[Docker](docs/docker.md)
+[Docker](docker.md)
 
-[JavaScript](docs/javascript.md)
+[JavaScript](javascript.md)
 
-[Jest](docs/jest.md)
+[Jest](jest.md)
 
-[Module](docs/module.md)
+[Module](module.md)
 
-[Node.js](docs/nodejs.md)
+[Node.js](nodejs.md)
 
-[Npm](docs/npm.md)
+[Npm](npm.md)
 
-[Prettier](docs/prettier.md)
+[Prettier](prettier.md)
 
-[Protobuf](docs/protobuf.md)
+[Protobuf](protobuf.md)
 
-[Protobuf.js](docs/protobufjs.md)
+[Protobuf.js](protobufjs.md)
 
-[Rollup](docs/rollup.md)
+[Rollup](rollup.md)
 
-[TS Proto](docs/ts-proto.md)
+[TS Proto](ts-proto.md)
 
-[TypeScript](docs/typescript.md)
+[TypeScript](typescript.md)
 
-[Webpack](docs/webpack.md)
+[Webpack](webpack.md)
