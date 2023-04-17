@@ -18,7 +18,7 @@ sh_binary(
 
 filegroup(
     name = "gen_docs_data",
-    srcs = ["//docs"],
+    srcs = [":docs"],
 )
 
 pkg_tar(
@@ -26,6 +26,7 @@ pkg_tar(
     srcs = [
         "//angular/doc",
         "//commonjs/doc",
+        "//eslint/doc",
         "//javascript/doc",
         "//jest/doc",
         "//nodejs/doc",

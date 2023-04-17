@@ -1,6 +1,6 @@
-load("//docs:rules.bzl", "stardoc")
+load("//tools/doc:rules.bzl", "doc")
 
-stardoc(
+doc(
     "doc",
     "//webpack:bzl",
     [
@@ -8,5 +8,5 @@ stardoc(
         "//webpack:rules.bzl",
     ],
     header = "doc.md",
-    visibility = ["//docs:__subpackages__"],
+    visibility = ["//:__subpackages__"],
 )

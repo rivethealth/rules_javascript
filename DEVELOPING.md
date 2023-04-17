@@ -10,6 +10,14 @@ To format, run `bazel run :format`.
 
 To lint, run `bazel run :lint`.
 
+## Documentation
+
+To generate documentation:
+
+```sh
+bazel run :doc
+```
+
 ## Node.js
 
 To resolve additional Node.js versions, run `bazel run :nodejs_resolve`.

@@ -8,6 +8,11 @@ exports_files(
     visibility = ["//visibility:public"],  # tests
 )
 
+alias(
+    name = "doc",
+    actual = "//tools/doc:gen",
+)
+
 js_library(
     name = "eslint_config",
     srcs = [".eslintrc.js"],

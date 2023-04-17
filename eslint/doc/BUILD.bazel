@@ -2,11 +2,8 @@ load("//tools/doc:rules.bzl", "doc")
 
 doc(
     "doc",
-    "//ts-proto:bzl",
-    [
-        "//ts-proto:providers.bzl",
-        "//ts-proto:rules.bzl",
-    ],
+    "//eslint:bzl",
+    ["//eslint:rules.bzl"],
     header = "doc.md",
     visibility = ["//:__subpackages__"],
 )

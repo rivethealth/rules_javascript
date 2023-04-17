@@ -1,6 +1,6 @@
-load("//docs:rules.bzl", "stardoc")
+load("//tools/doc:rules.bzl", "doc")
 
-stardoc(
+doc(
     "doc",
     "//typescript:bzl",
     [
@@ -8,5 +8,5 @@ stardoc(
         "//typescript:rules.bzl",
         "//typescript:workspace.bzl",
     ],
-    visibility = ["//docs:__subpackages__"],
+    visibility = ["//:__subpackages__"],
 )

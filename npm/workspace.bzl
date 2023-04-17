@@ -3,6 +3,8 @@ load("//commonjs:workspace.bzl", "cjs_npm_plugin")
 load("//javascript:workspace.bzl", "js_npm_plugin")
 
 def npm_import_external_rule(plugins):
+    """Create a npm_import_external rule."""
+
     def impl(ctx):
         deps = [struct(id = dep["id"], name = dep["name"]) for dep in [json.decode(d) for d in ctx.attr.deps]]
         extra_deps = {id: [json.decode(d) for d in deps] for id, deps in ctx.attr.extra_deps.items()}
@@ -22,26 +24,6 @@ def npm_import_external_rule(plugins):
         if files_result.return_code:
             fail("Could not list files")
         files = files_result.stdout.split("\n")
-
-        # if ctx.name.startswith("npm_protobufjs"):
-        #     # protobufjs attempts to run npm install dependencies(!!)
-        #     # this may be fixed when protobufjs-cli is released
-        #     ctx.execute(["sh", "-c", "echo 'exports.setup = () => {}' >> npm/cli/util.js"])
-        #     ctx.execute(["sh", "-c", "echo 'require(\"./targets/json-module\")' >> npm/cli/util.js"])
-        #     ctx.execute(["sh", "-c", "echo 'require(\"./targets/json\")' >> npm/cli/util.js"])
-        #     ctx.execute(["sh", "-c", "echo 'require(\"./targets/proto\")' >> npm/cli/util.js"])
-        #     ctx.execute(["sh", "-c", "echo 'require(\"./targets/proto2\")' >> npm/cli/util.js"])
-        #     ctx.execute(["sh", "-c", "echo 'require(\"./targets/proto3\")' >> npm/cli/util.js"])
-        #     ctx.execute(["sh", "-c", "echo 'require(\"./targets/static-module\")' >> npm/cli/util.js"])
-        #     ctx.execute(["sh", "-c", "echo 'require(\"./targets/static\")' >> npm/cli/util.js"])
-        #     deps = list(deps)
-        #     deps.append("@npm_chalk4.1.0//:lib")
-        #     deps.append("@npm_escodegen2.0.0//:lib")
-        #     deps.append("@npm_espree7.3.0//:lib")
-        #     deps.append("@npm_glob7.1.6//:lib")
-        #     deps.append("@npm_minimist1.2.5//:lib")
-        #     deps.append("@npm_uglify_js3.11.6//:lib")
-        #     deps.append("@npm_estraverse5.2.0//:lib")
 
         build = ""
 
@@ -79,6 +61,8 @@ def npm_import_external_rule(plugins):
     )
 
 def npm_import_rule(plugins):
+    """Create an npm import rule."""
+
     def impl(ctx):
         packages = ctx.attr.packages
 
@@ -104,6 +88,14 @@ def npm_import_rule(plugins):
     )
 
 def package_repo_name(prefix, name):
+    """Repository name for npm package.
+
+    Replaces characters not permitted in Bazel repository names.
+
+    Args:
+        prefix: Namespace
+        name: ID
+    """
     if name.startswith("@"):
         name = name[len("@"):]
     name = name.replace("@", "_")
@@ -116,6 +108,17 @@ DEFAULT_PLUGINS = [
 ]
 
 def npm(name, packages, roots, plugins = DEFAULT_PLUGINS, auth_patterns = None, netrc = None):
+    """Npm repositories.
+
+    Args:
+        name: Namespace
+        packages: Packages
+        roots: Roots
+        plugins: Plugins
+        auth_patterns: Auth patterns
+        netrc: Netrc
+    """
+
     npm_import_external = npm_import_external_rule(plugins)
     npm_import = npm_import_rule(plugins)
 

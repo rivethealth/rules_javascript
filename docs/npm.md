@@ -176,16 +176,18 @@ yarn_resolve(<a href="#yarn_resolve-name">name</a>, <a href="#yarn_resolve-outpu
 npm(<a href="#npm-name">name</a>, <a href="#npm-packages">packages</a>, <a href="#npm-roots">roots</a>, <a href="#npm-plugins">plugins</a>, <a href="#npm-auth_patterns">auth_patterns</a>, <a href="#npm-netrc">netrc</a>)
 </pre>
 
+Npm repositories.
+
 **PARAMETERS**
 
-| Name                                        | Description               | Default Value                                                                                                                                                                                                         |
-| :------------------------------------------ | :------------------------ | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| <a id="npm-name"></a>name                   | <p align="center"> - </p> | none                                                                                                                                                                                                                  |
-| <a id="npm-packages"></a>packages           | <p align="center"> - </p> | none                                                                                                                                                                                                                  |
-| <a id="npm-roots"></a>roots                 | <p align="center"> - </p> | none                                                                                                                                                                                                                  |
-| <a id="npm-plugins"></a>plugins             | <p align="center"> - </p> | <code>[struct(alias_build = &lt;function alias_build&gt;, package_build = &lt;function package_build&gt;), struct(alias_build = &lt;function alias_build&gt;, package_build = &lt;function package_build&gt;)]</code> |
-| <a id="npm-auth_patterns"></a>auth_patterns | <p align="center"> - </p> | <code>None</code>                                                                                                                                                                                                     |
-| <a id="npm-netrc"></a>netrc                 | <p align="center"> - </p> | <code>None</code>                                                                                                                                                                                                     |
+| Name                                        | Description   | Default Value                                                                                                                                                                                                         |
+| :------------------------------------------ | :------------ | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| <a id="npm-name"></a>name                   | Namespace     | none                                                                                                                                                                                                                  |
+| <a id="npm-packages"></a>packages           | Packages      | none                                                                                                                                                                                                                  |
+| <a id="npm-roots"></a>roots                 | Roots         | none                                                                                                                                                                                                                  |
+| <a id="npm-plugins"></a>plugins             | Plugins       | <code>[struct(alias_build = &lt;function alias_build&gt;, package_build = &lt;function package_build&gt;), struct(alias_build = &lt;function alias_build&gt;, package_build = &lt;function package_build&gt;)]</code> |
+| <a id="npm-auth_patterns"></a>auth_patterns | Auth patterns | <code>None</code>                                                                                                                                                                                                     |
+| <a id="npm-netrc"></a>netrc                 | Netrc         | <code>None</code>                                                                                                                                                                                                     |
 
 <a id="npm_import_external_rule"></a>
 
@@ -194,6 +196,8 @@ npm(<a href="#npm-name">name</a>, <a href="#npm-packages">packages</a>, <a href=
 <pre>
 npm_import_external_rule(<a href="#npm_import_external_rule-plugins">plugins</a>)
 </pre>
+
+Create a npm_import_external rule.
 
 **PARAMETERS**
 
@@ -209,6 +213,8 @@ npm_import_external_rule(<a href="#npm_import_external_rule-plugins">plugins</a>
 npm_import_rule(<a href="#npm_import_rule-plugins">plugins</a>)
 </pre>
 
+Create an npm import rule.
+
 **PARAMETERS**
 
 | Name                                        | Description               | Default Value |
@@ -223,9 +229,13 @@ npm_import_rule(<a href="#npm_import_rule-plugins">plugins</a>)
 package_repo_name(<a href="#package_repo_name-prefix">prefix</a>, <a href="#package_repo_name-name">name</a>)
 </pre>
 
+Repository name for npm package.
+
+Replaces characters not permitted in Bazel repository names.
+
 **PARAMETERS**
 
-| Name                                        | Description               | Default Value |
-| :------------------------------------------ | :------------------------ | :------------ |
-| <a id="package_repo_name-prefix"></a>prefix | <p align="center"> - </p> | none          |
-| <a id="package_repo_name-name"></a>name     | <p align="center"> - </p> | none          |
+| Name                                        | Description | Default Value |
+| :------------------------------------------ | :---------- | :------------ |
+| <a id="package_repo_name-prefix"></a>prefix | Namespace   | none          |
+| <a id="package_repo_name-name"></a>name     | ID          | none          |
