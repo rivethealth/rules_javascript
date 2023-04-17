@@ -31,6 +31,8 @@
 
 <!-- Generated with Stardoc: http://skydoc.bazel.build -->
 
+TypeScript helpers
+
 <a id="TsCompilerInfo"></a>
 
 ## TsCompilerInfo
@@ -199,6 +201,8 @@ target(<a href="#target-language">language</a>)
 
 <!-- Generated with Stardoc: http://skydoc.bazel.build -->
 
+TypeScript rules
+
 <a id="ts_compiler"></a>
 
 ## ts_compiler
@@ -314,6 +318,8 @@ Configure TypeScript compiler.
 # //typescript:workspace.bzl
 
 <!-- Generated with Stardoc: http://skydoc.bazel.build -->
+
+TypeScript repositories
 
 <a id="ts_directory_npm_plugin"></a>
 

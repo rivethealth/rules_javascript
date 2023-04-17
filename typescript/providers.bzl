@@ -1,3 +1,7 @@
+"""
+TypeScript helpers
+"""
+
 TsInfo = provider(
     doc = "TypeScript",
     fields = {

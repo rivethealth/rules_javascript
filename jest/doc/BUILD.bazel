@@ -6,5 +6,6 @@ stardoc(
     [
         "//jest:rules.bzl",
     ],
+    header = "doc.md",
     visibility = ["//docs:__subpackages__"],
 )

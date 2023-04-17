@@ -1,5 +1,9 @@
+"""
+Angular Providers
+"""
+
 AngularCompilerInfo = provider(
-    doc = "TypeScript compiler",
+    doc = "Angular compiler",
     fields = {
         "bin": "Executable",
         "cjs_deps": "CommonJS deps",

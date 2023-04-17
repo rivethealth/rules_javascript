@@ -5,9 +5,7 @@ export RUNFILES_DIR="$0.runfiles"
 
 cd "$BUILD_WORKSPACE_DIRECTORY"
 
-rm -fr docs/stardoc
-mkdir -p docs/stardoc
 bazel build docs
-tar x -m -f "$RUNFILES_DIR/better_rules_javascript/docs/docs.tar" -C docs/stardoc
+tar x -m -f "$RUNFILES_DIR/better_rules_javascript/docs/docs.tar" -C docs
 
-"$RUNFILES_DIR/better_rules_javascript/docs/doctoc" --maxlevel 2 --notitle README.md docs/*.md docs/stardoc/*.md
+find docs -name '*.md' -not -name index.md -not -name default.md | xargs "$RUNFILES_DIR/better_rules_javascript/docs/doctoc" --maxlevel 2 --notitle README.md

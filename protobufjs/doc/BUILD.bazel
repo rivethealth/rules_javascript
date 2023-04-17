@@ -7,5 +7,6 @@ stardoc(
         "//protobufjs:providers.bzl",
         "//protobufjs:rules.bzl",
     ],
+    header = "doc.md",
     visibility = ["//docs:__subpackages__"],
 )

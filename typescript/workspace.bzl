@@ -1,3 +1,7 @@
+"""
+TypeScript repositories
+"""
+
 load("//commonjs:providers.bzl", "cjs_npm_label")
 load("//javascript:providers.bzl", "JsInfo", "js_npm_inner_label", "js_npm_label")
 load("//javascript:workspace.bzl", "js_directory_npm_plugin")

@@ -7,5 +7,6 @@ stardoc(
         "//npm:rules.bzl",
         "//npm:workspace.bzl",
     ],
+    header = "doc.md",
     visibility = ["//docs:__subpackages__"],
 )

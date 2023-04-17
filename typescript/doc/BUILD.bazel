@@ -1,4 +1,4 @@
-load("@better_rules_javascript//docs:rules.bzl", "stardoc")
+load("//docs:rules.bzl", "stardoc")
 
 stardoc(
     "doc",

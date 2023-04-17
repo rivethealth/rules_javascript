@@ -1,7 +1,7 @@
 load("@bazel_skylib//lib:paths.bzl", "paths")
 load("@io_bazel_stardoc//stardoc:stardoc.bzl", _stardoc = "stardoc")
 
-def stardoc(name, lib, files, visibility = None):
+def stardoc(name, lib, files, header = None, visibility = None):
     stardocs = []
     for file in files:
         file_name = file.replace("//", "").replace("/", "_").replace(":", "_")
@@ -19,24 +19,23 @@ def stardoc(name, lib, files, visibility = None):
         native.genrule(
             name = rule_name,
             cmd = """
-                (echo '# %s' && echo && cat $(location %s)) > $@
+                (
+                    echo '# %s' &&
+                    echo &&
+                    cat $(location %s)
+                ) > $@
             """ % (file, paths.replace_extension(file_name, ".stardoc.md")),
             srcs = [paths.replace_extension(file_name, ".stardoc.md")],
             outs = [paths.replace_extension(file_name, ".md")],
             visibility = ["//visibility:private"],
         )
 
+    docs = [header if header else "@better_rules_javascript//docs:default.md"]
+    docs += [":%s" % stardoc for stardoc in stardocs]
     native.genrule(
         name = name,
-        cmd = """
-            (
-                echo '# Contents'
-                echo '<!-- START doctoc -->' &&
-                echo '<!-- END doctoc -->' &&
-                cat %s
-            ) > $@
-        """ % " ".join(["$(location %s)" % stardoc for stardoc in stardocs]),
+        cmd = "cat %s > $@" % " ".join(["$(location %s)" % stardoc for stardoc in docs]),
         outs = ["%s.md" % native.package_name().replace("/doc", "")],
-        srcs = [":%s" % stardoc for stardoc in stardocs],
+        srcs = docs,
         visibility = visibility,
     )

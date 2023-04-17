@@ -11,6 +11,7 @@ Bazel rules for JavaScript, TypeScript, and related technologies.
 - [Install](#install)
 - [Example](#example)
 - [Documentation](#documentation)
+- [Differences with rules_nodejs](#differences-with-rules_nodejs)
 - [Developing](#developing)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -109,28 +110,7 @@ Hello world
 
 ## Documentation
 
-### Features
-
-- [Angular](docs/angular.md)
-- [CommonJS](docs/commonjs.md)
-- [Docker](docs/docker.md)
-- [JavaScript](docs/javascript.md)
-- [Jest](docs/jest.md)
-- [Node.js](docs/nodejs.md)
-- [Npm](docs/npm.md)
-- [Prettier](docs/npm.md)
-- [Protobuf](docs/protobuf.md)
-- [Protobuf.js](docs/protobufjs.md)
-- [Rollup](docs/rollup.md)
-- [Rules](docs/rules.md)
-- [Ts-proto](docs/ts-proto.md)
-- [TypeScript](docs/typescript.md)
-- [Webpack](docs/webpack.md)
-
-### Topics
-
-- [Differences with Rules_nodejs](docs/rules_nodejs.md)
-- [Module Resolution](docs/module.md)
+See [documentation](docs/index.md).
 
 ## Developing
 

@@ -1,4 +1,4 @@
-load("@better_rules_javascript//docs:rules.bzl", "stardoc")
+load("//docs:rules.bzl", "stardoc")
 
 stardoc(
     "doc",
@@ -7,5 +7,6 @@ stardoc(
         "//ts-proto:providers.bzl",
         "//ts-proto:rules.bzl",
     ],
+    header = "doc.md",
     visibility = ["//docs:__subpackages__"],
 )

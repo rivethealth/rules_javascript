@@ -7,5 +7,6 @@ stardoc(
         "//rollup:providers.bzl",
         "//rollup:rules.bzl",
     ],
+    header = "doc.md",
     visibility = ["//docs:__subpackages__"],
 )

@@ -8,5 +8,6 @@ stardoc(
         "//commonjs:rules.bzl",
         "//commonjs:workspace.bzl",
     ],
+    header = "doc.md",
     visibility = ["//docs:__subpackages__"],
 )

@@ -7,5 +7,6 @@ stardoc(
         "//webpack:providers.bzl",
         "//webpack:rules.bzl",
     ],
+    header = "doc.md",
     visibility = ["//docs:__subpackages__"],
 )

@@ -1,6 +1,11 @@
 load("//nodejs:rules.bzl", "nodejs_binary")
 load("@rules_pkg//:pkg.bzl", "pkg_tar")
 
+exports_files(
+    ["default.md"],
+    visibility = ["//visibility:public"],
+)
+
 sh_binary(
     name = "gen",
     srcs = ["gen.sh"],
