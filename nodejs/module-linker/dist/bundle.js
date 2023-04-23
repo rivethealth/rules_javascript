@@ -3,6 +3,7 @@
 var path = require('node:path');
 var fs = require('node:fs');
 var Module = require('node:module');
+var node_os = require('node:os');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
@@ -309,32 +310,97 @@ class Resolver {
     }
 }
 
+function lazy(f) {
+    let result;
+    return () => {
+        if (f) {
+            result = f();
+            f = undefined;
+        }
+        return result;
+    };
+}
+
 function resolveFilename(resolver, delegate) {
+    const moduleRequestClassifier = new ModuleRequestClassifier();
+    const linkResolver = new LinkModuleResolver();
+    const requiredResolver = new RequireModuleResolver();
     return function (request, parent, isMain) {
-        if (Module__default["default"].builtinModules.includes(request) ||
-            !parent ||
+        if (!parent ||
             parent.path === "internal" ||
-            request.startsWith("node:") ||
-            request == "." ||
-            request == ".." ||
-            request.startsWith("./") ||
-            request.startsWith("../") ||
-            request.startsWith("/") ||
-            request.startsWith("#")) {
+            !moduleRequestClassifier.isPackage(request) ||
+            moduleRequestClassifier.isBuiltin(request)) {
             return Reflect.apply(delegate, this, arguments);
         }
         const resolved = resolver.resolve(parent.path, request);
-        request = path__namespace.basename(resolved.package);
-        if (resolved.inner) {
-            request = `${request}/${resolved.inner}`;
-        }
-        parent.paths = [path__namespace.dirname(resolved.package)];
+        const moduleResolver = moduleRequestClassifier.isBuiltin(path.basename(resolved.package))
+            ? linkResolver
+            : requiredResolver;
+        return moduleResolver.resolve(resolved, parent, (request, requester) => 
         // ignore options, because paths interferes with resolution
-        return delegate.call(this, request, parent, isMain);
+        delegate.call(this, request, requester, isMain));
     };
+}
+class ModuleRequestClassifier {
+    constructor() {
+        this.builtinModules = new Set(Module__default["default"].builtinModules);
+    }
+    isBuiltin(request) {
+        return this.builtinModules.has(request);
+    }
+    isPackage(request) {
+        return (!request.startsWith("node:") &&
+            request !== "." &&
+            request !== ".." &&
+            !request.startsWith("./") &&
+            !request.startsWith("../") &&
+            !request.startsWith("/") &&
+            !request.startsWith("#"));
+    }
 }
 function patchModule(resolver, delegate) {
     delegate._resolveFilename = resolveFilename(resolver, delegate._resolveFilename);
+}
+class LinkModuleResolver {
+    constructor() {
+        this.packages = new Set();
+        this.directory = lazy(() => {
+            const dir = fs.mkdtempSync(path.join(node_os.tmpdir(), "nodejs-"));
+            process.once("exit", () => fs.rmSync(dir, { recursive: true }));
+            return dir;
+        });
+    }
+    resolve(resolved, requester, delegate) {
+        const directory = this.directory();
+        const packageName_ = LinkModuleResolver.packageName(resolved.package);
+        const linkPath = path.join(directory, packageName_);
+        if (!this.packages.has(resolved.package)) {
+            this.packages.add(resolved.package);
+            fs.symlinkSync(resolved.package, linkPath);
+        }
+        let request = packageName_;
+        if (resolved.inner) {
+            request = `${request}/${resolved.inner}`;
+        }
+        const parent = new Module__default["default"](requester.id);
+        parent.paths = [directory];
+        const nodeResolved = delegate(request, parent);
+        return path.join(resolved.package, path.relative(linkPath, nodeResolved));
+    }
+    static packageName(path_) {
+        const relative_ = path.relative(process.env.RUNFILES_DIR, path_);
+        return `_${relative_.replace(/\//g, "_")}`;
+    }
+}
+class RequireModuleResolver {
+    resolve(resolved, requester, delegate) {
+        let request = path.basename(resolved.package);
+        if (resolved.inner) {
+            request = `${request}/${resolved.inner}`;
+        }
+        requester.paths = [path.dirname(resolved.package)];
+        return delegate(request, requester);
+    }
 }
 
 function parse(resolver) {

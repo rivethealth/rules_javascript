@@ -12,7 +12,10 @@ js_library(
     name = "main",
     srcs = ["main.js"],
     root = ":root",
-    deps = ["//dep/other:lib"],
+    deps = [
+        "//dep/other:lib",
+        "//dep/process:lib",
+    ],
 )
 
 nodejs_binary(

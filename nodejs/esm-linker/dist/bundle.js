@@ -3,10 +3,11 @@
 Object.defineProperty(exports, '__esModule', { value: true });
 
 var path = require('node:path');
-var fs = require('node:fs');
+var promises = require('node:fs/promises');
+var node_fs = require('node:fs');
 var Module = require('node:module');
-var os = require('node:os');
-var url = require('node:url');
+var node_os = require('node:os');
+var node_url = require('node:url');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
@@ -29,10 +30,12 @@ function _interopNamespace(e) {
 }
 
 var path__namespace = /*#__PURE__*/_interopNamespace(path);
-var fs__namespace = /*#__PURE__*/_interopNamespace(fs);
 var Module__default = /*#__PURE__*/_interopDefaultLegacy(Module);
-var os__namespace = /*#__PURE__*/_interopNamespace(os);
-var url__namespace = /*#__PURE__*/_interopNamespace(url);
+
+async function resolve$1() {
+    const { resolve } = await Promise.resolve().then(function () { return loader; });
+    return await Reflect.apply(await resolve(), this, arguments);
+}
 
 var JsonFormat;
 (function (JsonFormat) {
@@ -326,62 +329,95 @@ function lazy(f) {
     };
 }
 
-const manifestPath = process.env.NODE_PACKAGE_MANIFEST;
-if (!manifestPath) {
-    throw new Error("NODE_PACKAGE_MANIFEST is not set");
+function resolveFn(resolver) {
+    const specifierClassifier = new SpecifierClassifier();
+    const moduleResolver = new LinkModuleResolver();
+    return async (specifier, context, defaultResolve) => {
+        if (!context.parentURL && path.extname(specifier) == "") {
+            return { format: "commonjs", url: specifier, shortCircuit: true };
+        }
+        let parentPath;
+        try {
+            parentPath = node_url.fileURLToPath(context.parentURL);
+        }
+        catch { }
+        if (parentPath === undefined ||
+            !specifierClassifier.isPackage(specifier) ||
+            specifierClassifier.isBuiltin(specifier)) {
+            return defaultResolve(specifier, context, defaultResolve);
+        }
+        const resolved = resolver.resolve(parentPath, specifier);
+        return await moduleResolver.resolve(resolved, parentPath, (specifier, requester) => defaultResolve(specifier, { ...context, parentURL: node_url.pathToFileURL(requester) }, defaultResolve));
+    };
 }
-const packageTree = JsonFormat.parse(PackageTree.json(), fs__namespace.readFileSync(manifestPath, "utf8"));
-const linkDirectory = lazy(async () => {
-    const dir = await fs__namespace.promises.mkdtemp(path__namespace.join(os__namespace.tmpdir(), "nodejs-"));
-    process.once("exit", () => {
-        fs__namespace.rmSync(dir, { recursive: true });
-    });
-    await fs__namespace.promises.mkdir(path__namespace.join(dir, "node_modules"));
-    return dir;
-});
-const linkedPackages = new Map();
-const resolver = Resolver.create(packageTree, process.env.RUNFILES_DIR);
-async function resolve(specifier, context, defaultResolve) {
-    if (!context.parentURL && path__namespace.extname(specifier) == "") {
-        return { format: "commonjs", url: specifier, shortCircuit: true };
+class SpecifierClassifier {
+    constructor() {
+        this.builtins = new Set(Module__default["default"].builtinModules);
     }
-    let parentPath;
-    try {
-        parentPath = url__namespace.fileURLToPath(context.parentURL);
+    isBuiltin(specifier) {
+        return this.builtins.has(specifier);
     }
-    catch { }
-    if (parentPath === undefined ||
-        Module__default["default"].builtinModules.includes(specifier) ||
-        specifier.startsWith("node:") ||
-        specifier == "." ||
-        specifier == ".." ||
-        specifier.startsWith("./") ||
-        specifier.startsWith("../") ||
-        specifier.startsWith("/") ||
-        specifier.startsWith("#") ||
-        specifier.startsWith("file://")) {
-        return defaultResolve(specifier, context, defaultResolve);
+    isPackage(specifier) {
+        return (!specifier.startsWith("file:") &&
+            !specifier.startsWith("node:") &&
+            specifier !== "." &&
+            specifier !== ".." &&
+            !specifier.startsWith("./") &&
+            !specifier.startsWith("../") &&
+            !specifier.startsWith("/") &&
+            !specifier.startsWith("#"));
     }
-    const resolved = resolver.resolve(parentPath, specifier);
-    const directory = await linkDirectory();
-    const packageName = path__namespace
-        .relative(process.env.RUNFILES_DIR, resolved.package)
-        .replace(/\//g, "_");
-    const linkPath = path__namespace.join(directory, "node_modules", packageName);
-    if (!linkedPackages.has(resolved.package)) {
-        linkedPackages.set(resolved.package, fs__namespace.promises.symlink(resolved.package, linkPath));
+}
+class LinkModuleResolver {
+    constructor() {
+        this.packages = new Map();
+        this.directory = lazy(async () => {
+            const dir = await promises.mkdtemp(path.join(node_os.tmpdir(), "nodejs-"));
+            await promises.mkdir(path.join(dir, "node_modules"));
+            process.once("exit", () => node_fs.rmSync(dir, { recursive: true }));
+            return dir;
+        });
     }
-    await linkedPackages.get(resolved.package);
-    specifier = packageName;
-    if (resolved.inner) {
-        specifier = `${specifier}/${resolved.inner}`;
+    async resolve(resolved, requester, delegate) {
+        const directory = await this.directory();
+        const packageName_ = LinkModuleResolver.packageName(resolved.package);
+        const linkPath = path.join(directory, "node_modules", packageName_);
+        let packageInit = this.packages.get(resolved.package);
+        if (packageInit === undefined) {
+            packageInit = (async () => {
+                await promises.symlink(resolved.package, linkPath);
+            })();
+            this.packages.set(resolved.package, packageInit);
+        }
+        await packageInit;
+        let specifier = packageName_;
+        if (resolved.inner) {
+            specifier = `${specifier}/${resolved.inner}`;
+        }
+        const nodeResolved = await delegate(specifier, path.join(directory, LinkModuleResolver.packageName(requester)));
+        const resolvedPath = path.join(resolved.package, path.relative(linkPath, node_url.fileURLToPath(nodeResolved.url)));
+        nodeResolved.url = node_url.pathToFileURL(resolvedPath).toString();
+        return nodeResolved;
     }
-    parentPath = path__namespace.join(directory, path__namespace.relative(process.env.RUNFILES_DIR, parentPath).replace(/\//g, "_"));
-    const nodeResolved = await defaultResolve(specifier, { ...context, parentURL: url__namespace.pathToFileURL(parentPath) }, defaultResolve);
-    const nodeResolvedPath = url__namespace.fileURLToPath(nodeResolved.url);
-    const resolvedPath = path__namespace.join(resolved.package, path__namespace.relative(linkPath, nodeResolvedPath));
-    nodeResolved.url = url__namespace.pathToFileURL(resolvedPath).toString();
-    return nodeResolved;
+    static packageName(path_) {
+        const relative_ = path.relative(process.env.RUNFILES_DIR, path_);
+        return `_${relative_.replace(/\//g, "_")}`;
+    }
 }
 
-exports.resolve = resolve;
+const resolve = lazy(async () => {
+    const manifestPath = process.env.NODE_PACKAGE_MANIFEST;
+    if (!manifestPath) {
+        throw new Error("NODE_PACKAGE_MANIFEST is not set");
+    }
+    const packageTree = JsonFormat.parse(PackageTree.json(), await promises.readFile(manifestPath, "utf8"));
+    const resolver = Resolver.create(packageTree, process.env.RUNFILES_DIR);
+    return resolveFn(resolver);
+});
+
+var loader = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    resolve: resolve
+});
+
+exports.resolve = resolve$1;

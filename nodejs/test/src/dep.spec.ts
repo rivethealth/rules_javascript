@@ -10,4 +10,5 @@ test("Dep", () => {
   });
   expect(result.status).toBe(0);
   expect(result.stdout).toContain("Hello world");
+  expect(result.stdout).toContain("@test/process");
 });
