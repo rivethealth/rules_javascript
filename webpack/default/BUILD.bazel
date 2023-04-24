@@ -1,0 +1,17 @@
+alias(
+    name = "webpack",
+    actual = "@better_rules_javascript_npm//webpack:lib",
+    visibility = ["//webpack:__subpackages__"],
+)
+
+alias(
+    name = "webpack_cli",
+    actual = "@better_rules_javascript_npm//webpack-cli:lib",
+    visibility = ["//webpack:__subpackages__"],
+)
+
+alias(
+    name = "webpack_dev_server",
+    actual = "@better_rules_javascript_npm//webpack-dev-server:lib",
+    visibility = ["//webpack:__subpackages__"],
+)

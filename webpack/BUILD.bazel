@@ -32,3 +32,21 @@ test_suite(
     tests = ["//webpack/test"],
     visibility = ["//:__subpackages__"],
 )
+
+alias(
+    name = "webpack",
+    actual = "//webpack/default:webpack",
+    visibility = ["//visibility:public"],
+)
+
+alias(
+    name = "webpack_cli",
+    actual = "//webpack/default:webpack_cli",
+    visibility = ["//visibility:public"],
+)
+
+alias(
+    name = "webpack_dev_server",
+    actual = "//webpack/default:webpack_dev_server",
+    visibility = ["//visibility:public"],
+)

@@ -91,7 +91,15 @@ webpack = rule(
 
 _webpack = webpack
 
-def configure_webpack(name, cli, webpack, dev_server, config, config_dep, node_options = [], visibility = None):
+def configure_webpack(
+        name,
+        config,
+        config_dep,
+        cli = "@better_rules_javascript//webpack:webpack_cli",
+        webpack = "@better_rules_javascript//webpack",
+        dev_server = "@better_rules_javascript//webpack:webpack_dev_server",
+        node_options = [],
+        visibility = None):
     """Set up webpack tools.
 
     Args:

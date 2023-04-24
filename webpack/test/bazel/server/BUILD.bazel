@@ -26,11 +26,8 @@ js_library(
 
 configure_webpack(
     name = "webpack",
-    cli = "@npm//webpack-cli:lib",
     config = "webpack.config.js",
     config_dep = ":webpack_config",
-    dev_server = "@npm//webpack-dev-server:lib",
-    webpack = "@npm//webpack:lib",
 )
 
 webpack_server(

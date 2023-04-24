@@ -6,9 +6,7 @@ Webpack bundles modules into one or more files.
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
 - [Guide](#guide)
-  - [Reference](#reference)
-  - [Install](#install)
-  - [Use](#use)
+  - [Example](#example)
 - [//webpack:providers.bzl](#webpackprovidersbzl)
   - [WebpackInfo](#webpackinfo)
 - [//webpack:rules.bzl](#webpackrulesbzl)
@@ -21,23 +19,15 @@ Webpack bundles modules into one or more files.
 
 # Guide
 
-## Reference
+## Example
 
-[Starlark reference](stardoc/webpack.md)
-
-## Install
-
-Add webpack as an [external dependency](#external_dependencies).
-
-## Use
-
-**example/a.js**
+**a.js**
 
 ```js
 export const a = "apple";
 ```
 
-**example/b.js**
+**b.js**
 
 ```js
 import { a } from "./a";
@@ -45,7 +35,7 @@ import { a } from "./a";
 console.log(a);
 ```
 
-**example/webpack.config.js**
+**webpack.config.js**
 
 ```js
 const path = require("path");
@@ -59,41 +49,40 @@ module.exports = {
 };
 ```
 
-**example/BUILD.bzl**
+**BUILD.bzl**
 
 ```bzl
 load("@better_rules_javascript//commonjs:rules.bzl", "cjs_root")
-load("@better_rules_javascript//javascript:rules.bzl", "js_file", "js_library")
+load("@better_rules_javascript//javascript:rules.bzl", "js_library")
 load("@better_rules_javascript//webpack:rules.bzl", "configure_webpack", "webpack_bundle")
-
-cjs_root(
-  name = "root",
-  descriptors = [],
-)
-
-js_library(
-    name = "js",
-    root = ":root",
-    srcs = ["a.js", "b.js"],
-)
-
-js_file(
-    name = "webpack_config",
-    root = ":root",
-    src = "webpack.config.js",
-)
-
-configure_webpack(
-    name = "webpack",
-    config = ":webpack_config",
-    dep = "@npm//webpack:lib",
-    # TODO: devserver
-)
 
 webpack_bundle(
     name = "bundle",
     dep = ":b",
+    root = ":root",
     webpack = ":webpack",
+)
+
+js_library(
+    name = "lib",
+    root = ":root",
+    srcs = ["a.js", "b.js"],
+)
+
+cjs_root(
+  name = "root",
+)
+
+configure_webpack(
+    name = "webpack",
+    config = "webpack.config.js",
+    config_dep = ":webpack_config",
+)
+
+js_library(
+    name = "webpack_config",
+    root = ":root",
+    srcs = ["webpack.config.js"],
 )
 ```
 
@@ -193,20 +182,20 @@ Run a webpack server
 ## configure_webpack
 
 <pre>
-configure_webpack(<a href="#configure_webpack-name">name</a>, <a href="#configure_webpack-cli">cli</a>, <a href="#configure_webpack-webpack">webpack</a>, <a href="#configure_webpack-dev_server">dev_server</a>, <a href="#configure_webpack-config">config</a>, <a href="#configure_webpack-config_dep">config_dep</a>, <a href="#configure_webpack-node_options">node_options</a>, <a href="#configure_webpack-visibility">visibility</a>)
+configure_webpack(<a href="#configure_webpack-name">name</a>, <a href="#configure_webpack-config">config</a>, <a href="#configure_webpack-config_dep">config_dep</a>, <a href="#configure_webpack-cli">cli</a>, <a href="#configure_webpack-webpack">webpack</a>, <a href="#configure_webpack-dev_server">dev_server</a>, <a href="#configure_webpack-node_options">node_options</a>, <a href="#configure_webpack-visibility">visibility</a>)
 </pre>
 
 Set up webpack tools.
 
 **PARAMETERS**
 
-| Name                                                    | Description                | Default Value     |
-| :------------------------------------------------------ | :------------------------- | :---------------- |
-| <a id="configure_webpack-name"></a>name                 | Name                       | none              |
-| <a id="configure_webpack-cli"></a>cli                   | Webpack CLI library        | none              |
-| <a id="configure_webpack-webpack"></a>webpack           | Webpack library            | none              |
-| <a id="configure_webpack-dev_server"></a>dev_server     | Webpack dev server library | none              |
-| <a id="configure_webpack-config"></a>config             | Configuration path         | none              |
-| <a id="configure_webpack-config_dep"></a>config_dep     | Configuration library      | none              |
-| <a id="configure_webpack-node_options"></a>node_options | Node.js options            | <code>[]</code>   |
-| <a id="configure_webpack-visibility"></a>visibility     | Visibility                 | <code>None</code> |
+| Name                                                    | Description                | Default Value                                                       |
+| :------------------------------------------------------ | :------------------------- | :------------------------------------------------------------------ |
+| <a id="configure_webpack-name"></a>name                 | Name                       | none                                                                |
+| <a id="configure_webpack-config"></a>config             | Configuration path         | none                                                                |
+| <a id="configure_webpack-config_dep"></a>config_dep     | Configuration library      | none                                                                |
+| <a id="configure_webpack-cli"></a>cli                   | Webpack CLI library        | <code>"@better_rules_javascript//webpack:webpack_cli"</code>        |
+| <a id="configure_webpack-webpack"></a>webpack           | Webpack library            | <code>"@better_rules_javascript//webpack"</code>                    |
+| <a id="configure_webpack-dev_server"></a>dev_server     | Webpack dev server library | <code>"@better_rules_javascript//webpack:webpack_dev_server"</code> |
+| <a id="configure_webpack-node_options"></a>node_options | Node.js options            | <code>[]</code>                                                     |
+| <a id="configure_webpack-visibility"></a>visibility     | Visibility                 | <code>None</code>                                                   |
