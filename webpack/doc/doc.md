@@ -9,16 +9,16 @@ Webpack bundles modules into one or more files.
 
 ## Example
 
-**a.js**
+**lib.js**
 
 ```js
 export const a = "apple";
 ```
 
-**b.js**
+**main.js**
 
 ```js
-import { a } from "./a";
+import { a } from "./lib";
 
 console.log(a);
 ```
@@ -26,14 +26,8 @@ console.log(a);
 **webpack.config.js**
 
 ```js
-const path = require("path");
-
 module.exports = {
-  entry: path.resolve(`${process.env.WEBPACK_INPUT_ROOT}/b.js`),
-  output: {
-    filename: path.basename(process.env.WEBPACK_OUTPUT),
-    path: path.resolve(path.dirname(process.env.WEBPACK_OUTPUT)),
-  },
+  entry: "./main.js",
 };
 ```
 
