@@ -369,7 +369,7 @@ webpack_server = rule(
             providers = [JsInfo],
         ),
         "language": attr.string(),
-        "module": attr.string(),
+        "module": attr.string(default = "esnext"),
         "webpack": attr.label(
             cfg = _webpack_tool_transition,
             doc = "Webpack tools",
