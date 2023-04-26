@@ -11,8 +11,16 @@ if [ -z "${RUNFILES_DIR:-}" ]; then
   fi
 fi
 
+function abspath () {
+  if [[ "$1" == /* ]]; then
+    echo "$1"
+  else
+    echo "$PWD"/"$1"
+  fi
+}
+
 export COMPILATION_MODE=%{compilation_mode}
-export NODE_OPTIONS_APPEND="-r $(realpath -s "$RUNFILES_DIR"/%{skip_package_check})"
+export NODE_OPTIONS_APPEND="-r $(abspath "$RUNFILES_DIR"/%{skip_package_check})"
 export JS_SOURCE_MAP=%{js_source_map}
 export WATCHPACK_POLLING=130929
 export WEBPACK_CONFIG=%{config}
