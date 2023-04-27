@@ -14,13 +14,13 @@ def test_repositories0():
 
     # File
 
-    FILE_VERSION = "d97911bed8e3b90499c5daec7e5485f50c008322"
+    FILE_VERSION = "fd7ad6a7e9f3438fddb41683f33b6b4d07d067fe"
 
     http_archive(
         name = "rules_file",
-        sha256 = "d22158e37b0ace1d7ad6623be6b5aa31232499174a21ee1776f3a39e7e252b4c",
+        sha256 = "9108bf11fe1063bb6268f15506ea35c1a29e03cae651032d1da3d0f33561c5fd",
         strip_prefix = "rules_file-%s" % FILE_VERSION,
-        url = "https://github.com/rivethealth/rules_file/archive/%s.tar.gz" % FILE_VERSION,
+        url = "https://github.com/hello-seer/rules_file/archive/%s.zip" % FILE_VERSION,
     )
 
     # Protobuf

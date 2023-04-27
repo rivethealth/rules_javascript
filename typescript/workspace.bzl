@@ -54,10 +54,10 @@ load("@better_rules_javascript//typescript:rules.bzl", "ts_export", "ts_import")
 
 ts_import(
     name = "lib.inner",
-    declarations = [":root"],
+    declarations = [":files"],
     deps = {deps},
     root = ":root",
-    js = [":root"],
+    js = [":files"],
     visibility = ["//visibility:public"],
 )
 

@@ -20,14 +20,17 @@ def npm_import_external_rule(plugins):
         if mv_result.return_code:
             fail("Could not extract package")
 
+        ctx.execute(["rm", "-r", "tmp"])
+
         files_result = ctx.execute(["find", "npm", "-type", "f"])
         if files_result.return_code:
             fail("Could not list files")
-        files = files_result.stdout.split("\n")
+        files = [file[len("npm/"):] for file in files_result.stdout.split("\n")]
 
         build = ""
 
         package = struct(
+            archive = ctx.attr.package,
             deps = deps,
             extra_deps = extra_deps,
             name = package_name,

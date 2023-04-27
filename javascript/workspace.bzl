@@ -48,7 +48,7 @@ js_library(
     name = "lib.inner",
     root = ":root",
     deps = {deps},
-    srcs = [":root"],
+    srcs = [":files"],
     visibility = ["//visibility:public"],
 )
 

@@ -1,20 +1,23 @@
 def _cjs_directory_npm_package_build(package):
     return """
 load("@better_rules_javascript//commonjs:rules.bzl", "cjs_root")
+load("@rules_file//file:rules.bzl", "untar")
 
-filegroup(
+untar(
     name = "files",
-    srcs = ["npm"],
+    src = {package_archive},
+    strip_components = 1,
 )
 
 cjs_root(
     name = "root",
     descriptors = [":files"],
     package_name = {package_name},
-    path = "npm",
+    path = "files",
     visibility = ["//visibility:public"],
 )
     """.strip().format(
+        package_archive = json.encode(str(package.archive)),
         package_name = json.encode(package.name),
     )
 
