@@ -1,6 +1,8 @@
 {
   "devDependencies": {
     "@jest/types": "~27.4.0",
+    "@rollup/plugin-commonjs": "~24.1.0",
+    "@rollup/plugin-node-resolve": "~15.0.0",
     "@types/argparse": "~2.0.0",
     "@types/eslint": "~7.28.0",
     "@types/long": "~4.0.0",
@@ -21,6 +23,7 @@
     "node-fetch": "^2.0.0",
     "prettier": "^2.0.0",
     "protobufjs": "~7.1.0",
+    "rollup": "~3.21.0",
     "rxjs": "~7.5.0",
     "tar-stream": "~2.2.0",
     "tslib": "~2.0.0",

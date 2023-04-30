@@ -10,7 +10,7 @@ ts_library(
     ]),
     compile_deps = [
         "@better_rules_javascript_npm//@types/node:lib",
-        "@npm//rollup:lib",
+        "@better_rules_javascript_npm//rollup:lib",
     ],
     compiler = "//tools/typescript:tsc",
     config = "tsconfig.json",

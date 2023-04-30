@@ -236,7 +236,7 @@ def _nodejs_binary_implementation(ctx):
 def _nodejs_transition_impl(settings, attrs):
     return {"//javascript:module": "node"}
 
-_nodejs_transition = transition(
+nodejs_transition = transition(
     implementation = _nodejs_transition_impl,
     inputs = [],
     outputs = ["//javascript:module"],
@@ -249,7 +249,7 @@ nodejs_binary = rule(
             allow_files = True,
         ),
         "dep": attr.label(
-            cfg = _nodejs_transition,
+            cfg = nodejs_transition,
             doc = "JavaScript library.",
             mandatory = True,
             providers = [JsInfo],
@@ -438,11 +438,11 @@ def _nodejs_modules_archive_impl(ctx):
 nodejs_modules_archive = rule(
     attrs = {
         "deps": attr.label_list(
-            cfg = _nodejs_transition,
+            cfg = nodejs_transition,
             providers = [CjsInfo],
         ),
         "links": attr.label_list(
-            cfg = _nodejs_transition,
+            cfg = nodejs_transition,
             providers = [CjsInfo],
         ),
         "_allowlist_function_transition": attr.label(
@@ -596,7 +596,7 @@ def _nodejs_binary_archive_impl(ctx):
 nodejs_binary_archive = rule(
     attrs = {
         "dep": attr.label(
-            cfg = _nodejs_transition,
+            cfg = nodejs_transition,
             mandatory = True,
             providers = [CjsInfo, JsInfo],
         ),

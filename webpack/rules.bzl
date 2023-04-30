@@ -4,7 +4,7 @@ load("@rivet_bazel_util//bazel:providers.bzl", "create_digest")
 load("//commonjs:providers.bzl", "CjsInfo", "create_cjs_info", "gen_manifest", "package_path")
 load("//javascript:providers.bzl", "JsInfo", "create_js_info")
 load("//javascript:rules.bzl", "js_export")
-load("//nodejs:rules.bzl", "nodejs_binary")
+load("//nodejs:rules.bzl", "nodejs_binary", "nodejs_transition")
 load("//util:path.bzl", "runfile_path")
 load(":providers.bzl", "WebpackInfo")
 
@@ -125,13 +125,13 @@ def configure_webpack(
     js_export(
         name = "%s.main" % name,
         dep = cli,
-        extra_deps = [config_dep, "@better_rules_javascript//webpack/load-config:lib"],
+        deps = [config_dep, "@better_rules_javascript//webpack/load-config:lib"],
     )
 
     nodejs_binary(
         name = "%s.server_bin" % name,
         node_options = node_options,
-        main = "src/main.js",
+        main = "bin/webpack-dev-server.js",
         node = "@better_rules_javascript//nodejs",
         dep = ":%s.server_main" % name,
         visibility = ["//visibility:private"],
@@ -139,10 +139,8 @@ def configure_webpack(
 
     js_export(
         name = "%s.server_main" % name,
-        dep = "@better_rules_javascript//webpack/server:lib",
-        deps = [webpack, dev_server],
-        extra_deps = [config_dep],
-        visibility = ["//visibility:private"],
+        dep = dev_server,
+        deps = [config_dep, "@better_rules_javascript//webpack/load-config:lib"],
     )
 
     _webpack(
@@ -191,7 +189,7 @@ def _webpack_bundle_impl(ctx):
             "COMPILATION_MODE": compilation_mode,
             "JS_SOURCE_MAP": json.encode(source_map),
             "NODE_FS_PACKAGE_MANIFEST": package_manifest.path,
-            "NODE_OPTIONS_APPEND": "-r ./%s/dist/bundle.js -r ./%s" % (fs_linker_cjs.package.path, ctx.file._skip_package_check.path),
+            "NODE_OPTIONS_APPEND": "-r ./%s/dist/bundle.js -r ./%s/index.js" % (fs_linker_cjs.package.path, ctx.file._runtime.path),
             "WEBPACK_CONFIG": webpack.config_path,
             "WEBPACK_INPUT_ROOT": dep_cjs.package.path,
             "WEBPACK_OUTPUT": output.path,
@@ -200,7 +198,7 @@ def _webpack_bundle_impl(ctx):
         tools = [webpack.bin.files_to_run],
         arguments = args,
         inputs = depset(
-            [package_manifest, ctx.file._skip_package_check],
+            [package_manifest, ctx.file._runtime],
             transitive = [dep_js.transitive_files, fs_linker_js.transitive_files],
         ),
         outputs = [output],
@@ -232,9 +230,9 @@ webpack_bundle = rule(
             default = "//nodejs/fs-linker:dist_lib",
             providers = [CjsInfo, JsInfo],
         ),
-        "_skip_package_check": attr.label(
+        "_runtime": attr.label(
             allow_single_file = True,
-            default = "//webpack:skip-package-check.js",
+            default = "//webpack/runtime:bundle",
         ),
         "_source_map": attr.label(
             default = "//javascript:source_map",
@@ -268,9 +266,11 @@ webpack_bundle = rule(
 def _webpack_server_impl(ctx):
     actions = ctx.actions
     compilation_mode = ctx.var["COMPILATION_MODE"]
+    config = ctx.attr._config[CjsInfo]
     hash = ctx.attr._hash[DefaultInfo]
     label = ctx.label
-    skip_package_check = ctx.file._skip_package_check
+    runtime = ctx.file._runtime
+    shim = ctx.file._shim
     source_map = ctx.attr._source_map[BuildSettingInfo].value
     webpack = ctx.split_attr.webpack["tool"][WebpackInfo]
     webpack_client = ctx.split_attr.webpack["browser"][WebpackInfo]
@@ -317,15 +317,16 @@ def _webpack_server_impl(ctx):
         template = ctx.file._runner,
         output = bin,
         substitutions = {
-            "%{bin}": shell.quote(runfile_path(ctx.workspace_name, webpack.server.files_to_run.executable)),
+            "%{bin}": shell.quote(runfile_path(workspace_name, webpack.server.files_to_run.executable)),
             "%{compilation_mode}": shell.quote(compilation_mode),
             "%{config}": webpack.config_path,
             "%{digest}": shell.quote(runfile_path(workspace_name, src_digest)),
             "%{input_root}": shell.quote(package_path(dep_cjs.package)),
             "%{js_source_map}": shell.quote(json.encode(source_map)),
-            "%{output}": "/tmp/bundle.js",
-            "%{package_manifest}": shell.quote(runfile_path(ctx.workspace_name, package_manifest)),
-            "%{skip_package_check}": runfile_path(ctx.workspace_name, skip_package_check),
+            "%{package_manifest}": shell.quote(runfile_path(workspace_name, package_manifest)),
+            "%{runtime}": shell.quote(runfile_path(workspace_name, runtime)),
+            "%{shim}": shell.quote(runfile_path(workspace_name, shim)),
+            "%{webpack_config}": shell.quote(runfile_path(workspace_name, config.package) + "/src/index.mjs"),
         },
         is_executable = True,
     )
@@ -342,7 +343,8 @@ def _webpack_server_impl(ctx):
     runfiles = ctx.runfiles(
         files = [
             package_manifest,
-            skip_package_check,
+            runtime,
+            shim,
             src_digest,
         ],
         root_symlinks = symlinks,
@@ -379,6 +381,10 @@ webpack_server = rule(
         "_allowlist_function_transition": attr.label(
             default = "@bazel_tools//tools/allowlists/function_transition_allowlist",
         ),
+        "_config": attr.label(
+            default = "//webpack/load-config:lib",
+            providers = [CjsInfo],
+        ),
         "_hash": attr.label(
             cfg = "exec",
             default = "@rivet_bazel_util//util/hash:bin",
@@ -389,13 +395,18 @@ webpack_server = rule(
             executable = True,
             default = "//commonjs/manifest:bin",
         ),
-        "_skip_package_check": attr.label(
+        "_shim": attr.label(
             allow_single_file = True,
-            default = "//webpack:skip-package-check.js",
+            cfg = nodejs_transition,
+            default = "//webpack/server:bundle",
         ),
         "_runner": attr.label(
             allow_single_file = True,
             default = "//webpack:server-runner.sh.tpl",
+        ),
+        "_runtime": attr.label(
+            allow_single_file = True,
+            default = "//webpack/runtime:bundle",
         ),
         "_source_map": attr.label(
             default = "//javascript:source_map",

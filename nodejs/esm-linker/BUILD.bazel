@@ -59,7 +59,6 @@ js_library(
     srcs = ["rollup.config.js"],
     root = ":root",
     deps = [
-        "@npm//@rollup/plugin-commonjs:lib",
         "@npm//@rollup/plugin-node-resolve:lib",
     ],
 )

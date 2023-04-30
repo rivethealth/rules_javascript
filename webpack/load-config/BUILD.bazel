@@ -5,13 +5,19 @@ load("//typescript:rules.bzl", "ts_library")
 ts_library(
     name = "lib",
     srcs = glob(["src/**/*.mts"]),
+    compile_deps = [
+        "@better_rules_javascript_npm//@types/node:lib",
+        "@better_rules_javascript_npm//webpack:lib",
+    ],
     compiler = "//tools/typescript:tsc",
     config = "tsconfig.json",
     config_dep = ":tsconfig",
-    module = "es2020",
+    module = "es2022",
     root = ":root",
     visibility = ["//visibility:public"],
-    deps = ["//webpack/config:lib"],
+    deps = [
+        "//webpack/config:lib",
+    ],
 )
 
 cjs_root(

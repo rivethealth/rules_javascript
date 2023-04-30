@@ -1,5 +1,6 @@
 import { resolve } from "node:path";
 import type { Configuration } from "webpack";
+import { FsPlugin } from "./fs";
 import { RequirePlugin } from "./resolve";
 
 function getEnv(name: string): string {
@@ -27,6 +28,9 @@ export async function configure(
       compilationMode === "opt" ? "source-map" : "eval-source-map";
   }
 
+  (<any>config).devServer = (<any>config).devServer || {};
+  (<any>config).devServer.setupExitSignals = false;
+
   // use compilation_mode as default mode
   if (config.mode === undefined) {
     config.mode = compilationMode === "opt" ? "production" : "development";
@@ -46,6 +50,9 @@ export async function configure(
   if (config.optimization.minimize === undefined) {
     config.optimization.minimize = compilationMode === "opt";
   }
+
+  config.plugins = config.plugins || [];
+  config.plugins.unshift(new FsPlugin());
 
   config.resolveLoader = config.resolveLoader
     ? { ...config.resolveLoader }

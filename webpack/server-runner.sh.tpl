@@ -20,11 +20,13 @@ function abspath () {
 }
 
 export COMPILATION_MODE=%{compilation_mode}
-export NODE_OPTIONS_APPEND="-r $(abspath "$RUNFILES_DIR"/%{skip_package_check})"
+export NODE_OPTIONS_APPEND="-r $(abspath "$RUNFILES_DIR"/%{runtime}/index.js) -r $(abspath "$RUNFILES_DIR"/%{shim}/index.js)"
 export JS_SOURCE_MAP=%{js_source_map}
 export WATCHPACK_POLLING=130929
-export WEBPACK_CONFIG=%{config}
+export WEBPACK_CONFIG="$RUNFILES_DIR"/%{config}
+export WEBPACK_DIGEST="$RUNFILES_DIR"/%{digest}
 export WEBPACK_INPUT_ROOT="$RUNFILES_DIR"/%{input_root}
-export WEBPACK_OUTPUT="$RUNFILES_DIR"/%{output}
+export WEBPACK_OUTPUT="$RUNFILES_DIR"/tmp/bundle.js
+export WEBPACK_PACKAGE_MANIFEST="$RUNFILES_DIR"/%{package_manifest}
 
-exec "$RUNFILES_DIR"/%{bin} --digest="$RUNFILES_DIR"/%{digest} --packages-manifest "$RUNFILES_DIR"/%{package_manifest}
+exec "$RUNFILES_DIR"/%{bin} --config="$RUNFILES_DIR"/%{webpack_config} "$@"

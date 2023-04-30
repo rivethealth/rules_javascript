@@ -163,13 +163,13 @@ Run a webpack server
 
 **ATTRIBUTES**
 
-| Name                                         | Description                    | Type                                                                | Mandatory | Default         |
-| :------------------------------------------- | :----------------------------- | :------------------------------------------------------------------ | :-------- | :-------------- |
-| <a id="webpack_server-name"></a>name         | A unique name for this target. | <a href="https://bazel.build/concepts/labels#target-names">Name</a> | required  |                 |
-| <a id="webpack_server-dep"></a>dep           | JavaScript dependencies        | <a href="https://bazel.build/concepts/labels">Label</a>             | required  |                 |
-| <a id="webpack_server-language"></a>language | -                              | String                                                              | optional  | <code>""</code> |
-| <a id="webpack_server-module"></a>module     | -                              | String                                                              | optional  | <code>""</code> |
-| <a id="webpack_server-webpack"></a>webpack   | Webpack tools                  | <a href="https://bazel.build/concepts/labels">Label</a>             | required  |                 |
+| Name                                         | Description                    | Type                                                                | Mandatory | Default               |
+| :------------------------------------------- | :----------------------------- | :------------------------------------------------------------------ | :-------- | :-------------------- |
+| <a id="webpack_server-name"></a>name         | A unique name for this target. | <a href="https://bazel.build/concepts/labels#target-names">Name</a> | required  |                       |
+| <a id="webpack_server-dep"></a>dep           | JavaScript dependencies        | <a href="https://bazel.build/concepts/labels">Label</a>             | required  |                       |
+| <a id="webpack_server-language"></a>language | -                              | String                                                              | optional  | <code>""</code>       |
+| <a id="webpack_server-module"></a>module     | -                              | String                                                              | optional  | <code>"esnext"</code> |
+| <a id="webpack_server-webpack"></a>webpack   | Webpack tools                  | <a href="https://bazel.build/concepts/labels">Label</a>             | required  |                       |
 
 <a id="configure_webpack"></a>
 

@@ -17,17 +17,7 @@ ts_library(
     config = "tsconfig.json",
     config_dep = ":tsconfig",
     root = ":root",
-    deps = [
-        "//commonjs/package:lib",
-        "//ibazel/notification:lib",
-        "//nodejs/fs-linker:lib",
-        "//util/json:lib",
-        "//webpack/load-config:lib",
-        "@better_rules_javascript_npm//@types/node:lib",
-        "@better_rules_javascript_npm//enhanced-resolve:lib",
-        "@better_rules_javascript_npm//rxjs:lib",
-        "@better_rules_javascript_npm//webpack:lib",
-    ],
+    deps = ["@npm//@types/node:lib"],
 )
 
 configure_rollup(
@@ -39,7 +29,7 @@ configure_rollup(
 
 cjs_root(
     name = "root",
-    package_name = "@better-rules-javascript/webpack-server",
+    package_name = "@better-rules-javascript/webpack-runtime",
     descriptors = ["package.json"],
     visibility = ["//visibility:public"],
 )
@@ -55,10 +45,6 @@ ts_library(
     config_dep = ":rollup_tsconfig",
     module = "commonjs",
     root = ":root",
-    deps = [
-        "@better_rules_javascript_npm//@rollup/plugin-commonjs:lib",
-        "@better_rules_javascript_npm//@rollup/plugin-node-resolve:lib",
-    ],
 )
 
 js_library(

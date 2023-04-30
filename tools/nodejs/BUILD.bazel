@@ -22,6 +22,7 @@ nodejs_modules_archive(
         "//ibazel/notification:root",
         "//nodejs/fs-linker:root",
         "//test:root",
+        "//tools/typescript:root",
         "//util/cache:root",
         "//util/json:root",
         "//util/starlark:root",
