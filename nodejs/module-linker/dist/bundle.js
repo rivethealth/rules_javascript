@@ -418,8 +418,7 @@ function parse(resolver) {
                 path: path_.slice(root.length + 1),
             };
         }
-        catch (error) {
-            console.error(error);
+        catch {
         }
     };
 }
