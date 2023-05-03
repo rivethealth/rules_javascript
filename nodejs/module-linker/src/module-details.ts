@@ -1,5 +1,4 @@
 import { Resolver } from "@better-rules-javascript/commonjs-package/resolve";
-import { lazy } from "@better-rules-javascript/util/cache";
 import * as fs from "node:fs";
 import Module from "node:module";
 import * as path from "node:path";
@@ -24,8 +23,7 @@ function parse(resolver: Resolver) {
         name: packageJson.name,
         path: path_.slice(root.length + 1),
       };
-    } catch {
-    }
+    } catch {}
   };
 }
 
