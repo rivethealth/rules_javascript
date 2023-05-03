@@ -41,8 +41,8 @@ if (isMainThread) {
     webpackRunfiles,
     webpackDigestPath,
     refresh,
-  ).catch((e) => {
-    console.error(e.stack);
+  ).catch((error) => {
+    console.error(error.stack);
     process.exit(1);
   });
 }

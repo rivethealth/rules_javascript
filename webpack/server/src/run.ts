@@ -7,8 +7,8 @@ import {
 import { createVfs } from "@better-rules-javascript/nodejs-fs-linker/package";
 import { WrapperVfs } from "@better-rules-javascript/nodejs-fs-linker/vfs";
 import { JsonFormat } from "@better-rules-javascript/util-json";
-import { readFileSync } from "fs";
-import { readFile } from "fs/promises";
+import { readFileSync } from "node:fs";
+import { readFile } from "node:fs/promises";
 import { Subject } from "rxjs";
 
 export function refreshPackageTree(

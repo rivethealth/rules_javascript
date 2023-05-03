@@ -78,14 +78,16 @@ interface ModuleResolver {
   ): string;
 }
 
+function createTmpDir() {
+  const dir = mkdtempSync(join(tmpdir(), "nodejs-"));
+  process.once("exit", () => rmSync(dir, { recursive: true }));
+  return dir;
+}
+
 class LinkModuleResolver implements ModuleResolver {
   private readonly packages = new Set<string>();
 
-  private readonly directory = lazy(() => {
-    const dir = mkdtempSync(join(tmpdir(), "nodejs-"));
-    process.once("exit", () => rmSync(dir, { recursive: true }));
-    return dir;
-  });
+  private readonly directory = lazy(createTmpDir);
 
   resolve(
     resolved: Resolution,

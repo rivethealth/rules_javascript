@@ -12,7 +12,7 @@ filegroup(
         "files/**/*.js",
         "files/**/*.mts",
         "files/**/*.ts",
-    ], ["files/**/dist/**"]),
+    ], ["files/**/dist/**", "files/webpack/load-config/src/index.mts"]),
     visibility = ["//visibility:public"],
 )
 

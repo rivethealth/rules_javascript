@@ -61,7 +61,7 @@ function printDict(value: StarlarkDict, indent: string | undefined): string {
     if (indent !== undefined) {
       output += indent + "    ";
     }
-    output += printValue(k, undefined);
+    output += printValue(k);
     output += ": ";
     output += printValue(v, indent === undefined ? indent : indent + "    ");
     output += ",";

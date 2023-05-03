@@ -68,15 +68,17 @@ class SpecifierClassifier {
   }
 }
 
+async function createTempDir() {
+  const dir = await mkdtemp(join(tmpdir(), "nodejs-"));
+  await mkdir(join(dir, "node_modules"));
+  process.once("exit", () => rmSync(dir, { recursive: true }));
+  return dir;
+}
+
 class LinkModuleResolver {
   private readonly packages = new Map<string, Promise<void>>();
 
-  private readonly directory = lazy(async () => {
-    const dir = await mkdtemp(join(tmpdir(), "nodejs-"));
-    await mkdir(join(dir, "node_modules"));
-    process.once("exit", () => rmSync(dir, { recursive: true }));
-    return dir;
-  });
+  private readonly directory = lazy(createTempDir);
 
   async resolve(
     resolved: Resolution,

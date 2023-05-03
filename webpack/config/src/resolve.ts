@@ -22,8 +22,10 @@ export class RequirePlugin {
         let path: string;
         try {
           path = this.require.resolve(request.request);
-        } catch (e) {
-          return callback(e instanceof Error ? e : new Error(String(e)));
+        } catch (error) {
+          return callback(
+            error instanceof Error ? error : new Error(String(error)),
+          );
         }
         resolver.doResolve(
           target,
