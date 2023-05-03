@@ -8,8 +8,6 @@ load("//nodejs:rules.bzl", "nodejs_binary", "nodejs_transition")
 load("//util:path.bzl", "runfile_path")
 load(":providers.bzl", "WebpackInfo")
 
-WEBPACK_MODULES_PREFIX = "_webpack_modules"
-
 def _webpack_tool_transition_impl(settings, attrs):
     return {
         "browser": {"//javascript:language": attrs.language, "//javascript:module": attrs.module},

@@ -1,6 +1,7 @@
 import { JsonFormat } from "@better-rules-javascript/util-json";
 import { Locator, structUtils } from "@yarnpkg/core";
 import { patchUtils } from "@yarnpkg/plugin-patch";
+import { createHash } from "node:crypto";
 import { BzlDeps, BzlPackages } from "./bzl";
 import { Graph, stronglyConnectedComponents } from "./graph";
 import { NpmRegistryClient } from "./npm";
@@ -24,6 +25,20 @@ export async function getPackage(
   client: NpmRegistryClient,
   npmLocator: Locator,
 ): Promise<ResolvedNpmPackage> {
+  if (
+    npmLocator.reference.startsWith("http:") ||
+    npmLocator.reference.startsWith("https:")
+  ) {
+    const result = await fetch(npmLocator.reference);
+    const buffer = await result.arrayBuffer();
+    const hash = createHash("sha256");
+    hash.update(Buffer.from(buffer));
+    return {
+      contentIntegrity: `sha256-${hash.digest().toString("hex")}`,
+      contentUrl: npmLocator.reference,
+    };
+  }
+
   const package_ = await client.getPackage(npmLocator);
   let integrity: string;
   if (package_.dist.integrity) {
@@ -95,6 +110,12 @@ export async function resolvePackages(
 }
 
 function npmLocator(locator: Locator): Locator | undefined {
+  if (
+    locator.reference.startsWith("http:") ||
+    locator.reference.startsWith("https:")
+  ) {
+    return locator;
+  }
   if (locator.reference.startsWith("patch:")) {
     const parsed = patchUtils.parseLocator(locator);
     return npmLocator(parsed.sourceLocator);
@@ -112,6 +133,21 @@ function npmLocator(locator: Locator): Locator | undefined {
 }
 
 function bzlId(locator: Locator): string | undefined {
+  if (
+    locator.reference.startsWith("http:") ||
+    locator.reference.startsWith("https:")
+  ) {
+    const url = new URL(locator.reference);
+    const hash = createHash("md5");
+    hash.update(url.host);
+    hash.update(url.pathname);
+    hash.update(url.search);
+    const digest = hash.digest().subarray(0, 8);
+    return `${structUtils.stringifyIdent(locator)}@${url.protocol.slice(
+      0,
+      -1,
+    )}-${digest.toString("hex")}`;
+  }
   if (locator.reference.startsWith("patch:")) {
     const parsed = patchUtils.parseLocator(locator);
     return `${bzlId(parsed.sourceLocator)}-${locator.locatorHash.slice(0, 8)}`;
