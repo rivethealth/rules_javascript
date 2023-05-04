@@ -61,9 +61,9 @@ js_library(
     srcs = ["webpack.config.mjs"],
     root = ":root",
     deps = [
+        "@better_rules_javascript_npm//webpack:lib",
         "@npm//@angular/compiler-cli:lib",
         "@npm//babel-loader:lib",
-        "@npm//webpack:lib",
     ],
 )
 
@@ -75,11 +75,8 @@ js_library(
 
 configure_webpack(
     name = "webpack",
-    cli = "@npm//webpack-cli:lib",
     config = "webpack.config.mjs",
     config_dep = ":webpack_config",
-    dev_server = "@npm//webpack-dev-server:lib",
-    webpack = "@npm//webpack:lib",
 )
 
 webpack_bundle(

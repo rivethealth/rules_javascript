@@ -10,3 +10,4 @@ build --incompatible_disable_target_provider_fields
 build --incompatible_struct_has_no_methods
 build --incompatible_top_level_aspects_require_providers
 build --incompatible_use_cc_configure_from_rules_cc
+build --test_env=PATH
