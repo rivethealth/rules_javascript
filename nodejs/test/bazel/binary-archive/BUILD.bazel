@@ -1,6 +1,12 @@
 load("@better_rules_javascript//commonjs:rules.bzl", "cjs_root")
 load("@better_rules_javascript//javascript:rules.bzl", "js_library")
-load("@better_rules_javascript//nodejs:rules.bzl", "nodejs_binary_archive")
+load("@better_rules_javascript//nodejs:rules.bzl", "nodejs_binary_package")
+load("@rules_pkg//pkg:tar.bzl", "pkg_tar")
+
+pkg_tar(
+    name = "archive",
+    srcs = [":package"],
+)
 
 cjs_root(
     name = "root",
@@ -21,8 +27,8 @@ js_library(
     deps = [":lib"],
 )
 
-nodejs_binary_archive(
-    name = "archive",
+nodejs_binary_package(
+    name = "package",
     dep = ":main",
     main = "main.js",
 )

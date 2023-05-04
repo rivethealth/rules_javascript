@@ -12,6 +12,17 @@ def test_repositories0():
         urls = ["https://github.com/bazelbuild/bazel-skylib/archive/%s.tar.gz" % SKYLIB_VERSION],
     )
 
+    # Rules Pkg
+
+    PKG_VERSION = "0aa9277cc66fa26b519a1ad8abac0215fc987484"
+
+    http_archive(
+        name = "rules_pkg",
+        sha256 = "d808248021ffc77c731ef516f0efa67085aa8521bd8ccf72421ecf9274ab50d5",
+        strip_prefix = "rules_pkg-%s" % PKG_VERSION,
+        url = "https://github.com/bazelbuild/rules_pkg/archive/%s.tar.gz" % PKG_VERSION,
+    )
+
     # File
 
     FILE_VERSION = "fd7ad6a7e9f3438fddb41683f33b6b4d07d067fe"

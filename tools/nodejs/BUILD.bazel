@@ -1,9 +1,9 @@
-load("//nodejs:rules.bzl", "nodejs_install", "nodejs_modules_archive")
+load("//nodejs:rules.bzl", "nodejs_install", "nodejs_modules_package")
 load("//tools/npm:npm.bzl", "ROOTS")
 
 nodejs_install(
     name = "install0",
-    archive = ":node_modules",
+    src = ":node_modules",
 )
 
 sh_binary(
@@ -12,7 +12,7 @@ sh_binary(
     data = [":install0"],
 )
 
-nodejs_modules_archive(
+nodejs_modules_package(
     name = "node_modules",
     links = [
         "//angular/resource-compiler:root",

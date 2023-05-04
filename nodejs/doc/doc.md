@@ -60,32 +60,27 @@ Hello world
 
 ## IDEs
 
-IDEs use `node_modules`. To install external dependencies there, create a tar
-with `nodejs_archive`.
+IDEs use `node_modules`. To install external dependencies or link local files:
+
+**BUILD.bazel**
 
 ```bzl
-load("@better_rules_javascript//nodejs:rules.bzl", "nodejs_archive")
+load("@better_rules_javascript//nodejs:rules.bzl", "nodejs_install", "nodejs_modules_package")
 
-nodejs_archive(
-  name = "archive",
-  deps = [
-    "@npm/example:lib"
-  ],
+nodejs_install(
+  name = "nodejs_install",
+  src = ":node_modules",
+)
+
+nodejs_modules_package(
+  name = "node_modules",
+  deps = ["@npm//external-example:lib"],
+  links = ["//internal-example:root"],
 )
 ```
 
-Then run
+Then run:
 
 ```sh
-bazel build :archive
-tar xf bazel-bin/archive/modules.tar -C .node_modules
-ln -s .node_modules/_ node_modules
-mkdir -p node_modules/@better-rules-javascript
-```
-
-To link local dependencies, run
-
-```sh
-ln -rs foo node_modules/@example/foo
-ln -rs bar node_modules/@example/bar
+bazel run :nodejs_install
 ```

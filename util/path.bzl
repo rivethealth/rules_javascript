@@ -2,18 +2,21 @@ load("@bazel_skylib//lib:paths.bzl", "paths")
 load("@rules_file//util:path.bzl", output_name_impl = "output_name")
 
 def relativize(path, start):
+    if not start:
+        return path
+
     path_parts = path.split("/")
-    start_parts = path.split("/")
+    start_parts = start.split("/")
 
     result_parts = []
     match = True
-    for i in len(path_parts):
+    for i, part in enumerate(path_parts):
         if match:
-            match = i < len(start_parts) and path_parts[i] == start_parts[i]
+            match = i < len(start_parts) and part == start_parts[i]
             if not match:
-                result_parts = result_parts + [".."] * (len(start_parts) - i - 1)
-        else:
-            result_parts.append(match)
+                result_parts = [".."] * (len(start_parts) - i)
+        if not match:
+            result_parts.append(part)
 
     return "/".join(result_parts)
 

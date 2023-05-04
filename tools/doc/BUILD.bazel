@@ -1,5 +1,5 @@
 load("//nodejs:rules.bzl", "nodejs_binary")
-load("@rules_pkg//:pkg.bzl", "pkg_tar")
+load("@rules_pkg//pkg:tar.bzl", "pkg_tar")
 
 exports_files(
     ["default.md"],

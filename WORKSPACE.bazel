@@ -54,12 +54,13 @@ go_register_toolchains(version = "1.19.5")
 
 # Pkg
 
-PKG_VERSION = "0.7.0"
+PKG_VERSION = "e7a1ba187c96df78d83f1adb0eac1b7db24f96bc"
 
 http_archive(
     name = "rules_pkg",
-    sha256 = "8a298e832762eda1830597d64fe7db58178aa84cd5926d76d5b744d6558941c2",
-    url = "https://github.com/bazelbuild/rules_pkg/releases/download/%s/rules_pkg-%s.tar.gz" % (PKG_VERSION, PKG_VERSION),
+    sha256 = "468b63f58ebee5287ce6ae0762e3b2893508924f5badb0f3ab73382ead6bdf94",
+    strip_prefix = "rules_pkg-%s" % PKG_VERSION,
+    url = "https://github.com/bazelbuild/rules_pkg/archive/%s.tar.gz" % PKG_VERSION,
 )
 
 # Protobuf
@@ -136,13 +137,13 @@ http_archive(
 
 # Pkg
 
-PKG_VERSION = "55a1a9b2eca5b78a44fb940f3143a1d88423c2e2"
+PKG_VERSION = "0aa9277cc66fa26b519a1ad8abac0215fc987484"
 
 http_archive(
     name = "rules_pkg",
-    sha256 = "88d65eedeb9a26708b859a0850bf11aa478cabe49733f5169cada1ed86fe7241",
-    strip_prefix = "rules_pkg-%s/pkg" % PKG_VERSION,
-    url = "https://github.com/bazelbuild/rules_pkg/archive/%s.zip" % PKG_VERSION,
+    sha256 = "d808248021ffc77c731ef516f0efa67085aa8521bd8ccf72421ecf9274ab50d5",
+    strip_prefix = "rules_pkg-%s" % PKG_VERSION,
+    url = "https://github.com/bazelbuild/rules_pkg/archive/%s.tar.gz" % PKG_VERSION,
 )
 
 load("@rules_pkg//:deps.bzl", "rules_pkg_dependencies")
