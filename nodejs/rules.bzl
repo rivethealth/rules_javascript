@@ -550,12 +550,12 @@ def _nodejs_binary_package_impl(ctx):
     symlinks = []
     for link in dep_cjs.transitive_links.to_list():
         if link.path == None:
-            content_path = "node_modules/%s" % link.name
+            destination = "node_modules/%s" % link.name
         else:
-            content_path = "%s/node_modules/%s" % (package_paths[link.path], link.name)
+            destination = "%s/node_modules/%s" % (package_paths[link.path], link.name)
         symlink = PackageSymlinkInfo(
-            destination = content_path,
-            target = "/".join([".." for _ in content_path.split(",")[:-1]] + [package_paths[link.dep]]),
+            destination = destination,
+            target = relativize(package_paths[link.dep], paths.dirname(destination)),
         )
         symlinks.append(symlink)
 
