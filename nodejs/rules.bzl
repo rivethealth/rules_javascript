@@ -543,7 +543,9 @@ def _nodejs_binary_package_impl(ctx):
 
     files_map = {runfile_path(workspace, file): file for file in dep_js.transitive_files.to_list()}
     files_map["bin"] = bin
-    files = PackageFilesInfo(attributes = {}, dest_src_map = files_map)
+    if type(node.bin) != "str":
+        files_map["node"] = node.bin
+    files = PackageFilesInfo(dest_src_map = files_map)
 
     symlinks = []
     for link in dep_cjs.transitive_links.to_list():
@@ -557,7 +559,7 @@ def _nodejs_binary_package_impl(ctx):
         )
         symlinks.append(symlink)
 
-    default_info = DefaultInfo(files = depset([bin], transitive = [dep_js.transitive_files]))
+    default_info = DefaultInfo(files = depset(files_map.values()))
 
     filegroup_info = PackageFilegroupInfo(
         pkg_files = [(files, label)],
