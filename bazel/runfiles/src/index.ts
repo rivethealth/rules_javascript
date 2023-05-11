@@ -1,22 +1,32 @@
-import * as fs from "node:fs";
-import * as path from "node:path";
+import { lazy } from "@better-rules-javascript/util/cache";
+import { existsSync, readFileSync } from "node:fs";
+import { join } from "node:path";
 
-export function parseManifest(runfilesDir: string, content: string) {
+function parseManifest(content: string) {
   const entries: [string, string][] = content
     .trim()
     .split("\n")
     .map((line) => {
-      const [name, value] = line.split(" ", 2);
-      return [path.resolve(runfilesDir, name), value];
+      const i = line.indexOf(" ");
+      return [line.slice(0, i), line.slice(i + 1)];
     });
   return new Map(entries);
 }
 
-export function loadManifest() {
-  const runfilesDir = process.env.RUNFILES_DIR;
-  const manifest = fs.readFileSync(
-    path.resolve(runfilesDir, "MANIFEST"),
-    "utf8",
-  );
-  return parseManifest(runfilesDir, manifest);
+function loadManifest(path: string) {
+  const manifest = readFileSync(path, "utf8");
+  return parseManifest(manifest);
+}
+
+const manifest = lazy(() => loadManifest(process.env.RUNFILES_MANIFEST_FILE!));
+
+export function rlocation(path: string): string | undefined {
+  if (process.env.RUNFILES_DIR) {
+    const result = join(process.env.RUNFILES_DIR, path);
+    return existsSync(result) ? result : undefined;
+  }
+  if (process.env.RUNFILES_MANIFEST_FILE) {
+    return manifest().get(path);
+  }
+  throw new Error("process.env.RUNFILES_DIR not set");
 }
