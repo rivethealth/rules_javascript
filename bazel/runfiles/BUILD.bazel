@@ -24,5 +24,8 @@ ts_library(
     config_dep = ":tsconfig",
     root = ":root",
     visibility = ["//visibility:public"],
-    deps = ["@better_rules_javascript_npm//@types/node:lib", "//util/util:lib"],
+    deps = [
+        "//util/util:lib",
+        "@better_rules_javascript_npm//@types/node:lib",
+    ],
 )

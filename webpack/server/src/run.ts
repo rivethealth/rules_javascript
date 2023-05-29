@@ -20,7 +20,6 @@ export function refreshPackageTree(
     PackageTree.json(),
     readFileSync(webpackManifestPath, "utf8"),
   );
-  console.log("*******", webpackManifestPath, webpackRunfiles);
   const vfsImpl = createVfs(packageTree, webpackRunfiles);
   vfs.delegate = vfsImpl;
 }

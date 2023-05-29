@@ -18,6 +18,11 @@ def relativize(path, start):
         if not match:
             result_parts.append(part)
 
+    if not result_parts:
+        result_parts = [".."] * (len(start_parts) - len(path_parts))
+    if not result_parts:
+        result_parts = ["."]
+
     return "/".join(result_parts)
 
 def runfile_path(workspace, file):
