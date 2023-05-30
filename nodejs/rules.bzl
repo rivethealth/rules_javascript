@@ -535,7 +535,7 @@ def _nodejs_binary_package_impl(ctx):
         substitutions = {
             "%{env}": " ".join(["%s=%s" % (name, shell.quote(value)) for name, value in env.items()]),
             "%{main_module}": shell.quote("%s/%s" % (package_paths[dep_cjs.package.path], main)),
-            "%{node}": shell.quote(node.bin) if type(node.bin) == "str" else '"$(dirname "$0")"/node',
+            "%{node}": shell.quote(node.bin) if type(node.bin) == "string" else '"$(dirname "$0")"/node',
             "%{node_options}": " ".join([shell.quote(option) for option in ctx.attr.node_options]),
         },
         is_executable = True,
@@ -543,7 +543,7 @@ def _nodejs_binary_package_impl(ctx):
 
     files_map = {runfile_path(workspace, file): file for file in dep_js.transitive_files.to_list()}
     files_map["bin"] = bin
-    if type(node.bin) != "str":
+    if type(node.bin) != "string":
         files_map["node"] = node.bin
     files = PackageFilesInfo(dest_src_map = files_map)
 
