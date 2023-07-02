@@ -25,14 +25,16 @@ def _ts_directory_npm_package_build(package, files):
     if not any([file.endswith(".d.ts") for file in files]):
         return js_directory_npm_plugin().package_build(package, files)
 
+    compile_deps = []
     deps = []
     exports = []
     for i, dep in enumerate(package.deps):
+        dep_list = compile_deps if dep.id.startswith("@types/") else deps
         if not dep.name:
-            deps.append(js_npm_label(dep.id))
+            dep_list.append(js_npm_label(dep.id))
             continue
         name = "import%s" % i
-        deps.append(name)
+        dep_list.append(name)
         exports.append(
             """
 ts_export(
@@ -54,6 +56,7 @@ load("@better_rules_javascript//typescript:rules.bzl", "ts_export", "ts_import")
 
 ts_import(
     name = "lib.inner",
+    compile_deps = {compile_deps},
     declarations = [":files"],
     deps = {deps},
     root = ":root",
@@ -68,6 +71,7 @@ ts_export(
     visibility = ["//visibility:public"]
 )
     """.strip().format(
+        compile_deps = json.encode(compile_deps),
         deps = json.encode(deps),
         exports = "\n\n".join(exports),
         extra_deps = json.encode([":lib.export.%s" % i for i in range(len(package.extra_deps))]),
