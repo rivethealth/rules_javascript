@@ -368,15 +368,16 @@ class SpecifierClassifier {
             !specifier.startsWith("#"));
     }
 }
+async function createTempDir() {
+    const dir = await promises.mkdtemp(path.join(node_os.tmpdir(), "nodejs-"));
+    await promises.mkdir(path.join(dir, "node_modules"));
+    process.once("exit", () => node_fs.rmSync(dir, { recursive: true }));
+    return dir;
+}
 class LinkModuleResolver {
     constructor() {
         this.packages = new Map();
-        this.directory = lazy(async () => {
-            const dir = await promises.mkdtemp(path.join(node_os.tmpdir(), "nodejs-"));
-            await promises.mkdir(path.join(dir, "node_modules"));
-            process.once("exit", () => node_fs.rmSync(dir, { recursive: true }));
-            return dir;
-        });
+        this.directory = lazy(createTempDir);
     }
     async resolve(resolved, requester, delegate) {
         const directory = await this.directory();

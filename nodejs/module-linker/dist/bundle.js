@@ -361,14 +361,15 @@ class ModuleRequestClassifier {
 function patchModule(resolver, delegate) {
     delegate._resolveFilename = resolveFilename(resolver, delegate._resolveFilename);
 }
+function createTmpDir() {
+    const dir = fs.mkdtempSync(path.join(node_os.tmpdir(), "nodejs-"));
+    process.once("exit", () => fs.rmSync(dir, { recursive: true }));
+    return dir;
+}
 class LinkModuleResolver {
     constructor() {
         this.packages = new Set();
-        this.directory = lazy(() => {
-            const dir = fs.mkdtempSync(path.join(node_os.tmpdir(), "nodejs-"));
-            process.once("exit", () => fs.rmSync(dir, { recursive: true }));
-            return dir;
-        });
+        this.directory = lazy(createTmpDir);
     }
     resolve(resolved, requester, delegate) {
         const directory = this.directory();
@@ -418,8 +419,7 @@ function parse(resolver) {
                 path: path_.slice(root.length + 1),
             };
         }
-        catch {
-        }
+        catch { }
     };
 }
 const MODULE_NAME = "module-details-from-path";
