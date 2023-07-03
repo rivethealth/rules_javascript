@@ -57,7 +57,6 @@ load("@better_rules_javascript//typescript:rules.bzl", "ts_export", "ts_import")
 
 ts_import(
     name = "lib.inner",
-    compile_deps = {compile_deps},
     declarations = [":files"],
     deps = {deps},
     js = {js},
@@ -136,15 +135,13 @@ ts_import(
     name = "lib",
     root = ":root",
     declarations = glob(["npm/**/*.d.ts"]),
-    compile_deps = {compile_deps},
     deps = {deps},
     # extra_deps = {extra_deps},
     js = glob(["npm/**/*"], ["npm/**/package.json"] + {excludes}),
     strip_prefix = "npm",
 )
     """.strip().format(
-        compile_deps = json.encode([js_npm_label(dep) for dep in package.deps if '_types_' in dep]),
-        deps = json.encode([js_npm_label(dep) for dep in package.deps if '_types' not in dep]),
+        deps = json.encode([js_npm_label(dep) for dep in package.deps]),
         excludes = excludes,
         extra_deps = json.encode(package.extra_deps),
     )
