@@ -3,9 +3,9 @@ load("//commonjs:providers.bzl", "CjsInfo", "create_cjs_info", "gen_manifest", "
 load("//commonjs:rules.bzl", "cjs_root")
 load("//javascript:providers.bzl", "JsInfo", "create_js_info")
 load("//javascript:rules.bzl", "js_export")
-load("//util:path.bzl", "output", "output_name")
+load("//util:path.bzl", "link_file", "output", "output_name")
 load("//nodejs:rules.bzl", "nodejs_binary")
-load("//typescript:providers.bzl", "TsInfo", "create_ts_info", "declaration_path", "is_declaration", "is_directory", "is_json", "js_path", "map_path")
+load("//typescript:providers.bzl", "TsInfo", "create_ts_info", "declaration_path", "is_declaration", "is_json", "js_path", "map_path")
 load(":providers.bzl", "AngularCompilerInfo", "resource_path")
 
 def _module(module):
@@ -74,7 +74,6 @@ def _angular_library(ctx):
     name = ctx.attr.name
     output_ = output(ctx.label, actions)
     source_map = ctx.attr._source_map[BuildSettingInfo].value
-    src_prefix = ctx.attr.src_prefix
     strip_prefix = ctx.attr.strip_prefix
     ts_deps = compiler.ts_deps + [dep[TsInfo] for dep in ctx.attr.deps if TsInfo in dep]
     tsconfig_js = ctx.attr.config_dep and ctx.attr.config_dep[JsInfo]
@@ -88,27 +87,21 @@ def _angular_library(ctx):
     declarations = []
     inputs = []
     js = []
+    ts = []
     outputs = []
 
     # resource
 
     for file in ctx.files.resources:
-        path = output_name(
-            file = file,
-            label = label,
-            prefix = js_prefix,
-            strip_prefix = strip_prefix,
-        )
         if compilation_mode == "opt":
-            if file.path == "%s/%s" % (output_.path, path):
-                resource = file
-            else:
-                resource = actions.declare_file(path)
-                actions.symlink(
-                    output = resource,
-                    target_file = file,
-                )
-            inputs.append(resource)
+            inputs.append(
+                link_file(
+                    actions = actions,
+                    file = file,
+                    label = label,
+                    output = output_,
+                ),
+            )
         else:
             js_path_ = output_name(
                 file = file,
@@ -143,11 +136,12 @@ def _angular_library(ctx):
         args = actions.args()
         if tsconfig_path:
             args.add("--config", "%s/%s" % (tsconfig_dep.package.path, tsconfig_path))
-        args.add("--empty", "true")
         args.add("--module", module)
         args.add("--source-map", json.encode(source_map))
         args.add("--out-dir", "%s/%s" % (output_.path, js_prefix) if js_prefix else output_.path)
-        args.add("--root-dir", "%s/%s" % (output_.path, src_prefix) if src_prefix else output_.path)
+        args.add("--root-dir", "%s/%s" % (output_.path, strip_prefix) if strip_prefix else output_.path)
+        args.add("--root-dirs", "%s/%s" % (output_.path, strip_prefix) if strip_prefix else output_.path)
+        args.add("--root-dirs", "%s/%s" % (output_.path, declaration_prefix) if declaration_prefix else output_.path)
         args.add(transpile_tsconfig)
         actions.run(
             arguments = [args],
@@ -174,88 +168,83 @@ def _angular_library(ctx):
 
     # transpile
     for file in ctx.files.srcs:
-        path = output_name(
+        ts_ = link_file(
+            actions = actions,
             file = file,
             label = label,
-            prefix = src_prefix,
-            strip_prefix = strip_prefix,
+            output = output_,
         )
-        if file.path == "%s/%s" % (output_.path, path):
-            ts_ = file
-        else:
-            ts_ = actions.declare_file(path)
-            actions.symlink(
-                target_file = file,
-                output = ts_,
-            )
+        ts.append(ts_)
         inputs.append(ts_)
 
-        if not is_declaration(path):
-            js_path_ = output_name(
-                file = file,
-                label = label,
-                prefix = js_prefix,
-                strip_prefix = strip_prefix,
-            )
-            declaration_path_ = output_name(
-                file = file,
-                label = label,
-                prefix = declaration_prefix,
-                strip_prefix = strip_prefix,
-            )
-            if file.is_directory:
-                js_ = actions.declare_directory(js_path_)
-                js.append(js_)
-                declaration = actions.declare_directory(declaration_path_)
-                declarations.append(declaration)
-                outputs.append(declaration)
-            elif is_json(path):
-                if path == js_path_:
-                    js_ = ts_
-                else:
-                    js_ = actions.declare_file(js_path_)
-                    outputs.append(js_)
-                js.append(js_)
-                declarations.append(js_)
-            else:
-                js_ = actions.declare_file(js_path(js_path_, jsx = jsx))
-                js.append(js_)
-                if source_map:
-                    map = actions.declare_file(map_path(js_path(js_path_, jsx = jsx)))
-                    js.append(map)
-                declaration = actions.declare_file(declaration_path(declaration_path_))
-                declarations.append(declaration)
-                outputs.append(declaration)
+        if is_declaration(file.path):
+            continue
 
-                if compilation_mode == "opt":
-                    outputs.append(js_)
-                    if source_map:
-                        outputs.append(map)
-                else:
-                    js_outputs = [js_]
-                    if source_map:
-                        js_outputs.append(map)
-                    args = actions.args()
-                    args.add("--config", transpile_tsconfig)
-                    args.add("--manifest", transpile_package_manifest)
-                    args.add(ts_.path)
-                    args.set_param_file_format("multiline")
-                    args.use_param_file("@%s", use_always = True)
-                    actions.run(
-                        arguments = [args],
-                        executable = compiler.js_compiler.files_to_run.executable,
-                        execution_requirements = {
-                            "requires-worker-protocol": "json",
-                            "supports-workers": "1",
-                        },
-                        inputs = depset(
-                            [ts_, transpile_package_manifest, transpile_tsconfig],
-                            transitive = [js_info.transitive_files for js_info in compiler.js_deps] + [tsconfig_js.transitive_files] if tsconfig_js else [],
-                        ),
-                        mnemonic = "TypeScriptTranspile",
-                        outputs = js_outputs,
-                        tools = [compiler.js_compiler.files_to_run],
-                    )
+        js_path_ = output_name(
+            file = file,
+            label = label,
+            prefix = js_prefix,
+            strip_prefix = strip_prefix,
+        )
+        declaration_path_ = output_name(
+            file = file,
+            label = label,
+            prefix = declaration_prefix,
+            strip_prefix = strip_prefix,
+        )
+        if file.is_directory:
+            js_ = actions.declare_directory(js_path_)
+            js.append(js_)
+            declaration = actions.declare_directory(declaration_path_)
+            declarations.append(declaration)
+            outputs.append(declaration)
+        elif is_json(file.path):
+            if ts_.path == js_path_:
+                js_ = ts_
+            else:
+                js_ = actions.declare_file(js_path_)
+                outputs.append(js_)
+            js.append(js_)
+            declarations.append(js_)
+        else:
+            js_ = actions.declare_file(js_path(js_path_, jsx = jsx))
+            js.append(js_)
+            if source_map:
+                map = actions.declare_file(map_path(js_path(js_path_, jsx = jsx)))
+                js.append(map)
+            declaration = actions.declare_file(declaration_path(declaration_path_))
+            declarations.append(declaration)
+            outputs.append(declaration)
+
+            if compilation_mode == "opt":
+                outputs.append(js_)
+                if source_map:
+                    outputs.append(map)
+            else:
+                js_outputs = [js_]
+                if source_map:
+                    js_outputs.append(map)
+                args = actions.args()
+                args.add("--config", transpile_tsconfig)
+                args.add("--manifest", transpile_package_manifest)
+                args.add(ts_.path)
+                args.set_param_file_format("multiline")
+                args.use_param_file("@%s", use_always = True)
+                actions.run(
+                    arguments = [args],
+                    executable = compiler.js_compiler.files_to_run.executable,
+                    execution_requirements = {
+                        "requires-worker-protocol": "json",
+                        "supports-workers": "1",
+                    },
+                    inputs = depset(
+                        [ts_, transpile_package_manifest, transpile_tsconfig],
+                        transitive = [js_info.transitive_files for js_info in compiler.js_deps] + [tsconfig_js.transitive_files] if tsconfig_js else [],
+                    ),
+                    mnemonic = "TypeScriptTranspile",
+                    outputs = js_outputs,
+                    tools = [compiler.js_compiler.files_to_run],
+                )
 
     # compile declarations
     if outputs:
@@ -272,7 +261,10 @@ def _angular_library(ctx):
         else:
             args.add("--declaration-dir", "%s/%s" % (output_.path, declaration_prefix) if declaration_prefix else output_.path)
             args.add("--out-dir", "%s/%s" % (output_.path, js_prefix) if js_prefix else output_.path)
-            args.add("--root-dir", "%s/%s" % (output_.path, src_prefix) if src_prefix else output_.path)
+            args.add("--root-dir", "%s/%s" % (output_.path, strip_prefix) if strip_prefix else output_.path)
+            args.add("--root-dirs", "%s/%s" % (output_.path, strip_prefix) if strip_prefix else output_.path)
+            args.add("--root-dirs", "%s/%s" % (output_.path, declaration_prefix) if declaration_prefix else output_.path)
+        args.add_all(ts, before_each = "--file")
         args.add("--module", module)
         if compilation_mode == "opt":
             args.add("--source-map", json.encode(source_map))
@@ -282,6 +274,7 @@ def _angular_library(ctx):
             arguments = [args],
             executable = config.files_to_run.executable,
             tools = [config.files_to_run],
+            inputs = [file for file in ts if file.is_directory],
             outputs = [tsconfig],
         )
 

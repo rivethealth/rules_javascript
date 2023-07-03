@@ -1,6 +1,22 @@
 load("@bazel_skylib//lib:paths.bzl", "paths")
 load("@rules_file//util:path.bzl", output_name_impl = "output_name")
 
+def link_file(file, actions, label, output, strip_prefix = "", prefix = ""):
+    path = output_name(
+        file = file,
+        label = label,
+        strip_prefix = strip_prefix,
+        prefix = prefix,
+    )
+    if file.path == "%s/%s" % (output.path, path):
+        return file
+    result = actions.declare_file(path)
+    actions.symlink(
+        target_file = file,
+        output = result,
+    )
+    return result
+
 def relativize(path, start):
     if not start:
         return path

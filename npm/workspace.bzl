@@ -2,47 +2,50 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_file")
 load("//commonjs:workspace.bzl", "cjs_npm_plugin")
 load("//javascript:workspace.bzl", "js_npm_plugin")
 
+def _npm_import_external_impl(ctx, plugins):
+    deps = [struct(id = dep["id"], name = dep["name"]) for dep in [json.decode(d) for d in ctx.attr.deps]]
+    extra_deps = {id: [json.decode(d) for d in deps] for id, deps in ctx.attr.extra_deps.items()}
+    package_name = ctx.attr.package_name
+
+    ctx.extract(
+        archive = ctx.attr.package,
+        output = "tmp",
+    )
+
+    # packages can have different prefixes
+    mv_result = ctx.execute(["sh", "-c", "mv tmp/* npm && rm -fr npm/node_modules"])
+    if mv_result.return_code:
+        fail("Could not extract package")
+
+    ctx.execute(["rm", "-r", "tmp"])
+
+    files_result = ctx.execute(["find", "npm", "-type", "f"])
+    if files_result.return_code:
+        fail("Could not list files")
+    files = [file[len("npm/"):] for file in files_result.stdout.split("\n")]
+
+    build = ""
+
+    package = struct(
+        archive = ctx.attr.package,
+        deps = deps,
+        extra_deps = extra_deps,
+        name = package_name,
+    )
+
+    for plugin in plugins:
+        content = plugin.package_build(package, files)
+        if content:
+            build += content
+            build += "\n"
+
+    ctx.file("BUILD.bazel", build)
+
 def npm_import_external_rule(plugins):
     """Create a npm_import_external rule."""
 
     def impl(ctx):
-        deps = [struct(id = dep["id"], name = dep["name"]) for dep in [json.decode(d) for d in ctx.attr.deps]]
-        extra_deps = {id: [json.decode(d) for d in deps] for id, deps in ctx.attr.extra_deps.items()}
-        package_name = ctx.attr.package_name
-
-        ctx.extract(
-            archive = ctx.attr.package,
-            output = "tmp",
-        )
-
-        # packages can have different prefixes
-        mv_result = ctx.execute(["sh", "-c", "mv tmp/* npm && rm -fr npm/node_modules"])
-        if mv_result.return_code:
-            fail("Could not extract package")
-
-        ctx.execute(["rm", "-r", "tmp"])
-
-        files_result = ctx.execute(["find", "npm", "-type", "f"])
-        if files_result.return_code:
-            fail("Could not list files")
-        files = [file[len("npm/"):] for file in files_result.stdout.split("\n")]
-
-        build = ""
-
-        package = struct(
-            archive = ctx.attr.package,
-            deps = deps,
-            extra_deps = extra_deps,
-            name = package_name,
-        )
-
-        for plugin in plugins:
-            content = plugin.package_build(package, files)
-            if content:
-                build += content
-                build += "\n"
-
-        ctx.file("BUILD.bazel", build)
+        _npm_import_external_impl(ctx, plugins)
 
     return repository_rule(
         implementation = impl,
@@ -63,22 +66,25 @@ def npm_import_external_rule(plugins):
         },
     )
 
+def _npm_import_impl(ctx, plugins):
+    packages = ctx.attr.packages
+
+    for package_name, repo in packages.items():
+        build = ""
+
+        for plugin in plugins:
+            content = plugin.alias_build(package_name, repo)
+            if content:
+                build += content
+                build += "\n"
+
+        ctx.file("%s/BUILD.bazel" % package_name, build)
+
 def npm_import_rule(plugins):
     """Create an npm import rule."""
 
     def impl(ctx):
-        packages = ctx.attr.packages
-
-        for package_name, repo in packages.items():
-            build = ""
-
-            for plugin in plugins:
-                content = plugin.alias_build(package_name, repo)
-                if content:
-                    build += content
-                    build += "\n"
-
-            ctx.file("%s/BUILD.bazel" % package_name, build)
+        _npm_import_impl(ctx, plugins)
 
     return repository_rule(
         implementation = impl,

@@ -65,20 +65,21 @@ TypeScript, CSS, etc.
 
 To support these, the npm repositories can be customized via "plugins."
 
-```bzl
-npm("npm", npm_packages, npm_roots, npm_plugins)
-```
-
-The defaults are
+The defaults are:
 
 ```bzl
 load("@better_rules_javascript//commonjs:workspace.bzl", "cjs_npm_plugin")
 load("@better_rules_javascript//js:workspace.bzl", "js_npm_plugin")
 
-[
-  cjs_npm_plugin(),
-  js_npm_plugin(),
-]
+npm(
+  name = "npm",
+  packages = npm_packages,
+  roots = npm_roots,
+  plugins = [
+    cjs_npm_plugin(),
+    js_npm_plugin(),
+  ]
+)
 ```
 
 If you use TypeScript, replace `js_npm_plugin()` with `ts_npm_plugin()`.

@@ -1,0 +1,21 @@
+load("@better_rules_javascript//nodejs:rules.bzl", "nodejs_binary")
+load("@better_rules_javascript//typescript:rules.bzl", "ts_library")
+
+ts_library(
+    name = "a",
+    srcs = ["src/a.ts"],
+    compiler = "//:ts",
+    declaration_prefix = "types",
+    js_prefix = "lib",
+    strip_prefix = "src",
+    deps = [":b"],
+)
+
+ts_library(
+    name = "b",
+    srcs = ["src/b.ts"],
+    compiler = "//:ts",
+    declaration_prefix = "types",
+    js_prefix = "lib",
+    strip_prefix = "src",
+)

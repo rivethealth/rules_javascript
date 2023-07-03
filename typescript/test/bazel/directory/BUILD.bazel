@@ -14,7 +14,6 @@ directory(
         "src/lib.ts",
         "src/main.ts",
     ],
-    output = "src",
     strip_prefix = "src",
 )
 
@@ -25,7 +24,6 @@ ts_library(
     declaration_prefix = "types",
     js_prefix = "lib",
     root = ":root",
-    src_prefix = "src",
     strip_prefix = "src",
 )
 

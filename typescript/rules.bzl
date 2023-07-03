@@ -9,8 +9,8 @@ load("//commonjs:rules.bzl", "cjs_root")
 load("//javascript:providers.bzl", "JsInfo", "create_js_info")
 load("//javascript:rules.bzl", "js_export")
 load("//nodejs:rules.bzl", "nodejs_binary")
-load("//util:path.bzl", "output", "output_name", "runfile_path")
-load(":providers.bzl", "TsCompilerInfo", "TsInfo", "create_ts_info", "declaration_path", "is_declaration", "is_directory", "is_json", "js_path", "map_path", "module", "target")
+load("//util:path.bzl", "link_file", "output", "output_name", "runfile_path")
+load(":providers.bzl", "TsCompilerInfo", "TsInfo", "create_ts_info", "declaration_path", "is_declaration", "is_json", "js_path", "map_path", "module", "target")
 
 def configure_ts_compiler(name, ts, tslib = None, visibility = None):
     """Configure TypeScript compiler.
@@ -114,7 +114,6 @@ def _ts_library_impl(ctx):
     module_ = ctx.attr.module or module(ctx.attr._module[BuildSettingInfo].value)
     output_ = output(ctx.label, actions)
     source_map = ctx.attr._source_map[BuildSettingInfo].value
-    src_prefix = ctx.attr.src_prefix
     srcs = ctx.files.srcs
     strip_prefix = ctx.attr.strip_prefix
     target_ = ctx.attr.target or target(ctx.attr._language[BuildSettingInfo].value)
@@ -131,10 +130,9 @@ def _ts_library_impl(ctx):
     args = actions.args()
     if tsconfig_path:
         args.add("--config", "%s/%s" % (tsconfig_dep.package.path, tsconfig_path))
-    args.add("--empty", "true")
     args.add("--module", module_)
     args.add("--out-dir", "%s/%s" % (output_.path, js_prefix) if js_prefix else output_.path)
-    args.add("--root-dir", "%s/%s" % (output_.path, src_prefix) if src_prefix else output_.path)
+    args.add("--root-dir", "%s/%s" % (output_.path, strip_prefix) if strip_prefix else output_.path)
     args.add("--source-map", json.encode(source_map))
     args.add("--target", target_)
     args.add(transpile_tsconfig)
@@ -165,45 +163,45 @@ def _ts_library_impl(ctx):
     js = []
     outputs = []
     for file in srcs:
-        path = output_name(
+        ts_ = link_file(
+            actions = actions,
             file = file,
-            prefix = src_prefix,
-            strip_prefix = strip_prefix,
+            output = output_,
             label = label,
         )
-        if file.path == "%s/%s" % (output_.path, path):
-            ts_ = file
-        else:
-            ts_ = actions.declare_file(path)
-            actions.symlink(target_file = file, output = ts_)
         inputs.append(ts_)
 
-        if is_declaration(path):
+        if is_declaration(file.path):
             continue
 
-        js_path_ = output_name(
-            file = file,
-            label = label,
-            prefix = js_prefix,
-            strip_prefix = strip_prefix,
-        )
-        declaration_path_ = output_name(
-            file = file,
-            label = label,
-            prefix = declaration_prefix,
-            strip_prefix = strip_prefix,
-        )
-        if is_json(path):
-            if path == js_path_:
-                js_ = ts_
-            else:
-                js_ = actions.declare_file(js_path_)
+        if is_json(file.path):
+            if js_prefix:
+                js_ = link_file(
+                    actions = actions,
+                    file = file,
+                    strip_prefix = strip_prefix,
+                    prefix = js_prefix,
+                )
                 outputs.append(js_)
+            else:
+                js_ = ts_
             js.append(js_)
             declarations.append(js_)
         else:
+            declaration_path_ = output_name(
+                file = file,
+                label = label,
+                prefix = declaration_prefix,
+                strip_prefix = strip_prefix,
+            )
+            js_path_ = output_name(
+                file = file,
+                label = label,
+                prefix = js_prefix,
+                strip_prefix = strip_prefix,
+            )
             js_outputs = []
-            if is_directory(file.path):
+            if file.is_directory:
                 js_ = actions.declare_directory(js_path_)
                 js.append(js_)
                 js_outputs.append(js_)
@@ -254,14 +252,20 @@ def _ts_library_impl(ctx):
             args.add("--config", "%s/%s" % (tsconfig_dep.package.path, tsconfig_path))
         args.add("--declaration-dir", "%s/%s" % (output_.path, declaration_prefix) if declaration_prefix else output_.path)
         args.add("--module", module_)
-        args.add("--root-dir", "%s/%s" % (output_.path, src_prefix) if src_prefix else output_.path)
+        args.add("--root-dir", "%s/%s" % (output_.path, strip_prefix) if strip_prefix else output_.path)
+        args.add("--root-dirs", "%s/%s" % (output_.path, strip_prefix) if strip_prefix else output_.path)
+        args.add("--root-dirs", "%s/%s" % (output_.path, declaration_prefix) if declaration_prefix else output_.path)
         args.add("--target", target_)
+        args_file = actions.args()
+        args_file.use_param_file("@%s")
+        args_file.add_all(inputs, before_each = "--file")
         if cjs_root:
             args.add("--type-root", "%s/node_modules/@types" % cjs_root.package.path)
         args.add(tsconfig)
         actions.run(
-            arguments = [args],
+            arguments = [args, args_file],
             executable = config.files_to_run.executable,
+            inputs = [file for file in inputs if file.is_directory],
             tools = [config.files_to_run],
             outputs = [tsconfig],
         )
@@ -337,11 +341,12 @@ ts_library = rule(
     implementation = _ts_library_impl,
     attrs = {
         "compile_deps": attr.label_list(
-            doc = "Dependecies provided only at compile-time",
+            doc = "Compile-only dependencies.",
             providers = [TsInfo],
         ),
         "compiler": attr.label(
             default = ":tsc",
+            doc = "Compiler.",
             providers = [TsCompilerInfo],
         ),
         "config": attr.string(
@@ -356,7 +361,7 @@ ts_library = rule(
             doc = "Runfile files. These are added to normal runfiles tree, not CommonJS packages.",
         ),
         "declaration_prefix": attr.string(
-            doc = "Prefix to add to declaration files.",
+            doc = "Declaration output directory.",
         ),
         "deps": attr.label_list(
             doc = "JS and TS dependencies",
@@ -366,7 +371,7 @@ ts_library = rule(
             doc = "Module type. By default, uses //javascript:module.",
         ),
         "js_prefix": attr.string(
-            doc = "Prefix to add to JavaScript files.",
+            doc = "JavaScript output directory.",
         ),
         "jsx": attr.string(
             default = "react",
@@ -377,15 +382,12 @@ ts_library = rule(
             doc = "CommonJS package root.",
             providers = [CjsInfo],
         ),
-        "src_prefix": attr.string(
-            doc = "Prefix to add to sources.",
-        ),
         "srcs": attr.label_list(
             allow_files = True,
             doc = "TypeScript sources. If providing directories, the *_prefix attributes must be used to separate the outputs.",
         ),
         "strip_prefix": attr.string(
-            doc = "Package-relative prefix to remove.",
+            doc = "Source root.",
         ),
         "target": attr.string(
             doc = "Target language. By default, uses //javascript:language.",
@@ -425,51 +427,32 @@ ts_library = rule(
 def _ts_import_impl(ctx):
     actions = ctx.actions
     cjs_root = ctx.attr.root and ctx.attr.root[CjsInfo]
-    declaration_prefix = ctx.attr.declaration_prefix
-    cjs_deps = [dep[CjsInfo] for dep in ctx.attr.deps]
+    cjs_deps = [dep[CjsInfo] for dep in ctx.attr.compile_deps + ctx.attr.deps if CjsInfo in dep]
     js_deps = [dep[JsInfo] for dep in ctx.attr.deps if JsInfo in dep]
-    js_prefix = ctx.attr.js_prefix
     label = ctx.label
     output_ = output(label = ctx.label, actions = actions)
-    strip_prefix = ctx.attr.strip_prefix
-    ts_deps = [dep[TsInfo] for dep in ctx.attr.deps if TsInfo in dep]
+    ts_deps = [target[TsInfo] for target in ctx.attr.compile_deps + ctx.attr.deps if TsInfo in target]
     workspace_name = ctx.workspace_name
 
-    declarations = []
-    for file in ctx.files.declarations:
-        path = output_name(
+    declarations = [
+        link_file(
+            actions = actions,
             file = file,
-            prefix = declaration_prefix,
-            strip_prefix = strip_prefix,
             label = label,
+            output = output_,
         )
-        if file.path == "%s/%s" % (output_.path, path):
-            declaration = file
-        else:
-            declaration = actions.declare_file(path)
-            actions.symlink(
-                target_file = file,
-                output = declaration,
-            )
-        declarations.append(declaration)
+        for file in ctx.files.declarations
+    ]
 
-    js = []
-    for file in ctx.files.js:
-        path = output_name(
+    js = [
+        link_file(
+            actions = actions,
             file = file,
             label = label,
-            prefix = js_prefix,
-            strip_prefix = strip_prefix,
+            output = output_,
         )
-        if file.path == "%s/%s" % (output_.path, path):
-            js_ = file
-        else:
-            js_ = actions.declare_file(path)
-            actions.symlink(
-                target_file = file,
-                output = js_,
-            )
-        js.append(js_)
+        for file in ctx.files.js
+    ]
 
     default_info = DefaultInfo(
         files = depset(js),
@@ -499,8 +482,9 @@ def _ts_import_impl(ctx):
 ts_import = rule(
     implementation = _ts_import_impl,
     attrs = {
-        "declaration_prefix": attr.string(
-            doc = "Prefix to add to declaration files.",
+        "compile_deps": attr.label_list(
+            doc = "Compile-only dependencies.",
+            providers = [TsInfo],
         ),
         "declarations": attr.label_list(
             doc = "Typescript declarations",
@@ -521,12 +505,9 @@ ts_import = rule(
             doc = "CommonJS root",
             providers = [CjsInfo],
         ),
-        "strip_prefix": attr.string(
-            doc = "Package-relative prefix to remove from files.",
-        ),
     },
     doc = "TypeScript library with pre-existing declaration files.",
-    provides = [CjsInfo, JsInfo, TsInfo],
+    provides = [JsInfo, TsInfo],
 )
 
 def _ts_export_impl(ctx):

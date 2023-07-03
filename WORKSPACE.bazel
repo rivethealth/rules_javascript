@@ -205,14 +205,6 @@ files(
 
 # NPM
 
-load("//tools/npm:npm.bzl", "PACKAGES", "ROOTS")
-load("//commonjs:workspace.bzl", "cjs_directory_npm_plugin")
-load("//npm:workspace.bzl", "npm")
-load("//typescript:workspace.bzl", "ts_directory_npm_plugin")
+load("//tools/npm:workspace.bzl", "npm_deps")
 
-plugins = [
-    cjs_directory_npm_plugin(),
-    ts_directory_npm_plugin(),
-]
-
-npm("npm", PACKAGES, ROOTS, plugins)
+npm_deps()

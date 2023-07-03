@@ -25,7 +25,6 @@ ts_library(
     declaration_prefix = "dep",
     js_prefix = "dep",
     root = ":dep_root",
-    src_prefix = "dep",
     strip_prefix = "dep",
 )
 
@@ -38,7 +37,6 @@ ts_library(
     declaration_prefix = "src",
     js_prefix = "src",
     root = ":root",
-    src_prefix = "src",
     strip_prefix = "src",
     deps = [":dep_lib"],
 )

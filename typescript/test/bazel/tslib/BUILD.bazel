@@ -17,7 +17,6 @@ ts_library(
     js_prefix = "root_lib",
     module = "commonjs",
     root = ":root",
-    src_prefix = "root_lib",
     target = "es5",
 )
 
@@ -29,7 +28,6 @@ ts_library(
     js_prefix = "root_nolib",
     module = "commonjs",
     root = ":root",
-    src_prefix = "root_nolib",
     target = "es5",
 )
 

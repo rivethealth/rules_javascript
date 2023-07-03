@@ -50,6 +50,7 @@ ts_export(
         )
 
     result = """
+load("@better_rules_javascript//javascript:rules.bzl", "js_library")
 load("@better_rules_javascript//typescript:rules.bzl", "ts_export", "ts_import")
 
 {exports}
@@ -59,23 +60,36 @@ ts_import(
     compile_deps = {compile_deps},
     declarations = [":files"],
     deps = {deps},
+    js = {js},
     root = ":root",
-    js = [":files"],
     visibility = ["//visibility:public"],
 )
+    """.strip().format(
+        deps = json.encode(deps),
+        exports = "\n\n".join(exports),
+        js = [":files"] if not package.name.startswith("@types/") else [],
+    )
+    result += "\n"
 
+    if package.extra_deps:
+        result += """
 ts_export(
     name = "lib",
     dep = ":lib.inner",
     extra_deps = {extra_deps},
     visibility = ["//visibility:public"]
 )
-    """.strip().format(
-        compile_deps = json.encode(compile_deps),
-        deps = json.encode(deps),
-        exports = "\n\n".join(exports),
-        extra_deps = json.encode([":lib.export.%s" % i for i in range(len(package.extra_deps))]),
-    )
+        """.strip().format(
+            extra_deps = json.encode([":lib.export.%s" % i for i in range(len(package.extra_deps))]),
+        )
+    else:
+        result += """
+alias(
+    name = "lib",
+    actual = ":lib.inner",
+    visibility = ["//visibility:public"],
+)
+        """.strip()
     result += "\n"
 
     for i, (id, deps) in enumerate(package.extra_deps.items()):

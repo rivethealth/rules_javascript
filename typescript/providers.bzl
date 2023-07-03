@@ -22,9 +22,6 @@ TsCompilerInfo = provider(
 def is_declaration(path):
     return path.endswith(".d.ts") or path.endswith(".d.cts") or path.endswith(".d.mts")
 
-def is_directory(path):
-    return "." not in path.split("/")[-1]
-
 def is_json(path):
     return path.endswith(".json")
 
