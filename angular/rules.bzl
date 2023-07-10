@@ -66,7 +66,7 @@ def _angular_library(ctx):
     declaration_prefix = ctx.attr.declaration_prefix
     fs_linker_cjs = ctx.attr._fs_linker[CjsInfo]
     fs_linker_js = ctx.attr._fs_linker[JsInfo]
-    js_deps = compiler.js_deps + [dep[JsInfo] for dep in ctx.attr.deps if JsInfo in dep]
+    js_deps = compiler.js_deps + [dep[JsInfo] for dep in ctx.attr.deps if JsInfo in dep and str(dep.label) not in ctx.attr._system_lib[BuildSettingInfo].value]
     js_prefix = ctx.attr.js_prefix
     label = ctx.label
     jsx = ctx.attr.jsx
@@ -436,6 +436,10 @@ angular_library = rule(
         ),
         "_source_map": attr.label(
             default = "//javascript:source_map",
+            providers = [BuildSettingInfo],
+        ),
+        "_system_lib": attr.label(
+            default = "//javascript:system_lib",
             providers = [BuildSettingInfo],
         ),
     },

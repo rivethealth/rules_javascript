@@ -1,0 +1,19 @@
+load("@better_rules_javascript//javascript:rules.bzl", "js_library")
+load("@better_rules_javascript//nodejs:rules.bzl", "nodejs_binary")
+
+js_library(
+    name = "a",
+    srcs = ["a.js"],
+    deps = [":b"],
+)
+
+js_library(
+    name = "b",
+    srcs = ["b.js"],
+)
+
+nodejs_binary(
+    name = "bin",
+    dep = ":a",
+    main = "better_rules_javascript_test/system-lib/a.js",
+)

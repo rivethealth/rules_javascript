@@ -107,7 +107,7 @@ def _ts_library_impl(ctx):
     declaration_prefix = ctx.attr.declaration_prefix
     fs_linker_cjs = ctx.attr._fs_linker[CjsInfo]
     fs_linker_js = ctx.attr._fs_linker[JsInfo]
-    js_deps = compiler.runtime_js + [dep[JsInfo] for dep in ctx.attr.deps if JsInfo in dep]
+    js_deps = compiler.runtime_js + [dep[JsInfo] for dep in ctx.attr.deps if JsInfo in dep and str(dep.label) not in ctx.attr._system_lib[BuildSettingInfo].value]
     js_prefix = ctx.attr.js_prefix
     jsx = ctx.attr.jsx
     label = ctx.label
@@ -419,6 +419,10 @@ ts_library = rule(
             default = "//javascript:source_map",
             providers = [BuildSettingInfo],
         ),
+        "_system_lib": attr.label(
+            default = "//javascript:system_lib",
+            providers = [BuildSettingInfo],
+        ),
     },
     doc = "TypeScript library.",
     provides = [TsInfo],
@@ -428,7 +432,7 @@ def _ts_import_impl(ctx):
     actions = ctx.actions
     cjs_root = ctx.attr.root and ctx.attr.root[CjsInfo]
     cjs_deps = [dep[CjsInfo] for dep in ctx.attr.compile_deps + ctx.attr.deps if CjsInfo in dep]
-    js_deps = [dep[JsInfo] for dep in ctx.attr.deps if JsInfo in dep]
+    js_deps = [dep[JsInfo] for dep in ctx.attr.deps if JsInfo in dep and str(dep.label) not in ctx.attr._system_lib[BuildSettingInfo].value]
     label = ctx.label
     output_ = output(label = ctx.label, actions = actions)
     ts_deps = [target[TsInfo] for target in ctx.attr.compile_deps + ctx.attr.deps if TsInfo in target]
@@ -505,6 +509,10 @@ ts_import = rule(
             doc = "CommonJS root",
             providers = [CjsInfo],
         ),
+        "_system_lib": attr.label(
+            default = "//javascript:system_lib",
+            providers = [BuildSettingInfo],
+        ),
     },
     doc = "TypeScript library with pre-existing declaration files.",
     provides = [JsInfo, TsInfo],
@@ -518,7 +526,7 @@ def _ts_export_impl(ctx):
     default_dep = ctx.attr.dep[DefaultInfo]
     package_name = ctx.attr.package_name
     js_dep = ctx.attr.dep[JsInfo] if JsInfo in ctx.attr.dep else None
-    js_deps = [target[JsInfo] for target in ctx.attr.global_deps + ctx.attr.deps + ctx.attr.extra_deps if JsInfo in target]
+    js_deps = [target[JsInfo] for target in ctx.attr.global_deps + ctx.attr.deps + ctx.attr.extra_deps if JsInfo in target and str(target.label) not in ctx.attr._system_lib[BuildSettingInfo].value]
     label = ctx.label
     ts_dep = ctx.attr.dep[TsInfo] if TsInfo in ctx.attr.dep else None
     ts_deps = [target[TsInfo] for target in ctx.attr.global_deps + ctx.attr.deps + ctx.attr.extra_deps if TsInfo in target]
@@ -578,6 +586,10 @@ ts_export = rule(
             doc = "JavaScript library.",
             mandatory = True,
             providers = [[CjsInfo, JsInfo], [CjsInfo, TsInfo]],
+        ),
+        "_system_lib": attr.label(
+            default = "//javascript:system_lib",
+            providers = [BuildSettingInfo],
         ),
     },
     doc = "Add dependencies, or use alias.",

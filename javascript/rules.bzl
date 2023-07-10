@@ -1,3 +1,4 @@
+load("@bazel_skylib//rules:common_settings.bzl", "BuildSettingInfo")
 load("//commonjs:providers.bzl", "CjsInfo", "create_cjs_info")
 load("//util:path.bzl", "output", "output_name")
 load(":providers.bzl", "JsInfo", "create_js_info")
@@ -7,7 +8,7 @@ def _js_library_impl(ctx):
     cjs_root = ctx.attr.root and ctx.attr.root[CjsInfo]
     cjs_deps = [dep[CjsInfo] for dep in ctx.attr.deps if CjsInfo in dep]
     cjs_globals = [dep[CjsInfo] for dep in ctx.attr.global_deps]
-    js_deps = [dep[JsInfo] for dep in ctx.attr.deps + ctx.attr.global_deps]
+    js_deps = [dep[JsInfo] for dep in ctx.attr.deps + ctx.attr.global_deps if str(dep.label) not in ctx.attr._system_lib[BuildSettingInfo].value]
     default_deps = [target[DefaultInfo] for target in ctx.attr.deps + ctx.attr.data]
     output_ = output(label = ctx.label, actions = actions)
     prefix = ctx.attr.prefix
@@ -79,6 +80,10 @@ js_library = rule(
         "strip_prefix": attr.string(
             doc = "Package-relative prefix to remove.",
         ),
+        "_system_lib": attr.label(
+            default = "//javascript:system_lib",
+            providers = [BuildSettingInfo],
+        ),
     },
     doc = "JavaScript library",
     implementation = _js_library_impl,
@@ -93,7 +98,7 @@ def _js_export_impl(ctx):
     default_dep = ctx.attr.dep[DefaultInfo]
     package_name = ctx.attr.package_name
     js_dep = ctx.attr.dep[JsInfo]
-    js_deps = [target[JsInfo] for target in ctx.attr.global_deps + ctx.attr.deps + ctx.attr.extra_deps]
+    js_deps = [target[JsInfo] for target in ctx.attr.global_deps + ctx.attr.deps + ctx.attr.extra_deps if str(target.label) not in ctx.attr._system_lib[BuildSettingInfo].value]
     label = ctx.label
 
     default_info = default_dep
@@ -146,6 +151,10 @@ js_export = rule(
             doc = "JavaScript library.",
             mandatory = True,
             providers = [CjsInfo, JsInfo],
+        ),
+        "_system_lib": attr.label(
+            default = "//javascript:system_lib",
+            providers = [BuildSettingInfo],
         ),
     },
     doc = "Add dependencies, or use alias.",
