@@ -1,5 +1,6 @@
 load("//nodejs:rules.bzl", "nodejs_install", "nodejs_modules_package")
-load("//tools/npm:npm.bzl", "ROOTS")
+load("//typescript:rules.bzl", "js_import_ts")
+load("//tools/npm:npm.bzl", NPM_ROOTS = "ROOTS")
 
 nodejs_install(
     name = "install0",
@@ -30,7 +31,7 @@ nodejs_modules_package(
         "//webpack/config:root",
     ],
     tags = ["no-cache"],
-    deps = ["@npm//%s:lib" % dep["name"] for dep in ROOTS],
+    deps = [":npm_%s" % dep["name"] for dep in NPM_ROOTS],
 )
 
 alias(
@@ -38,3 +39,12 @@ alias(
     actual = "//nodejs:nodejs",
     visibility = ["//visibility:public"],
 )
+
+
+[
+    js_import_ts(
+        name = "npm_%s" % dep["name"],
+        dep = "@npm//%s:lib" % dep["name"],
+    )
+    for dep in NPM_ROOTS
+]

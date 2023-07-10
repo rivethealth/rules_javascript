@@ -348,7 +348,6 @@ def _angular_library(ctx):
         label = label,
         cjs_root = cjs_root,
         deps = cjs_deps,
-        files = declarations + js,
     )
 
     js_info = create_js_info(

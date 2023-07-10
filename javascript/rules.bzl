@@ -36,7 +36,6 @@ def _js_library_impl(ctx):
     cjs_info = cjs_root and create_cjs_info(
         cjs_root = cjs_root,
         deps = cjs_deps,
-        files = js,
         globals = cjs_globals,
         label = label,
     )

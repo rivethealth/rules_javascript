@@ -17,6 +17,13 @@ def link_file(file, actions, label, output, strip_prefix = "", prefix = ""):
     )
     return result
 
+def nearest(ancestors, path):
+    parts = path.split("/")
+    for i in range(len(parts), -1, -1):
+        ancestor = "/".join(parts[:i])
+        if ancestor in ancestors:
+            return ancestor
+
 def relativize(path, start):
     if not start:
         return path

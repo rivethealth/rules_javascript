@@ -25,16 +25,14 @@ def _ts_directory_npm_package_build(package, files):
     if not any([file.endswith(".d.ts") for file in files]):
         return js_directory_npm_plugin().package_build(package, files)
 
-    compile_deps = []
     deps = []
     exports = []
     for i, dep in enumerate(package.deps):
-        dep_list = compile_deps if dep.id.startswith("@types/") else deps
         if not dep.name:
-            dep_list.append(js_npm_label(dep.id))
+            deps.append(js_npm_label(dep.id))
             continue
         name = "import%s" % i
-        dep_list.append(name)
+        deps.append(name)
         exports.append(
             """
 ts_export(

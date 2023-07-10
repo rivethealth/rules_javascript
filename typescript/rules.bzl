@@ -61,6 +61,35 @@ def configure_ts_compiler(name, ts, tslib = None, visibility = None):
         visibility = visibility,
     )
 
+def _js_import_ts_impl(ctx):
+    cjs_info = ctx.attr.dep[CjsInfo] if CjsInfo in ctx.attr.dep else None
+    js_info = ctx.attr.dep[JsInfo] if JsInfo in ctx.attr.dep else None
+    ts_info = ctx.attr.dep[TsInfo]
+
+    default_info = DefaultInfo(
+        files = ts_info.transitive_files,
+    )
+
+    js_info = JsInfo(
+        transitive_files = depset(
+            transitive = [ts_info.transitive_files] + ([js_info.transitive_files] if js_info.transitive_files else []),
+        ),
+    )
+
+    return [default_info, js_info] + ([cjs_info] if cjs_info else [])
+
+js_import_ts = rule(
+    attrs = {
+        "dep": attr.label(
+            mandatory = True,
+            providers = [TsInfo],
+        ),
+    },
+    doc = "Use TS as JS.",
+    implementation = _js_import_ts_impl,
+    provides = [JsInfo],
+)
+
 def _ts_compiler_impl(ctx):
     bin = ctx.attr.bin[DefaultInfo]
     cjs_runtime = ctx.attr.runtime and ctx.attr.runtime[CjsInfo]
@@ -317,7 +346,6 @@ def _ts_library_impl(ctx):
     )
 
     cjs_info = cjs_root and create_cjs_info(
-        files = declarations + js,
         label = label,
         cjs_root = cjs_root,
         deps = cjs_deps,
@@ -465,7 +493,6 @@ def _ts_import_impl(ctx):
     cjs_info = cjs_root and create_cjs_info(
         cjs_root = cjs_root,
         deps = cjs_deps,
-        files = declarations,
         label = label,
     )
 

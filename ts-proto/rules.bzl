@@ -238,7 +238,6 @@ def _ts_proto_libraries_impl(ctx):
         cjs_infos[lib.label] = create_cjs_info(
             cjs_root = cjs_root,
             deps = ts_proto.deps_cjs + ts_proto.tsc.runtime_cjs + [cjs_infos[label] for label in lib.deps],
-            files = declarations,
             label = label,
         )
 

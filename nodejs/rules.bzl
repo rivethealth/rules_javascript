@@ -5,7 +5,7 @@ load("@rules_pkg//pkg:providers.bzl", "PackageFilegroupInfo", "PackageFilesInfo"
 load("@rules_pkg//pkg:tar.bzl", "pkg_tar")
 load("//commonjs:providers.bzl", "CjsInfo", "create_globals", "gen_manifest", "package_path")
 load("//javascript:providers.bzl", "JsInfo")
-load("//util:path.bzl", "relativize", "runfile_path")
+load("//util:path.bzl", "nearest", "relativize", "runfile_path")
 load(":providers.bzl", "NodejsInfo", "NodejsRuntimeInfo")
 
 def configure_nodejs_runtime(name, repo_name, nodejs_runtime_rule, visibility = None):
@@ -370,14 +370,15 @@ def nodejs_modules(name, deps, **kwargs):
     )
 
 def _nodejs_modules_package_impl(ctx):
-    deps = [target[CjsInfo] for target in ctx.attr.deps]
+    deps_cjs = [target[CjsInfo] for target in ctx.attr.deps]
+    deps_js = [target[JsInfo] for target in ctx.attr.deps]
     label = ctx.label
     links_cjs = [target[CjsInfo] for target in ctx.attr.links]
     workspace = ctx.workspace_name
 
     transitive_packages = depset(
         [cjs.package for cjs in links_cjs],
-        transitive = [cjs.transitive_packages for cjs in deps],
+        transitive = [cjs_info.transitive_packages for cjs_info in deps_cjs],
     )
     package_paths = {
         package.path: ".content/%s" % runfile_path(workspace, package)
@@ -386,35 +387,32 @@ def _nodejs_modules_package_impl(ctx):
         cjs.package.path: "../%s" % cjs.package.short_path
         for cjs in links_cjs
     }
+    package_paths_nonempty = {}
 
     transitive_files = depset(
-        transitive = [cjs_info.transitive_files for cjs_info in deps],
+        transitive = [js_info.transitive_files for js_info in deps_js],
     )
     files_map = {}
     for file in transitive_files.to_list():
-        parts = file.path.split("/")
-        linked = False
-        for i in range(len(parts), -1, -1):
-            p = package_paths.get("/".join(parts[:i]))
-            if p == None:
+        package_path = nearest(package_paths, file.path)
+        if package_path:
+            if package_paths[package_path].startswith("../"):
                 continue
-            if p.startswith("../"):
-                linked = True
-            break
-        if linked:
-            continue
+            package_paths_nonempty[package_path] = None
         files_map[".content/%s" % runfile_path(workspace, file)] = file
     files = PackageFilesInfo(attributes = {}, dest_src_map = files_map)
 
     symlinks = []
     transitive_links = depset(
-        create_globals(label, deps + links_cjs),
-        transitive = [cjs_info.transitive_links for cjs_info in deps],
+        create_globals(label, deps_cjs + links_cjs),
+        transitive = [cjs_info.transitive_links for cjs_info in deps_cjs],
     )
     for link in transitive_links.to_list():
         if link.path == None:
             destination = link.name
-        elif package_paths[link.path].startswith("../"):
+        elif link.path not in package_paths_nonempty:
+            continue
+        elif not package_paths[link.dep].startswith("../") and link.dep not in package_paths_nonempty:
             continue
         else:
             destination = "%s/node_modules/%s" % (package_paths[link.path], link.name)
