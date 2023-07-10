@@ -15,6 +15,7 @@
   - [module](#module)
   - [target](#target)
 - [//typescript:rules.bzl](#typescriptrulesbzl)
+  - [js_import_ts](#js_import_ts)
   - [ts_compiler](#ts_compiler)
   - [ts_export](#ts_export)
   - [ts_import](#ts_import)
@@ -187,6 +188,23 @@ target(<a href="#target-language">language</a>)
 <!-- Generated with Stardoc: http://skydoc.bazel.build -->
 
 TypeScript rules
+
+<a id="js_import_ts"></a>
+
+## js_import_ts
+
+<pre>
+js_import_ts(<a href="#js_import_ts-name">name</a>, <a href="#js_import_ts-dep">dep</a>)
+</pre>
+
+Use TS as JS.
+
+**ATTRIBUTES**
+
+| Name                               | Description                    | Type                                                                | Mandatory | Default |
+| :--------------------------------- | :----------------------------- | :------------------------------------------------------------------ | :-------- | :------ |
+| <a id="js_import_ts-name"></a>name | A unique name for this target. | <a href="https://bazel.build/concepts/labels#target-names">Name</a> | required  |         |
+| <a id="js_import_ts-dep"></a>dep   | -                              | <a href="https://bazel.build/concepts/labels">Label</a>             | required  |         |
 
 <a id="ts_compiler"></a>
 

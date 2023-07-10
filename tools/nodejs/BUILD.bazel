@@ -40,7 +40,6 @@ alias(
     visibility = ["//visibility:public"],
 )
 
-
 [
     js_import_ts(
         name = "npm_%s" % dep["name"],
