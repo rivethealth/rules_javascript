@@ -15,7 +15,10 @@ ts_library(
     compiler = "//tools/typescript:tsc",
     config = "tsconfig.json",
     config_dep = ":tsconfig",
+    declaration_path = "src",
+    js_path = "lib",
     root = ":root",
+    strip_prefix = "src",
     visibility = ["//visibility:public"],
     deps = [
         "//util/json:lib",

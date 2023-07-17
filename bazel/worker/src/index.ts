@@ -1,5 +1,5 @@
 import { JsonFormat } from "@better-rules-javascript/util-json";
-import * as fs from "node:fs";
+import { readFile } from "node:fs/promises";
 import { WorkRequest, WorkResponse } from "./protocol";
 import { lines } from "./stream";
 
@@ -113,7 +113,7 @@ export async function workerMain(workerFactory: WorkerFactory) {
       await runWorker(worker);
     } else if (last.startsWith("@")) {
       const worker = await workerFactory(process.argv.slice(2, -1));
-      const file = await fs.promises.readFile(last.slice(1), "utf8");
+      const file = await readFile(last.slice(1), "utf8");
       const args = file.trim().split("\n");
       await runOnce(worker, args);
     } else {

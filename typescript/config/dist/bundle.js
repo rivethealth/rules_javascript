@@ -7,7 +7,7 @@ var node_path = require('node:path');
 const parser = new argparse.ArgumentParser({
     prog: "typescript-config",
     description: "Generate tsconfig.",
-    fromfile_prefix_chars: '@',
+    fromfile_prefix_chars: "@",
 });
 parser.add_argument("--config");
 parser.add_argument("--declaration-dir", { dest: "declarationDir" });

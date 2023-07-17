@@ -55,7 +55,10 @@ ts_library(
     compiler = "//tools/typescript:tsc",
     config = "tsconfig.json",
     config_dep = ":tsconfig",
+    declaration_prefix = "lib",
+    js_prefix = "lib",
     root = ":root",
+    strip_prefix = "src",
     deps = [
         "//bazel/worker:lib",
         "//commonjs/package:lib",

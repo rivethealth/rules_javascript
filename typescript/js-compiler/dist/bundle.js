@@ -4,6 +4,7 @@ var fs = require('node:fs');
 var path = require('node:path');
 var node_url = require('node:url');
 var argparse = require('argparse');
+var promises = require('node:fs/promises');
 var ts = require('typescript');
 
 function _interopNamespace(e) {
@@ -1531,11 +1532,11 @@ class JsWorker {
         this.parser = new JsArgumentParser();
         this.parser.add_argument("--config", { required: true });
         this.parser.add_argument("--manifest", { required: true });
-        this.parser.add_argument("src");
+        this.parser.add_argument("src", { nargs: "*" });
     }
     parseConfig(config) {
-        const parsed = ts__namespace.getParsedCommandLineOfConfigFile(config, {}, {
-            ...ts__namespace.sys,
+        const parsed = ts.getParsedCommandLineOfConfigFile(config, {}, {
+            ...ts.sys,
             onUnRecoverableConfigFileDiagnostic: (error) => {
                 throw new JsWorkerError(formatDiagnostics([error]));
             },
@@ -1547,7 +1548,7 @@ class JsWorker {
         return parsed;
     }
     async setupVfs(manifest) {
-        const packageTree = JsonFormat.parse(PackageTree.json(), await fs__namespace.promises.readFile(manifest, "utf8"));
+        const packageTree = JsonFormat.parse(PackageTree.json(), await promises.readFile(manifest, "utf8"));
         const vfs = createVfs(packageTree);
         this.vfs.delegate = vfs;
     }
@@ -1555,46 +1556,27 @@ class JsWorker {
         const args = this.parser.parse_args(a);
         await this.setupVfs(args.manifest);
         const parsed = this.parseConfig(args.config);
-        await fs__namespace.promises.mkdir(parsed.options.outDir, { recursive: true });
-        await (async function process(src) {
-            const stat = await fs__namespace.promises.stat(src);
-            if (stat.isDirectory()) {
-                for (const child of await fs__namespace.promises.readdir(src)) {
-                    await process(path__namespace.join(src, child));
-                }
-            }
-            else {
-                await transpileFile(src, parsed);
-            }
-        })(args.src);
+        await promises.mkdir(parsed.options.outDir, { recursive: true });
+        for (const src of args.src) {
+            await transpileFile(src, parsed);
+        }
     }
 }
 async function transpileFile(src, parsed) {
-    let name;
-    const resolvedSrc = path__namespace.resolve(src);
-    if (resolvedSrc === parsed.options.rootDir) {
-        name = "";
-    }
-    else if (resolvedSrc.startsWith(`${parsed.options.rootDir}/`)) {
-        name = resolvedSrc.slice(`${parsed.options.rootDir}/`.length);
-    }
-    else {
-        throw new Error(`File ${resolvedSrc} not in ${parsed.options.rootDir}`);
-    }
-    src = path__namespace.resolve(src);
-    const [outputPath] = ts__namespace.getOutputFileNames({ ...parsed, fileNames: [src] }, src, false);
-    const input = await fs__namespace.promises.readFile(src, "utf8");
-    const result = ts__namespace.transpileModule(input, {
-        fileName: name,
+    src = path.resolve(src);
+    const [outputPath] = ts.getOutputFileNames({ ...parsed, fileNames: [src] }, src, false);
+    const input = await promises.readFile(src, "utf8");
+    const result = ts.transpileModule(input, {
+        fileName: src,
         compilerOptions: parsed.options,
     });
     if (result.diagnostics.length > 0) {
         throw new JsWorkerError(formatDiagnostics(result.diagnostics));
     }
-    await fs__namespace.promises.mkdir(path__namespace.dirname(outputPath), { recursive: true });
-    await fs__namespace.promises.writeFile(outputPath, result.outputText, "utf8");
+    await promises.mkdir(path.dirname(outputPath), { recursive: true });
+    await promises.writeFile(outputPath, result.outputText, "utf8");
     if (result.sourceMapText !== undefined) {
-        await fs__namespace.promises.writeFile(`${outputPath}.map`, result.sourceMapText, "utf8");
+        await promises.writeFile(`${outputPath}.map`, result.sourceMapText, "utf8");
     }
 }
 

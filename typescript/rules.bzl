@@ -252,7 +252,7 @@ def _ts_library_impl(ctx):
             args = actions.args()
             args.add("--config", transpile_tsconfig)
             args.add("--manifest", transpile_package_manifest)
-            args.add(ts_.path)
+            args.add_all([ts_])
             args.set_param_file_format("multiline")
             args.use_param_file("@%s", use_always = True)
             actions.run(
