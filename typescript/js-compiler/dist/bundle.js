@@ -1,10 +1,10 @@
 'use strict';
 
+var promises = require('node:fs/promises');
 var fs = require('node:fs');
 var path = require('node:path');
 var node_url = require('node:url');
 var argparse = require('argparse');
-var promises = require('node:fs/promises');
 var ts = require('typescript');
 
 function _interopNamespace(e) {
@@ -323,7 +323,7 @@ async function workerMain(workerFactory) {
         }
         else if (last.startsWith("@")) {
             const worker = await workerFactory(process.argv.slice(2, -1));
-            const file = await fs__namespace.promises.readFile(last.slice(1), "utf8");
+            const file = await promises.readFile(last.slice(1), "utf8");
             const args = file.trim().split("\n");
             await runOnce(worker, args);
         }

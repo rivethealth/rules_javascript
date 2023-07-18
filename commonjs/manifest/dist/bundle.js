@@ -1,10 +1,11 @@
 'use strict';
 
-var fs = require('node:fs');
+var promises = require('node:fs/promises');
 var assert = require('assert');
 var util = require('util');
-var fs$1 = require('fs');
+var fs = require('fs');
 var path = require('path');
+var fs$1 = require('node:fs');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
@@ -26,11 +27,11 @@ function _interopNamespace(e) {
     return Object.freeze(n);
 }
 
-var fs__namespace = /*#__PURE__*/_interopNamespace(fs);
 var assert__default = /*#__PURE__*/_interopDefaultLegacy(assert);
 var util__default = /*#__PURE__*/_interopDefaultLegacy(util);
-var fs__default = /*#__PURE__*/_interopDefaultLegacy(fs$1);
+var fs__default = /*#__PURE__*/_interopDefaultLegacy(fs);
 var path__default = /*#__PURE__*/_interopDefaultLegacy(path);
+var fs__namespace = /*#__PURE__*/_interopNamespace(fs$1);
 
 var JsonFormat;
 (function (JsonFormat) {
@@ -326,7 +327,7 @@ async function workerMain(workerFactory) {
         }
         else if (last.startsWith("@")) {
             const worker = await workerFactory(process.argv.slice(2, -1));
-            const file = await fs__namespace.promises.readFile(last.slice(1), "utf8");
+            const file = await promises.readFile(last.slice(1), "utf8");
             const args = file.trim().split("\n");
             await runOnce(worker, args);
         }
