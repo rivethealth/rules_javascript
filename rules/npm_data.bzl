@@ -872,14 +872,14 @@ PACKAGES = {
         "name": "@types/node",
         "url": "https://registry.npmjs.org/@types/node/-/node-17.0.17.tgz",
     },
-    "@types/prettier@2.4.4": {
+    "@types/prettier@2.7.3": {
         "deps": [
         ],
         "extra_deps": {
         },
-        "integrity": "sha512-ReVR2rLTV1kvtlWFyuot+d1pkpG2Fw/XKE3PDAdj57rbM97ttSp9JZ2UsP+2EHTylra9cUf6JA7tGwW1INzUrA==",
+        "integrity": "sha512-+68kP9yzs4LMp7VNh8gdzMSPZFL44MLGqiHWvttYJe+6qnuVr4Ek9wSBQoveqY/r+LwjCcU29kNVkidwim+kYA==",
         "name": "@types/prettier",
-        "url": "https://registry.npmjs.org/@types/prettier/-/prettier-2.4.4.tgz",
+        "url": "https://registry.npmjs.org/@types/prettier/-/prettier-2.7.3.tgz",
     },
     "@types/qs@6.9.7": {
         "deps": [
@@ -9089,14 +9089,14 @@ PACKAGES = {
         "name": "prelude-ls",
         "url": "https://registry.npmjs.org/prelude-ls/-/prelude-ls-1.2.1.tgz",
     },
-    "prettier@2.8.1": {
+    "prettier@3.0.0": {
         "deps": [
         ],
         "extra_deps": {
         },
-        "integrity": "sha512-lqGoSJBQNJidqCHE80vqZJHWHRFoNYsSpP9AjFhlhi9ODCJA541svILes/+/1GM3VaL/abZi7cpFzOpdR9UPKg==",
+        "integrity": "sha512-zBf5eHpwHOGPC47h0zrPyNn+eAEIdEzfywMoYn2XPi0P44Zp0tSq64rq0xAREh4auw2cJZHo9QUob+NqCQky4g==",
         "name": "prettier",
-        "url": "https://registry.npmjs.org/prettier/-/prettier-2.8.1.tgz",
+        "url": "https://registry.npmjs.org/prettier/-/prettier-3.0.0.tgz",
     },
     "pretty-bytes@5.6.0": {
         "deps": [
@@ -11518,7 +11518,7 @@ ROOTS = [
         "name": "@types/node",
     },
     {
-        "id": "@types/prettier@2.4.4",
+        "id": "@types/prettier@2.7.3",
         "name": "@types/prettier",
     },
     {
@@ -11570,7 +11570,7 @@ ROOTS = [
         "name": "node-fetch",
     },
     {
-        "id": "prettier@2.8.1",
+        "id": "prettier@3.0.0",
         "name": "prettier",
     },
     {

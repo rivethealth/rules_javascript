@@ -25,9 +25,16 @@ ts_library(
     root = ":root",
     visibility = ["//visibility:public"],
     deps = [
+        ":lib_js",
         "@better_rules_javascript//bazel/worker:lib",
         "@better_rules_javascript_npm//@types/argparse:lib",
         "@better_rules_javascript_npm//@types/node:lib",
         "@better_rules_javascript_npm//argparse:lib",
     ],
+)
+
+js_library(
+    name = "lib_js",
+    srcs = glob(["src/**/*.mjs"]),
+    root = ":root",
 )
