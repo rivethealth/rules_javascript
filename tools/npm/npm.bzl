@@ -5386,14 +5386,14 @@ PACKAGES = {
         "name": "@types/prettier",
         "url": "https://registry.npmjs.org/@types/prettier/-/prettier-1.19.1.tgz",
     },
-    "@types/prettier@2.7.3": {
+    "@types/prettier@2.4.2": {
         "deps": [
         ],
         "extra_deps": {
         },
-        "integrity": "sha512-+68kP9yzs4LMp7VNh8gdzMSPZFL44MLGqiHWvttYJe+6qnuVr4Ek9wSBQoveqY/r+LwjCcU29kNVkidwim+kYA==",
+        "integrity": "sha512-ekoj4qOQYp7CvjX8ZDBgN86w3MqQhLE1hczEJbEIjgFEumDy+na/4AJAbLXfgEWFNB2pKadM5rPFtuSGMWK7xA==",
         "name": "@types/prettier",
-        "url": "https://registry.npmjs.org/@types/prettier/-/prettier-2.7.3.tgz",
+        "url": "https://registry.npmjs.org/@types/prettier/-/prettier-2.4.2.tgz",
     },
     "@types/react@15.0.39": {
         "deps": [
@@ -13481,7 +13481,7 @@ PACKAGES = {
                 "id": "@types/babel__traverse@7.14.2",
             },
             {
-                "id": "@types/prettier@2.7.3",
+                "id": "@types/prettier@2.4.2",
             },
             {
                 "id": "babel-preset-current-node-syntax@1.0.1-532d5ba1",
@@ -15275,13 +15275,13 @@ PACKAGES = {
         "name": "prelude-ls",
         "url": "https://registry.npmjs.org/prelude-ls/-/prelude-ls-1.2.1.tgz",
     },
-    "prettier-plugin-organize-imports@3.2.3-dc3fc578": {
+    "prettier-plugin-organize-imports@3.2.1-dc3fc578": {
         "deps": [
             {
-                "id": "@types/prettier@2.7.3",
+                "id": "@types/prettier@2.4.2",
             },
             {
-                "id": "prettier@3.0.0",
+                "id": "prettier@2.5.1",
             },
             {
                 "id": "typescript@5.0.4-6832550a",
@@ -15289,27 +15289,18 @@ PACKAGES = {
         ],
         "extra_deps": {
         },
-        "integrity": "sha512-KFvk8C/zGyvUaE3RvxN2MhCLwzV6OBbFSkwZ2OamCrs9ZY4i5L77jQ/w4UmUr+lqX8qbaqVq6bZZkApn+IgJSg==",
+        "integrity": "sha512-bty7C2Ecard5EOXirtzeCAqj4FU4epeuWrQt/Z+sh8UVEpBlBZ3m3KNPz2kFu7KgRTQx/C9o4/TdquPD1jOqjQ==",
         "name": "prettier-plugin-organize-imports",
-        "url": "https://registry.npmjs.org/prettier-plugin-organize-imports/-/prettier-plugin-organize-imports-3.2.3.tgz",
+        "url": "https://registry.npmjs.org/prettier-plugin-organize-imports/-/prettier-plugin-organize-imports-3.2.1.tgz",
     },
-    "prettier@2.8.8": {
+    "prettier@2.5.1": {
         "deps": [
         ],
         "extra_deps": {
         },
-        "integrity": "sha512-tdN8qQGvNjw4CHbY+XXk0JgCXn9QiF21a55rBe5LJAU+kDyC4WQn4+awm2Xfk2lQMk5fKup9XgzTZtGkjBdP9Q==",
+        "integrity": "sha512-vBZcPRUR5MZJwoyi3ZoyQlc1rXeEck8KgeC9AwwOn+exuxLxq5toTRDTSaVrXHxelDMHy9zlicw8u66yxoSUFg==",
         "name": "prettier",
-        "url": "https://registry.npmjs.org/prettier/-/prettier-2.8.8.tgz",
-    },
-    "prettier@3.0.0": {
-        "deps": [
-        ],
-        "extra_deps": {
-        },
-        "integrity": "sha512-zBf5eHpwHOGPC47h0zrPyNn+eAEIdEzfywMoYn2XPi0P44Zp0tSq64rq0xAREh4auw2cJZHo9QUob+NqCQky4g==",
-        "name": "prettier",
-        "url": "https://registry.npmjs.org/prettier/-/prettier-3.0.0.tgz",
+        "url": "https://registry.npmjs.org/prettier/-/prettier-2.5.1.tgz",
     },
     "pretty-bytes@5.6.0": {
         "deps": [
@@ -16862,7 +16853,7 @@ PACKAGES = {
                 "id": "lodash@4.17.21",
             },
             {
-                "id": "prettier@2.8.8",
+                "id": "prettier@2.5.1",
             },
         ],
         "extra_deps": {
@@ -17761,7 +17752,7 @@ ROOTS = [
         "name": "@types/node",
     },
     {
-        "id": "@types/prettier@2.7.3",
+        "id": "@types/prettier@2.4.2",
         "name": "@types/prettier",
     },
     {
@@ -17849,11 +17840,11 @@ ROOTS = [
         "name": "npm-registry-fetch",
     },
     {
-        "id": "prettier-plugin-organize-imports@3.2.3-dc3fc578",
+        "id": "prettier-plugin-organize-imports@3.2.1-dc3fc578",
         "name": "prettier-plugin-organize-imports",
     },
     {
-        "id": "prettier@3.0.0",
+        "id": "prettier@2.5.1",
         "name": "prettier",
     },
     {

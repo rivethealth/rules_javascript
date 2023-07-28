@@ -616,10 +616,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/prettier@npm:^2":
-  version: 2.7.3
-  resolution: "@types/prettier@npm:2.7.3"
-  checksum: 705384209cea6d1433ff6c187c80dcc0b95d99d5c5ce21a46a9a58060c527973506822e428789d842761e0280d25e3359300f017fbe77b9755bc772ab3dc2f83
+"@types/prettier@npm:~2.4.0":
+  version: 2.4.4
+  resolution: "@types/prettier@npm:2.4.4"
+  checksum: 2c2cc57efd49c7d8907415a72f96c84a6dd8696dd3bf8aa4ca3a667427bebf71cbfbc912673624bdfc935d272d1c008c639cf155f6449315990a4dc110f0d216
   languageName: node
   linkType: hard
 
@@ -4563,12 +4563,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:^3":
-  version: 3.0.0
-  resolution: "prettier@npm:3.0.0"
+"prettier@npm:^2.0.0":
+  version: 2.8.1
+  resolution: "prettier@npm:2.8.1"
   bin:
-    prettier: bin/prettier.cjs
-  checksum: 6a832876a1552dc58330d2467874e5a0b46b9ccbfc5d3531eb69d15684743e7f83dc9fbd202db6270446deba9c82b79d24383d09924c462b457136a759425e33
+    prettier: bin-prettier.js
+  checksum: 4f21a0f1269f76fb36f54e9a8a1ea4c11e27478958bf860661fb4b6d7ac69aac1581f8724fa98ea3585e56d42a2ea317a17ff6e3324f40cb11ff9e20b73785cc
   languageName: node
   linkType: hard
 
@@ -4945,7 +4945,7 @@ __metadata:
     "@types/long": ~4.0.0
     "@types/node": ~16.11.0
     "@types/node-fetch": ^2.0.0
-    "@types/prettier": ^2
+    "@types/prettier": ~2.4.0
     "@types/tar-stream": ~2.2.0
     "@yarnpkg/cli": ^3.0.0
     "@yarnpkg/cli-dist": ^3.0.0
@@ -4958,7 +4958,7 @@ __metadata:
     eslint: ^8.0.0
     long: ~4.0.0
     node-fetch: ^2.0.0
-    prettier: ^3
+    prettier: ^2.0.0
     protobufjs: ~7.1.0
     rollup: ~3.21.0
     rxjs: ~7.5.0
