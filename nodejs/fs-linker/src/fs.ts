@@ -975,7 +975,7 @@ function writeFileSync(
 
 export function patchFs(
   vfs: Vfs,
-  delegate: { -readonly [K in keyof typeof fs]: typeof fs[K] },
+  delegate: { -readonly [K in keyof typeof fs]: (typeof fs)[K] },
 ) {
   delegate.access = access(vfs, delegate.access);
   delegate.accessSync = accessSync(vfs, delegate.accessSync);
