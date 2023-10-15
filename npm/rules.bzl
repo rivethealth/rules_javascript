@@ -1,6 +1,58 @@
 load("@bazel_skylib//lib:paths.bzl", "paths")
 load("@bazel_skylib//lib:shell.bzl", "shell")
 load("@rules_file//util:path.bzl", "runfile_path")
+load("@rules_pkg//pkg:mappings.bzl", "pkg_filegroup", "pkg_files")
+load("@rules_pkg//pkg:tar.bzl", "pkg_tar")
+
+def npm_package(name, srcs, visibility = None, **kwargs):
+    pkg_tar(
+        extension = ".tgz",
+        name = name,
+        srcs = srcs,
+        package_dir = "package",
+        visibility = visibility,
+    )
+
+def _npm_publish_impl(ctx):
+    actions = ctx.actions
+    bash_runfiles_default = ctx.attr._bash_runfiles[DefaultInfo]
+    name = ctx.attr.name
+    npm = ctx.executable._npm
+    npm_default = ctx.attr._npm
+    src = ctx.file.src
+    runner = ctx.file._runner
+    workspace = ctx.workspace_name
+
+    executable = actions.declare_file(name)
+    actions.expand_template(
+        is_executable = True,
+        output = executable,
+        substitutions = {
+            "%{npm}": shell.quote(runfile_path(workspace, npm)),
+            "%{package}": shell.quote(runfile_path(workspace, src)),
+        },
+        template = runner,
+    )
+
+    runfiles = ctx.runfiles(files = [src])
+    runfiles = runfiles.merge(bash_runfiles_default.default_runfiles)
+    runfiles = runfiles.merge(npm_default.default_runfiles)
+    default_info = DefaultInfo(executable = executable, runfiles = runfiles)
+
+    return [default_info]
+
+npm_publish = rule(
+    attrs = {
+        "src": attr.label(allow_single_file = [".tgz"], mandatory = True),
+        "_bash_runfiles": attr.label(
+            default = "@bazel_tools//tools/bash/runfiles",
+        ),
+        "_npm": attr.label(cfg = "target", default = ":npm", executable = True),
+        "_runner": attr.label(allow_single_file = True, default = "npm-publish.sh.tpl"),
+    },
+    executable = True,
+    implementation = _npm_publish_impl,
+)
 
 def _yarn_audit_test_impl(ctx):
     actions = ctx.actions

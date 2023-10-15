@@ -11,8 +11,10 @@ Better_rules_javascript can use npm packages.
   - [IDE](#ide)
   - [Limitations](#limitations)
 - [//npm:rules.bzl](#npmrulesbzl)
+  - [npm_publish](#npm_publish)
   - [yarn_audit_test](#yarn_audit_test)
   - [yarn_resolve](#yarn_resolve)
+  - [npm_package](#npm_package)
 - [//npm:workspace.bzl](#npmworkspacebzl)
   - [npm](#npm)
   - [npm_import_external_rule](#npm_import_external_rule)
@@ -132,6 +134,21 @@ rules to replicate the build process.
 
 <!-- Generated with Stardoc: http://skydoc.bazel.build -->
 
+<a id="npm_publish"></a>
+
+## npm_publish
+
+<pre>
+npm_publish(<a href="#npm_publish-name">name</a>, <a href="#npm_publish-src">src</a>)
+</pre>
+
+**ATTRIBUTES**
+
+| Name                              | Description                    | Type                                                                | Mandatory | Default |
+| :-------------------------------- | :----------------------------- | :------------------------------------------------------------------ | :-------- | :------ |
+| <a id="npm_publish-name"></a>name | A unique name for this target. | <a href="https://bazel.build/concepts/labels#target-names">Name</a> | required  |         |
+| <a id="npm_publish-src"></a>src   | -                              | <a href="https://bazel.build/concepts/labels">Label</a>             | required  |         |
+
 <a id="yarn_audit_test"></a>
 
 ## yarn_audit_test
@@ -164,6 +181,23 @@ yarn_resolve(<a href="#yarn_resolve-name">name</a>, <a href="#yarn_resolve-outpu
 | <a id="yarn_resolve-output"></a>output   | Package-relative output path                                  | String                                                              | optional  | <code>"npm_data.bzl"</code> |
 | <a id="yarn_resolve-path"></a>path       | Package-relative path to package.json and yarn.lock directory | String                                                              | optional  | <code>""</code>             |
 | <a id="yarn_resolve-refresh"></a>refresh | Whether to refresh                                            | Boolean                                                             | optional  | <code>True</code>           |
+
+<a id="npm_package"></a>
+
+## npm_package
+
+<pre>
+npm_package(<a href="#npm_package-name">name</a>, <a href="#npm_package-srcs">srcs</a>, <a href="#npm_package-visibility">visibility</a>, <a href="#npm_package-kwargs">kwargs</a>)
+</pre>
+
+**PARAMETERS**
+
+| Name                                          | Description               | Default Value     |
+| :-------------------------------------------- | :------------------------ | :---------------- |
+| <a id="npm_package-name"></a>name             | <p align="center"> - </p> | none              |
+| <a id="npm_package-srcs"></a>srcs             | <p align="center"> - </p> | none              |
+| <a id="npm_package-visibility"></a>visibility | <p align="center"> - </p> | <code>None</code> |
+| <a id="npm_package-kwargs"></a>kwargs         | <p align="center"> - </p> | none              |
 
 # //npm:workspace.bzl
 

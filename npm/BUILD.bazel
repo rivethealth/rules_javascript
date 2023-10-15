@@ -8,6 +8,7 @@ exports_files(
 
 exports_files(
     [
+        "npm-publish.sh.tpl",
         "yarn-audit-runner.sh.tpl",
         "yarn-resolve.sh.tpl",
     ],
@@ -31,6 +32,14 @@ test_suite(
     name = "test",
     tests = ["//npm/test"],
     visibility = ["//:__subpackages__"],
+)
+
+nodejs_binary(
+    name = "npm",
+    dep = "@better_rules_javascript_npm//npm:lib",
+    main = "bin/npm-cli.js",
+    node = "//tools/nodejs",
+    visibility = ["//visibility:public"],
 )
 
 nodejs_binary(
