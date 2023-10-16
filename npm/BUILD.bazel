@@ -25,6 +25,7 @@ bzl_library(
         "//third-party:repo_bzl",
         "//util:bzl",
         "@bazel_skylib//lib:shell",
+        "@rules_pkg//pkg:bzl_srcs",
     ],
 )
 
