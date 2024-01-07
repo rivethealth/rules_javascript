@@ -15,16 +15,26 @@ js_library(
     deps = ["//tools/typescript:tsconfig"],
 )
 
+js_library(
+    name = "lib_js",
+    srcs = glob([
+        "src/**/*.js",
+        "src/**/*.mjs",
+    ]),
+    root = ":root",
+)
+
 ts_library(
     name = "lib",
     srcs = glob(["src/**/*.ts"]),
-    compile_deps = ["@better_rules_javascript_npm//@types/prettier:lib"],
+    compile_deps = ["@better_rules_javascript_npm//prettier:lib"],
     compiler = "@better_rules_javascript//typescript:tsc",
     config = "tsconfig.json",
     config_dep = ":tsconfig",
     root = ":root",
     visibility = ["//visibility:public"],
     deps = [
+        ":lib_js",
         "@better_rules_javascript//bazel/worker:lib",
         "@better_rules_javascript_npm//@types/argparse:lib",
         "@better_rules_javascript_npm//@types/node:lib",

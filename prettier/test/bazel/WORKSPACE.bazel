@@ -1,0 +1,16 @@
+workspace(name = "better_rules_javascript_test")
+
+# JavaScript
+
+local_repository(
+    name = "better_rules_javascript",
+    path = "../../../external/files/files",
+)
+
+load("@better_rules_javascript//test:workspace0.bzl", "test_repositories0")
+
+test_repositories0()
+
+load("@better_rules_javascript//test:workspace1.bzl", "test_repositories1")
+
+test_repositories1()

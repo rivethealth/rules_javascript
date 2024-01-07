@@ -5,18 +5,11 @@ load("//javascript:rules.bzl", "js_export")
 load("//nodejs:rules.bzl", "nodejs_binary")
 load("//util:path.bzl", "runfile_path")
 
-def configure_prettier(name, config, config_dep, dep = "@better_rules_javascript//prettier:prettier_lib", plugins = [], visibility = None):
-    js_export(
-        name = "%s.prettier" % name,
-        dep = dep,
-        deps = plugins,
-        visibility = ["//visibility:private"],
-    )
-
+def configure_prettier(name, config, config_dep, dep = "@better_rules_javascript//prettier:prettier_lib", visibility = None):
     js_export(
         name = "%s.main" % name,
         dep = "@better_rules_javascript//prettier/format:lib",
-        deps = [":%s.prettier" % name],
+        deps = [dep],
         extra_deps = [config_dep],
         visibility = ["//visibility:private"],
     )

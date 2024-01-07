@@ -4753,6 +4753,21 @@ PACKAGES = {
         "name": "@npmcli/move-file",
         "url": "https://registry.npmjs.org/@npmcli/move-file/-/move-file-1.1.2.tgz",
     },
+    "@prettier/plugin-xml@3.2.2-dc3fc578": {
+        "deps": [
+            {
+                "id": "@xml-tools/parser@1.0.11",
+            },
+            {
+                "id": "prettier@3.1.1",
+            },
+        ],
+        "extra_deps": {
+        },
+        "integrity": "sha512-SoE70SQF1AKIvK7LVK80JcdAe6wrDcbodFFjcoqb1FkOqV0G0oSlgAFDwoRXPqkUE5p/YF2nGsnUbnfm6471sw==",
+        "name": "@prettier/plugin-xml",
+        "url": "https://registry.npmjs.org/@prettier/plugin-xml/-/plugin-xml-3.2.2.tgz",
+    },
     "@protobufjs/aspromise@1.1.2": {
         "deps": [
         ],
@@ -5745,6 +5760,18 @@ PACKAGES = {
         "integrity": "sha512-EEpsO8m3RASrKAHI9jpavNv9NlEUebV4qmF1OWxSTtKSFBpC1NCmWazDQHFivRf0O1DV11BA645yrLEVQ0/Lig==",
         "name": "@typescript-eslint/visitor-keys",
         "url": "https://registry.npmjs.org/@typescript-eslint/visitor-keys/-/visitor-keys-5.59.2.tgz",
+    },
+    "@xml-tools/parser@1.0.11": {
+        "deps": [
+            {
+                "id": "chevrotain@7.1.1",
+            },
+        ],
+        "extra_deps": {
+        },
+        "integrity": "sha512-aKqQ077XnR+oQtHJlrAflaZaL7qZsulWc/i/ZEooar5JiWj1eLt0+Wg28cpa+XLney107wXqneC+oG1IZvxkTA==",
+        "name": "@xml-tools/parser",
+        "url": "https://registry.npmjs.org/@xml-tools/parser/-/parser-1.0.11.tgz",
     },
     "@yarnpkg/cli@3.3.0": {
         "deps": [
@@ -9807,6 +9834,18 @@ PACKAGES = {
         "integrity": "sha512-mKKUkUbhPpQlCOfIuZkvSEgktjPFIsZKRRbC6KWVEMvlzblj3i3asQv5ODsrwt0N3pHAEvjP8KTQPHkp0+6jOg==",
         "name": "character-reference-invalid",
         "url": "https://registry.npmjs.org/character-reference-invalid/-/character-reference-invalid-1.1.4.tgz",
+    },
+    "chevrotain@7.1.1": {
+        "deps": [
+            {
+                "id": "regexp-to-ast@0.5.0",
+            },
+        ],
+        "extra_deps": {
+        },
+        "integrity": "sha512-wy3mC1x4ye+O+QkEinVJkPf5u2vsrDIYW9G7ZuwFl6v/Yu0LwUuT2POsb+NUWApebyxfkQq6+yDfRExbnI5rcw==",
+        "name": "chevrotain",
+        "url": "https://registry.npmjs.org/chevrotain/-/chevrotain-7.1.1.tgz",
     },
     "chevrotain@9.1.0": {
         "deps": [
@@ -15275,13 +15314,10 @@ PACKAGES = {
         "name": "prelude-ls",
         "url": "https://registry.npmjs.org/prelude-ls/-/prelude-ls-1.2.1.tgz",
     },
-    "prettier-plugin-organize-imports@3.2.1-dc3fc578": {
+    "prettier-plugin-organize-imports@3.2.4-dc3fc578": {
         "deps": [
             {
-                "id": "@types/prettier@2.4.2",
-            },
-            {
-                "id": "prettier@2.5.1",
+                "id": "prettier@3.1.1",
             },
             {
                 "id": "typescript@5.0.4-6832550a",
@@ -15289,9 +15325,9 @@ PACKAGES = {
         ],
         "extra_deps": {
         },
-        "integrity": "sha512-bty7C2Ecard5EOXirtzeCAqj4FU4epeuWrQt/Z+sh8UVEpBlBZ3m3KNPz2kFu7KgRTQx/C9o4/TdquPD1jOqjQ==",
+        "integrity": "sha512-6m8WBhIp0dfwu0SkgfOxJqh+HpdyfqSSLfKKRZSFbDuEQXDDndb8fTpRWkUrX/uBenkex3MgnVk0J3b3Y5byog==",
         "name": "prettier-plugin-organize-imports",
-        "url": "https://registry.npmjs.org/prettier-plugin-organize-imports/-/prettier-plugin-organize-imports-3.2.1.tgz",
+        "url": "https://registry.npmjs.org/prettier-plugin-organize-imports/-/prettier-plugin-organize-imports-3.2.4.tgz",
     },
     "prettier@2.5.1": {
         "deps": [
@@ -15301,6 +15337,15 @@ PACKAGES = {
         "integrity": "sha512-vBZcPRUR5MZJwoyi3ZoyQlc1rXeEck8KgeC9AwwOn+exuxLxq5toTRDTSaVrXHxelDMHy9zlicw8u66yxoSUFg==",
         "name": "prettier",
         "url": "https://registry.npmjs.org/prettier/-/prettier-2.5.1.tgz",
+    },
+    "prettier@3.1.1": {
+        "deps": [
+        ],
+        "extra_deps": {
+        },
+        "integrity": "sha512-22UbSzg8luF4UuZtzgiUOfcGM8s4tjBv6dJRT7j275NXsy2jb4aJa4NNveul5x4eqlF1wuhuR2RElK71RvmVaw==",
+        "name": "prettier",
+        "url": "https://registry.npmjs.org/prettier/-/prettier-3.1.1.tgz",
     },
     "pretty-bytes@5.6.0": {
         "deps": [
@@ -17720,6 +17765,10 @@ ROOTS = [
         "name": "@babel/plugin-transform-modules-commonjs",
     },
     {
+        "id": "@prettier/plugin-xml@3.2.2-dc3fc578",
+        "name": "@prettier/plugin-xml",
+    },
+    {
         "id": "@rollup/plugin-commonjs@16.0.0-dc3fc578",
         "name": "@rollup/plugin-commonjs",
     },
@@ -17750,10 +17799,6 @@ ROOTS = [
     {
         "id": "@types/node@18.16.3",
         "name": "@types/node",
-    },
-    {
-        "id": "@types/prettier@2.4.2",
-        "name": "@types/prettier",
     },
     {
         "id": "@types/react@15.0.39",
@@ -17840,11 +17885,11 @@ ROOTS = [
         "name": "npm-registry-fetch",
     },
     {
-        "id": "prettier-plugin-organize-imports@3.2.1-dc3fc578",
+        "id": "prettier-plugin-organize-imports@3.2.4-dc3fc578",
         "name": "prettier-plugin-organize-imports",
     },
     {
-        "id": "prettier@2.5.1",
+        "id": "prettier@3.1.1",
         "name": "prettier",
     },
     {

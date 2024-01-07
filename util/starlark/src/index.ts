@@ -25,7 +25,10 @@ export class StarlarkVariable {
 }
 
 export class StarlarkEqualStatement {
-  constructor(readonly left: StarlarkVariable, readonly right: StarlarkValue) {}
+  constructor(
+    readonly left: StarlarkVariable,
+    readonly right: StarlarkValue,
+  ) {}
 }
 
 export type StarlarkStatement = StarlarkEqualStatement;

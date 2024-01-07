@@ -27,3 +27,9 @@ alias(
     actual = "@better_rules_javascript_npm//prettier:lib",
     visibility = ["//visibility:public"],
 )
+
+test_suite(
+    name = "test",
+    tests = ["//angular/test"],
+    visibility = ["//:__subpackages__"],
+)
