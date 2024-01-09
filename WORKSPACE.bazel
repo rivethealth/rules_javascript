@@ -15,13 +15,13 @@ http_archive(
 
 # File
 
-FILE_VERSION = "fd7ad6a7e9f3438fddb41683f33b6b4d07d067fe"
+FILE_VERSION = "503983f533bede6833c7ee9c3220a51882689eb1"
 
 http_archive(
     name = "rules_file",
-    sha256 = "9108bf11fe1063bb6268f15506ea35c1a29e03cae651032d1da3d0f33561c5fd",
+    sha256 = "f57c7fce8d2370d7ac27888c625fb87d1d51bc707985d329b4274211d7ae209e",
     strip_prefix = "rules_file-%s" % FILE_VERSION,
-    url = "https://github.com/hello-seer/rules_file/archive/%s.zip" % FILE_VERSION,
+    url = "https://github.com/rivethealth/rules_file/archive/%s.zip" % FILE_VERSION,
 )
 
 load("@rules_file//file:workspace.bzl", "files")
