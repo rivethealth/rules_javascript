@@ -1367,15 +1367,6 @@ PACKAGES = {
         "name": "@types/node",
         "url": "https://registry.npmjs.org/@types/node/-/node-17.0.17.tgz",
     },
-    "@types/prettier@2.4.4": {
-        "deps": [
-        ],
-        "extra_deps": {
-        },
-        "integrity": "sha512-ReVR2rLTV1kvtlWFyuot+d1pkpG2Fw/XKE3PDAdj57rbM97ttSp9JZ2UsP+2EHTylra9cUf6JA7tGwW1INzUrA==",
-        "name": "@types/prettier",
-        "url": "https://registry.npmjs.org/@types/prettier/-/prettier-2.4.4.tgz",
-    },
     "@types/qs@6.9.7": {
         "deps": [
         ],
@@ -11162,14 +11153,14 @@ PACKAGES = {
         "name": "prelude-ls",
         "url": "https://registry.npmjs.org/prelude-ls/-/prelude-ls-1.2.1.tgz",
     },
-    "prettier@2.8.1": {
+    "prettier@3.1.1": {
         "deps": [
         ],
         "extra_deps": {
         },
-        "integrity": "sha512-lqGoSJBQNJidqCHE80vqZJHWHRFoNYsSpP9AjFhlhi9ODCJA541svILes/+/1GM3VaL/abZi7cpFzOpdR9UPKg==",
+        "integrity": "sha512-22UbSzg8luF4UuZtzgiUOfcGM8s4tjBv6dJRT7j275NXsy2jb4aJa4NNveul5x4eqlF1wuhuR2RElK71RvmVaw==",
         "name": "prettier",
-        "url": "https://registry.npmjs.org/prettier/-/prettier-2.8.1.tgz",
+        "url": "https://registry.npmjs.org/prettier/-/prettier-3.1.1.tgz",
     },
     "pretty-bytes@5.6.0": {
         "deps": [
@@ -14104,10 +14095,6 @@ ROOTS = [
         "name": "@types/node",
     },
     {
-        "id": "@types/prettier@2.4.4",
-        "name": "@types/prettier",
-    },
-    {
         "id": "@types/tar-stream@2.2.2",
         "name": "@types/tar-stream",
     },
@@ -14160,7 +14147,7 @@ ROOTS = [
         "name": "npm",
     },
     {
-        "id": "prettier@2.8.1",
+        "id": "prettier@3.1.1",
         "name": "prettier",
     },
     {

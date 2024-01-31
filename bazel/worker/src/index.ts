@@ -125,8 +125,8 @@ export async function workerMain(workerFactory: WorkerFactory) {
       error instanceof CliError
         ? error.message
         : error instanceof Error
-        ? error.stack
-        : String(error),
+          ? error.stack
+          : String(error),
     );
     process.exit(1);
   }

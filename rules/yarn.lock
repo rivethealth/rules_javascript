@@ -901,13 +901,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/prettier@npm:~2.4.0":
-  version: 2.4.4
-  resolution: "@types/prettier@npm:2.4.4"
-  checksum: 2c2cc57efd49c7d8907415a72f96c84a6dd8696dd3bf8aa4ca3a667427bebf71cbfbc912673624bdfc935d272d1c008c639cf155f6449315990a4dc110f0d216
-  languageName: node
-  linkType: hard
-
 "@types/qs@npm:*":
   version: 6.9.7
   resolution: "@types/qs@npm:6.9.7"
@@ -5797,12 +5790,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:^2.0.0":
-  version: 2.8.1
-  resolution: "prettier@npm:2.8.1"
+"prettier@npm:^3":
+  version: 3.1.1
+  resolution: "prettier@npm:3.1.1"
   bin:
-    prettier: bin-prettier.js
-  checksum: 4f21a0f1269f76fb36f54e9a8a1ea4c11e27478958bf860661fb4b6d7ac69aac1581f8724fa98ea3585e56d42a2ea317a17ff6e3324f40cb11ff9e20b73785cc
+    prettier: bin/prettier.cjs
+  checksum: e386855e3a1af86a748e16953f168be555ce66d6233f4ba54eb6449b88eb0c6b2ca79441b11eae6d28a7f9a5c96440ce50864b9d5f6356d331d39d6bb66c648e
   languageName: node
   linkType: hard
 
@@ -6276,7 +6269,6 @@ __metadata:
     "@types/long": ~4.0.0
     "@types/node": ~16.11.0
     "@types/node-fetch": ^2.0.0
-    "@types/prettier": ~2.4.0
     "@types/tar-stream": ~2.2.0
     "@yarnpkg/cli": ^3.0.0
     "@yarnpkg/cli-dist": ^3.0.0
@@ -6290,7 +6282,7 @@ __metadata:
     long: ~4.0.0
     node-fetch: ^2.0.0
     npm: ^9
-    prettier: ^2.0.0
+    prettier: ^3
     protobufjs: ~7.1.0
     rollup: ~3.21.0
     rxjs: ~7.5.0
