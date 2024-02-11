@@ -1,0 +1,37 @@
+load("@better_rules_javascript//commonjs:rules.bzl", "cjs_root")
+load("@better_rules_javascript//javascript:rules.bzl", "js_library")
+load("@better_rules_javascript//typescript:rules.bzl", "ts_import", "ts_library")
+
+cjs_root(
+    name = "dep_root",
+    package_name = "@types/dep",
+    path = "dep",
+)
+
+cjs_root(
+    name = "main_root",
+    package_name = "@better-rules-javascript-test/types-main",
+    path = "main",
+)
+
+ts_import(
+    name = "dep_lib",
+    declarations = glob(["dep/**/*.d.ts"]),
+    root = ":dep_root",
+)
+
+ts_library(
+    name = "main_lib",
+    srcs = glob(["main/**/*.ts"]),
+    compiler = "//:ts",
+    config = "tsconfig.json",
+    config_dep = ":main_tsconfig",
+    root = ":main_root",
+    deps = [":dep_lib"],
+)
+
+js_library(
+    name = "main_tsconfig",
+    srcs = ["main/tsconfig.json"],
+    root = ":main_root",
+)
