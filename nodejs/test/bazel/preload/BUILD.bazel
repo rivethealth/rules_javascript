@@ -1,0 +1,33 @@
+load("@better_rules_javascript//commonjs:rules.bzl", "cjs_root")
+load("@better_rules_javascript//javascript:rules.bzl", "js_library", "js_module_import")
+load("@better_rules_javascript//nodejs:rules.bzl", "nodejs_binary")
+
+js_library(
+    name = "lib",
+    srcs = ["main.js"],
+    root = ":root",
+)
+
+cjs_root(
+    name = "root",
+    package_name = "@better-rules-javascript-test/nodejs-preload",
+)
+
+js_library(
+    name = "preload_lib",
+    srcs = ["preload.js"],
+    root = ":root",
+)
+
+js_module_import(
+    name = "preload",
+    dep = ":preload_lib",
+    path = "preload.js",
+)
+
+nodejs_binary(
+    name = "bin",
+    dep = ":lib",
+    main = "main.js",
+    preload = [":preload"],
+)

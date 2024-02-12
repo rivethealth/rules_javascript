@@ -10,6 +10,13 @@ CjsInfo = provider(
     },
 )
 
+CjsPath = provider(
+    doc = "CommonJS path",
+    fields = {
+        "path": "Path relative to CommonJS root",
+    },
+)
+
 def create_package(name, path, short_path, label):
     """Create CommonJs package definition.
 

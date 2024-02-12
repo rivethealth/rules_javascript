@@ -3,7 +3,7 @@ load("@bazel_skylib//lib:shell.bzl", "shell")
 load("@rules_file//file:rules.bzl", "untar")
 load("@rules_pkg//pkg:providers.bzl", "PackageFilegroupInfo", "PackageFilesInfo", "PackageSymlinkInfo")
 load("@rules_pkg//pkg:tar.bzl", "pkg_tar")
-load("//commonjs:providers.bzl", "CjsInfo", "create_globals", "gen_manifest", "package_path")
+load("//commonjs:providers.bzl", "CjsInfo", "CjsPath", "create_globals", "gen_manifest", "package_path")
 load("//javascript:providers.bzl", "JsInfo")
 load("//util:path.bzl", "nearest", "relativize", "runfile_path")
 load(":providers.bzl", "NodejsInfo", "NodejsRuntimeInfo")
@@ -168,7 +168,7 @@ nodejs_simple_binary = rule(
     implementation = _nodejs_simple_binary_implementation,
 )
 
-def _nodejs_binary_implementation(ctx):
+def _nodejs_binary_impl(ctx):
     actions = ctx.actions
     env = ctx.attr.env
     manifest = ctx.attr._manifest[DefaultInfo]
@@ -177,6 +177,8 @@ def _nodejs_binary_implementation(ctx):
     main = ctx.attr.main
     module_linker_cjs = ctx.attr._module_linker[CjsInfo]
     module_linker_js = ctx.attr._module_linker[JsInfo]
+    preload_cjs = [target[CjsInfo] for target in ctx.attr.preload]
+    preload_js = [target[JsInfo] for target in ctx.attr.preload]
     name = ctx.attr.name
     node = ctx.attr.node[NodejsInfo]
     node_options = ctx.attr.node_options + node.options
@@ -187,7 +189,22 @@ def _nodejs_binary_implementation(ctx):
     runtime_js = ctx.attr._runtime[JsInfo]
     workspace_name = ctx.workspace_name
 
-    transitive_packages = depset(transitive = [cjs_dep.transitive_packages] if cjs_dep else [])
+    preload_modules = [
+        "%s/%s" % (runfile_path(workspace_name, target[CjsInfo].package), target[CjsPath].path)
+        for target in ctx.attr.preload
+    ]
+
+    transitive_packages = depset(
+        transitive =
+            ([cjs_dep.transitive_packages] if cjs_dep else []) +
+            [cjs_info.transitive_packages for cjs_info in preload_cjs],
+    )
+
+    transitive_links = depset(
+        transitive =
+            ([cjs_dep.transitive_links] if cjs_dep else []) +
+            [cjs_info.transitive_links for cjs_info in preload_cjs],
+    )
 
     def package_path(package):
         return runfile_path(workspace_name, package)
@@ -198,7 +215,7 @@ def _nodejs_binary_implementation(ctx):
         manifest_bin = manifest,
         manifest = package_manifest,
         packages = transitive_packages,
-        deps = depset(transitive = [cjs_dep.transitive_links] if cjs_dep else []),
+        deps = transitive_links,
         package_path = package_path,
     )
 
@@ -213,7 +230,10 @@ def _nodejs_binary_implementation(ctx):
             "%{esm_loader}": shell.quote("%s/dist/bundle.js" % runfile_path(workspace_name, esm_linker_cjs.package)),
             "%{main_module}": shell.quote(main_module),
             "%{node}": shell.quote(runfile_path(workspace_name, node.bin)),
-            "%{node_options}": " ".join([shell.quote(option) for option in node_options]),
+            "%{node_options}": " ".join(
+                [shell.quote(option) for option in node_options] +
+                [option for module in preload_modules for option in ["-r", '"$(abspath "$RUNFILES_DIR"/%s)"' % module]],
+            ),
             "%{package_manifest}": shell.quote(runfile_path(workspace_name, package_manifest)),
             "%{module_linker}": shell.quote("%s/dist/bundle.js" % runfile_path(workspace_name, module_linker_cjs.package)),
             "%{runtime}": shell.quote("%s/dist/bundle.js" % runfile_path(workspace_name, runtime_cjs.package)),
@@ -223,7 +243,11 @@ def _nodejs_binary_implementation(ctx):
 
     runfiles = ctx.runfiles(
         files = [node.bin, package_manifest] + ctx.files.data,
-        transitive_files = depset(transitive = [js_dep.transitive_files] + [esm_linker_js.transitive_files, module_linker_js.transitive_files, runtime_js.transitive_files]),
+        transitive_files = depset(
+            transitive = [js_dep.transitive_files] +
+                         [esm_linker_js.transitive_files, module_linker_js.transitive_files, runtime_js.transitive_files] +
+                         [js_dep.transitive_files for js_dep in preload_js],
+        ),
     )
     runfiles = runfiles.merge_all(
         [dep[DefaultInfo].default_runfiles for dep in ctx.attr.data],
@@ -270,6 +294,11 @@ nodejs_binary = rule(
         "node_options": attr.string_list(
             doc = "Node.js options",
         ),
+        "preload": attr.label_list(
+            cfg = nodejs_transition,
+            doc = "Preloaded modules",
+            providers = [CjsInfo, CjsPath, JsInfo],
+        ),
         "_allowlist_function_transition": attr.label(
             default = "@bazel_tools//tools/allowlists/function_transition_allowlist",
         ),
@@ -297,7 +326,7 @@ nodejs_binary = rule(
     },
     doc = "Node.js binary",
     executable = True,
-    implementation = _nodejs_binary_implementation,
+    implementation = _nodejs_binary_impl,
 )
 
 def _nodejs_modules_binary_impl(ctx):
@@ -519,12 +548,37 @@ def _nodejs_binary_package_impl(ctx):
     label = ctx.label
     node_options = ctx.attr.node_options
     dep_js = ctx.attr.dep[0][JsInfo]
+    preload_cjs = [target[CjsInfo] for target in ctx.attr.preload]
+    preload_js = [target[JsInfo] for target in ctx.attr.preload]
     workspace = ctx.workspace_name
+
+    transitive_files = depset(
+        transitive =
+            [dep_js.transitive_files] +
+            [js_info.transitive_files for js_info in preload_js],
+    )
+
+    transitive_packages = depset(
+        transitive =
+            ([dep_cjs.transitive_packages] if dep_cjs else []) +
+            [cjs_info.transitive_packages for cjs_info in preload_cjs],
+    )
+
+    transitive_links = depset(
+        transitive =
+            ([dep_cjs.transitive_links] if dep_cjs else []) +
+            [cjs_info.transitive_links for cjs_info in preload_cjs],
+    )
 
     package_paths = {
         package.path: runfile_path(workspace, package)
-        for package in dep_cjs.transitive_packages.to_list()
+        for package in transitive_packages.to_list()
     }
+
+    preload_modules = [
+        "%s/%s" % (package_paths[target[CjsInfo].package.path], target[CjsPath].path)
+        for target in ctx.attr.preload
+    ]
 
     bin = actions.declare_file(name)
     actions.expand_template(
@@ -534,19 +588,22 @@ def _nodejs_binary_package_impl(ctx):
             "%{env}": " ".join(["%s=%s" % (name, shell.quote(value)) for name, value in env.items()]),
             "%{main_module}": shell.quote("%s/%s" % (package_paths[dep_cjs.package.path], main)),
             "%{node}": shell.quote(node.bin) if type(node.bin) == "string" else '"$(dirname "$0")"/node',
-            "%{node_options}": " ".join([shell.quote(option) for option in ctx.attr.node_options]),
+            "%{node_options}": " ".join(
+                [shell.quote(option) for option in node_options] +
+                [option for module in preload_modules for option in ["-r", '"$(dirname "$0")"/%s' % shell.quote(module)]],
+            ),
         },
         is_executable = True,
     )
 
-    files_map = {runfile_path(workspace, file): file for file in dep_js.transitive_files.to_list()}
+    files_map = {runfile_path(workspace, file): file for file in transitive_files.to_list()}
     files_map["bin"] = bin
     if type(node.bin) != "string":
         files_map["node"] = node.bin
     files = PackageFilesInfo(dest_src_map = files_map)
 
     symlinks = []
-    for link in dep_cjs.transitive_links.to_list():
+    for link in transitive_links.to_list():
         if link.path == None:
             destination = "node_modules/%s" % link.name
         else:
@@ -585,6 +642,11 @@ nodejs_binary_package = rule(
         ),
         "node_options": attr.string_list(
             doc = "Node.js options",
+        ),
+        "preload": attr.label_list(
+            cfg = nodejs_transition,
+            doc = "Preloaded modules",
+            providers = [CjsInfo, CjsPath, JsInfo],
         ),
         "_allowlist_function_transition": attr.label(
             default = "@bazel_tools//tools/allowlists/function_transition_allowlist",

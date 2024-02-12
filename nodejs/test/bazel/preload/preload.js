@@ -1,0 +1,1 @@
+globalThis.testMessage = "Hello world";

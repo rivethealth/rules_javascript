@@ -1,5 +1,5 @@
 load("@bazel_skylib//lib:shell.bzl", "shell")
-load("//commonjs:providers.bzl", "CjsInfo", "gen_manifest")
+load("//commonjs:providers.bzl", "CjsInfo", "CjsPath", "gen_manifest")
 load("//nodejs:providers.bzl", "NodejsInfo")
 load("//javascript:providers.bzl", "JsInfo")
 load("//util:path.bzl", "output", "runfile_path")
@@ -33,13 +33,20 @@ def _jest_test_impl(ctx):
     name = ctx.attr.name
     node = ctx.attr.node[NodejsInfo]
     node_options = node.options + ctx.attr.node_options
+    preload_cjs = [target[CjsInfo] for target in ctx.attr.preload]
+    preload_js = [target[JsInfo] for target in ctx.attr.preload]
     cjs_info = ctx.attr.jest[0][CjsInfo]
     js_info = ctx.attr.jest[0][JsInfo]
     cjs_dep = ctx.attr.dep[0][CjsInfo]
-    cjs_deps = [config_loader_cjs, config_cjs, cjs_info] + [ctx.attr.dep[0][CjsInfo]]
-    js_deps = [config_loader_js, config_js, js_info] + [ctx.attr.dep[0][JsInfo]]
+    cjs_deps = [config_loader_cjs, config_cjs, cjs_info, fs_linker_cjs, module_linker_cjs] + [ctx.attr.dep[0][CjsInfo]] + preload_cjs
+    js_deps = [config_loader_js, config_js, js_info, fs_linker_js, module_linker_js] + [ctx.attr.dep[0][JsInfo]] + preload_js
     output_ = output(label = ctx.label, actions = actions)
     workspace = ctx.workspace_name
+
+    preload_modules = [
+        "%s/%s" % (runfile_path(workspace, target[CjsInfo].package), target[CjsPath].path)
+        for target in ctx.attr.preload
+    ]
 
     def package_path(package):
         return runfile_path(workspace, package)
@@ -47,10 +54,14 @@ def _jest_test_impl(ctx):
     package_manifest = actions.declare_file("%s.packages.json" % name)
     gen_manifest(
         actions = actions,
-        deps = depset(transitive = [dep.transitive_links for dep in cjs_deps]),
+        deps = depset(
+            transitive = [cjs_info.transitive_links for cjs_info in cjs_deps],
+        ),
         manifest = package_manifest,
         manifest_bin = manifest_bin,
-        packages = depset(transitive = [dep.transitive_packages for dep in cjs_deps]),
+        packages = depset(
+            transitive = [cjs_info.transitive_packages for cjs_info in cjs_deps],
+        ),
         package_path = package_path,
     )
 
@@ -67,7 +78,10 @@ def _jest_test_impl(ctx):
             "%{fs_linker}": shell.quote("%s/dist/bundle.js" % runfile_path(workspace, fs_linker_cjs.package)),
             "%{main_module}": shell.quote(main_module),
             "%{module_linker}": shell.quote("%s/dist/bundle.js" % runfile_path(workspace, module_linker_cjs.package)),
-            "%{node_options}": " ".join([shell.quote(option) for option in node_options]),
+            "%{node_options}": " ".join(
+                [shell.quote(option) for option in node_options] +
+                [option for module in preload_modules for option in ["-r", '"$(abspath "$RUNFILES_DIR"/%s)"' % module]],
+            ),
             "%{node}": shell.quote(runfile_path(workspace, node.bin)),
             "%{package_manifest}": shell.quote(runfile_path(workspace, package_manifest)),
             "%{preamble}": bash_preamble,
@@ -79,7 +93,9 @@ def _jest_test_impl(ctx):
 
     runfiles = ctx.runfiles(
         files = [node.bin, package_manifest] + data,
-        transitive_files = depset(transitive = [js_info_.transitive_files for js_info_ in js_deps] + [fs_linker_js.transitive_files, module_linker_js.transitive_files]),
+        transitive_files = depset(
+            transitive = [js_info.transitive_files for js_info in js_deps],
+        ),
     )
     runfiles = runfiles.merge_all([default_info.default_runfiles for default_info in data_default if default_info.default_runfiles != None])
 
@@ -128,6 +144,10 @@ jest_test = rule(
         ),
         "node_options": attr.string_list(
             doc = "Node.js options.",
+        ),
+        "preload": attr.label_list(
+            doc = "Preloaded modules",
+            providers = [CjsInfo, CjsPath, JsInfo],
         ),
         "_allowlist_function_transition": attr.label(
             default = "@bazel_tools//tools/allowlists/function_transition_allowlist",

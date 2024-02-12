@@ -36,16 +36,24 @@ if [ ! -z "${TESTBRIDGE_TEST_ONLY-}" ]; then
   args+=("$TESTBRIDGE_TEST_ONLY")
 fi
 
-[[ "$RUNFILES_DIR" = /* ]] || RUNFILES_DIR="$(pwd)/$RUNFILES_DIR"
+function abspath () {
+  if [[ "$1" == /* ]]; then
+    echo "$1"
+  else
+    echo "$PWD"/"$1"
+  fi
+}
+
+export NODE_OPTIONS="${NODE_OPTIONS-} --experimental-specifier-resolution=node"
 
 %{env} \
   exec -a "$0" "$RUNFILES_DIR"/%{node} \
-  -r "$RUNFILES_DIR"/%{module_linker} \
-  -r "$RUNFILES_DIR"/%{fs_linker} \
+  -r "$(abspath "$RUNFILES_DIR"/%{module_linker})" \
+  -r "$(abspath "$RUNFILES_DIR"/%{fs_linker})" \
   --preserve-symlinks \
   --preserve-symlinks-main \
   %{node_options} \
-  "$RUNFILES_DIR"/%{main_module} \
+  "$(abspath "$RUNFILES_DIR"/%{main_module})" \
   -i \
   --config="$RUNFILES_DIR"/%{config_loader} \
   --no-cache \

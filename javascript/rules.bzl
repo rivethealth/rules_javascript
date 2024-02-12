@@ -1,5 +1,5 @@
 load("@bazel_skylib//rules:common_settings.bzl", "BuildSettingInfo")
-load("//commonjs:providers.bzl", "CjsInfo", "create_cjs_info")
+load("//commonjs:providers.bzl", "CjsInfo", "CjsPath", "create_cjs_info")
 load("//util:path.bzl", "output", "output_name")
 load(":providers.bzl", "JsInfo", "create_js_info")
 
@@ -159,4 +159,28 @@ js_export = rule(
     doc = "Add dependencies, or use alias.",
     implementation = _js_export_impl,
     provides = [CjsInfo, JsInfo],
+)
+
+def _js_module_import_impl(ctx):
+    dep_cjs = ctx.attr.dep[CjsInfo]
+    dep_js = ctx.attr.dep[JsInfo]
+    path = ctx.attr.path
+
+    cjs_info = dep_cjs
+
+    cjs_path = CjsPath(
+        path = path,
+    )
+
+    js_info = dep_js
+
+    return [cjs_info, cjs_path, js_info]
+
+js_module_import = rule(
+    attrs = {
+        "dep": attr.label(mandatory = True, providers = [CjsInfo, JsInfo]),
+        "path": attr.string(),
+    },
+    implementation = _js_module_import_impl,
+    provides = [CjsInfo, CjsPath],
 )
