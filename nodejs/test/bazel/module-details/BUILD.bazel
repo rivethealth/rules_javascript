@@ -18,4 +18,5 @@ nodejs_binary(
     name = "bin",
     dep = ":lib",
     main = "main.js",
+    preload = ["@better_rules_javascript//nodejs/module-details:preload"],
 )

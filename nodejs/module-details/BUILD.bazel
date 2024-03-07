@@ -1,0 +1,36 @@
+load("//commonjs:rules.bzl", "cjs_root")
+load("//javascript:rules.bzl", "js_library", "js_module_import")
+load("//typescript:rules.bzl", "ts_library")
+
+ts_library(
+    name = "lib",
+    srcs = glob(["src/**/*.ts"]),
+    compiler = "//tools/typescript:tsc",
+    config = "tsconfig.json",
+    config_dep = ":tsconfig",
+    root = ":root",
+    deps = [
+        "//util/util:lib",
+        "@better_rules_javascript_npm//@types/node:lib",
+    ],
+)
+
+js_module_import(
+    name = "preload",
+    dep = ":lib",
+    path = "src/index.js",
+    visibility = ["//visibility:public"],
+)
+
+cjs_root(
+    name = "root",
+    package_name = "@better-rules-javascript/nodejs-module-details",
+    descriptors = ["package.json"],
+)
+
+js_library(
+    name = "tsconfig",
+    srcs = ["tsconfig.json"],
+    root = ":root",
+    deps = ["//tools/typescript:tsconfig"],
+)

@@ -404,43 +404,6 @@ class RequireModuleResolver {
     }
 }
 
-function parse(resolver) {
-    return (path_) => {
-        try {
-            const root = path__namespace.resolve(process.env.RUNFILES_DIR, resolver.root(path_));
-            const packageContent = fs__namespace.readFileSync(path__namespace.join(root, "package.json"), "utf8");
-            const packageJson = JSON.parse(packageContent);
-            if (!packageJson.name) {
-                return;
-            }
-            return {
-                basedir: root,
-                name: packageJson.name,
-                path: path_.slice(root.length + 1),
-            };
-        }
-        catch { }
-    };
-}
-const MODULE_NAME = "module-details-from-path";
-function patchModuleDetails(resolver, delegate) {
-    const originalRequire = delegate.prototype.require;
-    const parse_ = parse(resolver);
-    delegate.prototype.require = function (id) {
-        if (id === MODULE_NAME) {
-            return parse_;
-        }
-        return originalRequire.apply(this, arguments);
-    };
-    // const originalFilename = (<any>delegate)._resolveFilename;
-    // (<any>delegate)._resolveFilename = function (request) {
-    //   if (request === MODULE_NAME) {
-    //     return __filename;
-    //   }
-    //   return originalFilename.apply(this, arguments);
-    // };
-}
-
 const manifestPath = process.env.NODE_PACKAGE_MANIFEST;
 if (!manifestPath) {
     throw new Error("NODE_PACKAGE_MANIFEST is not set");
@@ -448,4 +411,3 @@ if (!manifestPath) {
 const packageTree = JsonFormat.parse(PackageTree.json(), fs__namespace.readFileSync(manifestPath, "utf8"));
 const resolver = Resolver.create(packageTree, process.env.RUNFILES_DIR);
 patchModule(resolver, require("node:module"));
-patchModuleDetails(resolver, require("node:module"));
