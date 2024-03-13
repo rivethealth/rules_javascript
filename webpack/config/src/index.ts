@@ -36,6 +36,10 @@ export async function configure(
     config.mode = compilationMode === "opt" ? "production" : "development";
   }
 
+  if (config.stats === undefined && !process.env.WEBPACK_PACKAGE_MANIFEST) {
+    config.stats = "errors-only";
+  }
+
   config.output = config.output ? { ...config.output } : {};
   // use output
   config.output.path = resolve(output);
