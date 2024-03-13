@@ -145,7 +145,7 @@ def npm(name, packages, roots, plugins = DEFAULT_PLUGINS, auth_patterns = None, 
             http_file(
                 name = package_repo,
                 auth_patterns = auth_patterns,
-                integrity = package.get("integrity"),
+                #integrity = package.get("integrity"),
                 downloaded_file_path = "package.tgz",
                 netrc = netrc,
                 url = package["url"],
