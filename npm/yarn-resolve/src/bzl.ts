@@ -26,13 +26,25 @@ export namespace BzlPackage {
       extraDepsEntries.push([new StarlarkString(id), BzlDeps.toStarlark(deps)]);
     }
 
-    return new StarlarkDict([
-      [new StarlarkString("deps"), BzlDeps.toStarlark(value.deps)],
-      [new StarlarkString("extra_deps"), new StarlarkDict(extraDepsEntries)],
+    const entries: [StarlarkValue, StarlarkValue][] = [];
+    if (value.deps.length > 0) {
+      entries.push([
+        new StarlarkString("deps"),
+        BzlDeps.toStarlark(value.deps),
+      ]);
+    }
+    if (extraDepsEntries.length > 0) {
+      entries.push([
+        new StarlarkString("extra_deps"),
+        new StarlarkDict(extraDepsEntries),
+      ]);
+    }
+    entries.push(
       [new StarlarkString("integrity"), new StarlarkString(value.integrity)],
       [new StarlarkString("name"), new StarlarkString(value.name)],
       [new StarlarkString("url"), new StarlarkString(value.url)],
-    ]);
+    );
+    return new StarlarkDict(entries);
   }
 }
 

@@ -136,7 +136,7 @@ def npm(name, packages, roots, plugins = DEFAULT_PLUGINS, auth_patterns = None, 
 
         extra_deps = {
             package_repo_name(name, id): [json.encode({"id": package_repo_name(name, d["id"]), "name": d.get("name")}) for d in deps]
-            for id, deps in package["extra_deps"].items()
+            for id, deps in package.get("extra_deps", {}).items()
         }
         if "file" in package:
             file = package["file"]
@@ -155,7 +155,7 @@ def npm(name, packages, roots, plugins = DEFAULT_PLUGINS, auth_patterns = None, 
             name = repo_name,
             package = file,
             package_name = package["name"],
-            deps = [json.encode({"id": package_repo_name(name, dep["id"]), "name": dep.get("name")}) for dep in package["deps"]],
+            deps = [json.encode({"id": package_repo_name(name, dep["id"]), "name": dep.get("name")}) for dep in package.get("deps", [])],
             extra_deps = extra_deps,
         )
     root_packages = {root["name"]: package_repo_name(name, root["id"]) for root in roots}
