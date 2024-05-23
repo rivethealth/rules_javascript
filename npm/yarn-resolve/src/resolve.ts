@@ -34,7 +34,7 @@ export async function getPackage(
     const hash = createHash("sha256");
     hash.update(Buffer.from(buffer));
     return {
-      contentIntegrity: `sha256-${hash.digest().toString("hex")}`,
+      contentIntegrity: `sha256-${hash.digest().toString("base64")}`,
       contentUrl: npmLocator.reference,
     };
   }
