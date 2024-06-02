@@ -73,7 +73,7 @@ prettier(<a href="#prettier-name">name</a>, <a href="#prettier-bin">bin</a>, <a 
 ## configure_prettier
 
 <pre>
-configure_prettier(<a href="#configure_prettier-name">name</a>, <a href="#configure_prettier-config">config</a>, <a href="#configure_prettier-config_dep">config_dep</a>, <a href="#configure_prettier-dep">dep</a>, <a href="#configure_prettier-plugins">plugins</a>, <a href="#configure_prettier-visibility">visibility</a>)
+configure_prettier(<a href="#configure_prettier-name">name</a>, <a href="#configure_prettier-config">config</a>, <a href="#configure_prettier-config_dep">config_dep</a>, <a href="#configure_prettier-dep">dep</a>, <a href="#configure_prettier-visibility">visibility</a>)
 </pre>
 
 **PARAMETERS**
@@ -84,5 +84,4 @@ configure_prettier(<a href="#configure_prettier-name">name</a>, <a href="#config
 | <a id="configure_prettier-config"></a>config         | <p align="center"> - </p> | none                                                           |
 | <a id="configure_prettier-config_dep"></a>config_dep | <p align="center"> - </p> | none                                                           |
 | <a id="configure_prettier-dep"></a>dep               | <p align="center"> - </p> | <code>"@better_rules_javascript//prettier:prettier_lib"</code> |
-| <a id="configure_prettier-plugins"></a>plugins       | <p align="center"> - </p> | <code>[]</code>                                                |
 | <a id="configure_prettier-visibility"></a>visibility | <p align="center"> - </p> | <code>None</code>                                              |

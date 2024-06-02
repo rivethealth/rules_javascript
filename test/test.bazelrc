@@ -3,6 +3,7 @@ run --symlink_prefix=/
 test --symlink_prefix=/
 test --test_output=errors
 
+common --noenable_bzlmod
 build --experimental_strict_action_env
 build --incompatible_disable_starlark_host_transitions
 build --incompatible_disallow_struct_provider_syntax
@@ -10,4 +11,5 @@ build --incompatible_disable_target_provider_fields
 build --incompatible_struct_has_no_methods
 build --incompatible_top_level_aspects_require_providers
 build --incompatible_use_cc_configure_from_rules_cc
+build --noincompatible_disallow_struct_provider_syntax
 build --test_env=PATH

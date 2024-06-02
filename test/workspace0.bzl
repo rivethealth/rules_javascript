@@ -58,11 +58,11 @@ def test_repositories0():
 
     # Python
 
-    PYTHON_VERSION = "0.6.0"
+    PYTHON_VERSION = "0.32.2"
 
     http_archive(
         name = "rules_python",
-        sha256 = "a30abdfc7126d497a7698c29c46ea9901c6392d6ed315171a6df5ce433aa4502",
+        sha256 = "4912ced70dc1a2a8e4b86cec233b192ca053e82bc72d877b98e126156e8f228d",
         strip_prefix = "rules_python-%s" % PYTHON_VERSION,
         url = "https://github.com/bazelbuild/rules_python/archive/%s.tar.gz" % PYTHON_VERSION,
     )

@@ -19,6 +19,7 @@ resolution, see [Module Resolution](module.md).
 - [//javascript:rules.bzl](#javascriptrulesbzl)
   - [js_export](#js_export)
   - [js_library](#js_library)
+  - [js_module_import](#js_module_import)
 - [//javascript:workspace.bzl](#javascriptworkspacebzl)
   - [js_directory_npm_plugin](#js_directory_npm_plugin)
   - [js_npm_plugin](#js_npm_plugin)
@@ -200,6 +201,22 @@ JavaScript library
 | <a id="js_library-root"></a>root                 | -                                                                              | <a href="https://bazel.build/concepts/labels">Label</a>             | optional  | <code>None</code> |
 | <a id="js_library-srcs"></a>srcs                 | JavaScript files and data.                                                     | <a href="https://bazel.build/concepts/labels">List of labels</a>    | optional  | <code>[]</code>   |
 | <a id="js_library-strip_prefix"></a>strip_prefix | Package-relative prefix to remove.                                             | String                                                              | optional  | <code>""</code>   |
+
+<a id="js_module_import"></a>
+
+## js_module_import
+
+<pre>
+js_module_import(<a href="#js_module_import-name">name</a>, <a href="#js_module_import-dep">dep</a>, <a href="#js_module_import-path">path</a>)
+</pre>
+
+**ATTRIBUTES**
+
+| Name                                   | Description                    | Type                                                                | Mandatory | Default         |
+| :------------------------------------- | :----------------------------- | :------------------------------------------------------------------ | :-------- | :-------------- |
+| <a id="js_module_import-name"></a>name | A unique name for this target. | <a href="https://bazel.build/concepts/labels#target-names">Name</a> | required  |                 |
+| <a id="js_module_import-dep"></a>dep   | -                              | <a href="https://bazel.build/concepts/labels">Label</a>             | required  |                 |
+| <a id="js_module_import-path"></a>path | -                              | String                                                              | optional  | <code>""</code> |
 
 # //javascript:workspace.bzl
 

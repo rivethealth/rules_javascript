@@ -41,6 +41,22 @@ def _npm_import_external_impl(ctx, plugins):
 
     ctx.file("BUILD.bazel", build)
 
+_npm_import_external_attrs = {
+    "deps": attr.string_list(
+        doc = "Dependencies.",
+    ),
+    "extra_deps": attr.string_list_dict(
+        doc = "Extra dependencies.",
+    ),
+    "package": attr.label(
+        mandatory = True,
+    ),
+    "package_name": attr.string(
+        doc = "Package name.",
+        mandatory = True,
+    ),
+}
+
 def npm_import_external_rule(plugins):
     """Create a npm_import_external rule."""
 
@@ -49,21 +65,7 @@ def npm_import_external_rule(plugins):
 
     return repository_rule(
         implementation = impl,
-        attrs = {
-            "deps": attr.string_list(
-                doc = "Dependencies.",
-            ),
-            "extra_deps": attr.string_list_dict(
-                doc = "Extra dependencies.",
-            ),
-            "package": attr.label(
-                mandatory = True,
-            ),
-            "package_name": attr.string(
-                doc = "Package name.",
-                mandatory = True,
-            ),
-        },
+        attrs = _npm_import_external_attrs,
     )
 
 def _npm_import_impl(ctx, plugins):
@@ -80,6 +82,13 @@ def _npm_import_impl(ctx, plugins):
 
         ctx.file("%s/BUILD.bazel" % package_name, build)
 
+_npm_import_attrs = {
+    "packages": attr.string_dict(
+        mandatory = True,
+        doc = "Packages.",
+    ),
+}
+
 def npm_import_rule(plugins):
     """Create an npm import rule."""
 
@@ -88,12 +97,7 @@ def npm_import_rule(plugins):
 
     return repository_rule(
         implementation = impl,
-        attrs = {
-            "packages": attr.string_dict(
-                mandatory = True,
-                doc = "Packages.",
-            ),
-        },
+        attrs = _npm_import_attrs,
     )
 
 def package_repo_name(prefix, name):

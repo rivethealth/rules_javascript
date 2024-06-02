@@ -13,6 +13,7 @@ language, like CSS.
   - [Example](#example)
 - [//commonjs:providers.bzl](#commonjsprovidersbzl)
   - [CjsInfo](#cjsinfo)
+  - [CjsPath](#cjspath)
   - [cjs_npm_label](#cjs_npm_label)
   - [create_cjs_info](#create_cjs_info)
   - [create_extra_deps](#create_extra_deps)
@@ -76,6 +77,22 @@ CommonJS-style package info
 | <a id="CjsInfo-transitive_files"></a>transitive_files       | Files       |
 | <a id="CjsInfo-transitive_packages"></a>transitive_packages | Packages    |
 | <a id="CjsInfo-transitive_links"></a>transitive_links       | Links       |
+
+<a id="CjsPath"></a>
+
+## CjsPath
+
+<pre>
+CjsPath(<a href="#CjsPath-path">path</a>)
+</pre>
+
+CommonJS path
+
+**FIELDS**
+
+| Name                          | Description                    |
+| :---------------------------- | :----------------------------- |
+| <a id="CjsPath-path"></a>path | Path relative to CommonJS root |
 
 <a id="cjs_npm_label"></a>
 

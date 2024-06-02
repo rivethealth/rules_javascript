@@ -187,7 +187,7 @@ nodejs(<a href="#nodejs-name">name</a>, <a href="#nodejs-options">options</a>, <
 ## nodejs_binary
 
 <pre>
-nodejs_binary(<a href="#nodejs_binary-name">name</a>, <a href="#nodejs_binary-data">data</a>, <a href="#nodejs_binary-dep">dep</a>, <a href="#nodejs_binary-env">env</a>, <a href="#nodejs_binary-main">main</a>, <a href="#nodejs_binary-node">node</a>, <a href="#nodejs_binary-node_options">node_options</a>)
+nodejs_binary(<a href="#nodejs_binary-name">name</a>, <a href="#nodejs_binary-data">data</a>, <a href="#nodejs_binary-dep">dep</a>, <a href="#nodejs_binary-env">env</a>, <a href="#nodejs_binary-main">main</a>, <a href="#nodejs_binary-node">node</a>, <a href="#nodejs_binary-node_options">node_options</a>, <a href="#nodejs_binary-preload">preload</a>)
 </pre>
 
 Node.js binary
@@ -203,13 +203,14 @@ Node.js binary
 | <a id="nodejs_binary-main"></a>main                 | -                              | String                                                                        | required  |                      |
 | <a id="nodejs_binary-node"></a>node                 | -                              | <a href="https://bazel.build/concepts/labels">Label</a>                       | optional  | <code>:nodejs</code> |
 | <a id="nodejs_binary-node_options"></a>node_options | Node.js options                | List of strings                                                               | optional  | <code>[]</code>      |
+| <a id="nodejs_binary-preload"></a>preload           | Preloaded modules              | <a href="https://bazel.build/concepts/labels">List of labels</a>              | optional  | <code>[]</code>      |
 
 <a id="nodejs_binary_package"></a>
 
 ## nodejs_binary_package
 
 <pre>
-nodejs_binary_package(<a href="#nodejs_binary_package-name">name</a>, <a href="#nodejs_binary_package-dep">dep</a>, <a href="#nodejs_binary_package-env">env</a>, <a href="#nodejs_binary_package-main">main</a>, <a href="#nodejs_binary_package-node">node</a>, <a href="#nodejs_binary_package-node_options">node_options</a>)
+nodejs_binary_package(<a href="#nodejs_binary_package-name">name</a>, <a href="#nodejs_binary_package-dep">dep</a>, <a href="#nodejs_binary_package-env">env</a>, <a href="#nodejs_binary_package-main">main</a>, <a href="#nodejs_binary_package-node">node</a>, <a href="#nodejs_binary_package-node_options">node_options</a>, <a href="#nodejs_binary_package-preload">preload</a>)
 </pre>
 
 Create executable tar
@@ -224,6 +225,7 @@ Create executable tar
 | <a id="nodejs_binary_package-main"></a>main                 | -                              | String                                                                        | required  |                      |
 | <a id="nodejs_binary_package-node"></a>node                 | -                              | <a href="https://bazel.build/concepts/labels">Label</a>                       | optional  | <code>:nodejs</code> |
 | <a id="nodejs_binary_package-node_options"></a>node_options | Node.js options                | List of strings                                                               | optional  | <code>[]</code>      |
+| <a id="nodejs_binary_package-preload"></a>preload           | Preloaded modules              | <a href="https://bazel.build/concepts/labels">List of labels</a>              | optional  | <code>[]</code>      |
 
 <a id="nodejs_modules_binary"></a>
 
