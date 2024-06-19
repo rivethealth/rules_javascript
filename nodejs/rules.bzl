@@ -454,6 +454,7 @@ def _nodejs_modules_package_impl(ctx):
     default_info = DefaultInfo(files = transitive_files)
 
     filegroup_info = PackageFilegroupInfo(
+        pkg_dirs = [],
         pkg_files = [(files, label)],
         pkg_symlinks = [(symlink, label) for symlink in symlinks],
     )
@@ -617,6 +618,7 @@ def _nodejs_binary_package_impl(ctx):
     default_info = DefaultInfo(files = depset(files_map.values()))
 
     filegroup_info = PackageFilegroupInfo(
+        pkg_dirs = [],
         pkg_files = [(files, label)],
         pkg_symlinks = [(symlink, label) for symlink in symlinks],
     )
