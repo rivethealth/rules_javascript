@@ -21,16 +21,16 @@ workerMain(async (a) => {
 
   return async (a) => {
     try {
-      const errors = await worker.run(a);
-      if (errors.length > 0) {
-        return { exitCode: 2, output: errors.join("\n") };
-      }
+      const messages = await worker.run(a);
+      return {
+        exitCode: messages.some(({ type }) => type === "error") ? 2 : 0,
+        output: messages.map(({ content }) => content).join("\n"),
+      };
     } catch (error) {
       return {
         exitCode: 1,
         output: error instanceof Error ? error.stack! : String(error),
       };
     }
-    return { exitCode: 0, output: "" };
   };
 });

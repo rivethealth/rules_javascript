@@ -17,7 +17,10 @@ export class EslintWorker {
     });
 
     await fs.promises.writeFile(args.output, report.output || input, "utf8");
-    return report.messages.map((message) => messageString(args.input, message));
+    return report.messages.map((message) => ({
+      content: messageString(args.input, message),
+      type: ["info", "warning", "error"][message.severity],
+    }));
   }
 }
 
