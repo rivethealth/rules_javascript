@@ -272,7 +272,7 @@ TypeScript library with pre-existing declaration files.
 
 <pre>
 ts_library(<a href="#ts_library-name">name</a>, <a href="#ts_library-compile_deps">compile_deps</a>, <a href="#ts_library-compiler">compiler</a>, <a href="#ts_library-config">config</a>, <a href="#ts_library-config_dep">config_dep</a>, <a href="#ts_library-data">data</a>, <a href="#ts_library-declaration_prefix">declaration_prefix</a>, <a href="#ts_library-deps">deps</a>,
-           <a href="#ts_library-js_prefix">js_prefix</a>, <a href="#ts_library-jsx">jsx</a>, <a href="#ts_library-module">module</a>, <a href="#ts_library-root">root</a>, <a href="#ts_library-srcs">srcs</a>, <a href="#ts_library-strip_prefix">strip_prefix</a>, <a href="#ts_library-target">target</a>)
+           <a href="#ts_library-global_deps">global_deps</a>, <a href="#ts_library-js_prefix">js_prefix</a>, <a href="#ts_library-jsx">jsx</a>, <a href="#ts_library-module">module</a>, <a href="#ts_library-root">root</a>, <a href="#ts_library-srcs">srcs</a>, <a href="#ts_library-strip_prefix">strip_prefix</a>, <a href="#ts_library-target">target</a>)
 </pre>
 
 TypeScript library.
@@ -289,6 +289,7 @@ TypeScript library.
 | <a id="ts_library-data"></a>data                             | Runfile files. These are added to normal runfiles tree, not CommonJS packages.                                | <a href="https://bazel.build/concepts/labels">List of labels</a>    | optional  | <code>[]</code>      |
 | <a id="ts_library-declaration_prefix"></a>declaration_prefix | Declaration output directory.                                                                                 | String                                                              | optional  | <code>""</code>      |
 | <a id="ts_library-deps"></a>deps                             | JS and TS dependencies                                                                                        | <a href="https://bazel.build/concepts/labels">List of labels</a>    | optional  | <code>[]</code>      |
+| <a id="ts_library-global_deps"></a>global_deps               | Global dependencies.                                                                                          | <a href="https://bazel.build/concepts/labels">List of labels</a>    | optional  | <code>[]</code>      |
 | <a id="ts_library-js_prefix"></a>js_prefix                   | JavaScript output directory.                                                                                  | String                                                              | optional  | <code>""</code>      |
 | <a id="ts_library-jsx"></a>jsx                               | How JSX is emitted: react (default) or preserve                                                               | String                                                              | optional  | <code>"react"</code> |
 | <a id="ts_library-module"></a>module                         | Module type. By default, uses //javascript:module.                                                            | String                                                              | optional  | <code>""</code>      |

@@ -132,11 +132,12 @@ def _ts_library_impl(ctx):
     config = ctx.attr._config[DefaultInfo]
     compiler = ctx.attr.compiler[TsCompilerInfo]
     cjs_deps = compiler.runtime_cjs + [target[CjsInfo] for target in ctx.attr.compile_deps + ctx.attr.deps if CjsInfo in target]
+    cjs_globals = [dep[CjsInfo] for dep in ctx.attr.global_deps]
     cjs_root = ctx.attr.root and ctx.attr.root[CjsInfo]
     declaration_prefix = ctx.attr.declaration_prefix
     fs_linker_cjs = ctx.attr._fs_linker[CjsInfo]
     fs_linker_js = ctx.attr._fs_linker[JsInfo]
-    js_deps = compiler.runtime_js + [dep[JsInfo] for dep in ctx.attr.deps if JsInfo in dep and str(dep.label) not in ctx.attr._system_lib[BuildSettingInfo].value]
+    js_deps = compiler.runtime_js + [dep[JsInfo] for dep in ctx.attr.deps + ctx.attr.global_deps if JsInfo in dep and str(dep.label) not in ctx.attr._system_lib[BuildSettingInfo].value]
     js_prefix = ctx.attr.js_prefix
     jsx = ctx.attr.jsx
     label = ctx.label
@@ -146,7 +147,7 @@ def _ts_library_impl(ctx):
     srcs = ctx.files.srcs
     strip_prefix = ctx.attr.strip_prefix
     target_ = ctx.attr.target or target(ctx.attr._language[BuildSettingInfo].value)
-    ts_deps = [target[TsInfo] for target in ctx.attr.compile_deps + ctx.attr.deps if TsInfo in target]
+    ts_deps = [target[TsInfo] for target in ctx.attr.compile_deps + ctx.attr.deps + ctx.attr.global_deps if TsInfo in target]
     tsconfig_js = ctx.attr.config_dep and ctx.attr.config_dep[JsInfo]
     tsconfig_path = ctx.attr.config
     tsconfig_dep = ctx.attr.config_dep and (ctx.attr.config_dep[CjsInfo] if CjsInfo in ctx.attr.config_dep else None)
@@ -303,6 +304,7 @@ def _ts_library_impl(ctx):
         compile_cjs_info = cjs_root and create_cjs_info(
             cjs_root = cjs_root,
             deps = ([tsconfig_dep] if tsconfig_dep else []) + compiler.runtime_cjs + cjs_deps,
+            globals = cjs_globals,
             label = label,
         )
         gen_manifest(
@@ -349,6 +351,7 @@ def _ts_library_impl(ctx):
         label = label,
         cjs_root = cjs_root,
         deps = cjs_deps,
+        globals = cjs_globals,
     )
 
     js_info = create_js_info(
@@ -394,6 +397,10 @@ ts_library = rule(
         "deps": attr.label_list(
             doc = "JS and TS dependencies",
             providers = [[JsInfo], [TsInfo]],
+        ),
+        "global_deps": attr.label_list(
+            doc = "Global dependencies.",
+            providers = [[CjsInfo, JsInfo], [CjsInfo, TsInfo]],
         ),
         "module": attr.string(
             doc = "Module type. By default, uses //javascript:module.",
