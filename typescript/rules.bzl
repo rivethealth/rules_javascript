@@ -202,6 +202,15 @@ def _ts_library_impl(ctx):
         inputs.append(ts_)
 
         if is_declaration(file.path):
+            ts_ = link_file(
+                actions = actions,
+                file = file,
+                label = label,
+                output = output_,
+                prefix = declaration_prefix,
+                strip_prefix = strip_prefix,
+            )
+            declarations.append(ts_)
             continue
 
         if is_json(file.path):
@@ -209,8 +218,10 @@ def _ts_library_impl(ctx):
                 js_ = link_file(
                     actions = actions,
                     file = file,
-                    strip_prefix = strip_prefix,
+                    label = label,
+                    output = output_,
                     prefix = js_prefix,
+                    strip_prefix = strip_prefix,
                 )
                 outputs.append(js_)
             else:
