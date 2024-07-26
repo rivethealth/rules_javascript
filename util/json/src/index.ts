@@ -27,7 +27,7 @@ export namespace JsonFormat {
     return new MapJsonFormat(keyFormat, valueFormat);
   }
 
-  export function object<V>(format: {
+  export function object<V extends {}>(format: {
     [K in keyof V]: JsonFormat<V[K]>;
   }): JsonFormat<V> {
     return new ObjectJsonFormat(format);
@@ -112,7 +112,7 @@ class IdentityJsonFormat<T> implements JsonFormat<T> {
   }
 }
 
-class ObjectJsonFormat<V> implements JsonFormat<V> {
+class ObjectJsonFormat<V extends {}> implements JsonFormat<V> {
   constructor(format: { [K in keyof V]: JsonFormat<V[K]> }) {
     this.properties = (<[string, JsonFormat<any>][]>(
       Object.entries(format)

@@ -31,6 +31,7 @@ pkg_tar(
         "//jest/doc",
         "//nodejs/doc",
         "//npm/doc",
+        "//openapi/doc",
         "//prettier/doc",
         "//protobuf/doc",
         "//protobufjs/doc",

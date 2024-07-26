@@ -20,6 +20,8 @@
 
 - [Npm](npm.md)
 
+- [OpenAPI](openapi.md)
+
 - [Prettier](prettier.md)
 
 - [Protobuf](protobuf.md)

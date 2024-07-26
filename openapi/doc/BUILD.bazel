@@ -1,0 +1,11 @@
+load("//tools/doc:rules.bzl", "doc")
+
+doc(
+    "doc",
+    "//openapi:bzl",
+    [
+        "//openapi:rules.bzl",
+    ],
+    header = "doc.md",
+    visibility = ["//:__subpackages__"],
+)
