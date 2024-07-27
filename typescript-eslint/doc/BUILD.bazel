@@ -1,0 +1,9 @@
+load("//tools/doc:rules.bzl", "doc")
+
+doc(
+    "doc",
+    "//typescript-eslint:bzl",
+    ["//typescript-eslint:rules.bzl"],
+    header = "doc.md",
+    visibility = ["//:__subpackages__"],
+)

@@ -19,6 +19,19 @@ TsCompilerInfo = provider(
     },
 )
 
+TsCompileInfo = provider(
+    doc = "TypeScript compilation info",
+    fields = {
+        "compiler": "Compiler",
+        "config_path": "Configuration path",
+        "configs": "Depset of config files",
+        "declarations": "Depset of upstream declarations",
+        "manifest": "Manifest file",
+        "srcs": "Depset of sources",
+        "runtime_js": "Runtime files",
+    },
+)
+
 def is_declaration(path):
     return path.endswith(".d.ts") or path.endswith(".d.cts") or path.endswith(".d.mts")
 

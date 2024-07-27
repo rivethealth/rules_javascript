@@ -15,14 +15,20 @@ http_archive(
 
 # File
 
-FILE_VERSION = "503983f533bede6833c7ee9c3220a51882689eb1"
+FILE_VERSION = "1c32570780c1a4f4e81178c8d47e8e139bc9d7a0"
 
 http_archive(
     name = "rules_file",
-    sha256 = "f57c7fce8d2370d7ac27888c625fb87d1d51bc707985d329b4274211d7ae209e",
+    sha256 = "9cacf34668776e35a983ba85cb82084ec90e6beeb35f5d26bbc209f6cb509ac3",
     strip_prefix = "rules_file-%s" % FILE_VERSION,
-    url = "https://github.com/rivethealth/rules_file/archive/%s.zip" % FILE_VERSION,
+    url = "https://github.com/redoapp/rules_file/archive/%s.zip" % FILE_VERSION,
 )
+
+load("@rules_file//buildifier:workspace.bzl", "buildifier_repositories", "buildifier_toolchains")
+
+buildifier_repositories()
+
+buildifier_toolchains()
 
 load("@rules_file//file:workspace.bzl", "files")
 

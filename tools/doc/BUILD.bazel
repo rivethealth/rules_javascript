@@ -38,6 +38,7 @@ pkg_tar(
         "//rollup/doc",
         "//rules/doc",
         "//ts-proto/doc",
+        "//typescript-eslint/doc",
         "//typescript/doc",
         "//webpack/doc",
     ],

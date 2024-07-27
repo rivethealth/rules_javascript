@@ -4,6 +4,7 @@
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
 - [//typescript:providers.bzl](#typescriptprovidersbzl)
+  - [TsCompileInfo](#tscompileinfo)
   - [TsCompilerInfo](#tscompilerinfo)
   - [TsInfo](#tsinfo)
   - [create_ts_info](#create_ts_info)
@@ -32,6 +33,28 @@
 <!-- Generated with Stardoc: http://skydoc.bazel.build -->
 
 TypeScript helpers
+
+<a id="TsCompileInfo"></a>
+
+## TsCompileInfo
+
+<pre>
+TsCompileInfo(<a href="#TsCompileInfo-compiler">compiler</a>, <a href="#TsCompileInfo-config_path">config_path</a>, <a href="#TsCompileInfo-configs">configs</a>, <a href="#TsCompileInfo-declarations">declarations</a>, <a href="#TsCompileInfo-manifest">manifest</a>, <a href="#TsCompileInfo-srcs">srcs</a>, <a href="#TsCompileInfo-runtime_js">runtime_js</a>)
+</pre>
+
+TypeScript compilation info
+
+**FIELDS**
+
+| Name                                                | Description                     |
+| :-------------------------------------------------- | :------------------------------ |
+| <a id="TsCompileInfo-compiler"></a>compiler         | Compiler                        |
+| <a id="TsCompileInfo-config_path"></a>config_path   | Configuration path              |
+| <a id="TsCompileInfo-configs"></a>configs           | Depset of config files          |
+| <a id="TsCompileInfo-declarations"></a>declarations | Depset of upstream declarations |
+| <a id="TsCompileInfo-manifest"></a>manifest         | Manifest file                   |
+| <a id="TsCompileInfo-srcs"></a>srcs                 | Depset of sources               |
+| <a id="TsCompileInfo-runtime_js"></a>runtime_js     | Runtime files                   |
 
 <a id="TsCompilerInfo"></a>
 

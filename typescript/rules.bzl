@@ -10,7 +10,7 @@ load("//javascript:providers.bzl", "JsInfo", "create_js_info")
 load("//javascript:rules.bzl", "js_export")
 load("//nodejs:rules.bzl", "nodejs_binary")
 load("//util:path.bzl", "link_file", "output", "output_name", "runfile_path")
-load(":providers.bzl", "TsCompilerInfo", "TsInfo", "create_ts_info", "declaration_path", "is_declaration", "is_json", "js_path", "map_path", "module", "target")
+load(":providers.bzl", "TsCompileInfo", "TsCompilerInfo", "TsInfo", "create_ts_info", "declaration_path", "is_declaration", "is_json", "js_path", "map_path", "module", "target")
 
 def configure_ts_compiler(name, ts, tslib = None, visibility = None):
     """Configure TypeScript compiler.
@@ -284,49 +284,49 @@ def _ts_library_impl(ctx):
                 tools = [compiler.transpile_bin.files_to_run],
             )
 
+    # create tsconfig
+    tsconfig = actions.declare_file("%s.tsconfig.json" % ctx.attr.name)
+    args = actions.args()
+    if tsconfig_path:
+        args.add("--config", "%s/%s" % (tsconfig_dep.package.path, tsconfig_path))
+    args.add("--declaration-dir", "%s/%s" % (output_.path, declaration_prefix) if declaration_prefix else output_.path)
+    args.add("--module", module_)
+    args.add("--root-dir", "%s/%s" % (output_.path, strip_prefix) if strip_prefix else output_.path)
+    args.add("--root-dirs", "%s/%s" % (output_.path, strip_prefix) if strip_prefix else output_.path)
+    args.add("--root-dirs", "%s/%s" % (output_.path, declaration_prefix) if declaration_prefix else output_.path)
+    args.add("--target", target_)
+    args_file = actions.args()
+    args_file.use_param_file("@%s")
+    args_file.add_all(inputs, before_each = "--file")
+    if cjs_root:
+        args.add("--type-root", "%s/node_modules/@types" % cjs_root.package.path)
+    args.add(tsconfig)
+    actions.run(
+        arguments = [args, args_file],
+        executable = config.files_to_run.executable,
+        inputs = [file for file in inputs if file.is_directory],
+        tools = [config.files_to_run],
+        outputs = [tsconfig],
+    )
+
+    package_manifest = actions.declare_file("%s.package-manifest.json" % ctx.attr.name)
+    compile_cjs_info = cjs_root and create_cjs_info(
+        cjs_root = cjs_root,
+        deps = ([tsconfig_dep] if tsconfig_dep else []) + compiler.runtime_cjs + cjs_deps,
+        globals = cjs_globals,
+        label = label,
+    )
+    gen_manifest(
+        actions = actions,
+        deps = compile_cjs_info.transitive_links if compile_cjs_info else depset(),
+        manifest = package_manifest,
+        manifest_bin = ctx.attr._manifest[DefaultInfo],
+        package_path = package_path,
+        packages = compile_cjs_info.transitive_packages if compile_cjs_info else depset(),
+    )
+
     # compile declarations
     if outputs:
-        # create tsconfig
-        tsconfig = actions.declare_file("%s.tsconfig.json" % ctx.attr.name)
-        args = actions.args()
-        if tsconfig_path:
-            args.add("--config", "%s/%s" % (tsconfig_dep.package.path, tsconfig_path))
-        args.add("--declaration-dir", "%s/%s" % (output_.path, declaration_prefix) if declaration_prefix else output_.path)
-        args.add("--module", module_)
-        args.add("--root-dir", "%s/%s" % (output_.path, strip_prefix) if strip_prefix else output_.path)
-        args.add("--root-dirs", "%s/%s" % (output_.path, strip_prefix) if strip_prefix else output_.path)
-        args.add("--root-dirs", "%s/%s" % (output_.path, declaration_prefix) if declaration_prefix else output_.path)
-        args.add("--target", target_)
-        args_file = actions.args()
-        args_file.use_param_file("@%s")
-        args_file.add_all(inputs, before_each = "--file")
-        if cjs_root:
-            args.add("--type-root", "%s/node_modules/@types" % cjs_root.package.path)
-        args.add(tsconfig)
-        actions.run(
-            arguments = [args, args_file],
-            executable = config.files_to_run.executable,
-            inputs = [file for file in inputs if file.is_directory],
-            tools = [config.files_to_run],
-            outputs = [tsconfig],
-        )
-
-        package_manifest = actions.declare_file("%s.package-manifest.json" % ctx.attr.name)
-        compile_cjs_info = cjs_root and create_cjs_info(
-            cjs_root = cjs_root,
-            deps = ([tsconfig_dep] if tsconfig_dep else []) + compiler.runtime_cjs + cjs_deps,
-            globals = cjs_globals,
-            label = label,
-        )
-        gen_manifest(
-            actions = actions,
-            deps = compile_cjs_info.transitive_links if compile_cjs_info else depset(),
-            manifest = package_manifest,
-            manifest_bin = ctx.attr._manifest[DefaultInfo],
-            package_path = package_path,
-            packages = compile_cjs_info.transitive_packages if compile_cjs_info else depset(),
-        )
-
         actions.run(
             arguments = ["-p", tsconfig.path],
             env = {
@@ -371,13 +371,24 @@ def _ts_library_impl(ctx):
         files = js,
     )
 
+    ts_compile_info = TsCompileInfo(
+        compiler = compiler.bin,
+        config_path = tsconfig.path,
+        configs = depset([tsconfig], transitive = [tsconfig_js.transitive_files]),
+        declarations = depset(transitive = [dep.transitive_files for dep in ts_deps]),
+        manifest = package_manifest,
+        runtime_js = depset(transitive = [js_info.transitive_files for js_info in compiler.runtime_js]),
+        srcs = depset(inputs),
+    )
+
     ts_info = create_ts_info(
         cjs_root = cjs_root,
         deps = ts_deps,
         files = declarations,
     )
 
-    return [default_info, js_info, output_group_info, ts_info] + ([cjs_info] if cjs_info else [])
+    return [default_info, js_info, output_group_info, ts_compile_info, ts_info] + \
+           ([cjs_info] if cjs_info else [])
 
 ts_library = rule(
     implementation = _ts_library_impl,
@@ -471,7 +482,7 @@ ts_library = rule(
         ),
     },
     doc = "TypeScript library.",
-    provides = [TsInfo],
+    provides = [JsInfo, TsCompileInfo, TsInfo],
 )
 
 def _ts_import_impl(ctx):
