@@ -81,6 +81,7 @@ def _ts_eslint_format(ctx, name, src, out, outputs):
 def _ts_eslint_format_impl(ctx):
     all_srcs = ctx.attr.all_srcs
     actions = ctx.actions
+    args_default = ctx.attr._args[DefaultInfo]
     bash_runfiles = ctx.files._bash_runfiles
     diff_default = ctx.attr._diff[DefaultInfo]
     label = ctx.label
@@ -126,6 +127,7 @@ def _ts_eslint_format_impl(ctx):
 
     default_info = create_runner(
         actions = actions,
+        args_bin = args_default,
         bash_runfiles = bash_runfiles,
         bin = executable,
         diff_bin = diff_default,
@@ -159,6 +161,11 @@ ts_eslint_format = rule(
             doc = "TypeScript compilation",
             mandatory = True,
             providers = [TsCompileInfo],
+        ),
+        "_args": attr.label(
+            cfg = "exec",
+            default = "@rules_file//generate/args:bin",
+            executable = True,
         ),
         "_bash_runfiles": attr.label(
             allow_files = True,
