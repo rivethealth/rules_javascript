@@ -20,7 +20,7 @@ export class PrettierWorker {
           // in theory, should be able to just resolve the path, but for some reason
           // that dereferences symlinks
           if (typeof plugin === "string") {
-            const path = await resolve(plugin, contextUrl);
+            const path = await resolve(plugin, contextUrl.toString());
             const p = await load(path);
             plugin = p.default ?? p;
           }
