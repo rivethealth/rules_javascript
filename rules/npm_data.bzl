@@ -7733,6 +7733,25 @@ PACKAGES = {
         "name": "jackspeak",
         "url": "https://registry.npmjs.org/jackspeak/-/jackspeak-2.3.6.tgz",
     },
+    "jest-junit@16.0.0": {
+        "deps": [
+            {
+                "id": "mkdirp@1.0.4",
+            },
+            {
+                "id": "strip-ansi@6.0.1",
+            },
+            {
+                "id": "uuid@8.3.2",
+            },
+            {
+                "id": "xml@1.0.1",
+            },
+        ],
+        "integrity": "sha512-A94mmw6NfJab4Fg/BlvVOUXzXgF0XIH6EmTgJ5NDPp4xoKq0Kr7sErb+4Xs9nZvu58pJojz5RFGpqnZYJTrRfQ==",
+        "name": "jest-junit",
+        "url": "https://registry.npmjs.org/jest-junit/-/jest-junit-16.0.0.tgz",
+    },
     "jest-worker@27.5.1": {
         "deps": [
             {
@@ -12027,6 +12046,11 @@ PACKAGES = {
         "name": "ws",
         "url": "https://registry.npmjs.org/ws/-/ws-8.13.0.tgz",
     },
+    "xml@1.0.1": {
+        "integrity": "sha512-huCv9IH9Tcf95zuYCsQraZtWnJvBtLVE0QHMOs8bWyZAFZNDcYjsPq1nEx8jKA9y+Beo9v+7OBPRisQTjinQMw==",
+        "name": "xml",
+        "url": "https://registry.npmjs.org/xml/-/xml-1.0.1.tgz",
+    },
     "yallist@4.0.0": {
         "integrity": "sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==",
         "name": "yallist",
@@ -12149,6 +12173,10 @@ ROOTS = [
     {
         "id": "eslint@8.29.0",
         "name": "eslint",
+    },
+    {
+        "id": "jest-junit@16.0.0",
+        "name": "jest-junit",
     },
     {
         "id": "long@4.0.0",

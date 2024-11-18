@@ -2542,6 +2542,28 @@ PACKAGES = {
         "name": "@jest/transform",
         "url": "https://registry.npmjs.org/@jest/transform/-/transform-29.3.1.tgz",
     },
+    "@jest/types@27.4.2": {
+        "deps": [
+            {
+                "id": "@types/istanbul-lib-coverage@2.0.3",
+            },
+            {
+                "id": "@types/istanbul-reports@3.0.1",
+            },
+            {
+                "id": "@types/node@18.16.3",
+            },
+            {
+                "id": "@types/yargs@16.0.9",
+            },
+            {
+                "id": "chalk@4.1.2",
+            },
+        ],
+        "integrity": "sha512-j35yw0PMTPpZsUoOBiuHzr1zTYoad1cVIE0ajEjcrJONxxrko/IRGKkXx3os0Nsi4Hu3+5VmDbVfq5WhG/pWAg==",
+        "name": "@jest/types",
+        "url": "https://registry.npmjs.org/@jest/types/-/types-27.4.2.tgz",
+    },
     "@jest/types@28.1.3": {
         "deps": [
             {
@@ -4846,6 +4868,16 @@ PACKAGES = {
         "integrity": "sha512-7tFImggNeNBVMsn0vLrpn1H1uPrUBdnARPTpZoitY37ZrdJREzf7I16tMrlK3hen349gr1NYh8CmZQa7CTG6Aw==",
         "name": "@types/yargs-parser",
         "url": "https://registry.npmjs.org/@types/yargs-parser/-/yargs-parser-20.2.1.tgz",
+    },
+    "@types/yargs@16.0.9": {
+        "deps": [
+            {
+                "id": "@types/yargs-parser@20.2.1",
+            },
+        ],
+        "integrity": "sha512-tHhzvkFXZQeTECenFoRljLBYPZJ7jAVxqqtEI0qTLOmuultnFp4I9yKE17vTuhf7BkhCu7I4XuemPgikDVuYqA==",
+        "name": "@types/yargs",
+        "url": "https://registry.npmjs.org/@types/yargs/-/yargs-16.0.9.tgz",
     },
     "@types/yargs@17.0.10": {
         "deps": [
@@ -15177,6 +15209,10 @@ ROOTS = [
     {
         "id": "@babel/plugin-transform-modules-commonjs@7.18.6-dc3fc578",
         "name": "@babel/plugin-transform-modules-commonjs",
+    },
+    {
+        "id": "@jest/types@27.4.2",
+        "name": "@jest/types",
     },
     {
         "id": "@prettier/plugin-xml@3.2.2-dc3fc578",

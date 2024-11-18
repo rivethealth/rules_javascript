@@ -18,6 +18,7 @@
     "argparse": "~2.0.1",
     "enhanced-resolve": "~5.8.0",
     "eslint": "^8.0.0",
+    "jest-junit": "^16",
     "long": "~4.0.0",
     "node-fetch": "^2.0.0",
     "npm": "^9",
