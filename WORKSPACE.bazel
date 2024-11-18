@@ -15,11 +15,11 @@ http_archive(
 
 # File
 
-FILE_VERSION = "dc12043e23645d9f66fdc53cbb5bd1047f25ea8a"
+FILE_VERSION = "395e75e903dbff03ad9b55721ce2a9bb7ca36182"
 
 http_archive(
     name = "rules_file",
-    sha256 = "38f0229bf6183d5f0c7ffeaf3b69978d19efdeb00538a74902030544147e4fec",
+    sha256 = "6931759e47e2cf2ea9d5b37a63e89e9b5248da67ef807a74df295905849167c6",
     strip_prefix = "rules_file-%s" % FILE_VERSION,
     url = "https://github.com/redoapp/rules_file/archive/%s.zip" % FILE_VERSION,
 )
