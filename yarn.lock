@@ -7846,9 +7846,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:^3":
-  version: 3.1.1
-  resolution: "prettier@npm:3.1.1"
+"prettier@npm:^3.4.2":
+  version: 3.4.2
+  resolution: "prettier@npm:3.4.2"
   bin:
     prettier: bin/prettier.cjs
   checksum: e386855e3a1af86a748e16953f168be555ce66d6233f4ba54eb6449b88eb0c6b2ca79441b11eae6d28a7f9a5c96440ce50864b9d5f6356d331d39d6bb66c648e
@@ -8375,7 +8375,7 @@ __metadata:
     long: ~4.0.0
     node-fetch: ^2.0.0
     npm-registry-fetch: ~14.0.2
-    prettier: ^3
+    prettier: ^3.4.2
     prettier-plugin-organize-imports: ^3
     protobufjs: ~6.11.2
     reflect-metadata: 0.1.13
