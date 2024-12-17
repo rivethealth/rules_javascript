@@ -1,11 +1,12 @@
 import { ArgumentParser } from "argparse";
 import { readFile, writeFile } from "node:fs/promises";
-import { Options, format } from "prettier";
+import { resolve } from "node:path";
+import { Options, format, resolveConfig } from "prettier";
 
 export class PrettierWorker {
   constructor(
-    readonly options: Options | undefined,
-    readonly fileExtOverrides: { [fileExt: string]: object } | undefined,
+    readonly configPath: string | undefined,
+    readonly plugins: any[] | undefined,
   ) {}
 
   async run(a: string[]) {
@@ -13,15 +14,18 @@ export class PrettierWorker {
     parser.add_argument("input");
     parser.add_argument("output");
     const args = parser.parse_args(a);
+
+    const resolvedConfig = await resolveConfig(resolve(args.input), {
+      config: this.configPath,
+    });
+    const options: Options = {
+      ...resolvedConfig,
+      plugins: this.plugins,
+    };
+
     const input = await readFile(args.input, "utf8");
     const output = await format(input, {
-      ...this.options,
-      ...Object.assign(
-        {},
-        ...Object.entries(this.fileExtOverrides ?? {})
-          .filter(([fileExt, overrides]) => args.input.endsWith(fileExt))
-          .map(([fileExt, overrides]) => overrides)
-      ),
+      ...options,
       filepath: args.input,
     });
     await writeFile(args.output, output, "utf8");

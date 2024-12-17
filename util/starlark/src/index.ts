@@ -37,7 +37,7 @@ export class StarlarkFile {
   constructor(readonly statements: StarlarkStatement[]) {}
 }
 
-function printArray(value: StarlarkArray, indent: string | undefined): string {
+function printArray(value: StarlarkArray, indent?: string | undefined): string {
   let output = "";
   output += "[";
   output += indent === undefined ? " " : "\n";
@@ -56,7 +56,7 @@ function printArray(value: StarlarkArray, indent: string | undefined): string {
   return output;
 }
 
-function printDict(value: StarlarkDict, indent: string | undefined): string {
+function printDict(value: StarlarkDict, indent?: string | undefined): string {
   let output = "";
   output += "{";
   output += indent === undefined ? " " : "\n";
@@ -64,7 +64,7 @@ function printDict(value: StarlarkDict, indent: string | undefined): string {
     if (indent !== undefined) {
       output += indent + "    ";
     }
-    output += printValue(k, undefined);
+    output += printValue(k);
     output += ": ";
     output += printValue(v, indent === undefined ? indent : indent + "    ");
     output += ",";
@@ -85,7 +85,7 @@ function printString(value: StarlarkString): string {
   return JSON.stringify(value.value);
 }
 
-function printValue(value: StarlarkValue, indent: string | undefined): string {
+function printValue(value: StarlarkValue, indent?: string | undefined): string {
   if (value instanceof StarlarkArray) {
     return printArray(value, indent);
   }
