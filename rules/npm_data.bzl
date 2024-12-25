@@ -11153,14 +11153,14 @@ PACKAGES = {
         "name": "prelude-ls",
         "url": "https://registry.npmjs.org/prelude-ls/-/prelude-ls-1.2.1.tgz",
     },
-    "prettier@3.1.1": {
+    "prettier@3.4.2": {
         "deps": [
         ],
         "extra_deps": {
         },
-        "integrity": "sha512-22UbSzg8luF4UuZtzgiUOfcGM8s4tjBv6dJRT7j275NXsy2jb4aJa4NNveul5x4eqlF1wuhuR2RElK71RvmVaw==",
+        "integrity": "sha512-e9MewbtFo+Fevyuxn/4rrcDAaq0IYxPGLvObpQjiZBMAzB9IGmzlnG9RZy3FFas+eBMu2vA0CszMeduow5dIuQ==",
         "name": "prettier",
-        "url": "https://registry.npmjs.org/prettier/-/prettier-3.1.1.tgz",
+        "url": "https://registry.npmjs.org/prettier/-/prettier-3.4.2.tgz",
     },
     "pretty-bytes@5.6.0": {
         "deps": [
@@ -14147,7 +14147,7 @@ ROOTS = [
         "name": "npm",
     },
     {
-        "id": "prettier@3.1.1",
+        "id": "prettier@3.4.2",
         "name": "prettier",
     },
     {

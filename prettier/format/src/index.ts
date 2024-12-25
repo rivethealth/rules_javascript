@@ -2,8 +2,9 @@ import { workerMain } from "@better-rules-javascript/bazel-worker";
 import { ArgumentParser } from "argparse";
 import { dirname } from "node:path";
 import { pathToFileURL } from "node:url";
-import { Options } from "prettier";
+import { Options, resolveConfig } from "prettier";
 import { load, resolve } from "./import";
+import { PrettierWorker } from "./worker";
 
 interface Args {
   config?: string;
@@ -13,9 +14,6 @@ workerMain(async (a) => {
   const parser = new ArgumentParser({ prog: "prettier-format" });
   parser.add_argument("--config", { help: "Configuration path" });
   const args: Args = parser.parse_args(a);
-
-  const { resolveConfig } = await import("prettier");
-  const { PrettierWorker } = await import("./worker");
 
   const options: Options | undefined =
     args.config === undefined
@@ -37,7 +35,7 @@ workerMain(async (a) => {
       }),
     );
   }
-  const worker = new PrettierWorker(options);
+  const worker = new PrettierWorker(args.config, options?.plugins);
 
   return async (a) => {
     try {
