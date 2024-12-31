@@ -98,7 +98,7 @@ function printValue(value: StarlarkValue, indent?: string | undefined): string {
   if (value instanceof StarlarkString) {
     return printString(value);
   }
-  throw new Error("Unreognized value");
+  throw new Error("Unrecognized value");
 }
 
 function printVariable(value: StarlarkVariable): string {
