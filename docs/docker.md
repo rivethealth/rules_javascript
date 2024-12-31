@@ -7,26 +7,32 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-Use `nodejs_binary_archive` to create a tar and add that to the docker image.
+Use `nodejs_binary_package` to create a tar and add that to the docker image.
 
 # Example
 
 ```bzl
-load("@better_rules_javascript//nodejs:rules.bzl", "nodejs_binary_archive")
-load("@io_bazel_rules_docker//container:container.bzl", "container_image")
+load("@better_rules_javascript//nodejs:rules.bzl", "nodejs_binary_package")
+load("@rules_oci//oci:defs.bzl", "oci_image")
 
-container_image(
+oci_image(
     name = "image",
-    base = "@base//image",
-    directory = "/opt/example",
+    base = "@base",
     entrypoint = ["/usr/local/bin/example"],
+    tars = ["image_layer"],
+)
+
+pkg_tar(
+    name = "image_layer",
+    package_dir = "/opt/example",
     symlinks = {
         "/usr/local/bin/example": "/opt/example/bin",
     },
-    tars = [":tar"],
+    # Merges these tars together into one layer
+    deps = [":tar"],
 )
 
-nodejs_binary_archive(
+nodejs_binary_package(
     name = "tar",
     dep = ":lib",
     main = "src/main.js",
