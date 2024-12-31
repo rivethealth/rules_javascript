@@ -33,10 +33,24 @@ def _npm_import_external_impl(ctx, plugins):
         fail("Could not list files")
     files = [file[len("npm/"):] for file in files_result.stdout.split("\n")]
 
+    final_package_path = ctx.attr.package
+    if ctx.attr.patches:
+        tar_result = ctx.execute([
+            "tar", "czf", "patched-package.tgz", "--strip-components=1", "npm/"
+        ])
+        if tar_result.return_code:
+            fail("Could not tar up patched-package.tgz")
+        final_package_path = "patched-package.tgz"
+
+    # Don't leave the package contents sitting around now that we're done. Bazel
+    # builds will always extract from the .tgz file, so anyone wanting to tinker
+    # should go poke at the .tgz.
+    ctx.execute(["rm", "-r", "npm/"])
+
     build = ""
 
     package = struct(
-        archive = ctx.attr.package,
+        archive = final_package_path,
         deps = deps,
         extra_deps = extra_deps,
         name = package_name,
