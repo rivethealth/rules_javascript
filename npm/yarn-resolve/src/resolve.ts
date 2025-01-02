@@ -84,6 +84,7 @@ export async function resolvePackages(
           integrity: npmPackage.contentIntegrity,
           name: structUtils.stringifyIdent(yarnPackage.locator),
           url: npmPackage.contentUrl,
+          patches: extractPatchPaths(yarnPackage.locator),
         });
         finished++;
       } else if (yarnPackage.locator.reference === "workspace:.") {
@@ -129,6 +130,21 @@ function npmLocator(locator: Locator): Locator | undefined {
       locator,
       locator.reference.replace(/^npm:/, ""),
     );
+  }
+}
+
+function extractPatchPaths(locator: Locator): string[] {
+  if (locator.reference.startsWith("patch:")) {
+    return patchUtils
+      .parseLocator(locator)
+      .patchPaths.filter((patchPath) => !patchPath.startsWith("~builtin"))
+      .map((patchPath) => {
+        // Replace final slash with a colon to make it a bazel label
+        const parts = patchPath.split("/");
+        return `//${parts.slice(0, -1).join("/")}:${parts.slice(-1)}`;
+      });
+  } else {
+    return [];
   }
 }
 

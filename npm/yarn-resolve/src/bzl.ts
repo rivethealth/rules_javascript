@@ -14,6 +14,7 @@ export interface BzlPackage {
   integrity: string;
   name: string;
   url: string;
+  patches: string[];
 }
 
 export namespace BzlPackage {
@@ -26,13 +27,22 @@ export namespace BzlPackage {
       extraDepsEntries.push([new StarlarkString(id), BzlDeps.toStarlark(deps)]);
     }
 
-    return new StarlarkDict([
+    const elements: [StarlarkValue, StarlarkValue][] = [
       [new StarlarkString("deps"), BzlDeps.toStarlark(value.deps)],
       [new StarlarkString("extra_deps"), new StarlarkDict(extraDepsEntries)],
       [new StarlarkString("integrity"), new StarlarkString(value.integrity)],
       [new StarlarkString("name"), new StarlarkString(value.name)],
       [new StarlarkString("url"), new StarlarkString(value.url)],
-    ]);
+    ];
+    if (value.patches.length > 0) {
+      elements.push([
+        new StarlarkString("patches"),
+        new StarlarkArray(
+          value.patches.map((patchPath) => new StarlarkString(patchPath)),
+        ),
+      ]);
+    }
+    return new StarlarkDict(elements);
   }
 }
 
