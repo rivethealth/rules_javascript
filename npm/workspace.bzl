@@ -26,6 +26,7 @@ def _npm_import_external_impl(ctx, plugins):
             "-c",
             "patch %s < %s" % (patch_args, ctx.path(patch)),
         ])
+
         # Ignore return code 2, which signals the patch has already been applied
         if patch_result.return_code != 0 and patch_result.return_code != 2:
             fail("Could not apply patch %s: %s" % (patch, patch_result.stderr))
