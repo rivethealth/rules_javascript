@@ -22,7 +22,9 @@ def _npm_import_external_impl(ctx, plugins):
     patch_args = "--directory=npm --strip=1 --forward --reject-file=-"
     for patch in ctx.attr.patches:
         patch_result = ctx.execute([
-            "sh", "-c", "patch %s < %s" % (patch_args, ctx.path(patch)),
+            "sh",
+            "-c",
+            "patch %s < %s" % (patch_args, ctx.path(patch)),
         ])
         # Ignore return code 2, which signals the patch has already been applied
         if patch_result.return_code != 0 and patch_result.return_code != 2:
@@ -36,7 +38,11 @@ def _npm_import_external_impl(ctx, plugins):
     final_package_path = ctx.attr.package
     if ctx.attr.patches:
         tar_result = ctx.execute([
-            "tar", "czf", "patched-package.tgz", "--strip-components=1", "npm/"
+            "tar",
+            "czf",
+            "patched-package.tgz",
+            "--strip-components=1",
+            "npm/",
         ])
         if tar_result.return_code:
             fail("Could not tar up patched-package.tgz")
