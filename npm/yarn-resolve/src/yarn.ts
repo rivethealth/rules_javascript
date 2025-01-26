@@ -12,6 +12,23 @@ export async function yarnProject(dir: string) {
   return { configuration, project };
 }
 
+function conditionsParse(conditions: string): Map<string, string[]> {
+  const result = new Map<string, string[]>();
+  for (const part of conditions.split(/[ ()]/)) {
+    const [first, second] = part.split("=");
+    if (!second) {
+      continue;
+    }
+    let array = result.get(first);
+    if (!array) {
+      array = [];
+      result.set(first, array);
+    }
+    array.push(second);
+  }
+  return result;
+}
+
 export async function getPackageInfos(
   project: Project,
 ): Promise<YarnPackageInfos> {
@@ -20,7 +37,15 @@ export async function getPackageInfos(
   const packages: YarnPackageInfos = new Map();
 
   for (const pkg of project.storedPackages.values()) {
+    const conditions = pkg.conditions
+      ? conditionsParse(pkg.conditions)
+      : new Map();
     const package_: YarnPackageInfo = {
+      constraints: {
+        cpu: conditions.get("cpu"),
+        libc: conditions.get("libc"),
+        os: conditions.get("os"),
+      },
       locator: pkg,
       dependencies: new Map(
         [...pkg.dependencies.values()].map((dependency) => {
@@ -47,6 +72,24 @@ export type YarnPackageInfos = Map<string, YarnPackageInfo>;
 export type YarnDependencies = Map<string, string>;
 
 export interface YarnPackageInfo {
-  locator: Locator;
+  constraints: YarnConstraints;
   dependencies: YarnDependencies;
+  locator: Locator;
 }
+
+export interface YarnConstraints {
+  cpu: Constraint<Cpu>;
+  libc: Constraint<Libc>;
+  os: Constraint<Os>;
+}
+
+/**
+ * Note: Supports inclusions but not exclusions
+ */
+export type Constraint<T> = T[] | undefined;
+
+export type Cpu = string;
+
+export type Libc = string;
+
+export type Os = string;

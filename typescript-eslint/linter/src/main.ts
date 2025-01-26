@@ -2,9 +2,9 @@ import { PackageTree } from "@better-rules-javascript/commonjs-package";
 import { patchFs } from "@better-rules-javascript/nodejs-fs-linker/fs";
 import { patchFsPromises } from "@better-rules-javascript/nodejs-fs-linker/fs-promises";
 import { createVfs } from "@better-rules-javascript/nodejs-fs-linker/package";
+import { JsonFormat } from "@better-rules-javascript/util-json";
 import { ArgumentParser } from "argparse";
 import { ESLint, Linter } from "eslint";
-import { JsonFormat } from "@better-rules-javascript/util-json";
 import { readFile, writeFile } from "node:fs/promises";
 
 async function main() {
@@ -32,7 +32,7 @@ async function main() {
 
   for (const spec of args.srcs) {
     const [src, dest] = spec.split("=", 2);
-    const input = await readFile(src, "utf-8")
+    const input = await readFile(src, "utf-8");
     const [report] = await eslint.lintText(input, {
       filePath: src,
     });
@@ -49,7 +49,7 @@ async function main() {
   }
 }
 
-main().catch(error => {
+main().catch((error) => {
   console.error(error.stack);
   process.exit(1);
 });

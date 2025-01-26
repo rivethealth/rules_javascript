@@ -34,7 +34,6 @@ def configure_ts_eslint(name, config, config_dep, dep = "@better_rules_javascrip
         visibility = visibility,
     )
 
-
 def _ts_eslint_impl(ctx):
     bin_default = ctx.attr.bin[DefaultInfo]
     config = ctx.attr.config
@@ -70,7 +69,7 @@ ts_eslint = rule(
         ),
     },
     implementation = _ts_eslint_impl,
-    provides = [TsEslintInfo]
+    provides = [TsEslintInfo],
 )
 
 def _ts_eslint_format(ctx, name, src, out, outputs):

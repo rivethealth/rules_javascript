@@ -1,0 +1,7 @@
+load("//commonjs:rules.bzl", "cjs_root")
+
+cjs_root(
+    name = "root",
+    package_name = "@better-rules-javascript/null",
+    visibility = ["//visibility:public"],
+)

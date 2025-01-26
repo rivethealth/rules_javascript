@@ -2,6 +2,31 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_file")
 load("//commonjs:workspace.bzl", "cjs_npm_plugin")
 load("//javascript:workspace.bzl", "js_npm_plugin")
 
+ARCHES = [
+    "arm",
+    "arm64",
+    "ia32",
+    "loong64",
+    "mips",
+    "mipsel",
+    "ppc",
+    "ppc64",
+    "riscv64",
+    "s390",
+    "s390x",
+    "x64",
+]
+
+PLATFORMS = [
+    "aix",
+    "darwin",
+    "freebsd",
+    "linux",
+    "openbsd",
+    "sunos",
+    "win32",
+]
+
 def _npm_import_external_impl(ctx, plugins):
     deps = [struct(id = dep["id"], name = dep["name"]) for dep in [json.decode(d) for d in ctx.attr.deps]]
     extra_deps = {id: [json.decode(d) for d in deps] for id, deps in ctx.attr.extra_deps.items()}
@@ -28,9 +53,12 @@ def _npm_import_external_impl(ctx, plugins):
 
     package = struct(
         archive = ctx.attr.package,
+        arch = [arch for arch in ctx.attr.arch if arch in ARCHES],
         deps = deps,
         extra_deps = extra_deps,
+        libc = ctx.attr.libc,
         name = package_name,
+        os = [os for os in ctx.attr.os if os in PLATFORMS],
     )
 
     for plugin in plugins:
@@ -42,11 +70,20 @@ def _npm_import_external_impl(ctx, plugins):
     ctx.file("BUILD.bazel", build)
 
 _npm_import_external_attrs = {
+    "arch": attr.string_list(
+        doc = "Architecture",
+    ),
     "deps": attr.string_list(
         doc = "Dependencies.",
     ),
     "extra_deps": attr.string_list_dict(
         doc = "Extra dependencies.",
+    ),
+    "libc": attr.string_list(
+        doc = "Libc",
+    ),
+    "os": attr.string_list(
+        doc = "OS",
     ),
     "package": attr.label(
         mandatory = True,
@@ -157,6 +194,9 @@ def npm(name, packages, roots, plugins = DEFAULT_PLUGINS, auth_patterns = None, 
             file = "@%s//file:package.tgz" % package_repo
         npm_import_external(
             name = repo_name,
+            arch = package.get("arch"),
+            libc = package.get("libc"),
+            os = package.get("os"),
             package = file,
             package_name = package["name"],
             deps = [json.encode({"id": package_repo_name(name, dep["id"]), "name": dep.get("name")}) for dep in package.get("deps", [])],

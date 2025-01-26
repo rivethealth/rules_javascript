@@ -1,0 +1,7 @@
+load("//javascript:rules.bzl", "js_library")
+
+js_library(
+    name = "lib",
+    root = "//commonjs/null:root",
+    visibility = ["//visibility:public"],
+)

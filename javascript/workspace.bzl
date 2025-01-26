@@ -40,30 +40,66 @@ js_export(
         )
 
     result = """
+load("@bazel_skylib//lib:selects.bzl", "selects")
 load("@better_rules_javascript//javascript:rules.bzl", "js_export", "js_library")
 
 {exports}
 
-js_library(
+selects.config_setting_group(
+    name = "arch",
+    match_any = {arch},
+)
+
+selects.config_setting_group(
+    name = "compatible",
+    match_all = [":arch", ":os"],
+)
+
+alias(
     name = "lib.inner",
-    root = ":root",
-    deps = {deps},
-    srcs = [":files"],
+    actual = select({{":compatible": ":lib.inner1", "//conditions:default": "@better_rules_javascript//javascript/null:lib"}}),
     visibility = ["//visibility:public"],
 )
 
+js_library(
+    name = "lib.inner1",
+    root = ":root",
+    deps = {deps},
+    srcs = [":files"],
+)
+
+selects.config_setting_group(
+    name = "os",
+    match_any = {os},
+)
+    """.strip().format(
+        arch = json.encode(["@better_rules_javascript//nodejs/platform:arch_%s" % arch for arch in package.arch] if package.arch else ["//conditions:default"]),
+        deps_exports = exports,
+        deps = json.encode(deps),
+        exports = "\n\n".join(exports),
+        os = json.encode(["@better_rules_javascript//nodejs/platform:platform_%s" % os for os in package.os] if package.os else ["//conditions:default"]),
+    )
+    result += "\n"
+
+    if package.extra_deps:
+        result += """
 js_export(
     name = "lib",
     dep = ":lib.inner",
     extra_deps = {extra_deps},
     visibility = ["//visibility:public"],
 )
-    """.strip().format(
-        deps_exports = exports,
-        deps = json.encode(deps),
-        exports = "\n\n".join(exports),
-        extra_deps = json.encode([":lib.export.%s" % i for i in range(len(package.extra_deps))]),
-    )
+        """.strip().format(
+            extra_deps = json.encode([":lib.export.%s" % i for i in range(len(package.extra_deps))]),
+        )
+    else:
+        result += """
+alias(
+    name = "lib",
+    actual = ":lib.inner",
+    visibility = ["//visibility:public"],
+)
+        """.strip()
     result += "\n"
 
     for i, (id, deps) in enumerate(package.extra_deps.items()):

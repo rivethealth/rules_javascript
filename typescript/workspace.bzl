@@ -48,23 +48,47 @@ ts_export(
         )
 
     result = """
+load("@bazel_skylib//lib:selects.bzl", "selects")
 load("@better_rules_javascript//javascript:rules.bzl", "js_library")
 load("@better_rules_javascript//typescript:rules.bzl", "ts_export", "ts_import")
 
 {exports}
 
-ts_import(
+selects.config_setting_group(
+    name = "arch",
+    match_any = {arch},
+)
+
+selects.config_setting_group(
+    name = "compatible",
+    match_all = [":arch", ":os"],
+)
+
+alias(
     name = "lib.inner",
+    actual = select({{":compatible": ":lib.inner1", "//conditions:default": "@better_rules_javascript//typescript/null:lib"}}),
+    visibility = ["//visibility:public"],
+)
+
+ts_import(
+    name = "lib.inner1",
     declarations = [":files"],
     deps = {deps},
     js = {js},
     root = ":root",
     visibility = ["//visibility:public"],
 )
+
+selects.config_setting_group(
+    name = "os",
+    match_any = {os},
+)
     """.strip().format(
+        arch = json.encode(["@better_rules_javascript//nodejs/platform:arch_%s" % arch for arch in package.arch] if package.arch else ["//conditions:default"]),
         deps = json.encode(deps),
         exports = "\n\n".join(exports),
         js = [":files"] if not package.name.startswith("@types/") else [],
+        os = json.encode(["@better_rules_javascript//nodejs/platform:platform_%s" % os for os in package.os] if package.os else ["//conditions:default"]),
     )
     result += "\n"
 

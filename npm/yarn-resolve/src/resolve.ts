@@ -79,10 +79,13 @@ export async function resolvePackages(
       if (id && specifier) {
         const npmPackage = await getPackage(specifier);
         bzlPackages.set(id, {
+          arch: yarnPackage.constraints.cpu,
           deps,
           extraDeps: new Map(),
           integrity: npmPackage.contentIntegrity,
+          libc: yarnPackage.constraints.libc,
           name: structUtils.stringifyIdent(yarnPackage.locator),
+          os: yarnPackage.constraints.os,
           url: npmPackage.contentUrl,
         });
         finished++;

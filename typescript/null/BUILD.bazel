@@ -1,0 +1,7 @@
+load("//typescript:rules.bzl", "ts_import")
+
+ts_import(
+    name = "lib",
+    root = "//commonjs/null:root",
+    visibility = ["//visibility:public"],
+)
