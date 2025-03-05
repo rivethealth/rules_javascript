@@ -19,15 +19,45 @@ def _npm_import_external_impl(ctx, plugins):
 
     ctx.execute(["rm", "-r", "tmp"])
 
+    patch_args = "--directory=npm --strip=1 --forward --reject-file=-"
+    for patch in ctx.attr.patches:
+        patch_result = ctx.execute([
+            "sh",
+            "-c",
+            "patch %s < %s" % (patch_args, ctx.path(patch)),
+        ])
+
+        # Ignore return code 2, which signals the patch has already been applied
+        if patch_result.return_code != 0 and patch_result.return_code != 2:
+            fail("Could not apply patch %s: %s" % (patch, patch_result.stderr))
+
     files_result = ctx.execute(["find", "npm", "-type", "f"])
     if files_result.return_code:
         fail("Could not list files")
     files = [file[len("npm/"):] for file in files_result.stdout.split("\n")]
 
+    final_package_path = ctx.attr.package
+    if ctx.attr.patches:
+        tar_result = ctx.execute([
+            "tar",
+            "czf",
+            "patched-package.tgz",
+            "--strip-components=1",
+            "npm/",
+        ])
+        if tar_result.return_code:
+            fail("Could not tar up patched-package.tgz")
+        final_package_path = "patched-package.tgz"
+
+    # Don't leave the package contents sitting around now that we're done. Bazel
+    # builds will always extract from the .tgz file, so anyone wanting to tinker
+    # should go poke at the .tgz.
+    ctx.execute(["rm", "-r", "npm/"])
+
     build = ""
 
     package = struct(
-        archive = ctx.attr.package,
+        archive = final_package_path,
         deps = deps,
         extra_deps = extra_deps,
         name = package_name,
@@ -61,6 +91,10 @@ def npm_import_external_rule(plugins):
             ),
             "package_name": attr.string(
                 doc = "Package name.",
+                mandatory = True,
+            ),
+            "patches": attr.label_list(
+                allow_files = True,
                 mandatory = True,
             ),
         },
@@ -155,6 +189,7 @@ def npm(name, packages, roots, plugins = DEFAULT_PLUGINS, auth_patterns = None, 
             name = repo_name,
             package = file,
             package_name = package["name"],
+            patches = package.get("patches", []),
             deps = [json.encode({"id": package_repo_name(name, dep["id"]), "name": dep.get("name")}) for dep in package["deps"]],
             extra_deps = extra_deps,
         )
