@@ -189,6 +189,10 @@ def _ts_proto_libraries_impl(ctx):
                 js.append(map)
                 js_outputs.append(map)
 
+                # Include .ts file with source map. Used by VSCode debugger as
+                # well as Istanbul's code coverage reports (interactive HTML).
+                js.append(ts_)
+
             path = file.path[len(lib.path + "/"):]
             if declaration_prefix:
                 path = "%s/%s" % (declaration_prefix, path)
