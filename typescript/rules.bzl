@@ -245,6 +245,9 @@ def _ts_library_impl(ctx):
                     map = actions.declare_file(map_path(js_path(js_path_, jsx)))
                     js.append(map)
                     js_outputs.append(map)
+                # Include .ts file with source map. Used by VSCode debugger as
+                # well as Istanbul's code coverage reports (interactive HTML).
+                js_outputs.append(ts_)
                 declaration = actions.declare_file(declaration_path(declaration_path_))
                 declarations.append(declaration)
                 outputs.append(declaration)
