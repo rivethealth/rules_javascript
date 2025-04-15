@@ -1,7 +1,7 @@
 load("@rules_file//generate:runner.bzl", "create_runner")
 load("//commonjs:providers.bzl", "CjsInfo")
-load("//javascript:rules.bzl", "js_export")
 load("//javascript:providers.bzl", "JsInfo")
+load("//javascript:rules.bzl", "js_export")
 load("//nodejs:rules.bzl", "nodejs_binary")
 load("//typescript:providers.bzl", "TsCompileInfo")
 load("//util:path.bzl", "runfile_path")

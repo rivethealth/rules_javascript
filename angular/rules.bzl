@@ -3,9 +3,9 @@ load("//commonjs:providers.bzl", "CjsInfo", "create_cjs_info", "gen_manifest", "
 load("//commonjs:rules.bzl", "cjs_root")
 load("//javascript:providers.bzl", "JsInfo", "create_js_info")
 load("//javascript:rules.bzl", "js_export")
-load("//util:path.bzl", "link_file", "output", "output_name")
 load("//nodejs:rules.bzl", "nodejs_binary")
 load("//typescript:providers.bzl", "TsInfo", "create_ts_info", "declaration_path", "is_declaration", "is_json", "js_path", "map_path")
+load("//util:path.bzl", "link_file", "output", "output_name")
 load(":providers.bzl", "AngularCompilerInfo", "resource_path")
 
 def _module(module):

@@ -1,5 +1,5 @@
-load(":providers.bzl", "js_npm_inner_label", "js_npm_label")
 load("//commonjs:providers.bzl", "cjs_npm_label")
+load(":providers.bzl", "js_npm_inner_label", "js_npm_label")
 
 def _js_npm_alias_build(package_name, repo):
     return """

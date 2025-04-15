@@ -10208,7 +10208,9 @@ PACKAGES = {
         "url": "https://registry.npmjs.org/fs.realpath/-/fs.realpath-1.0.0.tgz",
     },
     "fsevents@2.3.2-2882183f": {
-        "os": ["darwin"],
+        "os": [
+            "darwin",
+        ],
         "deps": [
             {
                 "id": "node-gyp@8.4.1",

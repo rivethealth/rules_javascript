@@ -15,11 +15,11 @@ http_archive(
 
 # File
 
-FILE_VERSION = "395e75e903dbff03ad9b55721ce2a9bb7ca36182"
+FILE_VERSION = "18613f02e63f27dc5907f52363d7db7d1a640452"
 
 http_archive(
     name = "rules_file",
-    sha256 = "6931759e47e2cf2ea9d5b37a63e89e9b5248da67ef807a74df295905849167c6",
+    sha256 = "6342a6d3d2d22e4e0936ae68d20f89b9243fdddccaac76c20270b51c613740ae",
     strip_prefix = "rules_file-%s" % FILE_VERSION,
     url = "https://github.com/redoapp/rules_file/archive/%s.zip" % FILE_VERSION,
 )
@@ -43,11 +43,9 @@ http_archive(
     url = "https://github.com/bazelbuild/rules_python/archive/%s.tar.gz" % PYTHON_VERSION,
 )
 
-load("@rules_python//python:repositories.bzl", "py_repositories")
+load("@rules_python//python:repositories.bzl", "py_repositories", "python_register_toolchains")
 
 py_repositories()
-
-load("@rules_python//python:repositories.bzl", "python_register_toolchains")
 
 python_register_toolchains(
     name = "python_3_11",

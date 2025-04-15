@@ -1,7 +1,7 @@
+load("@rules_proto//proto:defs.bzl", "ProtoInfo")
 load("//commonjs:providers.bzl", "CjsInfo")
 load("//javascript:providers.bzl", "JsInfo")
 load("//util:path.bzl", "output")
-load("@rules_proto//proto:defs.bzl", "ProtoInfo")
 load(":providers.bzl", "JsProtoInfo", "JsProtobuf", "create_lib")
 
 def _js_proto_impl(target, ctx):

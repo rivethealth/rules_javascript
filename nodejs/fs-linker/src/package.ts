@@ -25,8 +25,8 @@ function addPackageNode(root: VfsNode.Path, path: string) {
 
 function addDep(root: VfsNode.Path, name: string, path: string) {
   const parts = name.split("/");
-  for (let i = 0; i < parts.length - 1; i++) {
-    let newRoot = root.extraChildren.get(parts[i]);
+  for (const part of parts.slice(0, -1)) {
+    let newRoot = root.extraChildren.get(part);
     if (!newRoot) {
       newRoot = {
         type: VfsNode.PATH,
@@ -34,13 +34,13 @@ function addDep(root: VfsNode.Path, name: string, path: string) {
         extraChildren: new Map(),
         path: undefined,
       };
-      root.extraChildren.set(parts[i], newRoot);
+      root.extraChildren.set(part, newRoot);
     } else if (newRoot.type !== VfsNode.PATH) {
       throw new DependencyConflictError();
     }
     root = newRoot;
   }
-  root.extraChildren.set(parts[parts.length - 1], {
+  root.extraChildren.set(parts.at(-1), {
     type: VfsNode.SYMLINK,
     path,
   });

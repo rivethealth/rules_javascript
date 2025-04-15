@@ -1,4 +1,4 @@
-import { bazelBin, spawnOptions } from "@better-rules-javascript/test";
+import { spawnOptions } from "@better-rules-javascript/test";
 import { spawnSync } from "node:child_process";
 
 test("Build", async () => {

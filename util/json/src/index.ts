@@ -52,6 +52,10 @@ export namespace JsonFormat {
     return new IdentityJsonFormat();
   }
 
+  export function buffer(): JsonFormat<Buffer> {
+    return new BufferJsonFormat();
+  }
+
   export function identity<T>(): JsonFormat<T> {
     return new IdentityJsonFormat();
   }
@@ -70,6 +74,10 @@ export namespace JsonFormat {
 
   export function string(): JsonFormat<string> {
     return new IdentityJsonFormat<string>();
+  }
+
+  export function symbolConstant<T extends symbol>(symbol: T): JsonFormat<T> {
+    return new SymbolJsonFormat(symbol);
   }
 }
 
@@ -99,6 +107,16 @@ class ArrayJsonFormat<T> implements JsonFormat<T[]> {
 
   toJson(json: any) {
     return json.map((element: any) => this.elementFormat.toJson(element));
+  }
+}
+
+class BufferJsonFormat implements JsonFormat<Buffer> {
+  fromJson(json: any) {
+    return Buffer.from(json, "base64");
+  }
+
+  toJson(value: Buffer) {
+    return value.toString("base64");
   }
 }
 
@@ -194,5 +212,21 @@ class SetJsonFormat<T> implements JsonFormat<Set<T>> {
 
   toJson(value: Set<T>) {
     return [...value].map((element) => this.format.toJson(element));
+  }
+}
+
+class SymbolJsonFormat<T extends symbol> implements JsonFormat<T> {
+  constructor(private readonly symbol: T) {
+    if (this.symbol.description === undefined) {
+      throw new Error("Symbol has no description");
+    }
+  }
+
+  fromJson() {
+    return this.symbol;
+  }
+
+  toJson() {
+    return this.symbol.description;
   }
 }

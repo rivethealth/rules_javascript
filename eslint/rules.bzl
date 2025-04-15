@@ -1,7 +1,7 @@
 load("@rules_file//generate:providers.bzl", "FormatterInfo")
 load("//commonjs:providers.bzl", "CjsInfo")
-load("//javascript:rules.bzl", "js_export")
 load("//javascript:providers.bzl", "JsInfo")
+load("//javascript:rules.bzl", "js_export")
 load("//nodejs:rules.bzl", "nodejs_binary")
 load("//util:path.bzl", "runfile_path")
 

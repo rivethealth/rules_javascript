@@ -10,9 +10,9 @@ cjs_root(
 
 js_library(
     name = "lib",
-    deps = [":lib_lib"],
     srcs = ["index.js"],
     root = ":root",
+    deps = [":lib_lib"],
 )
 
 js_library(

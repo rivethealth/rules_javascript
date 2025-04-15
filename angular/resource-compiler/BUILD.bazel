@@ -1,6 +1,6 @@
 load("//commonjs:rules.bzl", "cjs_root")
-load("//nodejs:rules.bzl", "nodejs_binary")
 load("//javascript:rules.bzl", "js_library")
+load("//nodejs:rules.bzl", "nodejs_binary")
 load("//typescript:rules.bzl", "ts_library")
 
 cjs_root(

@@ -316,12 +316,12 @@ async function runOnce(worker, args) {
  */
 async function workerMain(workerFactory) {
     try {
-        const last = process.argv[process.argv.length - 1];
+        const last = process.argv.at(-1);
         if (last === "--persistent_worker") {
             const worker = await workerFactory(process.argv.slice(2, -1));
             await runWorker(worker);
         }
-        else if (last.startsWith("@")) {
+        else if (last?.startsWith("@")) {
             const worker = await workerFactory(process.argv.slice(2, -1));
             const file = await promises.readFile(last.slice(1), "utf8");
             const args = file.trim().split("\n");
@@ -1439,8 +1439,8 @@ function addPackageNode(root, path) {
 }
 function addDep(root, name, path) {
     const parts = name.split("/");
-    for (let i = 0; i < parts.length - 1; i++) {
-        let newRoot = root.extraChildren.get(parts[i]);
+    for (const part of parts.slice(0, -1)) {
+        let newRoot = root.extraChildren.get(part);
         if (!newRoot) {
             newRoot = {
                 type: VfsNode.PATH,
@@ -1448,14 +1448,14 @@ function addDep(root, name, path) {
                 extraChildren: new Map(),
                 path: undefined,
             };
-            root.extraChildren.set(parts[i], newRoot);
+            root.extraChildren.set(part, newRoot);
         }
         else if (newRoot.type !== VfsNode.PATH) {
             throw new DependencyConflictError();
         }
         root = newRoot;
     }
-    root.extraChildren.set(parts[parts.length - 1], {
+    root.extraChildren.set(parts.at(-1), {
         type: VfsNode.SYMLINK,
         path,
     });

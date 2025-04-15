@@ -280,8 +280,7 @@ def ts_proto_libraries_rule(aspect, compiler):
                 providers = [ProtoInfo],
                 aspects = [aspect],
             ),
-            "module": attr.string(
-            ),
+            "module": attr.string(),
             "prefix": attr.string(
                 doc = "Prefix to add.",
             ),

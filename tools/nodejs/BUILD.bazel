@@ -1,6 +1,12 @@
 load("//nodejs:rules.bzl", "nodejs_install", "nodejs_modules_package")
-load("//typescript:rules.bzl", "js_import_ts")
+load("//pkg:rules.bzl", "pkg_install")
 load("//tools/npm:npm.bzl", NPM_ROOTS = "ROOTS")
+load("//typescript:rules.bzl", "js_import_ts")
+
+pkg_install(
+    name = "test",
+    pkg = ":node_modules",
+)
 
 nodejs_install(
     name = "install0",
@@ -21,6 +27,7 @@ nodejs_modules_package(
         "//bazel/worker:root",
         "//commonjs/package:root",
         "//ibazel/notification:root",
+        "//pkg/install-manifest:root",
         "//nodejs/fs-linker:root",
         "//test:root",
         "//tools/typescript:root",

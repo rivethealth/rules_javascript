@@ -320,12 +320,12 @@ async function runOnce(worker, args) {
  */
 async function workerMain(workerFactory) {
     try {
-        const last = process.argv[process.argv.length - 1];
+        const last = process.argv.at(-1);
         if (last === "--persistent_worker") {
             const worker = await workerFactory(process.argv.slice(2, -1));
             await runWorker(worker);
         }
-        else if (last.startsWith("@")) {
+        else if (last?.startsWith("@")) {
             const worker = await workerFactory(process.argv.slice(2, -1));
             const file = await promises.readFile(last.slice(1), "utf8");
             const args = file.trim().split("\n");

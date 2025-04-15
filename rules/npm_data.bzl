@@ -1180,15 +1180,20 @@ PACKAGES = {
         "name": "@types/node",
         "url": "https://registry.npmjs.org/@types/node/-/node-13.13.52.tgz",
     },
-    "@types/node@16.11.24": {
-        "integrity": "sha512-Ezv33Rl4mIi6YdSHfIRNBd4Q9kUe5okiaw/ikvJiJDmuQZNW5kfdg7+oQPF8NO6sTcr3woIpj3jANzTXdvEZXA==",
-        "name": "@types/node",
-        "url": "https://registry.npmjs.org/@types/node/-/node-16.11.24.tgz",
-    },
     "@types/node@17.0.17": {
         "integrity": "sha512-e8PUNQy1HgJGV3iU/Bp2+D/DXh3PYeyli8LgIwsQcs1Ar1LoaWHSIT6Rw+H2rNJmiq6SNWiDytfx8+gYj7wDHw==",
         "name": "@types/node",
         "url": "https://registry.npmjs.org/@types/node/-/node-17.0.17.tgz",
+    },
+    "@types/node@20.17.30": {
+        "deps": [
+            {
+                "id": "undici-types@6.19.8",
+            },
+        ],
+        "integrity": "sha512-7zf4YyHA+jvBNfVrk2Gtvs6x7E8V+YDW05bNfG2XkWDJfYRXrTiP/DsB2zSYTaHX0bGIujTBQdMVAhb+j7mwpg==",
+        "name": "@types/node",
+        "url": "https://registry.npmjs.org/@types/node/-/node-20.17.30.tgz",
     },
     "@types/qs@6.9.7": {
         "integrity": "sha512-FGa1F62FT09qcrueBA6qYTrJPVDzah9a+493+o2PCXsesWHIn27G98TsSMs3WPNbZIEj4+VJf6saSFpvD+3Zsw==",
@@ -6773,7 +6778,9 @@ PACKAGES = {
         "url": "https://registry.npmjs.org/fs.realpath/-/fs.realpath-1.0.0.tgz",
     },
     "fsevents@2.3.2-2882183f": {
-        "os": ["darwin"],
+        "os": [
+            "darwin",
+        ],
         "deps": [
             {
                 "id": "node-gyp@8.4.1",
@@ -11230,6 +11237,11 @@ PACKAGES = {
         "name": "typescript",
         "url": "https://registry.npmjs.org/typescript/-/typescript-5.5.4.tgz",
     },
+    "undici-types@6.19.8": {
+        "integrity": "sha512-ve2KP6f/JnbPBFyobGHuerC9g1FYGn/F8n1LWTwNxCEzd6IfqTwUQcNXgEtmmQ6DlRrC1hrSrBnCZPokRrDHjw==",
+        "name": "undici-types",
+        "url": "https://registry.npmjs.org/undici-types/-/undici-types-6.19.8.tgz",
+    },
     "unique-filename@1.1.1": {
         "deps": [
             {
@@ -12132,7 +12144,7 @@ ROOTS = [
         "name": "@types/node-fetch",
     },
     {
-        "id": "@types/node@16.11.24",
+        "id": "@types/node@20.17.30",
         "name": "@types/node",
     },
     {

@@ -2,8 +2,8 @@ load("@rules_file//generate:rules.bzl", "generate")
 load("//commonjs:rules.bzl", "cjs_root")
 load("//javascript:rules.bzl", "js_library")
 load("//rollup:rules.bzl", "configure_rollup", "rollup_bundle")
-load("//typescript:rules.bzl", "ts_library")
 load("//tools/javascript:rules.bzl", "js_gen")
+load("//typescript:rules.bzl", "ts_library")
 
 rollup_bundle(
     name = "bundle",
