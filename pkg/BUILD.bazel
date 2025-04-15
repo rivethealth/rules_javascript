@@ -1,0 +1,4 @@
+exports_files(
+    ["install-runner.sh.tpl"],
+    visibility = ["//visibility:public"],
+)

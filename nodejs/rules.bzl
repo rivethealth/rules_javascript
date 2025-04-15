@@ -5,6 +5,7 @@ load("@rules_pkg//pkg:providers.bzl", "PackageFilegroupInfo", "PackageFilesInfo"
 load("@rules_pkg//pkg:tar.bzl", "pkg_tar")
 load("//commonjs:providers.bzl", "CjsInfo", "CjsPath", "create_globals", "gen_manifest", "package_path")
 load("//javascript:providers.bzl", "JsInfo")
+load("//pkg:rules.bzl", "pkg_install")
 load("//util:path.bzl", "nearest", "relativize", "runfile_path")
 load(":providers.bzl", "NodejsInfo", "NodejsRuntimeInfo")
 
@@ -474,69 +475,12 @@ nodejs_modules_package = rule(
 )
 
 def nodejs_install(name, src, path = None, **kwargs):
-    _nodejs_install_tar(
+    pkg_install(
         name = name,
-        archive = ":%s.archive" % name,
-        path = path,
+        pkg = src,
+        path = "%s/node_modules" % path if path else "node_modules",
         **kwargs
     )
-
-    pkg_tar(
-        name = "%s.archive" % name,
-        srcs = [src],
-        **kwargs
-    )
-
-def _nodejs_install_tar_impl(ctx):
-    actions = ctx.actions
-    archive = ctx.file.archive
-    bash_runfiles = ctx.attr._bash_runfiles[DefaultInfo]
-    name = ctx.attr.name
-    path = ctx.attr.path
-    runner = ctx.file._runner
-    workspace_name = ctx.workspace_name
-
-    bin = actions.declare_file(name)
-    node_modules = "%s/node_modules" % path if path else "node_modules"
-    actions.expand_template(
-        template = runner,
-        output = bin,
-        substitutions = {
-            "%{archive}": shell.quote(runfile_path(workspace_name, archive)),
-            "%{path}": shell.quote(node_modules),
-        },
-        is_executable = True,
-    )
-
-    runfiles = ctx.runfiles(files = [archive])
-    runfiles = runfiles.merge(bash_runfiles.default_runfiles)
-    default_info = DefaultInfo(
-        executable = bin,
-        runfiles = runfiles,
-    )
-
-    return [default_info]
-
-_nodejs_install_tar = rule(
-    attrs = {
-        "_bash_runfiles": attr.label(
-            default = "@bazel_tools//tools/bash/runfiles",
-        ),
-        "_runner": attr.label(
-            allow_single_file = True,
-            default = "install-runner.sh.tpl",
-        ),
-        "archive": attr.label(
-            allow_single_file = [".tar"],
-            mandatory = True,
-        ),
-        "path": attr.label(
-            doc = "Path from root of workspace",
-        ),
-    },
-    executable = True,
-    implementation = _nodejs_install_tar_impl,
-)
 
 def _nodejs_binary_package_impl(ctx):
     actions = ctx.actions

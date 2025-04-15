@@ -27,6 +27,12 @@ export namespace JsonFormat {
     return new MapJsonFormat(keyFormat, valueFormat);
   }
 
+  export function stringMap<V>(
+    valueFormat: JsonFormat<V>,
+  ): JsonFormat<Map<string, V>> {
+    return new StringMapJsonFormat(valueFormat);
+  }
+
   export function object<V extends {}>(format: {
     [K in keyof V]: JsonFormat<V[K]>;
   }): JsonFormat<V> {
@@ -34,12 +40,19 @@ export namespace JsonFormat {
   }
 
   export function defer<T>(format: () => JsonFormat<T>): JsonFormat<T> {
+    let cached: JsonFormat<T> | undefined;
     return {
       fromJson(json: any) {
-        return format().fromJson(json);
+        if (!cached) {
+          cached = format();
+        }
+        return cached.fromJson(json);
       },
       toJson(value: T) {
-        return format().toJson(value);
+        if (!cached) {
+          cached = format();
+        }
+        return cached.toJson(value);
       },
     };
   }
@@ -176,9 +189,9 @@ class MapJsonFormat<K, V> implements JsonFormat<Map<K, V>> {
   }
 
   toJson(value: Map<K, V>) {
-    return [...value.entries()].map(([key, value]) => ({
+    return [...value.keys()].sort().map((key) => ({
       key: this.keyFormat.toJson(key),
-      value: this.valueFormat.toJson(value),
+      value: this.valueFormat.toJson(value.get(key)!),
     }));
   }
 }
@@ -212,6 +225,27 @@ class SetJsonFormat<T> implements JsonFormat<Set<T>> {
 
   toJson(value: Set<T>) {
     return [...value].map((element) => this.format.toJson(element));
+  }
+}
+
+class StringMapJsonFormat<V> implements JsonFormat<Map<string, V>> {
+  constructor(private readonly valueFormat: JsonFormat<V>) {}
+
+  fromJson(json: any) {
+    return new Map<string, V>(
+      Object.entries(json).map(([key, value]) => [
+        key,
+        this.valueFormat.fromJson(value),
+      ]),
+    );
+  }
+
+  toJson(value: Map<string, V>) {
+    return Object.fromEntries(
+      [...value.keys()]
+        .sort()
+        .map((key) => [key, this.valueFormat.toJson(value.get(key)!)]),
+    );
   }
 }
 

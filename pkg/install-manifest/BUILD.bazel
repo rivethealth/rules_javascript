@@ -2,22 +2,28 @@ load("//commonjs:rules.bzl", "cjs_root")
 load("//javascript:rules.bzl", "js_library")
 load("//typescript:rules.bzl", "ts_library")
 
-cjs_root(
-    name = "root",
-    package_name = "@better-rules-javascript/util-json",
-    descriptors = ["package.json"],
-    visibility = ["//visibility:public"],
-)
-
 ts_library(
     name = "lib",
     srcs = glob(["src/**/*.ts"]),
+    compile_deps = ["@better_rules_javascript_npm//eslint:lib"],
     compiler = "//tools/typescript:tsc",
     config = "tsconfig.json",
     config_dep = ":tsconfig",
     root = ":root",
+    visibility = ["//:__subpackages__"],
+    deps = [
+        "//util/json:lib",
+        "@better_rules_javascript_npm//@types/argparse:lib",
+        "@better_rules_javascript_npm//@types/node:lib",
+        "@better_rules_javascript_npm//argparse:lib",
+    ],
+)
+
+cjs_root(
+    name = "root",
+    package_name = "@better-rules-javascript/pkg-install-manifest",
+    descriptors = ["package.json"],
     visibility = ["//visibility:public"],
-    deps = ["@better_rules_javascript_npm//@types/node:lib"],
 )
 
 js_library(
