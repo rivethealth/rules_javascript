@@ -51,7 +51,7 @@
     "@types/eslint": "~7.28.0",
     "@types/jest": "^28.0.0",
     "@types/long": "~4.0.0",
-    "@types/node": "^18",
+    "@types/node": "^22",
     "@types/node-fetch": "^2.0.0",
     "@types/react": "~15.0.0",
     "@types/tar-stream": "~2.2.0"
