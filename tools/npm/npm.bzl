@@ -4759,7 +4759,7 @@ PACKAGES = {
                 "id": "@xml-tools/parser@1.0.11",
             },
             {
-                "id": "prettier@3.1.1",
+                "id": "prettier@3.4.2",
             },
         ],
         "extra_deps": {
@@ -5373,6 +5373,18 @@ PACKAGES = {
         "integrity": "sha512-OPs5WnnT1xkCBiuQrZA4+YAV4HEJejmHneyraIaxsbev5yCEr6KMwINNFP9wQeFIw8FWcoTqF3vQsa5CDaI+8Q==",
         "name": "@types/node",
         "url": "https://registry.npmjs.org/@types/node/-/node-18.16.3.tgz",
+    },
+    "@types/node@22.14.1": {
+        "deps": [
+            {
+                "id": "undici-types@6.21.0",
+            },
+        ],
+        "extra_deps": {
+        },
+        "integrity": "sha512-u0HuPQwe/dHrItgHHpmw3N2fYCR6x4ivMNbPHRkBVP4CvN+kiRrKHWk3i8tXiO/joPwXLMYvF9TTF0eqgHIuOw==",
+        "name": "@types/node",
+        "url": "https://registry.npmjs.org/@types/node/-/node-22.14.1.tgz",
     },
     "@types/normalize-package-data@2.4.1": {
         "deps": [
@@ -15317,7 +15329,7 @@ PACKAGES = {
     "prettier-plugin-organize-imports@3.2.4-dc3fc578": {
         "deps": [
             {
-                "id": "prettier@3.1.1",
+                "id": "prettier@3.4.2",
             },
             {
                 "id": "typescript@5.0.4-6832550a",
@@ -15338,14 +15350,14 @@ PACKAGES = {
         "name": "prettier",
         "url": "https://registry.npmjs.org/prettier/-/prettier-2.5.1.tgz",
     },
-    "prettier@3.1.1": {
+    "prettier@3.4.2": {
         "deps": [
         ],
         "extra_deps": {
         },
-        "integrity": "sha512-22UbSzg8luF4UuZtzgiUOfcGM8s4tjBv6dJRT7j275NXsy2jb4aJa4NNveul5x4eqlF1wuhuR2RElK71RvmVaw==",
+        "integrity": "sha512-e9MewbtFo+Fevyuxn/4rrcDAaq0IYxPGLvObpQjiZBMAzB9IGmzlnG9RZy3FFas+eBMu2vA0CszMeduow5dIuQ==",
         "name": "prettier",
-        "url": "https://registry.npmjs.org/prettier/-/prettier-3.1.1.tgz",
+        "url": "https://registry.npmjs.org/prettier/-/prettier-3.4.2.tgz",
     },
     "pretty-bytes@5.6.0": {
         "deps": [
@@ -17114,6 +17126,15 @@ PACKAGES = {
         "name": "underscore",
         "url": "https://registry.npmjs.org/underscore/-/underscore-1.12.1.tgz",
     },
+    "undici-types@6.21.0": {
+        "deps": [
+        ],
+        "extra_deps": {
+        },
+        "integrity": "sha512-iwDZqg0QAGrg9Rav5H4n0M64c3mkR59cJ6wQp+7C4nI0gsmExaedaYLNO44eT4AtBBwjbTiGPMlt2Md0T9H9JQ==",
+        "name": "undici-types",
+        "url": "https://registry.npmjs.org/undici-types/-/undici-types-6.21.0.tgz",
+    },
     "unherit@1.1.3": {
         "deps": [
             {
@@ -17797,7 +17818,7 @@ ROOTS = [
         "name": "@types/node-fetch",
     },
     {
-        "id": "@types/node@18.16.3",
+        "id": "@types/node@22.14.1",
         "name": "@types/node",
     },
     {
@@ -17889,7 +17910,7 @@ ROOTS = [
         "name": "prettier-plugin-organize-imports",
     },
     {
-        "id": "prettier@3.1.1",
+        "id": "prettier@3.4.2",
         "name": "prettier",
     },
     {
