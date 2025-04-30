@@ -53,17 +53,28 @@ var JsonFormat;
         return new MapJsonFormat(keyFormat, valueFormat);
     }
     JsonFormat.map = map;
+    function stringMap(valueFormat) {
+        return new StringMapJsonFormat(valueFormat);
+    }
+    JsonFormat.stringMap = stringMap;
     function object(format) {
         return new ObjectJsonFormat(format);
     }
     JsonFormat.object = object;
     function defer(format) {
+        let cached;
         return {
             fromJson(json) {
-                return format().fromJson(json);
+                if (!cached) {
+                    cached = format();
+                }
+                return cached.fromJson(json);
             },
             toJson(value) {
-                return format().toJson(value);
+                if (!cached) {
+                    cached = format();
+                }
+                return cached.toJson(value);
             },
         };
     }
@@ -76,6 +87,10 @@ var JsonFormat;
         return new IdentityJsonFormat();
     }
     JsonFormat.boolean = boolean;
+    function buffer() {
+        return new BufferJsonFormat();
+    }
+    JsonFormat.buffer = buffer;
     function identity() {
         return new IdentityJsonFormat();
     }
@@ -96,6 +111,10 @@ var JsonFormat;
         return new IdentityJsonFormat();
     }
     JsonFormat.string = string;
+    function symbolConstant(symbol) {
+        return new SymbolJsonFormat(symbol);
+    }
+    JsonFormat.symbolConstant = symbolConstant;
 })(JsonFormat || (JsonFormat = {}));
 class AnyJsonFormat {
     fromJson(json) {
@@ -121,6 +140,14 @@ class ArrayJsonFormat {
     }
     toJson(json) {
         return json.map((element) => this.elementFormat.toJson(element));
+    }
+}
+class BufferJsonFormat {
+    fromJson(json) {
+        return Buffer.from(json, "base64");
+    }
+    toJson(value) {
+        return value.toString("base64");
     }
 }
 class IdentityJsonFormat {
@@ -166,9 +193,9 @@ class MapJsonFormat {
         ]));
     }
     toJson(value) {
-        return [...value.entries()].map(([key, value]) => ({
+        return [...value.keys()].sort().map((key) => ({
             key: this.keyFormat.toJson(key),
-            value: this.valueFormat.toJson(value),
+            value: this.valueFormat.toJson(value.get(key)),
         }));
     }
 }
@@ -198,6 +225,36 @@ class SetJsonFormat {
     }
     toJson(value) {
         return [...value].map((element) => this.format.toJson(element));
+    }
+}
+class StringMapJsonFormat {
+    constructor(valueFormat) {
+        this.valueFormat = valueFormat;
+    }
+    fromJson(json) {
+        return new Map(Object.entries(json).map(([key, value]) => [
+            key,
+            this.valueFormat.fromJson(value),
+        ]));
+    }
+    toJson(value) {
+        return Object.fromEntries([...value.keys()]
+            .sort()
+            .map((key) => [key, this.valueFormat.toJson(value.get(key))]));
+    }
+}
+class SymbolJsonFormat {
+    constructor(symbol) {
+        this.symbol = symbol;
+        if (this.symbol.description === undefined) {
+            throw new Error("Symbol has no description");
+        }
+    }
+    fromJson() {
+        return this.symbol;
+    }
+    toJson() {
+        return this.symbol.description;
     }
 }
 
