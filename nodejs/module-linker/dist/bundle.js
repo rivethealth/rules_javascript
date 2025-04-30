@@ -389,7 +389,7 @@ function resolveFilename(resolver, delegate) {
             moduleRequestClassifier.isBuiltin(request)) {
             return Reflect.apply(delegate, this, arguments);
         }
-        const resolved = resolver.resolve(parent.path, request);
+        const resolved = resolver.resolve(parent.path === "." ? `${process.env.RUNFILES_DIR}/_repl` : parent.path, request);
         const moduleResolver = moduleRequestClassifier.isBuiltin(path.basename(resolved.package))
             ? linkResolver
             : requiredResolver;

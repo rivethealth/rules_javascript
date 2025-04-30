@@ -10,6 +10,7 @@ exports_files(
         "install-runner.sh.tpl",
         "modules-binary-runner.sh.tpl",
         "package-runner.sh.tpl",
+        "repl-runner.sh.tpl",
         "simple-runner.sh.tpl",
         "runner.sh.tpl",
     ],
