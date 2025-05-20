@@ -2,7 +2,10 @@ load("//commonjs:rules.bzl", "cjs_root")
 load("//javascript:rules.bzl", "js_library")
 
 exports_files(
-    ["package.json", "yarn.lock"],
+    [
+        "package.json",
+        "yarn.lock",
+    ],
     visibility = ["//visibility:public"],  # tests
 )
 
