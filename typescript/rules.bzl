@@ -360,7 +360,7 @@ def _ts_library_impl(ctx):
     js_info = create_js_info(
         cjs_root = cjs_root,
         deps = js_deps + compiler.runtime_js,
-        files = js,
+        files = js + declarations,
     )
 
     ts_info = create_ts_info(

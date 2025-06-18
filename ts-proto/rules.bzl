@@ -247,7 +247,7 @@ def _ts_proto_libraries_impl(ctx):
 
         js_infos[lib.label] = create_js_info(
             cjs_root = cjs_root,
-            files = js,
+            files = js + declarations,
             deps = ts_proto.deps_js + [js_infos[label] for label in lib.deps],
         )
 
