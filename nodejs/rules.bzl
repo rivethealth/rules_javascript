@@ -5,6 +5,7 @@ load("@rules_pkg//pkg:providers.bzl", "PackageFilegroupInfo", "PackageFilesInfo"
 load("@rules_pkg//pkg:tar.bzl", "pkg_tar")
 load("//commonjs:providers.bzl", "CjsInfo", "create_globals", "gen_manifest", "package_path")
 load("//javascript:providers.bzl", "JsInfo")
+load("//typescript:providers.bzl", "TsInfo")
 load("//util:path.bzl", "nearest", "relativize", "runfile_path")
 load(":providers.bzl", "NodejsInfo", "NodejsRuntimeInfo")
 
@@ -372,6 +373,7 @@ def nodejs_modules(name, deps, **kwargs):
 def _nodejs_modules_package_impl(ctx):
     deps_cjs = [target[CjsInfo] for target in ctx.attr.deps]
     deps_js = [target[JsInfo] for target in ctx.attr.deps]
+    deps_ts = [target[TsInfo] for target in ctx.attr.deps if (TsInfo in target)]
     label = ctx.label
     links_cjs = [target[CjsInfo] for target in ctx.attr.links]
     workspace = ctx.workspace_name
@@ -390,7 +392,7 @@ def _nodejs_modules_package_impl(ctx):
     package_paths_nonempty = {}
 
     transitive_files = depset(
-        transitive = [js_info.transitive_files for js_info in deps_js],
+        transitive = [info.transitive_files for info in (deps_js + deps_ts)],
     )
     files_map = {}
     for file in transitive_files.to_list():
