@@ -2924,13 +2924,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/prettier@npm:^1.19.0":
-  version: 1.19.1
-  resolution: "@types/prettier@npm:1.19.1"
-  checksum: d34229c37d3419b01efa31968b68c33b8b9b717bdf961e48f68e89821864b1329c45323d28e1200a204e7b2eefca1dabdac4aa0c3d698dbc8c60247322103b11
-  languageName: node
-  linkType: hard
-
 "@types/prettier@npm:^2.1.5":
   version: 2.4.2
   resolution: "@types/prettier@npm:2.4.2"
@@ -4209,6 +4202,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"case-anything@npm:^2.1.10":
+  version: 2.1.13
+  resolution: "case-anything@npm:2.1.13"
+  checksum: c39c69d7e418337b6006a9692f13c2b257e907e867149a102e9beb7e9d2d52da14e754da1f4e4ce82a866d86d93047e522f64360bda54e7d7c308f4cdd736c3d
+  languageName: node
+  linkType: hard
+
 "chalk@npm:^2.0.0":
   version: 2.4.2
   resolution: "chalk@npm:2.4.2"
@@ -4649,6 +4649,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"detect-libc@npm:^1.0.3":
+  version: 1.0.3
+  resolution: "detect-libc@npm:1.0.3"
+  bin:
+    detect-libc: ./bin/detect-libc.js
+  checksum: daaaed925ffa7889bd91d56e9624e6c8033911bb60f3a50a74a87500680652969dbaab9526d1e200a4c94acf80fc862a22131841145a0a8482d60a99c24f4a3e
+  languageName: node
+  linkType: hard
+
 "detect-newline@npm:^3.0.0":
   version: 3.1.0
   resolution: "detect-newline@npm:3.1.0"
@@ -4774,6 +4783,15 @@ __metadata:
     no-case: ^3.0.4
     tslib: ^2.0.3
   checksum: a65e3519414856df0228b9f645332f974f2bf5433370f544a681122eab59e66038fc3349b4be1cdc47152779dac71a5864f1ccda2f745e767c46e9c6543b1169
+  languageName: node
+  linkType: hard
+
+"dprint-node@npm:^1.0.8":
+  version: 1.0.8
+  resolution: "dprint-node@npm:1.0.8"
+  dependencies:
+    detect-libc: ^1.0.3
+  checksum: ac53b71296d155664319877f0e8c9fe94e084457ce9aae68081b9dd7165916f2829222923c59b1399d95680362f18a8da5994e7f76a8f52035e02bbd14ba76bc
   languageName: node
   linkType: hard
 
@@ -7837,15 +7855,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:^2.0.2":
-  version: 2.5.1
-  resolution: "prettier@npm:2.5.1"
-  bin:
-    prettier: bin-prettier.js
-  checksum: 21b9408476ea1c544b0e45d51ceb94a84789ff92095abb710942d780c862d0daebdb29972d47f6b4d0f7ebbfb0ffbf56cc2cfa3e3e9d1cca54864af185b15b66
-  languageName: node
-  linkType: hard
-
 "prettier@npm:^3.4.2":
   version: 3.4.2
   resolution: "prettier@npm:3.4.2"
@@ -7964,9 +7973,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"protobufjs@npm:^6.8.8, protobufjs@npm:~6.11.2":
-  version: 6.11.2
-  resolution: "protobufjs@npm:6.11.2"
+"protobufjs@npm:^6.11.3, protobufjs@npm:^6.8.8, protobufjs@npm:~6.11.4":
+  version: 6.11.4
+  resolution: "protobufjs@npm:6.11.4"
   dependencies:
     "@protobufjs/aspromise": ^1.1.2
     "@protobufjs/base64": ^1.1.2
@@ -7984,7 +7993,7 @@ __metadata:
   bin:
     pbjs: bin/pbjs
     pbts: bin/pbts
-  checksum: 80e9d9610c3eb66f9eae4e44a1ae30381cedb721b7d5f635d781fe4c507e2c77bb7c879addcd1dda79733d3ae589d9e66fd18d42baf99b35df7382a0f9920795
+  checksum: b2fc6a01897b016c2a7e43a854ab4a3c57080f61be41e552235436e7a730711b8e89e47cb4ae52f0f065b5ab5d5989fc932f390337ce3a8ccf07203415700850
   languageName: node
   linkType: hard
 
@@ -8315,9 +8324,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rollup@npm:^2.78.0":
-  version: 2.79.1
-  resolution: "rollup@npm:2.79.1"
+"rollup@npm:^2.79.2":
+  version: 2.79.2
+  resolution: "rollup@npm:2.79.2"
   dependencies:
     fsevents: ~2.3.2
   dependenciesMeta:
@@ -8325,7 +8334,7 @@ __metadata:
       optional: true
   bin:
     rollup: dist/bin/rollup
-  checksum: 6a2bf167b3587d4df709b37d149ad0300692cc5deb510f89ac7bdc77c8738c9546ae3de9322b0968e1ed2b0e984571f5f55aae28fa7de4cfcb1bc5402a4e2be6
+  checksum: df7aa4c8b95245dede157b06ab71e1921de6080757d30e9bf31f8fb142064d12dda865e2bafbab4349588f43425b2965a290c9a5da1c048246a70fc21734ebd7
   languageName: node
   linkType: hard
 
@@ -8377,12 +8386,12 @@ __metadata:
     npm-registry-fetch: ~14.0.2
     prettier: ^3.4.2
     prettier-plugin-organize-imports: ^3
-    protobufjs: ~6.11.2
+    protobufjs: ~6.11.4
     reflect-metadata: 0.1.13
-    rollup: ^2.78.0
+    rollup: ^2.79.2
     rxjs: ~7.4.0
     tar-stream: ~2.2.0
-    ts-proto: ~1.83.0
+    ts-proto: ~1.148.2
     tslib: ~2.0.0
     typescript: ~5.0.0
     zone.js: ~0.11.4
@@ -9031,40 +9040,39 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-poet@npm:^4.5.0":
-  version: 4.6.1
-  resolution: "ts-poet@npm:4.6.1"
+"ts-poet@npm:^6.4.1":
+  version: 6.11.0
+  resolution: "ts-poet@npm:6.11.0"
   dependencies:
-    "@types/prettier": ^1.19.0
-    lodash: ^4.17.15
-    prettier: ^2.0.2
-  checksum: 1bb4aa4f8f21ebc68a4b0416d152431b2b0f905e7cc361edb20e5b2583aaa75de539bdbca15f4990e012a3606e54119b8f28ba5371efbfba7adbc64854beeb57
+    dprint-node: ^1.0.8
+  checksum: 059df95050d5ce9e235a6dc2e80f97988682465db5f9220c76c16d1091340428a0e1fe65d885acc6e68aebaf265289455e23d53727b3139dfb1924080b60c16d
   languageName: node
   linkType: hard
 
-"ts-proto-descriptors@npm:^1.2.1":
-  version: 1.3.1
-  resolution: "ts-proto-descriptors@npm:1.3.1"
+"ts-proto-descriptors@npm:1.9.0":
+  version: 1.9.0
+  resolution: "ts-proto-descriptors@npm:1.9.0"
   dependencies:
     long: ^4.0.0
     protobufjs: ^6.8.8
-  checksum: ef8acf9231375dd00cfa667c688746ae24fb8012a3875d1447cb6a6e9e0311150681719072716f58a24b1df801bcc35e56faca11ea4bac1f8146038b524b93c4
+  checksum: 6818c03c7688db0ceb74d3b5108b127afa2994854113fbb599de4e7610d0c725601feb9ba0d8cd718a2f9d729172865d80d0b0797995b6515e03c5df69bf793c
   languageName: node
   linkType: hard
 
-"ts-proto@npm:~1.83.0":
-  version: 1.83.3
-  resolution: "ts-proto@npm:1.83.3"
+"ts-proto@npm:~1.148.2":
+  version: 1.148.2
+  resolution: "ts-proto@npm:1.148.2"
   dependencies:
     "@types/object-hash": ^1.3.0
+    case-anything: ^2.1.10
     dataloader: ^1.4.0
     object-hash: ^1.3.1
-    protobufjs: ^6.8.8
-    ts-poet: ^4.5.0
-    ts-proto-descriptors: ^1.2.1
+    protobufjs: ^6.11.3
+    ts-poet: ^6.4.1
+    ts-proto-descriptors: 1.9.0
   bin:
     protoc-gen-ts_proto: protoc-gen-ts_proto
-  checksum: 955c73e9f50adfb485de043f9544a01bc7242c5774788df9a1f953c3de43adae8f97d846739412380339bec3afac61986115d10c2c45e0227b2be5942957d35a
+  checksum: dcf65f6a4567b01400e5900ac3c1441f150d050c8df2c136beda6b0ce8f991b3a40d3692618a66cbcfe0c9dffe7c55e42345b6657963ffdc93273249bc532cbc
   languageName: node
   linkType: hard
 
