@@ -4325,6 +4325,16 @@ PACKAGES = {
         "name": "@npmcli/move-file",
         "url": "https://registry.npmjs.org/@npmcli/move-file/-/move-file-1.1.2.tgz",
     },
+    "@playwright/test@1.54.1": {
+        "deps": [
+            {
+                "id": "playwright@1.54.1",
+            },
+        ],
+        "integrity": "sha512-FS8hQ12acieG2dYSksmLOF7BNxnVf2afRJdCuM1eMSxj6QTSE6G4InGF7oApGgDb65MX7AwMVlIkpru0yZA4Xw==",
+        "name": "@playwright/test",
+        "url": "https://registry.npmjs.org/@playwright/test/-/test-1.54.1.tgz",
+    },
     "@prettier/plugin-xml@3.2.2-dc3fc578": {
         "deps": [
             {
@@ -8711,7 +8721,7 @@ PACKAGES = {
                 "id": "p-map@4.0.0",
             },
             {
-                "id": "promise-inflight@1.0.1-5e37b9cd",
+                "id": "promise-inflight@1.0.1-a7e5239c",
             },
             {
                 "id": "rimraf@3.0.2",
@@ -8760,7 +8770,7 @@ PACKAGES = {
                 "id": "p-map@4.0.0",
             },
             {
-                "id": "promise-inflight@1.0.1-5e37b9cd",
+                "id": "promise-inflight@1.0.1-a7e5239c",
             },
             {
                 "id": "ssri@10.0.0",
@@ -13306,6 +13316,24 @@ PACKAGES = {
         "name": "pkg-dir",
         "url": "https://registry.npmjs.org/pkg-dir/-/pkg-dir-4.2.0.tgz",
     },
+    "playwright-core@1.54.1": {
+        "integrity": "sha512-Nbjs2zjj0htNhzgiy5wu+3w09YetDx5pkrpI/kZotDlDUaYk0HVA5xrBVPdow4SAUIlhgKcJeJg4GRKW6xHusA==",
+        "name": "playwright-core",
+        "url": "https://registry.npmjs.org/playwright-core/-/playwright-core-1.54.1.tgz",
+    },
+    "playwright@1.54.1": {
+        "deps": [
+            {
+                "id": "fsevents@2.3.2-2882183f",
+            },
+            {
+                "id": "playwright-core@1.54.1",
+            },
+        ],
+        "integrity": "sha512-peWpSwIBmSLi6aW2auvrUtf2DqY16YYcCMO8rTVx486jKmDTJg7UAhyrraP98GB8BoPURZP8+nxO7TSd4cPr5g==",
+        "name": "playwright",
+        "url": "https://registry.npmjs.org/playwright/-/playwright-1.54.1.tgz",
+    },
     "pluralize@7.0.0": {
         "integrity": "sha512-ARhBOdzS3e41FbkW/XWrTEtukqqLoK5+Z/4UeDaLuSW+39JPeFgs4gCGqsrJHVZX0fUrx//4OF0K1CUGwlIFow==",
         "name": "pluralize",
@@ -13412,7 +13440,7 @@ PACKAGES = {
         "name": "promise-deferred",
         "url": "https://registry.npmjs.org/promise-deferred/-/promise-deferred-2.0.3.tgz",
     },
-    "promise-inflight@1.0.1-5e37b9cd": {
+    "promise-inflight@1.0.1-a7e5239c": {
         "integrity": "sha512-6zWPyEOFaQBJYcGMHBKTKJ3u6TBsnMFOIZSa6ce1e/ZrrsOlnHRHbabMjLiBYKp+n44X9eUI6VUPaukCXHuG4g==",
         "name": "promise-inflight",
         "url": "https://registry.npmjs.org/promise-inflight/-/promise-inflight-1.0.1.tgz",
@@ -15218,6 +15246,10 @@ ROOTS = [
         "name": "@jest/types",
     },
     {
+        "id": "@playwright/test@1.54.1",
+        "name": "@playwright/test",
+    },
+    {
         "id": "@prettier/plugin-xml@3.2.2-dc3fc578",
         "name": "@prettier/plugin-xml",
     },
@@ -15336,6 +15368,10 @@ ROOTS = [
     {
         "id": "npm-registry-fetch@14.0.2",
         "name": "npm-registry-fetch",
+    },
+    {
+        "id": "playwright@1.54.1",
+        "name": "playwright",
     },
     {
         "id": "prettier-plugin-organize-imports@3.2.4-dc3fc578",

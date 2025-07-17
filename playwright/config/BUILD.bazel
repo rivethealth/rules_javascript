@@ -1,0 +1,29 @@
+load("//commonjs:rules.bzl", "cjs_root")
+load("//javascript:rules.bzl", "js_library")
+load("//typescript:rules.bzl", "ts_library")
+
+cjs_root(
+    name = "root",
+    package_name = "@better-rules-javascript/playwright-config",
+    visibility = ["//visibility:public"],
+)
+
+js_library(
+    name = "tsconfig",
+    srcs = ["tsconfig.json"],
+    root = ":root",
+    deps = ["//tools/typescript:tsconfig"],
+)
+
+ts_library(
+    name = "lib",
+    srcs = glob(["**/*.ts"]),
+    compiler = "//tools/typescript:tsc",
+    config = "tsconfig.json",
+    config_dep = ":tsconfig",
+    root = ":root",
+    visibility = ["//visibility:public"],
+    deps = [
+        "@better_rules_javascript_npm//@types/node:lib",
+    ],
+)

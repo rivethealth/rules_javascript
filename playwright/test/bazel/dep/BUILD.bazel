@@ -1,0 +1,45 @@
+load("@better_rules_javascript//commonjs:rules.bzl", "cjs_root")
+load("@better_rules_javascript//javascript:rules.bzl", "js_library")
+load("@better_rules_javascript//playwright:rules.bzl", "playwright_test")
+
+cjs_root(
+    name = "root",
+    package_name = "@better-rules-javascript-test/playwright-dep",
+    path = "root",
+)
+
+cjs_root(
+    name = "other_root",
+    package_name = "@better-rules-javascript-test/playwright-other",
+    path = "other_root",
+)
+
+js_library(
+    name = "lib",
+    srcs = ["example.js"],
+    prefix = "other_root",
+    root = ":other_root",
+)
+
+js_library(
+    name = "playwright_config",
+    srcs = ["playwright.config.js"],
+    prefix = "root",
+    root = ":root",
+)
+
+js_library(
+    name = "test_lib",
+    srcs = ["example.spec.js"],
+    prefix = "root",
+    root = ":root",
+    deps = [":lib"],
+)
+
+playwright_test(
+    name = "test",
+    config = "playwright.config.js",
+    config_dep = ":playwright_config",
+    dep = ":test_lib",
+    playwright = "@npm//playwright:lib",
+)

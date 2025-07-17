@@ -1,0 +1,49 @@
+load("//commonjs:rules.bzl", "cjs_root")
+load("//javascript:rules.bzl", "js_library")
+load("//jest:rules.bzl", "jest_test")
+load("//typescript:rules.bzl", "ts_library")
+
+js_library(
+    name = "jest_config",
+    srcs = ["jest.config.js"],
+    root = ":root",
+    deps = ["//test:lib"],
+)
+
+cjs_root(
+    name = "root",
+    package_name = "@better-rules-javascript/playwright-test",
+)
+
+jest_test(
+    name = "test",
+    size = "large",
+    config = "jest.config.js",
+    config_dep = ":jest_config",
+    data = glob(["bazel/**/*"]) + ["@files//:common"],
+    dep = ":test_lib",
+    jest = "@npm//jest:lib",
+    tags = ["local"],
+    visibility = ["//visibility:public"],
+)
+
+ts_library(
+    name = "test_lib",
+    srcs = glob(["src/**/*.ts"]),
+    compiler = "//typescript:tsc",
+    config = "tsconfig.json",
+    config_dep = ":tsconfig",
+    root = ":root",
+    deps = [
+        "//test:lib",
+        "@npm//@types/jest:lib",
+        "@npm//@types/node:lib",
+    ],
+)
+
+js_library(
+    name = "tsconfig",
+    srcs = ["tsconfig.json"],
+    root = ":root",
+    deps = ["//tools/typescript:tsconfig"],
+)

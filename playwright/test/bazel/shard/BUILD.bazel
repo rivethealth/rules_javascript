@@ -1,0 +1,36 @@
+load("@better_rules_javascript//commonjs:rules.bzl", "cjs_root")
+load("@better_rules_javascript//javascript:rules.bzl", "js_library")
+load("@better_rules_javascript//playwright:rules.bzl", "playwright_test")
+
+cjs_root(
+    name = "root",
+    package_name = "@better-rules-javascript-test/playwright-basic",
+)
+
+js_library(
+    name = "lib",
+    srcs = ["example.js"],
+    root = ":root",
+)
+
+js_library(
+    name = "test_lib",
+    srcs = glob(["*.spec.js"]),
+    root = ":root",
+    deps = [":lib"],
+)
+
+js_library(
+    name = "playwright_config",
+    srcs = ["playwright.config.js"],
+    root = ":root",
+)
+
+playwright_test(
+    name = "test",
+    config = "playwright.config.js",
+    config_dep = ":playwright_config",
+    dep = ":test_lib",
+    playwright = "@npm//playwright:lib",
+    shard_count = 2,
+)
