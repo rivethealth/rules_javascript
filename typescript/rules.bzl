@@ -27,7 +27,7 @@ def configure_ts_compiler(name, ts, tslib = None, visibility = None):
         main = "lib/tsc.js",
         name = "%s.bin" % name,
         node = "@better_rules_javascript//nodejs",
-        node_options = ["--title=tsc"],
+        node_options = ["--title=tsc", "--max-old-space-size=4096"],
         dep = ts,
         visibility = ["//visibility:private"],
     )
