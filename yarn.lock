@@ -2896,7 +2896,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:>=13.7.0, @types/node@npm:^18":
+"@types/node@npm:*, @types/node@npm:>=13.7.0":
   version: 18.16.3
   resolution: "@types/node@npm:18.16.3"
   checksum: 816b39d45b05ebdc6f362b630970df3f6d82f71d418a2555353522f4eeeb078fa201de5299f02c09a09faa975e43b2745fe19c263d44069f87ddf37d6c37b717
@@ -2907,6 +2907,15 @@ __metadata:
   version: 13.13.52
   resolution: "@types/node@npm:13.13.52"
   checksum: 8f1afff497ebeba209e2dc340d823284e087a47632afe99a7daa30eaff80893e520f222ad400cd1f2d3b8288e93cf3eaded52a8e64eaefb8aacfe6c35de98f42
+  languageName: node
+  linkType: hard
+
+"@types/node@npm:^22":
+  version: 22.14.1
+  resolution: "@types/node@npm:22.14.1"
+  dependencies:
+    undici-types: ~6.21.0
+  checksum: e22363f40ac8290da2bb5261c2b348241fd93b000908cefd3c56575df9d4f6b8d102fc8631275eac7ec4a9e0ac4f38f01c9d8104ebbda76c936aef96fd1e55f3
   languageName: node
   linkType: hard
 
@@ -8352,7 +8361,7 @@ __metadata:
     "@types/eslint": ~7.28.0
     "@types/jest": ^28.0.0
     "@types/long": ~4.0.0
-    "@types/node": ^18
+    "@types/node": ^22
     "@types/node-fetch": ^2.0.0
     "@types/react": ~15.0.0
     "@types/tar-stream": ~2.2.0
@@ -9196,6 +9205,13 @@ __metadata:
   version: 1.12.1
   resolution: "underscore@npm:1.12.1"
   checksum: ec327603aa112b99fe9d74cd9bf3b3b7451465a9d2610ceab269a532e3f191650ab017903be34dc86fe406a11d04d8905a3b04dd4c129493e51bee09a3f3074c
+  languageName: node
+  linkType: hard
+
+"undici-types@npm:~6.21.0":
+  version: 6.21.0
+  resolution: "undici-types@npm:6.21.0"
+  checksum: 46331c7d6016bf85b3e8f20c159d62f5ae471aba1eb3dc52fff35a0259d58dcc7d592d4cc4f00c5f9243fa738a11cfa48bd20203040d4a9e6bc25e807fab7ab3
   languageName: node
   linkType: hard
 
