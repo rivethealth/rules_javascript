@@ -90,46 +90,17 @@ def _angular_library(ctx):
     ts = []
     outputs = []
 
-    # resource
+    # resource — always link files next to output so Angular can resolve templateUrl
 
     for file in ctx.files.resources:
-        if compilation_mode == "opt":
-            inputs.append(
-                link_file(
-                    actions = actions,
-                    file = file,
-                    label = label,
-                    output = output_,
-                ),
-            )
-        else:
-            js_path_ = output_name(
+        inputs.append(
+            link_file(
+                actions = actions,
                 file = file,
                 label = label,
-                prefix = js_prefix,
-                strip_prefix = strip_prefix,
-            )
-            if not file.is_directory:
-                js_path_ = resource_path(js_path_)
-            js_ = actions.declare_file(js_path_)
-            js.append(js_)
-            args = actions.args()
-            args.add(file)
-            args.add(js_)
-            args.set_param_file_format("multiline")
-            args.use_param_file("@%s", use_always = True)
-            actions.run(
-                arguments = [args],
-                executable = compiler.resource_compiler.files_to_run.executable,
-                execution_requirements = {
-                    "requires-worker-protocol": "json",
-                    "supports-workers": "1",
-                },
-                inputs = [file],
-                mnemonic = "TypeScriptTranspile",
-                outputs = [js_],
-                tools = [compiler.resource_compiler.files_to_run],
-            )
+                output = output_,
+            ),
+        )
 
     if compilation_mode != "opt":
         transpile_tsconfig = actions.declare_file("%s/js-tsconfig.json" % ctx.attr.name)
