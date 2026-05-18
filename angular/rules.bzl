@@ -93,16 +93,15 @@ def _angular_library(ctx):
     # resource
 
     for file in ctx.files.resources:
-        if compilation_mode == "opt":
-            inputs.append(
-                link_file(
-                    actions = actions,
-                    file = file,
-                    label = label,
-                    output = output_,
-                ),
-            )
-        else:
+        inputs.append(
+            link_file(
+                actions = actions,
+                file = file,
+                label = label,
+                output = output_,
+            ),
+        )
+        if compilation_mode != "opt":
             js_path_ = output_name(
                 file = file,
                 label = label,
