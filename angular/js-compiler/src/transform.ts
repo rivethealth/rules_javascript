@@ -13,19 +13,31 @@ function createImport(
   imports: ts.Statement[],
   path: string,
 ): ts.Expression {
-  const identifier = factory.createTempVariable();
-  imports.push(
-    factory.createImportDeclaration(
-      undefined,
-      undefined,
-      factory.createImportClause(
-        false,
-        undefined,
-        factory.createNamespaceImport(identifier),
-      ),
-      factory.createStringLiteral(resourceModuleSpecifier(path)),
-    ),
+  // eslint-disable-next-line unicorn/no-useless-undefined
+  const identifier = factory.createTempVariable(undefined);
+  const importClause = factory.createImportClause(
+    false,
+    undefined,
+    factory.createNamespaceImport(identifier),
   );
+  const moduleSpecifier = factory.createStringLiteral(
+    resourceModuleSpecifier(path),
+  );
+  // TS 4.8+ removed the separate decorators parameter from createImportDeclaration
+  const importDecl =
+    factory.createImportDeclaration.length <= 4
+      ? (factory.createImportDeclaration as any)(
+          undefined,
+          importClause,
+          moduleSpecifier,
+        )
+      : (factory.createImportDeclaration as any)(
+          undefined,
+          undefined,
+          importClause,
+          moduleSpecifier,
+        );
+  imports.push(importDecl);
   return factory.createPropertyAccessExpression(identifier, "content");
 }
 
@@ -93,15 +105,25 @@ function transformDecorator(
     });
     return factory.updateObjectLiteralExpression(argument, properties);
   });
-  return factory.updateDecorator(
-    decorator,
-    factory.updateCallExpression(
-      expression,
-      expression.expression,
-      expression.typeArguments,
-      args,
-    ),
+  const updatedCall = factory.updateCallExpression(
+    expression,
+    expression.expression,
+    expression.typeArguments,
+    args,
   );
+  // TS 4.8+ removed updateDecorator
+  if (typeof factory.updateDecorator === "function") {
+    return factory.updateDecorator(decorator, updatedCall);
+  }
+  return factory.createDecorator(updatedCall);
+}
+
+function getDecorators(node: ts.Node): readonly ts.Decorator[] | undefined {
+  // TS 4.8+ moved decorators into modifiers; ts.getDecorators handles both
+  if (typeof (ts as any).getDecorators === "function") {
+    return (ts as any).getDecorators(node);
+  }
+  return (node as any).decorators;
 }
 
 /**
@@ -115,15 +137,34 @@ export function resourceTransformer(): ts.TransformerFactory<ts.SourceFile> {
       file = ts.visitEachChild(
         file,
         (node): ts.VisitResult<ts.Node> => {
-          if (!ts.isClassDeclaration(node) || !node.decorators?.length) {
+          if (!ts.isClassDeclaration(node)) {
             return node;
           }
-          const decorators = node.decorators.map((decorator) =>
+          const decorators = getDecorators(node);
+          if (!decorators?.length) {
+            return node;
+          }
+          const transformedDecorators = decorators.map((decorator) =>
             transformDecorator(factory, decorator, imports),
           );
-          return factory.updateClassDeclaration(
+          // TS 4.8+: decorators and modifiers are merged
+          if (typeof (ts as any).getDecorators === "function") {
+            const otherModifiers = ((node.modifiers as any) || []).filter(
+              (m: ts.ModifierLike) => !ts.isDecorator(m),
+            );
+            return factory.updateClassDeclaration(
+              node,
+              [...transformedDecorators, ...otherModifiers] as any,
+              node.name,
+              node.typeParameters,
+              node.heritageClauses,
+              node.members,
+            );
+          }
+          // TS <4.8: separate decorators parameter
+          return (factory as any).updateClassDeclaration(
             node,
-            decorators,
+            transformedDecorators,
             node.modifiers,
             node.name,
             node.typeParameters,
@@ -134,7 +175,6 @@ export function resourceTransformer(): ts.TransformerFactory<ts.SourceFile> {
         context,
       );
       file = factory.updateSourceFile(file, [...imports, ...file.statements]);
-      // console.error(ts.createPrinter().printFile(file));
       return file;
     };
   };
